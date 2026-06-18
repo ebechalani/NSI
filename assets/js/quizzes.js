@@ -333,4 +333,58 @@ const QUIZZES = {
       explain: "On convient souvent de renvoyer −1 pour 'non trouvé'.",
     },
   ],
+
+  "histoire-informatique": [
+    {
+      q: "Qui est considérée comme l'autrice du premier algorithme destiné à une machine ?",
+      choices: ["Grace Hopper", "Ada Lovelace", "Marie Curie", "Margaret Hamilton"],
+      answer: 1,
+      explain: "Ada Lovelace, en 1843, pour la machine analytique de Babbage.",
+    },
+    {
+      q: "Quel mathématicien définit en 1936 un modèle théorique du calcul ?",
+      choices: ["George Boole", "Alan Turing", "Blaise Pascal", "Gottfried Leibniz"],
+      answer: 1,
+      explain: "La machine de Turing fonde la notion de calculabilité.",
+    },
+    {
+      q: "Quelle invention de 1947 remplace les tubes à vide ?",
+      choices: ["le circuit intégré", "le transistor", "le microprocesseur", "le disque dur"],
+      answer: 1,
+      explain: "Le transistor (Bell Labs) : plus petit, fiable et économe.",
+    },
+    {
+      q: "Qui invente le World Wide Web, et en quelle année (environ) ?",
+      choices: [
+        "Steve Jobs, 1976",
+        "Tim Berners-Lee, 1989–1991",
+        "Alan Turing, 1936",
+        "Bill Gates, 1995",
+      ],
+      answer: 1,
+      explain: "Tim Berners-Lee au CERN : HTML, HTTP et URL.",
+    },
+    {
+      q: "À quoi correspond la Pascaline (1642) ?",
+      choices: [
+        "un langage de programmation",
+        "une machine mécanique à additionner",
+        "le premier ordinateur électronique",
+        "un protocole réseau",
+      ],
+      answer: 1,
+      explain: "Blaise Pascal conçoit une machine à additionner à roues dentées.",
+    },
+    {
+      q: "Que dit, en substance, la loi de Moore (1965) ?",
+      choices: [
+        "le prix des ordinateurs double chaque année",
+        "le nombre de transistors par puce double environ tous les deux ans",
+        "Internet double de taille chaque mois",
+        "les logiciels deviennent deux fois plus lents",
+      ],
+      answer: 1,
+      explain: "Elle décrit la miniaturisation rapide des circuits intégrés.",
+    },
+  ],
 };

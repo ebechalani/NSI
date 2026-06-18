@@ -10,7 +10,7 @@ const COURSES = [
   /* ============================================================= 1 */
   {
     id: "donnees-base",
-    num: 1,
+    num: 2,
     emoji: "🔢",
     title: "Représentation des données : types et valeurs de base",
     intro:
@@ -149,7 +149,7 @@ for c in "NSI":
   /* ============================================================= 2 */
   {
     id: "types-construits",
-    num: 2,
+    num: 3,
     emoji: "🧱",
     title: "Représentation des données : types construits",
     intro:
@@ -275,7 +275,7 @@ print(list(eleve.values()))`,
   /* ============================================================= 3 */
   {
     id: "donnees-tables",
-    num: 3,
+    num: 4,
     emoji: "📊",
     title: "Traitement de données en tables",
     intro:
@@ -382,7 +382,7 @@ for l in fusion:
   /* ============================================================= 4 */
   {
     id: "ihm-web",
-    num: 4,
+    num: 5,
     emoji: "🌐",
     title: "Interactions homme-machine sur le Web",
     intro:
@@ -489,7 +489,7 @@ print("Ville demandée :", parametres["ville"])`,
   /* ============================================================= 5 */
   {
     id: "architecture-os",
-    num: 5,
+    num: 6,
     emoji: "🖥️",
     title: "Architectures matérielles et systèmes d'exploitation",
     intro:
@@ -598,7 +598,7 @@ print(f"chmod {prop}{groupe}{autres}")  # chmod 750`,
   /* ============================================================= 6 */
   {
     id: "langages-prog",
-    num: 6,
+    num: 7,
     emoji: "🐍",
     title: "Langages et programmation",
     intro:
@@ -758,7 +758,7 @@ print("somme_jusqua(5) =", somme_jusqua(5))   # donne 10, pas 15
   /* ============================================================= 7 */
   {
     id: "algorithmique",
-    num: 7,
+    num: 8,
     emoji: "🧩",
     title: "Algorithmique",
     intro:
@@ -898,6 +898,108 @@ for taille in [10, 1000, 1000000]:
         html: `
         <p>Une boucle <code>while</code> doit <strong>se terminer</strong>. Pour le prouver, on exhibe un <strong>variant</strong> : une quantité entière, positive, qui <em>décroît strictement</em> à chaque tour. Comme un entier positif ne peut décroître indéfiniment, la boucle s'arrête.</p>
         <p>Exemple : dans la dichotomie, la quantité <code>droite − gauche</code> diminue à chaque tour : c'est le variant.</p>`,
+      },
+    ],
+  },
+
+  /* ============================================================= 8 */
+  {
+    id: "histoire-informatique",
+    num: 1,
+    emoji: "📜",
+    title: "Histoire de l'informatique",
+    intro:
+      "Thème transversal du programme : situer dans le temps les grandes innovations, matérielles comme logicielles, qui ont façonné l'informatique — des premières machines à calculer à l'intelligence artificielle.",
+    capacites: [
+      "Situer dans le temps les principales innovations matérielles et logicielles.",
+      "Relier une notion étudiée dans les autres thèmes à son contexte historique.",
+      "Connaître quelques grandes figures de l'histoire de l'informatique et leur apport.",
+    ],
+    sections: [
+      {
+        title: "Pourquoi une histoire de l'informatique ?",
+        html: `
+        <p>L'informatique n'est pas apparue avec les ordinateurs : elle est l'aboutissement de siècles de recherches en <strong>mathématiques</strong>, en <strong>logique</strong> et en <strong>technique</strong>. Comprendre cette histoire aide à saisir <em>pourquoi</em> les machines fonctionnent comme elles le font (binaire, programme enregistré, langages…).</p>
+        <p>Ce thème est <strong>transversal</strong> : chaque notion des autres chapitres a une histoire (le binaire vient de Leibniz, l'algorithme du nom d'Al-Khwârizmî, le Web de 1989…).</p>`,
+      },
+      {
+        title: "Des premières machines à calculer (XVIIᵉ–XIXᵉ s.)",
+        html: `
+        <p>Avant l'électronique, on calculait avec des machines mécaniques :</p>
+        <ul>
+          <li><strong>1642 — Blaise Pascal</strong> : la <em>Pascaline</em>, machine à additionner à roues dentées.</li>
+          <li><strong>1673 — Gottfried Leibniz</strong> : une machine qui multiplie ; il théorise aussi le <strong>système binaire</strong>.</li>
+          <li><strong>1801 — Joseph Marie Jacquard</strong> : le métier à tisser programmé par <strong>cartes perforées</strong> — l'idée d'une machine pilotée par un « programme ».</li>
+        </ul>`,
+      },
+      {
+        title: "Babbage et Lovelace : la machine et le programme",
+        html: `
+        <p><strong>Charles Babbage</strong> conçoit vers 1837 la <strong>machine analytique</strong>, une calculatrice mécanique programmable jamais achevée, qui préfigure l'ordinateur (unité de calcul, mémoire, cartes perforées).</p>
+        <p><strong>Ada Lovelace</strong> écrit en 1843 ce qui est considéré comme le <strong>premier algorithme destiné à être exécuté par une machine</strong>. Elle pressent qu'une telle machine pourrait manipuler bien plus que des nombres (symboles, musique…). On la considère comme la première programmeuse.</p>`,
+      },
+      {
+        title: "Les fondements théoriques (1850–1940)",
+        html: `
+        <ul>
+          <li><strong>1854 — George Boole</strong> : l'<em>algèbre de Boole</em> (vrai/faux, et/ou/non), base de la logique des circuits (thème 1 et 5).</li>
+          <li><strong>1936 — Alan Turing</strong> : la <em>machine de Turing</em>, modèle théorique qui définit ce qu'est un calcul et les limites du <strong>calculable</strong>.</li>
+          <li><strong>1937 — Claude Shannon</strong> : montre que les circuits électriques peuvent réaliser l'algèbre de Boole ; il fonde la <em>théorie de l'information</em>.</li>
+          <li><strong>1945 — John von Neumann</strong> : formalise l'architecture à <strong>programme enregistré</strong> (thème 5).</li>
+        </ul>`,
+      },
+      {
+        title: "Les premiers ordinateurs (1940–1970)",
+        html: `
+        <ul>
+          <li><strong>1945 — ENIAC</strong> : l'un des premiers grands calculateurs électroniques, programmé par câblage.</li>
+          <li><strong>1947 — le transistor</strong> (Bell Labs) remplace les tubes à vide : plus petit, plus fiable, moins gourmand.</li>
+          <li><strong>1958 — le circuit intégré</strong> regroupe de nombreux transistors sur une puce.</li>
+          <li><strong>Grace Hopper</strong> développe l'idée de <strong>compilateur</strong> et participe au langage COBOL, rendant la programmation plus accessible.</li>
+        </ul>
+        <p class="note">La <strong>loi de Moore</strong> (1965) observe que le nombre de transistors par puce double environ tous les deux ans — moteur de la miniaturisation.</p>`,
+      },
+      {
+        title: "Micro-informatique, logiciel et réseaux (1970–1990)",
+        html: `
+        <ul>
+          <li><strong>1971 — Intel 4004</strong> : le premier <strong>microprocesseur</strong> ; tout le processeur tient sur une puce.</li>
+          <li><strong>Années 1970–80</strong> : l'<strong>ordinateur personnel</strong> (Apple, IBM PC) sort des laboratoires.</li>
+          <li><strong>1969 — ARPANET</strong>, ancêtre d'<strong>Internet</strong> ; les protocoles <strong>TCP/IP</strong> se généralisent dans les années 1980.</li>
+          <li><strong>1983–1991 — logiciel libre</strong> : Richard Stallman lance le projet GNU, Linus Torvalds le noyau <strong>Linux</strong> (1991).</li>
+        </ul>`,
+      },
+      {
+        title: "Le Web, le mobile et aujourd'hui (1990 →)",
+        html: `
+        <ul>
+          <li><strong>1989–1991 — Tim Berners-Lee</strong> invente le <strong>World Wide Web</strong> au CERN (HTML, HTTP, URL) — thème 4.</li>
+          <li><strong>Années 2000</strong> : explosion d'Internet, moteurs de recherche, réseaux sociaux, <strong>données massives</strong> (big data).</li>
+          <li><strong>2007 — smartphone</strong> : l'informatique devient mobile et omniprésente.</li>
+          <li><strong>Années 2010–2020</strong> : essor de l'<strong>apprentissage automatique</strong> et de l'<strong>intelligence artificielle</strong>.</li>
+        </ul>
+        <p>L'histoire continue : chaque notion que tu apprends en NSI s'inscrit dans cette longue chaîne d'innovations.</p>`,
+      },
+      {
+        title: "Construire et trier une frise chronologique",
+        html: `
+        <p>On peut représenter l'histoire comme une <strong>table de données</strong> (thème 3) et la trier par date. Voici une petite frise interactive : modifie-la, ajoute un événement !</p>`,
+        code: `frise = [
+    {"annee": 1642, "evenement": "Pascaline (Pascal)"},
+    {"annee": 1843, "evenement": "Premier algorithme (Lovelace)"},
+    {"annee": 1936, "evenement": "Machine de Turing"},
+    {"annee": 1945, "evenement": "Architecture de von Neumann"},
+    {"annee": 1947, "evenement": "Le transistor"},
+    {"annee": 1971, "evenement": "Microprocesseur Intel 4004"},
+    {"annee": 1991, "evenement": "Noyau Linux"},
+    {"annee": 1991, "evenement": "Le World Wide Web"},
+]
+
+# Tri chronologique (thème 3 : trier une table selon une colonne)
+for e in sorted(frise, key=lambda x: x["annee"]):
+    print(e["annee"], "—", e["evenement"])
+
+print("\\nNombre d'événements :", len(frise))`,
       },
     ],
   },

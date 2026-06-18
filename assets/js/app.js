@@ -5,6 +5,9 @@
 (function () {
   "use strict";
 
+  // Ordre d'affichage = progression pédagogique (champ num de chaque thème)
+  COURSES.sort((a, b) => a.num - b.num);
+
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const el = (tag, cls, html) => {
     const e = document.createElement(tag);
