@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NSI Première — Cours interactif</title>
+  <meta name="description" content="Site interactif pour apprendre la NSI en Première : cours, code Python exécutable et QCM. Conforme au programme officiel (BO)." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <header class="topbar">
+    <button id="menuToggle" class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+    <div class="brand">
+      <span class="brand-logo">&lt;/&gt;</span>
+      <span class="brand-title">NSI&nbsp;<small>Première</small></span>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="progress-wrap" title="Progression des QCM">
+      <div class="progress-bar"><span id="globalProgress"></span></div>
+      <span id="globalProgressLabel" class="progress-label">0 %</span>
+    </div>
+    <button id="themeToggle" class="icon-btn" aria-label="Basculer le thème clair/sombre">🌙</button>
+  </header>
+
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Sommaire des thèmes">
+      <div class="sidebar-head">Sommaire</div>
+      <ul id="navList" class="nav-list"></ul>
+      <div class="sidebar-foot">
+        <p>Conforme au programme officiel de Première NSI (Bulletin officiel).</p>
+      </div>
+    </nav>
+
+    <main id="contenu" class="content" tabindex="-1">
+      <section id="view-home" class="view"></section>
+      <section id="view-theme" class="view hidden"></section>
+    </main>
+  </div>
+
+  <div id="overlay" class="overlay hidden"></div>
+
+  <!-- Données du cours et des QCM -->
+  <script src="assets/js/courses.js"></script>
+  <script src="assets/js/quizzes.js"></script>
+  <!-- Logique applicative -->
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
