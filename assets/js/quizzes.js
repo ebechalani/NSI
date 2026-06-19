@@ -387,4 +387,57 @@ const QUIZZES = {
       explain: "Elle décrit la miniaturisation rapide des circuits intégrés.",
     },
   ],
+
+  "reseaux": [
+    {
+      q: "À quoi sert un protocole de communication ?",
+      choices: [
+        "à accélérer l'ordinateur",
+        "à fixer des règles communes pour que les machines se comprennent",
+        "à stocker des fichiers",
+        "à afficher des images",
+      ],
+      answer: 1,
+      explain: "Un protocole (ex. TCP/IP) est un ensemble de règles communes d'échange.",
+    },
+    {
+      q: "Pourquoi découpe-t-on un message en paquets numérotés ?",
+      choices: [
+        "pour le rendre illisible",
+        "pour pouvoir le réordonner et ne renvoyer que ce qui est perdu",
+        "pour le compresser",
+        "pour le chiffrer",
+      ],
+      answer: 1,
+      explain: "Le numéro permet de remettre les paquets dans l'ordre ; on ne renvoie qu'un paquet perdu.",
+    },
+    {
+      q: "Que fait un routeur ?",
+      choices: [
+        "il affiche les pages web",
+        "il choisit le chemin des paquets vers leur destination",
+        "il stocke les mots de passe",
+        "il fabrique les adresses IP",
+      ],
+      answer: 1,
+      explain: "Le routage consiste à transmettre les paquets de proche en proche vers la destination.",
+    },
+    {
+      q: "Les paquets d'un message arrivent dans le désordre. Que fait-on ?",
+      choices: [
+        "on jette le message",
+        "on les retrie grâce à leur numéro",
+        "on redemande tout depuis le début",
+        "rien, c'est impossible à corriger",
+      ],
+      answer: 1,
+      explain: "On trie les paquets par leur numéro pour reconstituer le message d'origine.",
+    },
+    {
+      q: "Si un numéro de paquet est totalement absent à l'arrivée, c'est…",
+      choices: ["un doublon", "un paquet perdu", "un routeur en panne définitive", "une adresse IP"],
+      answer: 1,
+      explain: "Un numéro manquant signale une perte : le protocole TCP peut redemander ce paquet.",
+    },
+  ],
 };

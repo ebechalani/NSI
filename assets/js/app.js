@@ -32,6 +32,25 @@
     applyTheme(next);
   });
 
+  /* ---------------- Mode professeur (corrigés) ---------------- */
+  const TEACHER_KEY = "nsi-teacher";
+  function applyTeacher(on) {
+    document.body.classList.toggle("teacher-on", on);
+    const btn = $("#teacherToggle");
+    if (btn) {
+      btn.classList.toggle("active", on);
+      btn.title = on
+        ? "Mode professeur ACTIVÉ — les corrigés sont visibles"
+        : "Mode professeur (corrigés masqués)";
+    }
+  }
+  applyTeacher(localStorage.getItem(TEACHER_KEY) === "1");
+  $("#teacherToggle").addEventListener("click", () => {
+    const on = !document.body.classList.contains("teacher-on");
+    localStorage.setItem(TEACHER_KEY, on ? "1" : "0");
+    applyTeacher(on);
+  });
+
   /* ---------------- Menu mobile ---------------- */
   const sidebar = $("#sidebar");
   const overlay = $("#overlay");
@@ -102,6 +121,27 @@
       navList.appendChild(li);
     });
 
+    // Séparateur + rubriques transversales
+    const sep = el("li", "nav-sep", "Activités & ressources");
+    navList.appendChild(sep);
+
+    const extraLinks = [
+      { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
+      { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
+    ];
+    extraLinks.forEach((x) => {
+      const li = el("li");
+      const link = el(
+        "a",
+        "nav-link",
+        `<span class="nav-num">${x.num}</span>` +
+          `<span class="nav-text">${x.text}</span>`
+      );
+      link.dataset.target = x.target;
+      li.appendChild(link);
+      navList.appendChild(li);
+    });
+
     navList.querySelectorAll(".nav-link").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
@@ -165,6 +205,40 @@
     });
     viewHome.appendChild(grid);
 
+    // --- Rubriques transversales (projets, glossaire) ---
+    viewHome.appendChild(el("h2", "home-h2", "🏝️ Activités & ressources"));
+    const rgrid = el("div", "card-grid");
+    const ressources = [
+      {
+        emoji: "🏝️",
+        tag: `${PROJECTS.length} projets`,
+        title: "Projets en îlots",
+        desc: "Des missions à mener en équipe : réfléchir, écrire l'algorithme, coder, tester, présenter.",
+        target: "projets",
+      },
+      {
+        emoji: "📖",
+        tag: `${GLOSSARY.length} termes`,
+        title: "Glossaire NSI",
+        desc: "Toutes les définitions clés du programme, recherchables et classées par thème.",
+        target: "glossaire",
+      },
+    ];
+    ressources.forEach((r) => {
+      const card = el("button", "theme-card");
+      card.innerHTML = `
+        <div class="tc-top"><span class="tc-emoji">${r.emoji}</span><span class="tc-num">${r.tag}</span></div>
+        <h3>${r.title}</h3>
+        <p>${r.desc}</p>
+        <div class="tc-foot"><span>Ouvrir →</span></div>`;
+      card.addEventListener("click", () => navigate(r.target));
+      rgrid.appendChild(card);
+    });
+    viewHome.appendChild(rgrid);
+
+    // --- Badges de progression ---
+    viewHome.appendChild(renderBadges());
+
     const note = el(
       "div",
       "sidebar-foot",
@@ -210,8 +284,17 @@
       viewTheme.appendChild(sec);
     });
 
+    // Exercices progressifs + mini-défi (avant le QCM)
+    const ex = THEME_EXTRAS[c.id];
+    if (ex && ex.exercices) viewTheme.appendChild(makeExercices(ex.exercices, c.id));
+    if (ex && ex.defi) viewTheme.appendChild(makeDefi(ex.defi));
+
     // Quiz
     if (QUIZZES[c.id]) viewTheme.appendChild(makeQuiz(c.id));
+
+    // Erreurs fréquentes + fiche résumé (après le QCM)
+    if (ex && ex.erreurs) viewTheme.appendChild(makeErreurs(ex.erreurs));
+    if (ex && ex.resume) viewTheme.appendChild(makeResume(c, ex.resume));
 
     // Navigation précédent / suivant
     viewTheme.appendChild(makeThemeNav(c));
@@ -974,39 +1057,566 @@ sys.stderr = io.StringIO()
     return wrap;
   }
 
+  /* ---------------- Compléments pédagogiques d'un thème ---------------- */
+  const NIVEAU_BADGE = {
+    facile: { cls: "lv-facile", label: "🟢 Facile" },
+    moyen: { cls: "lv-moyen", label: "🟠 Moyen" },
+    défi: { cls: "lv-defi", label: "🔴 Défi" },
+    defi: { cls: "lv-defi", label: "🔴 Défi" },
+  };
+
+  function makeExercices(liste, themeId) {
+    const wrap = el("div", "extra-block exos");
+    wrap.appendChild(el("h2", null, "🏋️ Exercices progressifs"));
+    wrap.appendChild(
+      el("p", "extra-hint", "Entraîne-toi du plus simple au plus difficile. Le corrigé est masqué (clique pour le révéler).")
+    );
+    liste.forEach((exo, i) => {
+      const lv = NIVEAU_BADGE[exo.niveau] || NIVEAU_BADGE.facile;
+      const box = el("div", "exo-item");
+      box.appendChild(
+        el(
+          "div",
+          "exo-head",
+          `<span class="lv-tag ${lv.cls}">${lv.label}</span><span class="exo-n">Exercice ${i + 1}</span>`
+        )
+      );
+      box.appendChild(el("div", "exo-enonce", exo.enonce));
+      if (exo.code) box.appendChild(makeCodeCell(exo.code));
+      if (exo.solution) {
+        const det = el("details", "corrige");
+        det.appendChild(el("summary", null, "✅ Voir le corrigé"));
+        det.appendChild(el("div", "corrige-body", exo.solution));
+        box.appendChild(det);
+      }
+      wrap.appendChild(box);
+    });
+    return wrap;
+  }
+
+  function makeDefi(defi) {
+    const wrap = el("div", "extra-block defi-block");
+    wrap.appendChild(el("h2", null, "🚀 Mini-défi / mission"));
+    const card = el("div", "defi-card");
+    card.appendChild(el("h3", null, defi.titre));
+    card.appendChild(el("div", null, defi.html));
+    if (defi.code) card.appendChild(makeCodeCell(defi.code));
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  function makeErreurs(erreurs) {
+    const wrap = el("div", "extra-block erreurs-block");
+    wrap.appendChild(el("h2", null, "⚠️ Erreurs fréquentes"));
+    const ul = el("ul", "erreurs-list");
+    erreurs.forEach((e) => ul.appendChild(el("li", null, e)));
+    wrap.appendChild(ul);
+    return wrap;
+  }
+
+  function makeResume(c, resume) {
+    const wrap = el("div", "extra-block resume-block");
+    const head = el("div", "resume-head");
+    head.appendChild(el("h2", null, "📋 Fiche résumé"));
+    const print = el("button", "btn secondary", "🖨️ Imprimer la fiche");
+    print.addEventListener("click", () => printResume(c, resume));
+    head.appendChild(print);
+    wrap.appendChild(head);
+    const ul = el("ul", "resume-list");
+    resume.forEach((r) => ul.appendChild(el("li", null, r)));
+    wrap.appendChild(ul);
+    return wrap;
+  }
+
+  function printResume(c, resume) {
+    const items = resume.map((r) => `<li>${r}</li>`).join("");
+    const caps = (c.capacites || []).map((x) => `<li>${x}</li>`).join("");
+    openPrint(
+      `Fiche résumé — ${c.title}`,
+      `<h1>${c.emoji} ${c.title}</h1>` +
+        `<p class="intro">${c.intro}</p>` +
+        `<h2>🎯 Capacités attendues (BO)</h2><ul>${caps}</ul>` +
+        `<h2>📋 À retenir</h2><ul>${items}</ul>`
+    );
+  }
+
+  /* ---------------- Badges de progression ---------------- */
+  function renderBadges() {
+    const wrap = el("div", "badges-block");
+    wrap.appendChild(el("h2", "home-h2", "🏅 Tes badges"));
+    const done = COURSES.filter((c) => {
+      const p = progress[c.id];
+      return p && p.total > 0 && p.score === p.total;
+    }).length;
+    const anyQuiz = Object.keys(progress).length > 0;
+    const defs = [
+      { ok: anyQuiz, emoji: "🚀", label: "Premiers pas", desc: "Un premier QCM tenté" },
+      { ok: done >= 1, emoji: "✅", label: "Premier thème validé", desc: "1 thème au score parfait" },
+      { ok: done >= 3, emoji: "🔥", label: "Sur la lancée", desc: "3 thèmes validés" },
+      { ok: done >= 5, emoji: "🧠", label: "Expert·e en herbe", desc: "5 thèmes validés" },
+      { ok: done >= COURSES.length, emoji: "🏆", label: "Programme bouclé", desc: "Tous les thèmes validés" },
+    ];
+    const row = el("div", "badges-row");
+    defs.forEach((b) => {
+      const item = el("div", "badge-item" + (b.ok ? " earned" : " locked"));
+      item.innerHTML = `<span class="badge-emoji">${b.ok ? b.emoji : "🔒"}</span>` +
+        `<span class="badge-label">${b.label}</span>` +
+        `<span class="badge-desc">${b.desc}</span>`;
+      row.appendChild(item);
+    });
+    wrap.appendChild(row);
+    return wrap;
+  }
+
+  /* ---------------- Vue : Projets en îlots (liste) ---------------- */
+  function renderProjectsHome() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, `🏝️ Projets en îlots`));
+    header.appendChild(
+      el(
+        "p",
+        "theme-intro",
+        "Des missions à mener en équipe. La démarche est toujours la même : <strong>comprendre → réfléchir en îlot → proposer un algorithme → coder → tester → améliorer → présenter</strong>."
+      )
+    );
+    viewTheme.appendChild(header);
+
+    // Fiche îlot + rôles + grille (ressources communes)
+    const tools = el("div", "proj-tools");
+    const bFiche = el("button", "btn secondary", "📄 Imprimer la fiche « réflexion en îlot »");
+    bFiche.addEventListener("click", printFicheIlot);
+    const bRoles = el("button", "btn secondary", "👥 Voir les rôles & la grille");
+    bRoles.addEventListener("click", () => {
+      rolesBox.classList.toggle("hidden");
+    });
+    tools.appendChild(bFiche);
+    tools.appendChild(bRoles);
+    viewTheme.appendChild(tools);
+
+    const rolesBox = makeRolesGrille();
+    rolesBox.classList.add("hidden");
+    viewTheme.appendChild(rolesBox);
+
+    const grid = el("div", "card-grid");
+    PROJECTS.slice()
+      .sort((a, b) => a.num - b.num)
+      .forEach((p) => {
+        const lv = NIVEAU_BADGE[p.niveau] || NIVEAU_BADGE.facile;
+        const card = el("button", "theme-card proj-card");
+        card.innerHTML = `
+          <div class="tc-top"><span class="tc-emoji">${p.emoji}</span>
+            <span class="lv-tag ${lv.cls}">${lv.label}</span></div>
+          <h3>Projet ${p.num} — ${p.titre}</h3>
+          <p>${p.objectif}</p>
+          <div class="proj-notions">${p.notions
+            .slice(0, 3)
+            .map((n) => `<span class="chip">${n}</span>`)
+            .join("")}</div>
+          <div class="tc-foot"><span>⏱️ ${p.duree}</span><span>Ouvrir →</span></div>`;
+        card.addEventListener("click", () => navigate("projet:" + p.id));
+        grid.appendChild(card);
+      });
+    viewTheme.appendChild(grid);
+    scrollTop();
+  }
+
+  function makeRolesGrille() {
+    const box = el("div", "roles-grille");
+    box.appendChild(el("h3", null, "👥 Rôles dans le groupe (à faire tourner à chaque projet)"));
+    const r = el("div", "roles-row");
+    PROJECT_ROLES.forEach((role) => {
+      r.appendChild(
+        el(
+          "div",
+          "role-item",
+          `<span class="role-emoji">${role.emoji}</span><strong>${role.nom}</strong><span>${role.desc}</span>`
+        )
+      );
+    });
+    box.appendChild(r);
+
+    box.appendChild(el("h3", null, "📊 Grille d'évaluation générique (/20)"));
+    let total = 0;
+    const rows = PROJECT_GRILLE.map((g) => {
+      total += g.points;
+      return `<tr><td>${g.critere}</td><td class="pts">${g.points}</td><td>${g.detail}</td></tr>`;
+    }).join("");
+    const tbl = el(
+      "div",
+      "grille-table",
+      `<table><tr><th>Critère</th><th>Points</th><th>Indicateur</th></tr>${rows}` +
+        `<tr class="total"><td>Total</td><td class="pts">${total}</td><td></td></tr></table>`
+    );
+    box.appendChild(tbl);
+    return box;
+  }
+
+  /* ---------------- Vue : un projet détaillé ---------------- */
+  function renderProject(id) {
+    const p = PROJECTS.find((x) => x.id === id);
+    if (!p) return renderProjectsHome();
+    viewTheme.innerHTML = "";
+
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "🏝️ Projets en îlots");
+    crumb.addEventListener("click", () => navigate("projets"));
+    header.appendChild(crumb);
+    const lv = NIVEAU_BADGE[p.niveau] || NIVEAU_BADGE.facile;
+    header.appendChild(
+      el("h1", null, `<span class="th-emoji">${p.emoji}</span> Projet ${p.num} — ${p.titre}`)
+    );
+    header.appendChild(
+      el(
+        "div",
+        "proj-meta",
+        `<span class="lv-tag ${lv.cls}">${lv.label}</span>` +
+          `<span class="chip">⏱️ ${p.duree}</span>` +
+          p.notions.map((n) => `<span class="chip">${n}</span>`).join("")
+      )
+    );
+    viewTheme.appendChild(header);
+
+    // Boutons d'action
+    const tools = el("div", "proj-tools");
+    const bPrint = el("button", "btn secondary", "🖨️ Imprimer la fiche projet");
+    bPrint.addEventListener("click", () => printProject(p));
+    const bFiche = el("button", "btn secondary", "📄 Fiche « réflexion en îlot »");
+    bFiche.addEventListener("click", printFicheIlot);
+    tools.appendChild(bPrint);
+    tools.appendChild(bFiche);
+    viewTheme.appendChild(tools);
+
+    // Objectif & situation
+    const obj = el("div", "capacites");
+    obj.innerHTML = `<h4>🎯 Objectif final</h4><p>${p.objectif}</p>`;
+    viewTheme.appendChild(obj);
+    const sit = el("div", "section");
+    sit.appendChild(el("h2", null, "🧩 Situation-problème"));
+    sit.appendChild(el("p", null, p.situation));
+    viewTheme.appendChild(sit);
+
+    // Phases
+    const phasesSec = el("div", "section");
+    phasesSec.appendChild(el("h2", null, "🗺️ Les 5 phases"));
+    const ol = el("ol", "phases-list");
+    p.phases.forEach((ph) => ol.appendChild(el("li", null, ph)));
+    phasesSec.appendChild(ol);
+    viewTheme.appendChild(phasesSec);
+
+    // Rôles
+    viewTheme.appendChild(makeRolesGrille());
+
+    // Code de départ
+    if (p.code) {
+      const codeSec = el("div", "section");
+      codeSec.appendChild(el("h2", null, "💻 Code de départ"));
+      if (p.langue === "html") {
+        codeSec.appendChild(
+          el("p", "note", "⚠️ Ce code est du HTML/JS : recopie-le dans un fichier <code>.html</code> et ouvre-le dans un navigateur (l'éditeur ci-dessous exécute du Python).")
+        );
+        const pre = el("pre");
+        pre.appendChild(el("code", null, escapeHtml(p.code)));
+        codeSec.appendChild(pre);
+      } else {
+        codeSec.appendChild(makeCodeCell(p.code));
+      }
+      viewTheme.appendChild(codeSec);
+    }
+
+    // Tests attendus
+    if (p.tests) {
+      const testSec = el("div", "section");
+      testSec.appendChild(el("h2", null, "🧪 Tests attendus"));
+      const ul = el("ul");
+      p.tests.forEach((t) => ul.appendChild(el("li", null, t)));
+      testSec.appendChild(ul);
+      viewTheme.appendChild(testSec);
+    }
+
+    // Bonus
+    if (p.bonus) {
+      const b = el("div", "note");
+      b.innerHTML = `⭐ <strong>Bonus (groupes rapides) :</strong> ${p.bonus}`;
+      viewTheme.appendChild(b);
+    }
+
+    // Corrigé enseignant (masqué)
+    if (p.corrige) {
+      const det = el("details", "corrige teacher-block");
+      det.appendChild(el("summary", null, "🔑 Corrigé / pistes (enseignant)"));
+      const body = el("div", "corrige-body");
+      // Si le corrigé ressemble à du code Python, on l'exécute ; sinon texte.
+      if (/\n/.test(p.corrige) && /[=():]/.test(p.corrige) && p.langue !== "html") {
+        body.appendChild(makeCodeCell(p.corrige));
+      } else {
+        body.appendChild(el("p", null, p.corrige));
+      }
+      det.appendChild(body);
+      viewTheme.appendChild(det);
+    }
+
+    scrollTop();
+  }
+
+  /* ---------------- Vue : Glossaire ---------------- */
+  function renderGlossary() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "📖 Glossaire NSI"));
+    header.appendChild(
+      el("p", "theme-intro", "Les définitions clés du programme. Filtre par mot-clé ou par thème.")
+    );
+    viewTheme.appendChild(header);
+
+    const bar = el("div", "gloss-bar");
+    const input = el("input", "gloss-search");
+    input.type = "search";
+    input.placeholder = "Filtrer un terme…";
+    bar.appendChild(input);
+    viewTheme.appendChild(bar);
+
+    const list = el("div", "gloss-list");
+    viewTheme.appendChild(list);
+
+    const themeName = {};
+    COURSES.forEach((c) => (themeName[c.id] = c.title));
+
+    function draw(filter) {
+      list.innerHTML = "";
+      const f = norm(filter || "");
+      const items = GLOSSARY.filter(
+        (g) => !f || norm(g.terme).includes(f) || norm(g.def).includes(f)
+      ).sort((a, b) => a.terme.localeCompare(b.terme, "fr"));
+      if (!items.length) {
+        list.appendChild(el("p", "muted-text", "Aucun terme trouvé."));
+        return;
+      }
+      items.forEach((g) => {
+        const card = el("div", "gloss-item");
+        card.innerHTML =
+          `<div class="gloss-term">${g.terme}</div>` +
+          `<div class="gloss-def">${g.def}</div>` +
+          (themeName[g.theme]
+            ? `<button class="gloss-link" data-go="${g.theme}">→ ${themeName[g.theme]}</button>`
+            : "");
+        const link = card.querySelector(".gloss-link");
+        if (link) link.addEventListener("click", () => navigate(link.dataset.go));
+        list.appendChild(card);
+      });
+    }
+    input.addEventListener("input", () => draw(input.value));
+    draw("");
+    scrollTop();
+  }
+
+  /* ---------------- Impressions communes ---------------- */
+  function openPrint(title, bodyHtml) {
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("🖨️ Le navigateur a bloqué la fenêtre d'impression. Autorise les pop-ups pour ce site.");
+      return;
+    }
+    w.document.write(
+      `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>${title}</title><style>` +
+        `*{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif}` +
+        `body{margin:1.5cm;color:#1f2733;line-height:1.5}` +
+        `h1{font-size:18pt;margin:0 0 .2cm}h2{font-size:13pt;margin:.7cm 0 .2cm;border-bottom:1px solid #ccc}` +
+        `h3{font-size:11pt;margin:.5cm 0 .1cm}.intro{color:#444;font-size:10.5pt}` +
+        `ul,ol{font-size:10.5pt;margin:.2cm 0 .2cm 0;padding-left:.8cm}li{margin:.1cm 0}` +
+        `table{border-collapse:collapse;width:100%;font-size:10pt;margin:.3cm 0}` +
+        `td,th{border:1px solid #999;padding:.2cm .3cm;text-align:left}th{background:#eee}` +
+        `.field{border:1px solid #999;border-radius:6px;min-height:1.1cm;margin:.15cm 0 .4cm;padding:.15cm .3cm}` +
+        `.lbl{font-weight:700;font-size:10.5pt}code{background:#eee;padding:0 .15cm;border-radius:3px}` +
+        `.no-print{margin-bottom:.5cm}@media print{.no-print{display:none}}` +
+        `</style></head><body>` +
+        `<button class="no-print" onclick="window.print()" style="padding:.3cm .7cm;font-size:11pt;cursor:pointer">🖨️ Imprimer</button>` +
+        bodyHtml +
+        `</body></html>`
+    );
+    w.document.close();
+    w.focus();
+  }
+
+  function printFicheIlot() {
+    const champs = FICHE_ILOT.champs
+      .map((c) => `<div class="lbl">${c}</div><div class="field"></div>`)
+      .join("");
+    openPrint(
+      FICHE_ILOT.titre,
+      `<h1>📄 ${FICHE_ILOT.titre}</h1><p class="intro">${FICHE_ILOT.intro}</p>${champs}`
+    );
+  }
+
+  function printProject(p) {
+    const phases = p.phases.map((ph) => `<li>${ph}</li>`).join("");
+    const notions = p.notions.map((n) => `<li>${n}</li>`).join("");
+    const tests = (p.tests || []).map((t) => `<li>${t}</li>`).join("");
+    const roles = PROJECT_ROLES.map((r) => `<li><strong>${r.nom}</strong> — ${r.desc}</li>`).join("");
+    let total = 0;
+    const grille = PROJECT_GRILLE.map((g) => {
+      total += g.points;
+      return `<tr><td>${g.critere}</td><td>${g.points}</td><td>${g.detail}</td></tr>`;
+    }).join("");
+    openPrint(
+      `Projet ${p.num} — ${p.titre}`,
+      `<h1>${p.emoji} Projet ${p.num} — ${p.titre}</h1>` +
+        `<p class="intro">Niveau : ${p.niveau} · Durée : ${p.duree}</p>` +
+        `<h2>🎯 Objectif</h2><p>${p.objectif}</p>` +
+        `<h2>🧩 Situation-problème</h2><p>${p.situation}</p>` +
+        `<h2>🧠 Notions travaillées</h2><ul>${notions}</ul>` +
+        `<h2>🗺️ Les 5 phases</h2><ol>${phases}</ol>` +
+        `<h2>👥 Rôles</h2><ul>${roles}</ul>` +
+        (tests ? `<h2>🧪 Tests attendus</h2><ul>${tests}</ul>` : "") +
+        (p.bonus ? `<h2>⭐ Bonus</h2><p>${p.bonus}</p>` : "") +
+        `<h2>📊 Grille d'évaluation (/20)</h2><table><tr><th>Critère</th><th>Pts</th><th>Indicateur</th></tr>${grille}<tr><td><strong>Total</strong></td><td><strong>${total}</strong></td><td></td></tr></table>`
+    );
+  }
+
+  /* ---------------- Recherche interne ---------------- */
+  const norm = (s) =>
+    String(s)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "");
+
+  function buildSearchIndex() {
+    const idx = [];
+    COURSES.forEach((c) => {
+      const txt = c.title + " " + c.intro + " " + c.sections.map((s) => s.title).join(" ");
+      idx.push({ type: "Thème", icon: c.emoji, label: c.title, target: c.id, hay: norm(txt) });
+    });
+    PROJECTS.forEach((p) => {
+      idx.push({
+        type: "Projet",
+        icon: p.emoji,
+        label: p.titre,
+        target: "projet:" + p.id,
+        hay: norm(p.titre + " " + p.objectif + " " + p.notions.join(" ")),
+      });
+    });
+    GLOSSARY.forEach((g) => {
+      idx.push({
+        type: "Glossaire",
+        icon: "📖",
+        label: g.terme,
+        target: g.theme || "glossaire",
+        hay: norm(g.terme + " " + g.def),
+        sub: g.def,
+      });
+    });
+    return idx;
+  }
+  const SEARCH_INDEX = buildSearchIndex();
+  const searchInput = $("#searchInput");
+  const searchResults = $("#searchResults");
+
+  function runSearch(q) {
+    const f = norm(q.trim());
+    if (f.length < 2) {
+      searchResults.classList.add("hidden");
+      searchResults.innerHTML = "";
+      return;
+    }
+    const hits = SEARCH_INDEX.filter((it) => it.hay.includes(f)).slice(0, 12);
+    searchResults.innerHTML = "";
+    if (!hits.length) {
+      searchResults.innerHTML = `<div class="sr-empty">Aucun résultat pour « ${escapeHtml(q)} »</div>`;
+    } else {
+      hits.forEach((h) => {
+        const item = el("button", "sr-item");
+        item.innerHTML =
+          `<span class="sr-icon">${h.icon}</span>` +
+          `<span class="sr-main"><span class="sr-label">${escapeHtml(h.label)}</span>` +
+          (h.sub ? `<span class="sr-sub">${escapeHtml(h.sub)}</span>` : "") +
+          `</span><span class="sr-type">${h.type}</span>`;
+        item.addEventListener("click", () => {
+          searchInput.value = "";
+          searchResults.classList.add("hidden");
+          navigate(h.target);
+        });
+        searchResults.appendChild(item);
+      });
+    }
+    searchResults.classList.remove("hidden");
+  }
+  searchInput.addEventListener("input", () => runSearch(searchInput.value));
+  searchInput.addEventListener("focus", () => {
+    if (searchInput.value.trim().length >= 2) runSearch(searchInput.value);
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".search-wrap")) searchResults.classList.add("hidden");
+  });
+
+  function scrollTop() {
+    viewTheme.scrollIntoView({ behavior: "instant", block: "start" });
+    $("#contenu").scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
   /* ---------------- Routeur ---------------- */
+  let currentTarget = "home";
   function navigate(target) {
+    currentTarget = target && target !== "home" ? target : "";
     if (target === "home" || !target) {
       viewHome.classList.remove("hidden");
       viewTheme.classList.add("hidden");
       setActiveNav("home");
       renderHome();
       location.hash = "";
+    } else if (target === "projets") {
+      showThemeView("projets");
+      renderProjectsHome();
+      location.hash = "projets";
+    } else if (target.startsWith("projet:")) {
+      showThemeView("projets");
+      renderProject(target.slice(7));
+      location.hash = target;
+    } else if (target === "glossaire") {
+      showThemeView("glossaire");
+      renderGlossary();
+      location.hash = "glossaire";
     } else {
       const c = COURSES.find((x) => x.id === target);
       if (!c) return navigate("home");
-      viewHome.classList.add("hidden");
-      viewTheme.classList.remove("hidden");
-      setActiveNav(target);
+      showThemeView(target);
       renderTheme(c);
       location.hash = target;
     }
     $("#contenu").focus({ preventScroll: true });
   }
 
+  function showThemeView(activeTarget) {
+    viewHome.classList.add("hidden");
+    viewTheme.classList.remove("hidden");
+    setActiveNav(activeTarget);
+  }
+
+  function isKnownTarget(t) {
+    if (!t) return false;
+    if (t === "projets" || t === "glossaire") return true;
+    if (t.startsWith("projet:")) return true;
+    return !!COURSES.find((c) => c.id === t);
+  }
+
   /* ---------------- Démarrage ---------------- */
   buildNav();
   updateGlobalProgress();
   const initial = location.hash.replace("#", "");
-  navigate(initial && COURSES.find((c) => c.id === initial) ? initial : "home");
+  navigate(isKnownTarget(initial) ? initial : "home");
 
   window.addEventListener("hashchange", () => {
     const t = location.hash.replace("#", "");
     const current = viewTheme.classList.contains("hidden") ? "home" : "theme";
     // évite les boucles : ne renavigue que si nécessaire
-    if (t && COURSES.find((c) => c.id === t)) {
-      const active = navList.querySelector(".nav-link.active");
-      if (!active || active.dataset.target !== t) navigate(t);
+    if (isKnownTarget(t)) {
+      if (location.hash.replace("#", "") !== currentTarget) navigate(t);
     } else if (!t && current !== "home") {
       navigate("home");
     }

@@ -610,6 +610,8 @@ print(f"chmod {prop}{groupe}{autres}")  # chmod 750`,
       "Écrire une fonction avec des paramètres et une valeur de retour.",
       "Spécifier une fonction (signature, docstring, jeu de tests).",
       "Repérer et corriger des erreurs ; tester un programme.",
+      "Utiliser la documentation d'une bibliothèque (module).",
+      "Comparer la syntaxe de plusieurs langages.",
     ],
     sections: [
       {
@@ -733,6 +735,42 @@ assert moyenne([0, 0, 0]) == 0
 print("Tous les tests passent ✔")`,
       },
       {
+        title: "Utiliser une bibliothèque et sa documentation",
+        html: `
+        <p>On ne réécrit pas tout soi-même : une <strong>bibliothèque</strong> (ou module) regroupe des fonctions prêtes à l'emploi. On l'<strong>importe</strong>, puis on lit sa <strong>documentation</strong> pour savoir ce qu'attend chaque fonction et ce qu'elle renvoie.</p>
+        <ul>
+          <li><code>import math</code> puis <code>math.sqrt(2)</code> ;</li>
+          <li><code>help(fonction)</code> et <code>dir(module)</code> affichent l'aide et la liste des fonctions ;</li>
+          <li>la documentation officielle décrit les <em>paramètres</em>, la <em>valeur de retour</em> et donne des exemples.</li>
+        </ul>
+        <p class="note">Réflexe NSI : devant une fonction inconnue, on lit sa documentation avant de l'utiliser, on teste sur un petit exemple.</p>`,
+        code: `import math, random
+
+print(math.sqrt(16))        # racine carrée -> 4.0
+print(math.pi)              # constante
+print(max([3, 9, 1]))       # fonction intégrée
+
+# Lire l'aide d'une fonction (sa documentation)
+help(math.factorial)
+
+# random : tirer un entier entre 1 et 6 (dé)
+random.seed(0)
+print("dé :", random.randint(1, 6))`,
+      },
+      {
+        title: "Comparer plusieurs langages",
+        html: `
+        <p>Python n'est pas le seul langage. Chaque langage a ses usages, mais les <strong>concepts</strong> (variables, conditions, boucles, fonctions) se retrouvent partout. Comparer aide à comprendre que l'on apprend des <em>idées</em>, pas seulement une syntaxe.</p>
+        <table>
+          <tr><th>Langage</th><th>Usage typique</th><th>« Bonjour »</th></tr>
+          <tr><td>Python</td><td>apprentissage, données, IA</td><td><code>print("Bonjour")</code></td></tr>
+          <tr><td>JavaScript</td><td>pages web (navigateur)</td><td><code>console.log("Bonjour");</code></td></tr>
+          <tr><td>C</td><td>systèmes, performance</td><td><code>printf("Bonjour");</code></td></tr>
+          <tr><td>Java</td><td>applications, Android</td><td><code>System.out.println("Bonjour");</code></td></tr>
+        </table>
+        <p>Différences fréquentes : Python délimite les blocs par l'<strong>indentation</strong>, beaucoup d'autres par des <strong>accolades</strong> <code>{ }</code> ; Python a un <strong>typage dynamique</strong>, C et Java un <strong>typage statique</strong> (on déclare le type).</p>`,
+      },
+      {
         title: "Tester et mettre au point (débogage)",
         html: `
         <p>Un programme contient souvent des <strong>bugs</strong>. On distingue :</p>
@@ -770,6 +808,7 @@ print("somme_jusqua(5) =", somme_jusqua(5))   # donne 10, pas 15
       "Mettre en œuvre un algorithme glouton (ex. rendu de monnaie).",
       "Comparer le coût (nombre d'opérations) de deux algorithmes.",
       "Justifier la terminaison d'un algorithme (variant de boucle).",
+      "Classer des données avec les k plus proches voisins (kNN).",
     ],
     sections: [
       {
@@ -866,6 +905,31 @@ print(tri_insertion([5, 2, 9, 1, 7, 3]))`,
 systeme = [1, 2, 5, 10, 20, 50, 100, 200]   # centimes d'euro
 print("Rendu de 67 :", rendu_monnaie(67, systeme))
 print("Nb de pièces :", len(rendu_monnaie(67, systeme)))`,
+      },
+      {
+        title: "Les k plus proches voisins (kNN)",
+        html: `
+        <p>Comment une machine peut-elle <strong>classer</strong> automatiquement un objet ? L'algorithme des <strong>k plus proches voisins</strong> (kNN) compare l'objet inconnu à des exemples déjà étiquetés : il regarde ses <em>k</em> voisins les plus proches et lui attribue la <strong>classe majoritaire</strong>.</p>
+        <ol>
+          <li>Calculer la <strong>distance</strong> entre le point inconnu et chaque exemple.</li>
+          <li>Garder les <strong>k</strong> exemples les plus proches.</li>
+          <li>Voter : la classe la plus fréquente parmi ces k voisins l'emporte.</li>
+        </ol>
+        <p class="note">On choisit souvent un <em>k</em> impair pour éviter les égalités. Un <em>k</em> trop petit est sensible au bruit ; trop grand, il mélange des classes éloignées.</p>`,
+        code: `donnees = [
+    (1, 1, "pomme"), (2, 1, "pomme"),
+    (5, 4, "banane"), (6, 4, "banane"),
+]
+
+def distance(a, b):
+    return ((a[0]-b[0])**2 + (a[1]-b[1])**2) ** 0.5
+
+def knn(donnees, point, k=3):
+    voisins = sorted(donnees, key=lambda d: distance(d, point))[:k]
+    classes = [v[2] for v in voisins]
+    return max(set(classes), key=classes.count)
+
+print(knn(donnees, (5.2, 4.0), k=3))   # banane`,
       },
       {
         title: "Coût d'un algorithme (complexité)",
@@ -1020,6 +1084,85 @@ print("\\nNombre d'événements :", len(frise))`,
         <strong>musée de l'informatique</strong>. La seule sortie est verrouillée par un <strong>cadenas à 4 chiffres</strong>.
         Quatre machines mythiques gardent chacune un chiffre du code : résous leur énigme pour le libérer,
         puis compose le code complet et évade-toi !</p>`,
+      },
+    ],
+  },
+
+  /* ============================================================= 9 */
+  {
+    id: "reseaux",
+    num: 9,
+    emoji: "📡",
+    title: "Réseaux : protocoles, paquets et routage",
+    intro:
+      "Comment deux machines échangent-elles des données à distance ? On découvre l'idée de protocole, le découpage des messages en paquets, le routage, et ce qui se passe quand un paquet est perdu ou arrive dans le désordre.",
+    capacites: [
+      "Expliquer le rôle d'un protocole de communication (règles communes).",
+      "Comprendre le découpage d'un message en paquets numérotés.",
+      "Décrire simplement le routage des paquets sur un réseau.",
+      "Reconstituer un message dont les paquets arrivent dans le désordre.",
+      "Comprendre les conséquences d'une perte ou d'un doublon de paquet.",
+    ],
+    sections: [
+      {
+        title: "Qu'est-ce qu'un réseau et un protocole ?",
+        html: `
+        <p>Un <strong>réseau</strong> relie des machines pour qu'elles échangent des données. Pour se comprendre, elles suivent un <strong>protocole</strong> : un ensemble de <em>règles communes</em> (format des messages, ordre des échanges). Sans règles communes, deux machines « parlent » sans se comprendre.</p>
+        <p>Internet repose sur la famille de protocoles <strong>TCP/IP</strong>. Chaque machine possède une <strong>adresse IP</strong> qui l'identifie sur le réseau.</p>
+        <p class="note">Analogie : envoyer une lettre suppose un format commun (adresse, timbre, enveloppe). Le protocole, c'est ce « format » partagé.</p>`,
+      },
+      {
+        title: "Découper un message en paquets",
+        html: `
+        <p>Un message n'est pas envoyé d'un seul bloc : il est découpé en <strong>paquets</strong>. Chaque paquet contient un <strong>numéro</strong> (pour le remettre dans l'ordre) et un morceau des données. Les paquets voyagent <em>indépendamment</em> et peuvent prendre des chemins différents.</p>
+        <ul>
+          <li>Avantage : si un paquet est perdu, on ne renvoie que celui-là.</li>
+          <li>Le destinataire <strong>réordonne</strong> les paquets grâce à leur numéro.</li>
+        </ul>`,
+        code: `# Un message est découpé en paquets numérotés
+message = "Bonjour le monde"
+mots = message.split(" ")
+paquets = [{"num": i + 1, "data": m} for i, m in enumerate(mots)]
+for p in paquets:
+    print(p)
+
+# Reconstruction : on trie par numéro puis on recolle
+recompose = " ".join(p["data"] for p in sorted(paquets, key=lambda p: p["num"]))
+print("Message reçu :", recompose)`,
+      },
+      {
+        title: "Le routage : trouver le chemin",
+        html: `
+        <p>Entre l'expéditeur et le destinataire, les paquets traversent des <strong>routeurs</strong>. À chaque étape, le routeur choisit vers quel voisin transmettre le paquet pour se rapprocher de la destination : c'est le <strong>routage</strong>.</p>
+        <p>S'il y a plusieurs chemins possibles, le réseau peut en choisir un plus court ou contourner une panne. C'est ce qui rend Internet <strong>robuste</strong>.</p>`,
+      },
+      {
+        title: "Désordre, perte et doublon",
+        html: `
+        <p>Comme les paquets voyagent séparément, ils peuvent :</p>
+        <ul>
+          <li>arriver <strong>dans le désordre</strong> → on les retrie par numéro ;</li>
+          <li>être <strong>perdus</strong> → il manque un numéro : le destinataire le détecte et peut le redemander ;</li>
+          <li>arriver en <strong>double</strong> → on ignore les numéros déjà reçus.</li>
+        </ul>
+        <p>Le protocole <strong>TCP</strong> gère justement ces problèmes pour livrer un message complet et dans l'ordre.</p>`,
+        code: `def reconstruire(paquets):
+    vus = {}
+    for p in paquets:
+        vus[p["num"]] = p["data"]          # un doublon n'est pas répété
+    manquants = [n for n in range(1, max(vus) + 1) if n not in vus]
+    if manquants:
+        print("⚠️ Paquet(s) perdu(s) :", manquants)
+    return " ".join(vus[n] for n in sorted(vus))
+
+# Désordre + doublon
+paquets = [
+    {"num": 3, "data": "monde"},
+    {"num": 1, "data": "Bonjour"},
+    {"num": 1, "data": "Bonjour"},   # doublon
+    {"num": 2, "data": "le"},
+]
+print(reconstruire(paquets))`,
       },
     ],
   },

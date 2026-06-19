@@ -17,11 +17,18 @@
       <span class="brand-logo">&lt;/&gt;</span>
       <span class="brand-title">NSI&nbsp;<small>Première</small></span>
     </div>
+    <div class="search-wrap">
+      <input id="searchInput" type="search" class="search-input"
+             placeholder="🔎 Rechercher (cours, glossaire, projets)…"
+             aria-label="Recherche dans le site" autocomplete="off" />
+      <div id="searchResults" class="search-results hidden"></div>
+    </div>
     <div class="topbar-spacer"></div>
     <div class="progress-wrap" title="Progression des QCM">
       <div class="progress-bar"><span id="globalProgress"></span></div>
       <span id="globalProgressLabel" class="progress-label">0 %</span>
     </div>
+    <button id="teacherToggle" class="icon-btn" aria-label="Activer le mode professeur" title="Mode professeur (corrigés)">👩‍🏫</button>
     <button id="themeToggle" class="icon-btn" aria-label="Basculer le thème clair/sombre">🌙</button>
   </header>
 
@@ -42,9 +49,12 @@
 
   <div id="overlay" class="overlay hidden"></div>
 
-  <!-- Données du cours et des QCM -->
+  <!-- Données du cours, QCM, projets, glossaire, compléments -->
   <script src="assets/js/courses.js"></script>
   <script src="assets/js/quizzes.js"></script>
+  <script src="assets/js/exercises.js"></script>
+  <script src="assets/js/projects.js"></script>
+  <script src="assets/js/glossary.js"></script>
   <!-- Logique applicative -->
   <script src="assets/js/app.js"></script>
 </body>
