@@ -296,110 +296,217 @@ for c in "nsi":
     ],
     sections: [
       {
+        title: "Pourquoi des types « construits » ?",
+        html: `
+        <p>Au thème précédent, on a vu les <strong>types de base</strong> : un entier, un flottant, un booléen, un caractère… c'est-à-dire <em>une seule</em> valeur à la fois. Mais un programme manipule rarement une valeur isolée : une classe a <em>plusieurs</em> élèves, un point a <em>deux</em> coordonnées, un élève a un nom <em>et</em> une moyenne <em>et</em> une classe.</p>
+        <p>Les <strong>types construits</strong> permettent d'assembler plusieurs valeurs dans une seule structure. On en étudie trois, à bien distinguer :</p>
+        <table>
+          <tr><th>Structure</th><th>Forme</th><th>Modifiable ?</th><th>On accède par…</th></tr>
+          <tr><td><strong>tuple</strong> (p-uplet)</td><td><code>(3, 5)</code></td><td>❌ non (immuable)</td><td>position</td></tr>
+          <tr><td><strong>liste</strong> (tableau)</td><td><code>[12, 15, 9]</code></td><td>✅ oui</td><td>indice (position)</td></tr>
+          <tr><td><strong>dictionnaire</strong></td><td><code>{"nom": "Ada"}</code></td><td>✅ oui</td><td>clé (nom)</td></tr>
+        </table>
+        <p>Tout le thème consiste à savoir <strong>laquelle choisir</strong> selon le besoin, et à savoir la <strong>parcourir</strong> pour en extraire de l'information.</p>
+        <p class="note">🎯 Activité d'ouverture (en îlot) : sur papier, modélisez votre groupe. Quelle structure pour « les prénoms du groupe » ? Pour « le prénom ET l'âge de chacun » ? Justifiez.</p>`,
+      },
+      {
         title: "Les p-uplets (tuples)",
         html: `
-        <p>Un <strong>tuple</strong> est une séquence <strong>ordonnée</strong> et <strong>non modifiable</strong> (immuable) de valeurs, écrite entre parenthèses. On l'utilise pour regrouper des données qui vont ensemble (ex. des coordonnées).</p>
-        <p>Une fonction peut renvoyer plusieurs valeurs en les regroupant dans un tuple.</p>`,
-        code: `point = (3, 5)          # un couple
-x, y = point            # "déballage" (unpacking)
+        <p>Un <strong>tuple</strong> (on dit aussi <em>p-uplet</em>) est une séquence <strong>ordonnée</strong> et <strong>non modifiable</strong> (on dit <strong>immuable</strong>), écrite entre parenthèses. « Ordonnée » signifie que l'ordre des éléments compte ; « immuable » signifie qu'une fois créé, on ne peut plus changer son contenu.</p>
+        <p>On l'utilise pour regrouper des données qui forment un tout et ne doivent pas changer : des <strong>coordonnées</strong> <code>(x, y)</code>, une <strong>date</strong> <code>(jour, mois, année)</code>, une couleur <code>(r, v, b)</code>.</p>
+        <p>Deux opérations très pratiques :</p>
+        <ul>
+          <li>le <strong>déballage</strong> (<em>unpacking</em>) : <code>x, y = point</code> distribue les éléments dans plusieurs variables d'un coup ;</li>
+          <li>le <strong>retour multiple</strong> : une fonction peut renvoyer plusieurs valeurs… qui forment en réalité un tuple.</li>
+        </ul>`,
+        code: `point = (3, 5)          # un couple (x, y)
+print("abscisse :", point[0])   # accès par position
+print("ordonnée :", point[1])
+
+x, y = point            # déballage en deux variables
 print("x =", x, "| y =", y)
 
 def division(a, b):
-    return a // b, a % b   # renvoie un tuple
+    return a // b, a % b   # renvoie DEUX valeurs (un tuple)
 
 q, r = division(17, 5)
 print("quotient", q, "reste", r)
 
-# Un tuple est immuable : point[0] = 9  -> ERREUR`,
+# Immuable : la ligne suivante provoquerait une ERREUR
+# point[0] = 9   ->  TypeError`,
       },
       {
-        title: "Les tableaux (listes)",
+        title: "Les listes : créer et accéder aux éléments",
         html: `
-        <p>Une <strong>liste</strong> Python est une séquence ordonnée et <strong>modifiable</strong>. On accède aux éléments par leur <strong>indice</strong>, qui commence à <strong>0</strong>.</p>
+        <p>Une <strong>liste</strong> (ou tableau) est une séquence ordonnée et <strong>modifiable</strong>, écrite entre crochets <code>[ ]</code>. C'est la structure la plus utilisée en NSI.</p>
+        <p>On accède à un élément par son <strong>indice</strong>, c'est-à-dire sa position. Point crucial : <strong>les indices commencent à 0</strong>, pas à 1 !</p>
+        <table>
+          <tr><th>Liste <code>notes</code></th><td>12</td><td>15</td><td>9</td><td>18</td><td>11</td></tr>
+          <tr><th>Indice</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+          <tr><th>Indice négatif</th><td>-5</td><td>-4</td><td>-3</td><td>-2</td><td>-1</td></tr>
+        </table>
         <ul>
-          <li><code>t[0]</code> : premier élément ; <code>t[-1]</code> : dernier.</li>
-          <li><code>len(t)</code> : nombre d'éléments.</li>
-          <li><code>t.append(x)</code> : ajoute x à la fin.</li>
-          <li><code>t[i] = v</code> : modifie l'élément d'indice i.</li>
-        </ul>`,
+          <li><code>notes[0]</code> → le premier (12) ; <code>notes[-1]</code> → le dernier (11) ;</li>
+          <li><code>len(notes)</code> → le nombre d'éléments (5), donc le <em>dernier indice valide</em> est <code>len(notes) - 1</code> ;</li>
+          <li><code>notes[1:3]</code> → une <strong>tranche</strong> (<em>slice</em>) : les indices 1 et 2, soit <code>[15, 9]</code> (la borne de droite est exclue).</li>
+        </ul>
+        <p class="warnbox">⚠️ Erreur la plus fréquente du thème : <code>notes[5]</code> sur une liste de 5 éléments lève <code>IndexError</code>, car le dernier indice est 4.</p>`,
         code: `notes = [12, 15, 9, 18, 11]
-print("première note :", notes[0])
-print("dernière note :", notes[-1])
-print("nombre        :", len(notes))
+print("premier :", notes[0])      # 12
+print("dernier :", notes[-1])     # 11
+print("combien :", len(notes))    # 5
+print("tranche :", notes[1:3])    # [15, 9]  (1 et 2, pas 3)
 
-notes.append(20)        # ajoute une note
-notes[2] = 10           # corrige la 3e
+# notes[5] provoquerait IndexError : le dernier indice est 4 !`,
+      },
+      {
+        title: "Modifier une liste",
+        html: `
+        <p>Contrairement au tuple, une liste se <strong>modifie</strong>. Les opérations essentielles :</p>
+        <table>
+          <tr><th>Opération</th><th>Effet</th></tr>
+          <tr><td><code>t[i] = v</code></td><td>remplace l'élément d'indice i</td></tr>
+          <tr><td><code>t.append(x)</code></td><td>ajoute x <em>à la fin</em></td></tr>
+          <tr><td><code>t.insert(i, x)</code></td><td>insère x à l'indice i</td></tr>
+          <tr><td><code>t.remove(x)</code></td><td>supprime la première occurrence de x</td></tr>
+          <tr><td><code>t.pop()</code></td><td>retire et renvoie le dernier élément</td></tr>
+          <tr><td><code>x in t</code></td><td>teste si x est présent (renvoie un booléen)</td></tr>
+        </table>
+        <p class="note">🔎 À savoir pour plus tard : deux variables peuvent désigner <em>la même</em> liste (« alias »). Si <code>b = a</code> et qu'on modifie <code>b</code>, alors <code>a</code> change aussi ! Pour une vraie copie indépendante, on écrit <code>b = a.copy()</code> (ou <code>b = a[:]</code>).</p>`,
+        code: `notes = [12, 15, 9, 18, 11]
+
+notes[2] = 10            # corrige la 3e note (indice 2)
+notes.append(20)         # ajoute 20 à la fin
+notes.insert(0, 8)       # insère 8 en tête
 print(notes)
 
-# Parcours par élément
+print("18 présent ?", 18 in notes)   # True
+notes.remove(8)          # enlève le 8
+dernier = notes.pop()    # retire et récupère le dernier
+print("retiré :", dernier, "->", notes)
+
+# Piège de l'alias : décommente pour observer
+# a = [1, 2, 3]; b = a; b.append(99); print(a)   # a vaut [1,2,3,99] !`,
+      },
+      {
+        title: "Parcourir une liste",
+        html: `
+        <p>Le réflexe central : <strong>parcourir</strong> une liste pour calculer quelque chose (une somme, un maximum, un comptage…). Deux façons :</p>
+        <ul>
+          <li><strong>par élément</strong> : <code>for x in liste</code> — simple, quand on n'a pas besoin de la position ;</li>
+          <li><strong>par indice</strong> : <code>for i in range(len(liste))</code> — quand on a besoin de la position (pour modifier, comparer des voisins…).</li>
+        </ul>
+        <p>Le schéma d'<strong>accumulation</strong> est à connaître par cœur : on prépare une variable « accumulateur » avant la boucle, on la met à jour à chaque tour.</p>`,
+        code: `temperatures = [18, 21, 17, 25, 20, 23]
+
+# 1) Somme et moyenne (accumulation)
 total = 0
-for n in notes:
-    total += n
-print("moyenne :", total / len(notes))`,
+for t in temperatures:
+    total += t
+print("moyenne :", total / len(temperatures))
+
+# 2) Maximum
+maxi = temperatures[0]
+for t in temperatures:
+    if t > maxi:
+        maxi = t
+print("max :", maxi)
+
+# 3) Compter celles > 20 (parcours + compteur)
+chaudes = 0
+for t in temperatures:
+    if t > 20:
+        chaudes += 1
+print("journées > 20° :", chaudes)`,
       },
       {
         title: "La construction par compréhension",
         html: `
-        <p>La <strong>compréhension de liste</strong> est une écriture concise pour construire un tableau à partir d'un autre, avec éventuellement une condition (filtre).</p>`,
-        code: `# carrés des entiers de 0 à 9
-carres = [n*n for n in range(10)]
-print(carres)
+        <p>Très souvent, on construit une liste <em>à partir d'une autre</em> : transformer chaque élément, ou n'en garder que certains. La <strong>compréhension de liste</strong> est une écriture concise pour cela.</p>
+        <p>Partons d'une boucle classique, puis voyons sa version compacte :</p>
+        <pre><code># Version boucle
+carres = []
+for n in range(10):
+    carres.append(n * n)
 
-# nombres pairs de 0 à 20
-pairs = [n for n in range(21) if n % 2 == 0]
-print(pairs)
+# Version compréhension (équivalente)
+carres = [n * n for n in range(10)]</code></pre>
+        <p>La structure se lit : <code>[ <strong>ce qu'on garde</strong> for <strong>variable</strong> in <strong>source</strong> if <strong>condition</strong> ]</code>. La partie <code>if</code> est facultative : c'est un <strong>filtre</strong>.</p>`,
+        code: `# Transformer : les carrés de 0 à 9
+print([n * n for n in range(10)])
 
-# transformer une liste de noms en majuscules
+# Filtrer : ne garder que les nombres pairs de 0 à 20
+print([n for n in range(21) if n % 2 == 0])
+
+# Transformer + filtrer en même temps :
+# le carré des nombres impairs
+print([n * n for n in range(10) if n % 2 == 1])
+
+# Sur des chaînes : mettre des noms en majuscules
 noms = ["ada", "alan", "grace"]
 print([nom.upper() for nom in noms])`,
       },
       {
         title: "Tableaux de tableaux (matrices)",
         html: `
-        <p>Un élément de tableau peut lui-même être un tableau : on obtient une structure à deux dimensions, utile pour représenter une grille, une image ou un tableur. On accède à une case par <code>m[ligne][colonne]</code>.</p>`,
-        code: `# matrice 3x3
+        <p>Un élément de liste peut <em>lui-même</em> être une liste : on obtient une structure à <strong>deux dimensions</strong>, parfaite pour une grille de jeu, une image (pixels), un tableur ou un plateau.</p>
+        <p>On accède à une case par <strong>deux indices</strong> : <code>m[ligne][colonne]</code> (d'abord la ligne, puis la colonne). Pour tout parcourir, on imbrique deux boucles.</p>
+        <p>Pour <strong>construire</strong> une grille remplie, on utilise une compréhension imbriquée.</p>
+        <p class="warnbox">⚠️ Piège célèbre : <code>[[0] * 3] * 2</code> ne crée PAS deux lignes indépendantes mais deux <em>alias</em> de la même ligne (modifier l'une modifie l'autre). Utilisez toujours la compréhension : <code>[[0 for _ in range(3)] for _ in range(2)]</code>.</p>`,
+        code: `# Une matrice 3x3
 m = [[1, 2, 3],
      [4, 5, 6],
      [7, 8, 9]]
 
-print("élément ligne 1, colonne 2 :", m[1][2])  # 6
+print("ligne 1, colonne 2 :", m[1][2])   # 6 (2e ligne, 3e colonne)
 
-# parcours complet
+# Parcours complet (double boucle)
 for ligne in m:
     for valeur in ligne:
         print(valeur, end=" ")
-    print()
+    print()   # saut de ligne après chaque rangée
 
-# construire une grille 3x4 remplie de 0 par compréhension
+# Construire une grille 3 lignes x 4 colonnes remplie de 0
 grille = [[0 for _ in range(4)] for _ in range(3)]
 print(grille)`,
       },
       {
         title: "Les dictionnaires",
         html: `
-        <p>Un <strong>dictionnaire</strong> associe à chaque <strong>clé</strong> une <strong>valeur</strong> (paires clé/valeur). Contrairement aux listes, on n'accède pas par un indice numérique mais par la clé. Très pratique pour modéliser un objet avec des attributs nommés.</p>`,
+        <p>Un <strong>dictionnaire</strong> associe à chaque <strong>clé</strong> une <strong>valeur</strong> (des paires <em>clé → valeur</em>), écrit entre accolades <code>{ }</code>. Différence fondamentale avec la liste : on n'accède pas par une position (0, 1, 2…) mais par un <strong>nom</strong> de clé, ce qui est bien plus parlant.</p>
+        <p>Comparez : <code>eleve[2]</code> (qu'est-ce que l'indice 2 ?) contre <code>eleve["moyenne"]</code> (limpide). Le dictionnaire est idéal pour modéliser un <strong>objet à attributs nommés</strong> — c'est la brique des « tables de données » du thème suivant.</p>
+        <ul>
+          <li><code>d["nom"]</code> : lire la valeur (erreur si la clé n'existe pas) ;</li>
+          <li><code>d.get("nom", défaut)</code> : lire sans risque, avec une valeur par défaut ;</li>
+          <li><code>d["classe"] = "1NSI"</code> : ajouter ou modifier une clé ;</li>
+          <li><code>"nom" in d</code> : tester la présence d'une <em>clé</em> ;</li>
+          <li>parcours : <code>d.keys()</code> (clés), <code>d.values()</code> (valeurs), <code>d.items()</code> (les paires).</li>
+        </ul>`,
         code: `eleve = {"nom": "Lovelace", "prenom": "Ada", "moyenne": 17.5}
 
-print(eleve["nom"])            # accès par la clé
-eleve["moyenne"] = 18          # modification
-eleve["classe"] = "1NSI"       # ajout d'une clé
+print(eleve["nom"])             # accès par la clé -> Lovelace
+eleve["moyenne"] = 18           # modification
+eleve["classe"] = "1NSI"        # ajout d'une nouvelle clé
+print("clé 'age' présente ?", "age" in eleve)   # False
+print("âge :", eleve.get("age", "non renseigné"))
 
-# Itérer sur clés, valeurs, ou les deux
-for cle in eleve:
-    print(cle, "=>", eleve[cle])
-
-print(list(eleve.keys()))
-print(list(eleve.values()))`,
+# Parcourir les paires clé/valeur
+for cle, valeur in eleve.items():
+    print(cle, "=>", valeur)`,
       },
       {
-        title: "Choisir la bonne structure",
+        title: "Choisir la bonne structure (synthèse)",
         html: `
+        <p>La compétence visée n'est pas de connaître la syntaxe par cœur, mais de <strong>choisir</strong> la structure adaptée. Petit guide de décision :</p>
         <table>
-          <tr><th>Besoin</th><th>Structure</th></tr>
-          <tr><td>Données fixes qui vont ensemble (coordonnées)</td><td>tuple</td></tr>
-          <tr><td>Collection ordonnée, modifiable, indexée</td><td>liste</td></tr>
-          <tr><td>Association nom → valeur, recherche rapide par clé</td><td>dictionnaire</td></tr>
-        </table>`,
+          <tr><th>Le besoin</th><th>La structure</th><th>Exemple</th></tr>
+          <tr><td>Données fixes qui vont ensemble</td><td><strong>tuple</strong></td><td>une coordonnée <code>(x, y)</code></td></tr>
+          <tr><td>Collection ordonnée et modifiable</td><td><strong>liste</strong></td><td>les notes d'un élève</td></tr>
+          <tr><td>Association nom → valeur</td><td><strong>dictionnaire</strong></td><td>une fiche élève</td></tr>
+          <tr><td>Tableau à 2 dimensions</td><td><strong>liste de listes</strong></td><td>une grille, une image</td></tr>
+          <tr><td>Liste de fiches</td><td><strong>liste de dictionnaires</strong></td><td>une classe entière (→ thème 4)</td></tr>
+        </table>
+        <p>Cette dernière ligne est essentielle : une <strong>liste de dictionnaires</strong> est exactement ce qu'on appellera une <em>table de données</em> au thème suivant. Tout se tient !</p>`,
       },
     ],
   },
@@ -420,26 +527,51 @@ print(list(eleve.values()))`,
     ],
     sections: [
       {
-        title: "Qu'est-ce qu'une table de données ?",
+        title: "Des données partout : la notion de table",
         html: `
-        <p>Une <strong>table</strong> est un ensemble de lignes (les <strong>enregistrements</strong>) décrites par les mêmes colonnes (les <strong>descripteurs</strong> ou <strong>attributs</strong>). On la représente naturellement en Python par une <strong>liste de dictionnaires</strong> : chaque dictionnaire est une ligne, ses clés sont les colonnes.</p>`,
+        <p>Listes d'élèves, résultats sportifs, catalogue de produits, relevés météo, jeux de données ouverts (<em>open data</em>)… une immense partie de l'information du monde se présente sous forme de <strong>tableaux</strong>. Apprendre à les traiter par programme est une compétence centrale de la NSI.</p>
+        <p>Vocabulaire à fixer une fois pour toutes :</p>
+        <table>
+          <tr><th>nom</th><th>naissance</th><th>pays</th></tr>
+          <tr><td>Turing</td><td>1912</td><td>UK</td></tr>
+          <tr><td>Lovelace</td><td>1815</td><td>UK</td></tr>
+        </table>
+        <ul>
+          <li>chaque <strong>ligne</strong> est un <strong>enregistrement</strong> (une « fiche ») ;</li>
+          <li>chaque <strong>colonne</strong> est un <strong>descripteur</strong> (ou attribut) : ici <em>nom</em>, <em>naissance</em>, <em>pays</em> ;</li>
+          <li>toutes les lignes ont <em>les mêmes</em> descripteurs.</li>
+        </ul>
+        <p>Cette régularité (mêmes colonnes pour toutes les lignes) est exactement ce qui se traduit en Python par une <strong>liste de dictionnaires</strong> — la structure vue à la fin du thème précédent. On y est !</p>`,
+      },
+      {
+        title: "Représenter une table en Python",
+        html: `
+        <p>On représente une table par une <strong>liste de dictionnaires</strong> : la liste contient les lignes, et chaque ligne est un dictionnaire dont les <strong>clés sont les noms de colonnes</strong>.</p>
+        <p>Avantages immédiats : <code>len(table)</code> donne le nombre de lignes, <code>table[0]</code> est la première ligne, et <code>table[0].keys()</code> donne les noms de colonnes. On accède à une cellule par <code>table[i]["colonne"]</code>.</p>`,
         code: `table = [
     {"nom": "Turing",   "naissance": 1912, "pays": "UK"},
     {"nom": "Lovelace", "naissance": 1815, "pays": "UK"},
     {"nom": "Hopper",   "naissance": 1906, "pays": "USA"},
 ]
+
 print("Nombre de lignes :", len(table))
 print("Colonnes         :", list(table[0].keys()))
-print("Première ligne   :", table[0])`,
+print("Première ligne   :", table[0])
+print("Pays de Hopper   :", table[2]["pays"])
+
+# Afficher proprement toute la table
+for ligne in table:
+    print(ligne["nom"], "-", ligne["naissance"], "-", ligne["pays"])`,
       },
       {
-        title: "Le format CSV",
+        title: "Le format CSV : lire un fichier de données",
         html: `
-        <p>Le format <strong>CSV</strong> (<em>Comma-Separated Values</em>) est un fichier texte où chaque ligne est un enregistrement et où les valeurs sont séparées par un caractère (virgule ou point-virgule). La première ligne contient souvent les noms de colonnes.</p>
+        <p>Les tables circulent le plus souvent sous forme de fichiers <strong>CSV</strong> (<em>Comma-Separated Values</em>, « valeurs séparées par des virgules »). C'est un simple fichier <strong>texte</strong> : une ligne par enregistrement, des valeurs séparées par un caractère (virgule, ou très souvent point-virgule en France à cause des nombres décimaux). La <strong>première ligne</strong> donne en général les noms de colonnes (l'en-tête).</p>
         <pre><code>nom;naissance;pays
 Turing;1912;UK
 Lovelace;1815;UK</code></pre>
-        <p>Le module <code>csv</code> de Python permet de lire ces fichiers. Ci-dessous on simule le contenu d'un fichier avec une chaîne de texte.</p>`,
+        <p>Le module <strong><code>csv</code></strong> de Python lit ces fichiers. <code>csv.DictReader</code> est idéal : il transforme directement <em>chaque ligne en dictionnaire</em>, en utilisant l'en-tête comme clés. (Ici on simule le fichier par une chaîne de texte, mais sur un vrai fichier on écrirait <code>open("donnees.csv")</code>.)</p>
+        <p class="warnbox">⚠️ Piège n°1 du thème : les valeurs lues dans un CSV sont <strong>toujours des chaînes de caractères</strong>, même les nombres. <code>"1912"</code> n'est pas <code>1912</code> ! Il faut convertir avec <code>int(...)</code> ou <code>float(...)</code> avant tout calcul.</p>`,
         code: `import csv, io
 
 contenu = """nom;naissance;pays
@@ -447,66 +579,120 @@ Turing;1912;UK
 Lovelace;1815;UK
 Hopper;1906;USA"""
 
-# DictReader transforme chaque ligne en dictionnaire
+# DictReader : chaque ligne devient un dictionnaire
 lecteur = csv.DictReader(io.StringIO(contenu), delimiter=";")
 table = list(lecteur)
 
 for ligne in table:
-    print(ligne["nom"], "né en", ligne["naissance"])`,
+    print(ligne["nom"], "né en", ligne["naissance"])
+
+# Attention : naissance est une CHAÎNE. Pour calculer, on convertit :
+plus_vieux = min(table, key=lambda l: int(l["naissance"]))
+print("Le plus ancien :", plus_vieux["nom"])`,
       },
       {
-        title: "Rechercher (filtrer) des lignes",
+        title: "Rechercher : filtrer des lignes",
         html: `
-        <p>Rechercher revient à <strong>sélectionner</strong> les lignes qui vérifient une condition. La compréhension de liste est idéale.</p>`,
+        <p><strong>Rechercher</strong> dans une table, c'est <strong>sélectionner</strong> les lignes qui vérifient une condition (un critère). La <strong>compréhension de liste</strong> du thème précédent est l'outil parfait : <code>[ ligne for ligne in table if condition ]</code>.</p>
+        <p>On peut combiner plusieurs critères avec <code>and</code> / <code>or</code> (les booléens du thème 2 reviennent !). Et comme le résultat est encore une table, on peut compter ses lignes avec <code>len(...)</code>.</p>`,
         code: `table = [
     {"nom": "Turing",   "naissance": 1912, "pays": "UK"},
     {"nom": "Lovelace", "naissance": 1815, "pays": "UK"},
     {"nom": "Hopper",   "naissance": 1906, "pays": "USA"},
 ]
 
-# Tous les UK
+# Critère simple : les Britanniques
 uk = [l for l in table if l["pays"] == "UK"]
-print([l["nom"] for l in uk])
+print("UK :", [l["nom"] for l in uk])
 
 # Nés après 1900
 recents = [l for l in table if l["naissance"] > 1900]
-print([l["nom"] for l in recents])`,
+print("Après 1900 :", [l["nom"] for l in recents])
+
+# Deux critères combinés : UK ET nés après 1900
+both = [l for l in table if l["pays"] == "UK" and l["naissance"] > 1900]
+print("UK après 1900 :", len(both), "->", [l["nom"] for l in both])`,
       },
       {
         title: "Trier selon une colonne",
         html: `
-        <p>La fonction <code>sorted</code> trie une table. On précise la <strong>clé de tri</strong> avec le paramètre <code>key</code>, souvent une fonction <code>lambda</code> qui extrait la colonne. <code>reverse=True</code> trie en ordre décroissant.</p>`,
+        <p>La fonction <code>sorted(table, key=...)</code> renvoie une <em>nouvelle</em> table triée. Le paramètre <strong><code>key</code></strong> indique <em>sur quelle colonne</em> trier : on lui donne une petite fonction qui, pour une ligne, renvoie la valeur de la colonne.</p>
+        <p>On l'écrit souvent avec <strong><code>lambda</code></strong> : <code>lambda l: l["naissance"]</code> se lit « pour une ligne <code>l</code>, renvoie <code>l["naissance"]</code> ». Ajouter <code>reverse=True</code> trie en ordre <strong>décroissant</strong>.</p>
+        <p class="note">💡 <code>sorted</code> ne modifie pas la table d'origine (il en crée une copie triée) — pratique pour garder les données initiales intactes.</p>`,
         code: `table = [
     {"nom": "Turing",   "naissance": 1912},
     {"nom": "Lovelace", "naissance": 1815},
     {"nom": "Hopper",   "naissance": 1906},
 ]
 
+# Tri croissant par année de naissance
 par_annee = sorted(table, key=lambda l: l["naissance"])
-print("Du plus ancien :", [l["nom"] for l in par_annee])
+print("Du + ancien :", [l["nom"] for l in par_annee])
 
+# Tri alphabétique par nom
 par_nom = sorted(table, key=lambda l: l["nom"])
-print("Par ordre alpha :", [l["nom"] for l in par_nom])`,
+print("Alphabétique :", [l["nom"] for l in par_nom])
+
+# Tri décroissant (du plus récent)
+recent = sorted(table, key=lambda l: l["naissance"], reverse=True)
+print("Du + récent :", [l["nom"] for l in recent])`,
+      },
+      {
+        title: "Calculer des statistiques sur une colonne",
+        html: `
+        <p>Au-delà de la recherche et du tri, on veut souvent <strong>résumer</strong> les données : combien de lignes ? quelle moyenne ? quel maximum ? On combine un <strong>parcours</strong> (ou une compréhension pour extraire une colonne) avec les fonctions <code>len</code>, <code>sum</code>, <code>min</code>, <code>max</code>.</p>
+        <p>La technique clé : extraire d'abord la colonne dans une liste de nombres, puis appliquer la fonction.</p>`,
+        code: `notes = [
+    {"nom": "Ada",   "note": 17},
+    {"nom": "Alan",  "note": 12},
+    {"nom": "Grace", "note": 19},
+    {"nom": "Linus", "note": 14},
+]
+
+# Extraire la colonne "note"
+valeurs = [l["note"] for l in notes]
+print("notes :", valeurs)
+
+print("effectif :", len(notes))
+print("moyenne  :", round(sum(valeurs) / len(valeurs), 2))
+print("mini     :", min(valeurs))
+print("maxi     :", max(valeurs))
+
+# Le meilleur élève (la LIGNE qui maximise la note)
+meilleur = max(notes, key=lambda l: l["note"])
+print("major    :", meilleur["nom"])
+
+# Combien ont la moyenne (>= 10) ?
+print("reçus    :", len([l for l in notes if l["note"] >= 10]))`,
       },
       {
         title: "Fusionner deux tables (jointure)",
         html: `
-        <p>On peut <strong>combiner</strong> deux tables qui partagent une colonne commune. Par exemple, associer chaque élève à son pays grâce à un code commun. C'est le principe de la <strong>jointure</strong>, que l'on retrouvera dans les bases de données.</p>`,
+        <p>Souvent l'information est répartie dans <strong>deux tables</strong> qui partagent une colonne commune (une « clé »). Les <strong>combiner</strong> s'appelle une <strong>jointure</strong> — le principe au cœur des bases de données.</p>
+        <p>Exemple : une table de personnes contient un <em>code pays</em> ; une autre table (ici un dictionnaire) donne le <em>nom complet</em> de chaque pays. On enrichit chaque personne avec le nom complet.</p>
+        <p class="note">On copie chaque ligne (<code>dict(p)</code>) avant de l'enrichir, pour ne pas modifier la table d'origine — bonne habitude vue avec le tri.</p>`,
         code: `personnes = [
     {"nom": "Turing", "code_pays": "UK"},
     {"nom": "Hopper", "code_pays": "US"},
 ]
-pays = {"UK": "Royaume-Uni", "US": "États-Unis"}
+noms_pays = {"UK": "Royaume-Uni", "US": "États-Unis"}
 
-# On ajoute le nom complet du pays à chaque personne
 fusion = []
 for p in personnes:
-    ligne = dict(p)                       # copie
-    ligne["pays"] = pays[p["code_pays"]]  # jointure
+    ligne = dict(p)                            # copie de la ligne
+    ligne["pays"] = noms_pays[p["code_pays"]]  # on ajoute la colonne
     fusion.append(ligne)
 
 for l in fusion:
     print(l["nom"], "->", l["pays"])`,
+      },
+      {
+        title: "Synthèse : la chaîne de traitement",
+        html: `
+        <p>Traiter des données en tables suit presque toujours le même <strong>pipeline</strong> :</p>
+        <p style="text-align:center"><strong>charger</strong> (CSV → liste de dictionnaires) → <strong>filtrer</strong> (compréhension) → <strong>trier</strong> (<code>sorted</code>) → <strong>calculer</strong> (<code>len</code>/<code>sum</code>/<code>min</code>/<code>max</code>) → éventuellement <strong>fusionner</strong>.</p>
+        <p>Chaque étape produit une nouvelle table ou une valeur, sans détruire les données d'origine. C'est exactement la démarche du <strong>projet « Enquête sur un fichier CSV »</strong> : entraîne-toi dessus pour mettre bout à bout toutes ces briques sur un vrai jeu de données.</p>
+        <p class="warnbox">⚠️ Les deux pièges à retenir : (1) les valeurs d'un CSV sont des <em>chaînes</em> → convertir avant de calculer ; (2) un tri ou un filtre se fait <em>toujours</em> avec une <code>key</code>/condition portant sur la bonne colonne.</p>`,
       },
     ],
   },
