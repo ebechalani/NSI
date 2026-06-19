@@ -715,20 +715,35 @@ for l in fusion:
     ],
     sections: [
       {
+        title: "Le Web : un dialogue client-serveur",
+        html: `
+        <p>Quand tu tapes une adresse dans ton navigateur, que se passe-t-il vraiment ? Le Web fonctionne sur un modèle <strong>client-serveur</strong>, comme un client au restaurant et la cuisine :</p>
+        <ol>
+          <li>ton <strong>navigateur</strong> (le <em>client</em> : Chrome, Firefox…) envoie une <strong>requête</strong> ;</li>
+          <li>un <strong>serveur</strong> (un ordinateur distant qui héberge le site) reçoit la requête et renvoie une <strong>réponse</strong> : le plus souvent une page HTML.</li>
+        </ol>
+        <p>Cet échange suit un <strong>protocole</strong> commun, <strong>HTTP</strong>, et l'adresse demandée est une <strong>URL</strong>. Décortiquons une URL :</p>
+        <pre><code>https://  www.exemple.fr  /recherche  ?ville=Beyrouth
+└─protocole┘ └──domaine──┘ └─chemin─┘ └──paramètres──┘</code></pre>
+        <p>Retiens dès maintenant cette idée : <strong>une page reçue est juste du texte</strong> (du HTML) que le navigateur sait afficher. C'est ce texte qu'on apprend à écrire.</p>`,
+      },
+      {
         title: "Les trois langages du Web",
         html: `
-        <p>Une page web combine trois technologies aux rôles complémentaires :</p>
-        <ul>
-          <li><strong>HTML</strong> — le <em>contenu</em> et la <em>structure</em> (titres, paragraphes, liens, images).</li>
-          <li><strong>CSS</strong> — la <em>présentation</em> (couleurs, polices, mise en page).</li>
-          <li><strong>JavaScript</strong> — l'<em>interactivité</em> (réagir aux actions de l'utilisateur).</li>
-        </ul>
-        <p>Analogie : HTML est le squelette, CSS l'habillage, JavaScript le comportement.</p>`,
+        <p>Une page web combine trois technologies aux rôles bien distincts. C'est <em>la</em> distinction fondatrice du thème :</p>
+        <table>
+          <tr><th>Langage</th><th>Rôle</th><th>Analogie (une maison)</th></tr>
+          <tr><td><strong>HTML</strong></td><td>le contenu et la structure (titres, paragraphes, images, liens)</td><td>les murs, le squelette</td></tr>
+          <tr><td><strong>CSS</strong></td><td>la présentation (couleurs, polices, mise en page)</td><td>la peinture, la déco</td></tr>
+          <tr><td><strong>JavaScript</strong></td><td>l'interactivité (réagir aux actions de l'utilisateur)</td><td>l'électricité, les interrupteurs</td></tr>
+        </table>
+        <p>Une même page peut donc être <em>restructurée</em> (HTML), <em>redécorée</em> (CSS) ou <em>rendue interactive</em> (JS) indépendamment. C'est pourquoi on sépare ces trois langages.</p>
+        <p class="note">🎯 Activité (en îlot) : sur la page d'accueil d'un site que vous connaissez, identifiez 3 éléments qui relèvent du HTML, 2 du CSS, 1 du JavaScript. Justifiez.</p>`,
       },
       {
         title: "Structure d'un document HTML",
         html: `
-        <p>HTML organise le contenu avec des <strong>balises</strong> (<em>tags</em>), généralement par paires : une ouvrante <code>&lt;p&gt;</code> et une fermante <code>&lt;/p&gt;</code>. Une page minimale :</p>
+        <p>HTML organise le contenu avec des <strong>balises</strong> (<em>tags</em>), le plus souvent par <strong>paires</strong> : une balise ouvrante <code>&lt;p&gt;</code> et une fermante <code>&lt;/p&gt;</code> qui encadrent un contenu. Les balises peuvent être <strong>imbriquées</strong>. Voici une page complète minimale :</p>
         <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="fr"&gt;
   &lt;head&gt;
@@ -741,45 +756,66 @@ for l in fusion:
     &lt;a href="https://eduscol.education.fr"&gt;Un lien&lt;/a&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-        <p>Le <code>&lt;head&gt;</code> contient les métadonnées (titre, encodage) ; le <code>&lt;body&gt;</code> contient ce qui est affiché.</p>`,
+        <p>Deux zones : le <code>&lt;head&gt;</code> contient les <strong>métadonnées</strong> (titre de l'onglet, encodage — non affichées dans la page) ; le <code>&lt;body&gt;</code> contient tout ce qui est <strong>affiché</strong>.</p>
+        <p>Quelques balises à connaître :</p>
+        <table>
+          <tr><th>Balise</th><th>Rôle</th></tr>
+          <tr><td><code>&lt;h1&gt;</code> à <code>&lt;h6&gt;</code></td><td>titres (du plus grand au plus petit)</td></tr>
+          <tr><td><code>&lt;p&gt;</code></td><td>paragraphe</td></tr>
+          <tr><td><code>&lt;a href="..."&gt;</code></td><td>lien hypertexte</td></tr>
+          <tr><td><code>&lt;img src="..."&gt;</code></td><td>image (balise seule, sans fermeture)</td></tr>
+          <tr><td><code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code></td><td>liste à puces et ses éléments</td></tr>
+        </table>
+        <p>Le <code>href</code> d'un lien et le <code>src</code> d'une image sont des <strong>attributs</strong> : des informations ajoutées dans la balise ouvrante sous la forme <code>nom="valeur"</code>.</p>`,
       },
       {
         title: "La mise en forme avec CSS",
         html: `
-        <p>Le CSS associe des <strong>règles de style</strong> à des éléments via des <strong>sélecteurs</strong>. Une règle : un sélecteur, puis des propriétés.</p>
+        <p>Le CSS décrit <strong>comment</strong> afficher les éléments. Une <strong>règle</strong> CSS = un <strong>sélecteur</strong> (quels éléments ?) suivi de <strong>propriétés</strong> entre accolades (quel style ?).</p>
         <pre><code>h1 { color: indigo; text-align: center; }
 p  { font-size: 16px; line-height: 1.5; }
-.important { background: yellow; }   /* classe */
-#menu { border: 1px solid gray; }     /* identifiant */</code></pre>
-        <p>On cible : un type de balise (<code>p</code>), une <strong>classe</strong> (<code>.important</code>, réutilisable) ou un <strong>identifiant</strong> unique (<code>#menu</code>).</p>`,
+.important { background: yellow; }   /* une classe */
+#menu      { border: 1px solid gray; } /* un identifiant */</code></pre>
+        <p>Trois types de sélecteurs, à bien distinguer :</p>
+        <table>
+          <tr><th>Sélecteur</th><th>Cible</th><th>Côté HTML</th></tr>
+          <tr><td><code>p</code></td><td>toutes les balises de ce type</td><td><code>&lt;p&gt;…&lt;/p&gt;</code></td></tr>
+          <tr><td><code>.important</code> (point)</td><td>tous les éléments d'une <strong>classe</strong> (réutilisable)</td><td><code>&lt;p class="important"&gt;</code></td></tr>
+          <tr><td><code>#menu</code> (dièse)</td><td>l'élément d'un <strong>identifiant</strong> (unique)</td><td><code>&lt;div id="menu"&gt;</code></td></tr>
+        </table>
+        <p class="warnbox">⚠️ Confusion classique : le <strong>point</strong> (<code>.</code>) cible une <em>classe</em> (plusieurs éléments) ; le <strong>dièse</strong> (<code>#</code>) cible un <em>identifiant</em> (un seul élément). À ne pas inverser.</p>`,
       },
       {
         title: "Client et serveur : qui exécute quoi ?",
         html: `
-        <p>Le Web suit un modèle <strong>client-serveur</strong>. Le <strong>navigateur</strong> (client) envoie une <strong>requête</strong> ; le <strong>serveur</strong> renvoie une <strong>réponse</strong>.</p>
+        <p>Reprenons le modèle client-serveur, mais côté <strong>exécution</strong> : où tourne le code ?</p>
         <ul>
-          <li><strong>Côté client</strong> (dans le navigateur) : HTML, CSS, JavaScript. Rapide, mais l'utilisateur peut tout voir et modifier.</li>
-          <li><strong>Côté serveur</strong> : traitement des données, accès aux bases de données, vérifications de sécurité. Invisible pour l'utilisateur.</li>
+          <li><strong>Côté client</strong> (dans <em>ton</em> navigateur) : HTML, CSS, JavaScript. C'est rapide et réactif, mais l'utilisateur peut tout <strong>voir et modifier</strong> (clic droit → « code source »).</li>
+          <li><strong>Côté serveur</strong> (sur la machine distante) : le traitement des données, l'accès aux bases de données, les vérifications sensibles. Invisible et hors de portée de l'utilisateur.</li>
         </ul>
-        <p class="note">Règle de sécurité : ne jamais faire confiance aux données venant du client. Les contrôles sensibles se font <strong>côté serveur</strong>.</p>`,
+        <p class="warnbox">🔒 Règle de sécurité capitale : <strong>ne jamais faire confiance aux données venant du client</strong>. Une vérification faite uniquement en JavaScript (côté client) peut être contournée. Les contrôles qui comptent (mot de passe, prix, droits) se refont <strong>toujours côté serveur</strong>.</p>
+        <p>Exemple : la validation JavaScript d'un formulaire améliore le <em>confort</em> (message d'erreur immédiat), mais le serveur doit re-vérifier avant d'enregistrer quoi que ce soit.</p>`,
       },
       {
         title: "Le protocole HTTP : GET et POST",
         html: `
-        <p><strong>HTTP</strong> est le protocole de communication du Web. Deux méthodes principales pour envoyer des données via un formulaire :</p>
+        <p>Quand un <strong>formulaire</strong> envoie des données au serveur, il utilise une <strong>méthode</strong> HTTP. Les deux principales :</p>
         <table>
           <tr><th></th><th>GET</th><th>POST</th></tr>
-          <tr><td>Où vont les données</td><td>dans l'URL (visibles)</td><td>dans le corps (cachées de l'URL)</td></tr>
-          <tr><td>Usage typique</td><td>recherche, navigation</td><td>connexion, envoi de mot de passe</td></tr>
-          <tr><td>Peut être mis en favori</td><td>oui</td><td>non</td></tr>
+          <tr><td>Où vont les données</td><td>dans l'<strong>URL</strong> (visibles)</td><td>dans le <strong>corps</strong> de la requête (hors URL)</td></tr>
+          <tr><td>Usage typique</td><td>recherche, navigation, filtre</td><td>connexion, mot de passe, envoi de fichier</td></tr>
+          <tr><td>Mémorisable en favori / partageable</td><td>oui</td><td>non</td></tr>
+          <tr><td>Adapté aux données sensibles</td><td>non</td><td>oui</td></tr>
         </table>
-        <p>Exemple d'URL avec paramètres GET : <code>recherche?ville=Beyrouth&amp;jour=lundi</code>. Les paramètres sont des paires <code>clé=valeur</code> séparées par <code>&amp;</code>.</p>`,
+        <p>Dans une URL, les paramètres GET suivent le <code>?</code>, sous forme de paires <code>clé=valeur</code> séparées par <code>&amp;</code> :</p>
+        <pre><code>recherche?ville=Beyrouth&amp;jour=lundi&amp;age=15</code></pre>
+        <p>On peut écrire en Python un petit « analyseur » qui retrouve ces paramètres — c'est exactement ce que fait le serveur en recevant la requête :</p>`,
         code: `# Décomposer les paramètres d'une URL (style GET)
 url = "recherche?ville=Beyrouth&jour=lundi&age=15"
 
-chemin, requete = url.split("?")
+chemin, requete = url.split("?")        # sépare avant/après le ?
 parametres = {}
-for couple in requete.split("&"):
+for couple in requete.split("&"):       # chaque "clé=valeur"
     cle, valeur = couple.split("=")
     parametres[cle] = valeur
 
@@ -790,7 +826,7 @@ print("Ville demandée :", parametres["ville"])`,
       {
         title: "Réagir à un événement (JavaScript)",
         html: `
-        <p>JavaScript rend la page <strong>interactive</strong> en répondant à des <strong>événements</strong> : clic (<code>click</code>), survol, saisie clavier, etc. Exemple :</p>
+        <p>JavaScript rend la page <strong>interactive</strong> en réagissant à des <strong>événements</strong> : un clic (<code>click</code>), un survol, une frappe au clavier, l'envoi d'un formulaire (<code>submit</code>)… Le mécanisme : on attache un <strong>écouteur</strong> (<em>listener</em>) à un élément avec <code>addEventListener</code>, et on lui donne la fonction à exécuter quand l'événement survient.</p>
         <pre><code>&lt;button id="b"&gt;Cliquez-moi&lt;/button&gt;
 &lt;p id="msg"&gt;&lt;/p&gt;
 &lt;script&gt;
@@ -799,7 +835,22 @@ print("Ville demandée :", parametres["ville"])`,
     document.getElementById("msg").textContent = "Bravo, événement reçu !";
   });
 &lt;/script&gt;</code></pre>
-        <p>Ce code (à exécuter dans un navigateur) attache un <em>écouteur</em> au bouton : à chaque clic, le texte du paragraphe change.</p>`,
+        <p>À chaque clic sur le bouton, la fonction s'exécute et change le texte du paragraphe. Étapes clés : (1) <strong>récupérer</strong> un élément (<code>getElementById</code>), (2) <strong>écouter</strong> un événement, (3) <strong>modifier</strong> la page en réponse.</p>
+        <p class="note">▶️ Pour tester : recopie ce code dans un fichier <code>page.html</code> et ouvre-le dans un navigateur (l'éditeur Python du site n'exécute pas le JavaScript).</p>`,
+      },
+      {
+        title: "Synthèse et mise en pratique",
+        html: `
+        <p>Récapitulons la répartition des rôles, qui est le cœur du thème :</p>
+        <table>
+          <tr><th>Je veux…</th><th>J'utilise…</th></tr>
+          <tr><td>ajouter un titre, un champ, un bouton</td><td>HTML</td></tr>
+          <tr><td>changer une couleur, centrer, espacer</td><td>CSS</td></tr>
+          <tr><td>réagir à un clic, valider une saisie</td><td>JavaScript</td></tr>
+          <tr><td>envoyer des données au serveur</td><td>un formulaire (GET ou POST)</td></tr>
+          <tr><td>sécuriser un traitement</td><td>le serveur (jamais le client seul)</td></tr>
+        </table>
+        <p>Pour tout assembler sur un cas concret — maquette, formulaire, validation JavaScript, choix GET/POST — enchaîne sur le <strong>projet « Mini-site d'inscription »</strong>.</p>`,
       },
     ],
   },
@@ -822,93 +873,161 @@ print("Ville demandée :", parametres["ville"])`,
     ],
     sections: [
       {
-        title: "Le modèle de von Neumann",
+        title: "Qu'y a-t-il dans un ordinateur ?",
         html: `
-        <p>Proposé en 1945, ce modèle décrit l'architecture de presque tous les ordinateurs actuels. Quatre composants principaux :</p>
-        <ul>
-          <li><strong>Unité de commande (UC)</strong> — lit et décode les instructions du programme.</li>
-          <li><strong>Unité arithmétique et logique (UAL)</strong> — effectue les calculs (UC + UAL = le processeur / CPU).</li>
-          <li><strong>Mémoire</strong> — stocke à la fois le programme <em>et</em> les données.</li>
-          <li><strong>Entrées / sorties (E/S)</strong> — communiquent avec l'extérieur (clavier, écran, disque).</li>
-        </ul>
-        <p>Idée clé : programme et données partagent la même mémoire. Le processeur exécute en boucle le cycle <strong>charger → décoder → exécuter</strong>.</p>`,
+        <p>Avant de parler de logiciels, ouvrons le capot. Un ordinateur, c'est quelques grands organes qui coopèrent :</p>
+        <table>
+          <tr><th>Composant</th><th>Rôle</th><th>Analogie (un bureau)</th></tr>
+          <tr><td><strong>Processeur (CPU)</strong></td><td>exécute les instructions, calcule</td><td>le cerveau / la personne qui travaille</td></tr>
+          <tr><td><strong>Mémoire vive (RAM)</strong></td><td>stocke temporairement programme et données en cours</td><td>le bureau où on étale ses feuilles</td></tr>
+          <tr><td><strong>Stockage (disque/SSD)</strong></td><td>conserve les données même éteint</td><td>les tiroirs/armoires</td></tr>
+          <tr><td><strong>Entrées / sorties</strong></td><td>communiquent avec l'extérieur</td><td>clavier, écran, réseau</td></tr>
+        </table>
+        <p>La RAM est <strong>rapide mais volatile</strong> (effacée à l'extinction) ; le disque est <strong>lent mais permanent</strong>. C'est pour cela qu'on « enregistre » son travail : on le copie de la RAM vers le disque. Voyons maintenant comment tout cela s'articule, avec un modèle vieux de 1945 toujours d'actualité.</p>`,
       },
       {
-        title: "Les portes logiques",
+        title: "Le modèle de von Neumann",
         html: `
-        <p>Le processeur est construit à partir de <strong>transistors</strong> regroupés en <strong>portes logiques</strong>, qui réalisent les opérations booléennes du thème 1 (ET, OU, NON). En combinant des portes, on construit des circuits capables d'additionner, de comparer, de mémoriser.</p>
-        <p>Exemple : un <strong>demi-additionneur</strong> additionne deux bits. La somme est donnée par un <strong>OU exclusif (XOR)</strong> et la retenue par un <strong>ET</strong>.</p>`,
-        code: `# Simulation de portes logiques avec des booléens
+        <p>Proposé en 1945 par John von Neumann, ce modèle décrit l'architecture de presque <em>tous</em> les ordinateurs actuels. Il distingue quatre composants :</p>
+        <ul>
+          <li><strong>Unité de commande (UC)</strong> — lit et <em>décode</em> les instructions du programme, et orchestre le reste ;</li>
+          <li><strong>Unité arithmétique et logique (UAL)</strong> — <em>effectue</em> les calculs (additions, comparaisons, et/ou/non). UC + UAL forment le <strong>processeur (CPU)</strong> ;</li>
+          <li><strong>Mémoire</strong> — stocke à la fois le <em>programme</em> ET les <em>données</em> ;</li>
+          <li><strong>Entrées / sorties (E/S)</strong> — échangent avec l'extérieur (clavier, écran, disque).</li>
+        </ul>
+        <p><strong>L'idée révolutionnaire :</strong> le programme est rangé en mémoire <em>comme</em> des données (« programme enregistré »). On peut donc charger un nouveau programme sans recâbler la machine — c'est ce qui rend l'ordinateur <em>universel</em>.</p>
+        <p>Le processeur répète sans cesse un cycle à trois temps :</p>
+        <p style="text-align:center"><strong>charger</strong> (lire l'instruction en mémoire) → <strong>décoder</strong> (comprendre) → <strong>exécuter</strong> → (recommencer)</p>
+        <p class="warnbox">⚠️ Distinction fréquemment demandée : l'<strong>UC</strong> <em>commande/décode</em>, l'<strong>UAL</strong> <em>calcule</em>. Ne pas confondre.</p>`,
+      },
+      {
+        title: "Du transistor à la porte logique",
+        html: `
+        <p>Comment le processeur « calcule »-t-il, avec seulement de l'électricité ? Tout repose sur le <strong>transistor</strong> : un minuscule <em>interrupteur</em> commandé électriquement (passant = 1, bloqué = 0). Un processeur moderne en contient des <strong>milliards</strong>.</p>
+        <p>En combinant des transistors, on fabrique des <strong>portes logiques</strong> qui réalisent les opérations booléennes du thème 2 :</p>
+        <table>
+          <tr><th>Porte</th><th>Donne 1 si…</th></tr>
+          <tr><td><strong>ET</strong> (AND)</td><td>les deux entrées valent 1</td></tr>
+          <tr><td><strong>OU</strong> (OR)</td><td>au moins une entrée vaut 1</td></tr>
+          <tr><td><strong>NON</strong> (NOT)</td><td>l'entrée vaut 0 (elle inverse)</td></tr>
+          <tr><td><strong>OU exclusif</strong> (XOR)</td><td>les deux entrées sont différentes</td></tr>
+        </table>
+        <p>En assemblant ces portes, on construit des circuits qui <em>additionnent</em>, <em>comparent</em>, <em>mémorisent</em>. L'algèbre de Boole (thème 2) est donc littéralement gravée dans le silicium. C'est le pont entre les maths logiques et le matériel.</p>`,
+      },
+      {
+        title: "Construire un circuit : le demi-additionneur",
+        html: `
+        <p>Illustrons : comment additionner <strong>deux bits</strong> a et b ? Posons les 4 cas à la main :</p>
+        <table>
+          <tr><th>a</th><th>b</th><th>somme</th><th>retenue</th></tr>
+          <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+          <tr><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+          <tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+        </table>
+        <p>On reconnaît : la <strong>somme</strong> est un <strong>XOR</strong> (1 si a et b diffèrent), la <strong>retenue</strong> est un <strong>ET</strong> (1 seulement si a=b=1). Ce circuit s'appelle un <strong>demi-additionneur</strong>. Simulons-le en Python avec des fonctions qui jouent le rôle des portes :</p>`,
+        code: `# Les portes logiques, simulées par des fonctions booléennes
 def ET(a, b):  return a and b
 def OU(a, b):  return a or b
 def NON(a):    return not a
 def XOR(a, b): return (a or b) and not (a and b)
 
 def demi_additionneur(a, b):
-    somme = XOR(a, b)
-    retenue = ET(a, b)
+    somme = XOR(a, b)      # 1 si a et b diffèrent
+    retenue = ET(a, b)     # 1 seulement si a = b = 1
     return somme, retenue
 
 for a in (0, 1):
     for b in (0, 1):
         s, r = demi_additionneur(a, b)
-        print(f"{a}+{b} -> somme={int(s)} retenue={int(r)}")`,
+        print(f"{a} + {b} -> somme = {int(s)}, retenue = {int(r)}")`,
       },
       {
-        title: "Le système d'exploitation",
+        title: "Le rôle du système d'exploitation",
         html: `
-        <p>Le <strong>système d'exploitation</strong> (OS : Windows, Linux, macOS, Android…) est le logiciel qui fait l'interface entre le matériel et les applications. Ses rôles principaux :</p>
+        <p>Le matériel seul ne sait rien faire d'utile. Le <strong>système d'exploitation</strong> (OS : Windows, Linux, macOS, Android, iOS…) est le logiciel <em>chef d'orchestre</em> : il fait l'interface entre le matériel et les applications, et partage les ressources entre les programmes.</p>
+        <p>Ses grandes missions :</p>
         <ul>
-          <li>gérer les <strong>processus</strong> (programmes en cours d'exécution) ;</li>
-          <li>gérer la <strong>mémoire</strong> ;</li>
-          <li>gérer le <strong>système de fichiers</strong> (disques) ;</li>
-          <li>gérer les <strong>périphériques</strong> (pilotes) ;</li>
-          <li>assurer la <strong>sécurité</strong> et les droits des utilisateurs.</li>
+          <li>gérer les <strong>processus</strong> (les programmes en cours), en donnant à chacun un peu de temps de processeur (il y en a bien plus que de cœurs !) ;</li>
+          <li>gérer la <strong>mémoire</strong> (qui occupe quoi en RAM) ;</li>
+          <li>gérer le <strong>système de fichiers</strong> (organisation du disque) ;</li>
+          <li>piloter les <strong>périphériques</strong> via des <em>pilotes</em> (drivers) ;</li>
+          <li>assurer la <strong>sécurité</strong> : utilisateurs, mots de passe, droits d'accès.</li>
         </ul>
-        <p>Les OS libres comme <strong>GNU/Linux</strong> jouent un rôle important : code source ouvert, gratuits, très utilisés sur les serveurs.</p>`,
+        <p class="note">💡 Les OS <strong>libres</strong> comme <strong>GNU/Linux</strong> (code source ouvert, gratuit) sont partout : serveurs du Web, box Internet, Android, supercalculateurs. Un même OS pilote des matériels très différents grâce aux pilotes.</p>
+        <p class="warnbox">⚠️ L'OS <em>pilote</em> le matériel ; il ne le <em>fabrique</em> pas. C'est un logiciel, pas un composant physique.</p>`,
       },
       {
         title: "Le système de fichiers arborescent",
         html: `
-        <p>Les fichiers sont organisés en une <strong>arborescence</strong> de dossiers (répertoires). On désigne un fichier par son <strong>chemin</strong> :</p>
+        <p>L'OS range les fichiers dans une <strong>arborescence</strong> : des dossiers (répertoires) qui en contiennent d'autres, à partir d'une <strong>racine</strong>. C'est un arbre renversé.</p>
+        <pre><code>/                  (racine)
+└── home
+    └── ada
+        ├── photos
+        └── cours
+            └── nsi.py</code></pre>
+        <p>Pour désigner un fichier, on donne son <strong>chemin</strong>, de deux façons :</p>
         <ul>
-          <li><strong>chemin absolu</strong> : depuis la racine, ex. <code>/home/ada/cours/nsi.py</code> ;</li>
-          <li><strong>chemin relatif</strong> : depuis le dossier courant, ex. <code>cours/nsi.py</code> ;</li>
-          <li><code>.</code> = dossier courant, <code>..</code> = dossier parent.</li>
-        </ul>`,
+          <li><strong>chemin absolu</strong> — depuis la racine, commence par <code>/</code> : <code>/home/ada/cours/nsi.py</code> ;</li>
+          <li><strong>chemin relatif</strong> — depuis le dossier où l'on se trouve : si je suis dans <code>/home/ada</code>, alors <code>cours/nsi.py</code> suffit ;</li>
+          <li>deux raccourcis essentiels : <code>.</code> = le dossier courant, <code>..</code> = le dossier parent (remonter d'un cran).</li>
+        </ul>
+        <p>Exemple : depuis <code>/home/ada/cours</code>, le chemin relatif <code>../photos</code> mène à <code>/home/ada/photos</code> (on remonte avec <code>..</code> puis on descend dans photos).</p>`,
       },
       {
         title: "La ligne de commande",
         html: `
-        <p>Le <strong>terminal</strong> permet de piloter l'ordinateur en tapant des commandes. Quelques commandes Unix/Linux essentielles :</p>
+        <p>Le <strong>terminal</strong> permet de piloter l'ordinateur en <em>tapant</em> des commandes, sans souris. C'est puissant, rapide, et indispensable sur les serveurs (qui n'ont souvent pas d'écran graphique). Les commandes Unix/Linux essentielles :</p>
         <table>
           <tr><th>Commande</th><th>Rôle</th></tr>
-          <tr><td><code>pwd</code></td><td>afficher le dossier courant</td></tr>
-          <tr><td><code>ls</code></td><td>lister le contenu d'un dossier</td></tr>
-          <tr><td><code>cd dossier</code></td><td>changer de dossier</td></tr>
+          <tr><td><code>pwd</code></td><td><em>print working directory</em> : où suis-je ?</td></tr>
+          <tr><td><code>ls</code></td><td>lister le contenu du dossier courant</td></tr>
+          <tr><td><code>cd dossier</code></td><td>se déplacer dans un dossier (<code>cd ..</code> pour remonter)</td></tr>
           <tr><td><code>mkdir nom</code></td><td>créer un dossier</td></tr>
-          <tr><td><code>cp / mv / rm</code></td><td>copier / déplacer / supprimer</td></tr>
           <tr><td><code>cat fichier</code></td><td>afficher le contenu d'un fichier</td></tr>
-          <tr><td><code>chmod</code></td><td>changer les permissions</td></tr>
-        </table>`,
+          <tr><td><code>cp / mv / rm</code></td><td>copier / déplacer / supprimer</td></tr>
+          <tr><td><code>chmod</code></td><td>changer les permissions d'un fichier</td></tr>
+        </table>
+        <p>Exemple de session pour atteindre <code>nsi.py</code> depuis la racine :</p>
+        <pre><code>$ pwd
+/
+$ cd home/ada/cours
+$ ls
+nsi.py
+$ cat nsi.py</code></pre>
+        <p class="note">🎮 Le <strong>projet « Mission terminal »</strong> propose un simulateur pour t'entraîner à naviguer et retrouver un fichier caché.</p>`,
       },
       {
         title: "Droits et permissions",
         html: `
-        <p>Sous Unix, chaque fichier a des <strong>permissions</strong> pour trois catégories : le <strong>propriétaire</strong>, le <strong>groupe</strong> et les <strong>autres</strong>. Trois droits possibles : <strong>r</strong> (lecture), <strong>w</strong> (écriture), <strong>x</strong> (exécution).</p>
-        <p>La notation <code>rwxr-x---</code> signifie : propriétaire peut tout faire (rwx), le groupe peut lire et exécuter (r-x), les autres rien (---). En notation octale : <code>chmod 750 fichier</code>.</p>`,
-        code: `# Chaque droit vaut une puissance de 2 : r=4, w=2, x=1
+        <p>Sur un système multi-utilisateurs, chaque fichier porte des <strong>permissions</strong> pour trois catégories de personnes : le <strong>propriétaire</strong>, son <strong>groupe</strong>, et les <strong>autres</strong>. Pour chaque catégorie, trois droits possibles : <strong>r</strong> (lecture), <strong>w</strong> (écriture), <strong>x</strong> (exécution).</p>
+        <p>La notation <code>rwxr-x---</code> se lit par blocs de 3 :</p>
+        <table>
+          <tr><th>propriétaire</th><th>groupe</th><th>autres</th></tr>
+          <tr><td>rwx (tout)</td><td>r-x (lire + exécuter)</td><td>--- (rien)</td></tr>
+        </table>
+        <p>On code souvent ces droits en <strong>octal</strong> : <strong>r vaut 4, w vaut 2, x vaut 1</strong> ; on additionne par bloc. Ainsi <code>rwx</code> = 4+2+1 = 7, <code>r-x</code> = 4+0+1 = 5, <code>---</code> = 0. D'où la commande <code>chmod 750 fichier</code>.</p>`,
+        code: `# Convertir une chaîne de droits en chiffre octal
 def permissions_vers_octal(rwx):
-    valeurs = {'r': 4, 'w': 2, 'x': 1}
+    valeurs = {"r": 4, "w": 2, "x": 1}
     total = 0
     for c in rwx:
-        total += valeurs.get(c, 0)
+        total += valeurs.get(c, 0)   # un tiret '-' n'ajoute rien
     return total
 
 prop   = permissions_vers_octal("rwx")  # 7
 groupe = permissions_vers_octal("r-x")  # 5
 autres = permissions_vers_octal("---")  # 0
 print(f"chmod {prop}{groupe}{autres}")  # chmod 750`,
+      },
+      {
+        title: "Synthèse : du transistor à l'utilisateur",
+        html: `
+        <p>Ce thème relie plusieurs niveaux qui s'empilent :</p>
+        <p style="text-align:center"><strong>transistors</strong> → <strong>portes logiques</strong> → <strong>processeur</strong> (modèle de von Neumann) → <strong>système d'exploitation</strong> → <strong>applications</strong> que tu utilises.</p>
+        <p>Chaque couche cache la complexité de celle d'en dessous : tu cliques sur une icône (application) sans penser aux milliards de transistors qui s'activent. On retrouve aussi le fil rouge de l'année : l'<em>algèbre de Boole</em> (thème 2) gravée dans le matériel, et le <em>binaire</em> partout.</p>
+        <p>Pour pratiquer concrètement la partie « système de fichiers + ligne de commande », enchaîne sur le <strong>projet « Mission terminal »</strong>.</p>`,
       },
     ],
   },
