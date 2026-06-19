@@ -1446,6 +1446,7 @@ print("Glouton sur [1,3,4] pour 6 :", rendu_monnaie(6, [1, 3, 4]))  # 4+1+1`,
       {
         title: "Les k plus proches voisins (kNN)",
         html: `
+        <p class="note">⭐ <strong>Bonus — anticipation Terminale.</strong> Le kNN n'est pas au programme de Première (il relève de l'algorithmique de Terminale), mais c'est une belle ouverture, accessible avec les outils déjà vus.</p>
         <p>Comment une machine peut-elle <strong>classer</strong> automatiquement un objet ? L'algorithme des <strong>k plus proches voisins</strong> (kNN) compare l'objet inconnu à des exemples déjà étiquetés : il regarde ses <em>k</em> voisins les plus proches et lui attribue la <strong>classe majoritaire</strong>.</p>
         <ol>
           <li>Calculer la <strong>distance</strong> entre le point inconnu et chaque exemple.</li>
@@ -1653,6 +1654,7 @@ print("\\nNombre d'événements :", len(frise))`,
     id: "reseaux",
     num: 9,
     emoji: "📡",
+    anticipation: "Bonus — anticipation de la Terminale (hors programme de Première)",
     title: "Réseaux : protocoles, paquets et routage",
     intro:
       "Comment deux machines échangent-elles des données à distance ? On découvre l'idée de protocole, le découpage des messages en paquets, le routage, et ce qui se passe quand un paquet est perdu ou arrive dans le désordre.",

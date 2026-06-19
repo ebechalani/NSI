@@ -481,6 +481,22 @@ details.corrige[open] > summary { margin-bottom: .5rem; }
 .grille-table .pts { text-align: center; font-weight: 700; color: var(--accent); }
 .grille-table .total td { background: var(--accent-soft); font-weight: 700; }
 
+/* ---------- Conformité au BO ---------- */
+.bo-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.2rem; margin: 1rem 0; }
+.bo-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.bo-head h3 { margin: .2rem 0; font-size: 1.05rem; }
+.bo-caps { margin: .6rem 0; padding-left: 0; list-style: none; }
+.bo-caps li { position: relative; padding-left: 1.5rem; margin: .3rem 0; font-size: .9rem; }
+.bo-caps li::before { content: "✓"; position: absolute; left: 0; color: var(--ok); font-weight: 800; }
+.bo-where { font-size: .82rem; color: var(--text-soft); background: var(--bg-soft); border-radius: 8px; padding: .4rem .7rem; margin-bottom: .6rem; }
+
+/* ---------- Progression annuelle ---------- */
+.prog-table { overflow-x: auto; margin: 1rem 0; }
+.prog-table table { border-collapse: collapse; width: 100%; font-size: .86rem; min-width: 640px; }
+.prog-table th, .prog-table td { border: 1px solid var(--border); padding: .55rem .7rem; text-align: left; vertical-align: top; }
+.prog-table th { background: var(--bg-soft); position: sticky; top: 0; }
+.prog-table .gloss-link { font-weight: 600; color: var(--accent); }
+
 /* ---------- Glossaire ---------- */
 .gloss-bar { margin: 1rem 0; }
 .gloss-search {

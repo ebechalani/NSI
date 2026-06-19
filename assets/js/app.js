@@ -128,6 +128,10 @@
     const extraLinks = [
       { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
       { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
+      { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
+      { target: "progression", num: "🗓️", emoji: "", text: "Progression annuelle" },
+      { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)" },
+      { target: "bo", num: "✅", emoji: "", text: "Conformité au BO" },
     ];
     extraLinks.forEach((x) => {
       const li = el("li");
@@ -210,6 +214,13 @@
     const rgrid = el("div", "card-grid");
     const ressources = [
       {
+        emoji: "✅",
+        tag: "8 thèmes BO",
+        title: "Conformité au BO",
+        desc: "Les 8 thèmes officiels de Première et les capacités attendues, avec où chacune est traitée.",
+        target: "bo",
+      },
+      {
         emoji: "🏝️",
         tag: `${PROJECTS.length} projets`,
         title: "Projets en îlots",
@@ -222,6 +233,27 @@
         title: "Glossaire NSI",
         desc: "Toutes les définitions clés du programme, recherchables et classées par thème.",
         target: "glossaire",
+      },
+      {
+        emoji: "🧭",
+        tag: `${typeof METHODES !== "undefined" ? METHODES.length : 0} fiches`,
+        title: "Fiches méthode",
+        desc: "Les réflexes transversaux : lire une erreur, écrire un test, convertir, parcourir un tableau…",
+        target: "methodes",
+      },
+      {
+        emoji: "🗓️",
+        tag: "4 h / sem.",
+        title: "Progression annuelle",
+        desc: "Planning indicatif des séquences sur l'année + l'encart « coder pour de vrai ».",
+        target: "progression",
+      },
+      {
+        emoji: "📝",
+        tag: `${typeof EVALUATIONS !== "undefined" ? EVALUATIONS.length : 0} sujets`,
+        title: "Évaluations (prof)",
+        desc: "DS et TP notés avec barème ; corrigés affichés en mode professeur.",
+        target: "evaluations",
       },
     ];
     ressources.forEach((r) => {
@@ -265,6 +297,12 @@
     );
     header.appendChild(el("p", "theme-intro", c.intro));
     viewTheme.appendChild(header);
+
+    if (c.anticipation) {
+      viewTheme.appendChild(
+        el("div", "warnbox", `⭐ <strong>${c.anticipation}.</strong> Ce thème est proposé en ouverture : il n'est pas exigé par le programme de Première.`)
+      );
+    }
 
     // Capacités attendues (BO)
     const cap = el("div", "capacites");
@@ -1416,6 +1454,257 @@ sys.stderr = io.StringIO()
     scrollTop();
   }
 
+  /* ---------------- Vue : Conformité au BO ---------------- */
+  function boCoverage(c) {
+    const nbSections = c.sections.length;
+    const nbQuiz = (QUIZZES[c.id] || []).length;
+    const ex = (typeof THEME_EXTRAS !== "undefined" && THEME_EXTRAS[c.id]) || {};
+    const nbExo = (ex.exercices || []).length;
+    const projs =
+      typeof PROJECTS !== "undefined"
+        ? PROJECTS.filter((p) => p.theme === c.id)
+        : [];
+    const parts = [`${nbSections} parties de cours`];
+    if (nbQuiz) parts.push(`QCM (${nbQuiz} questions)`);
+    if (nbExo) parts.push(`${nbExo} exercices`);
+    if (projs.length) parts.push(`projet « ${projs.map((p) => p.titre).join(" », « ")} »`);
+    return parts.join(" · ");
+  }
+
+  function renderBO() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "✅ Conformité au programme (BO)"));
+    header.appendChild(
+      el(
+        "p",
+        "theme-intro",
+        "Les <strong>8 thèmes officiels</strong> de la spécialité NSI en Première (Bulletin officiel) et, pour chacun, les <strong>capacités attendues</strong> avec l'endroit où elles sont travaillées sur le site."
+      )
+    );
+    viewTheme.appendChild(header);
+
+    const tools = el("div", "proj-tools");
+    const bPrint = el("button", "btn secondary", "🖨️ Imprimer la grille de conformité");
+    bPrint.addEventListener("click", printBO);
+    tools.appendChild(bPrint);
+    viewTheme.appendChild(tools);
+
+    const officiels = COURSES.filter((c) => !c.anticipation);
+    const bonus = COURSES.filter((c) => c.anticipation);
+
+    viewTheme.appendChild(
+      el("div", "info-callout", `📘 <strong>${officiels.length} thèmes au programme de Première</strong> couverts. Les thèmes marqués « bonus » sont des ouvertures qui anticipent la Terminale.`)
+    );
+
+    function carte(c) {
+      const card = el("div", "bo-card");
+      const badge = c.anticipation
+        ? `<span class="lv-tag lv-defi">bonus · Terminale</span>`
+        : `<span class="lv-tag lv-facile">Première · BO</span>`;
+      let html =
+        `<div class="bo-head"><h3>${c.emoji} ${c.title}</h3>${badge}</div>` +
+        `<ul class="bo-caps">` +
+        c.capacites.map((x) => `<li>${x}</li>`).join("") +
+        `</ul>` +
+        `<div class="bo-where">📍 Traité dans : ${boCoverage(c)}</div>` +
+        `<button class="btn secondary bo-go">Ouvrir le thème →</button>`;
+      card.innerHTML = html;
+      card.querySelector(".bo-go").addEventListener("click", () => navigate(c.id));
+      return card;
+    }
+
+    officiels.forEach((c) => viewTheme.appendChild(carte(c)));
+    if (bonus.length) {
+      viewTheme.appendChild(el("h2", "home-h2", "⭐ Bonus — anticipations de la Terminale"));
+      viewTheme.appendChild(
+        el("p", "extra-hint", "Hors programme de Première, proposés en ouverture : Réseaux, et la section « k plus proches voisins » du thème Algorithmique.")
+      );
+      bonus.forEach((c) => viewTheme.appendChild(carte(c)));
+    }
+    scrollTop();
+  }
+
+  function printBO() {
+    const bloc = (c) =>
+      `<h2>${c.emoji} ${c.title}${c.anticipation ? " (bonus · Terminale)" : ""}</h2>` +
+      `<ul>${c.capacites.map((x) => `<li>${x}</li>`).join("")}</ul>` +
+      `<p><em>Traité dans : ${boCoverage(c)}</em></p>`;
+    const officiels = COURSES.filter((c) => !c.anticipation).map(bloc).join("");
+    const bonus = COURSES.filter((c) => c.anticipation).map(bloc).join("");
+    openPrint(
+      "Conformité au BO — Première NSI",
+      `<h1>✅ Conformité au programme — Première NSI</h1>` +
+        `<p class="intro">Capacités attendues du Bulletin officiel et leur traitement sur le site.</p>` +
+        officiels +
+        (bonus ? `<h1 style="page-break-before:always">⭐ Bonus (anticipation Terminale)</h1>${bonus}` : "")
+    );
+  }
+
+  /* ---------------- Vue : Progression annuelle ---------------- */
+  function renderProgression() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "🗓️ Progression annuelle"));
+    header.appendChild(el("p", "theme-intro", PROGRESSION_INTRO));
+    viewTheme.appendChild(header);
+
+    const tools = el("div", "proj-tools");
+    const bPrint = el("button", "btn secondary", "🖨️ Imprimer la progression");
+    bPrint.addEventListener("click", printProgression);
+    tools.appendChild(bPrint);
+    viewTheme.appendChild(tools);
+
+    const rows = PROGRESSION.map(
+      (p) =>
+        `<tr><td><strong>${p.periode}</strong><br><span class="muted-text">${p.semaines} · ${p.heures}</span></td>` +
+        `<td>${p.themeId ? `<button class="gloss-link" data-go="${p.themeId}">${p.theme} →</button>` : p.theme}` +
+        `<div class="muted-text">${p.objectifs}</div></td>` +
+        `<td>${p.activites}</td><td>${p.evaluation}</td></tr>`
+    ).join("");
+    const tbl = el(
+      "div",
+      "prog-table",
+      `<table><tr><th>Période</th><th>Thème & objectifs</th><th>Activités</th><th>Évaluation</th></tr>${rows}</table>`
+    );
+    tbl.querySelectorAll(".gloss-link").forEach((b) =>
+      b.addEventListener("click", () => navigate(b.dataset.go))
+    );
+    viewTheme.appendChild(tbl);
+
+    // Encart « coder pour de vrai »
+    const cr = el("div", "extra-block");
+    cr.appendChild(el("h2", null, CODER_REEL.titre));
+    cr.appendChild(el("div", null, CODER_REEL.html));
+    viewTheme.appendChild(cr);
+    scrollTop();
+  }
+
+  function printProgression() {
+    const rows = PROGRESSION.map(
+      (p) =>
+        `<tr><td><strong>${p.periode}</strong><br>${p.semaines} · ${p.heures}</td>` +
+        `<td><strong>${p.theme}</strong><br>${p.objectifs}</td>` +
+        `<td>${p.activites}</td><td>${p.evaluation}</td></tr>`
+    ).join("");
+    openPrint(
+      "Progression annuelle — Première NSI",
+      `<h1>🗓️ Progression annuelle — Première NSI</h1><p class="intro">${PROGRESSION_INTRO}</p>` +
+        `<table><tr><th>Période</th><th>Thème & objectifs</th><th>Activités</th><th>Évaluation</th></tr>${rows}</table>`
+    );
+  }
+
+  /* ---------------- Vue : Fiches méthode ---------------- */
+  function renderMethodes() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "🧭 Fiches méthode"));
+    header.appendChild(
+      el("p", "theme-intro", "Les réflexes transversaux à avoir toute l'année. À garder sous les yeux pendant les TP.")
+    );
+    viewTheme.appendChild(header);
+
+    METHODES.forEach((m) => {
+      const sec = el("div", "section");
+      sec.appendChild(el("h2", null, m.titre));
+      sec.appendChild(el("div", null, m.html));
+      viewTheme.appendChild(sec);
+    });
+    const tools = el("div", "proj-tools");
+    const bPrint = el("button", "btn secondary", "🖨️ Imprimer les fiches méthode");
+    bPrint.addEventListener("click", () =>
+      openPrint(
+        "Fiches méthode — NSI Première",
+        "<h1>🧭 Fiches méthode — NSI Première</h1>" +
+          METHODES.map((m) => `<h2>${m.titre}</h2>${m.html}`).join("")
+      )
+    );
+    tools.appendChild(bPrint);
+    viewTheme.appendChild(tools);
+    scrollTop();
+  }
+
+  /* ---------------- Vue : Évaluations (corrigés réservés au prof) ---------------- */
+  function renderEvaluations() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "📝 Évaluations"));
+    header.appendChild(
+      el(
+        "p",
+        "theme-intro",
+        "DS et TP notés prêts à l'emploi (barème sur 20). Les <strong>corrigés</strong> sont masqués : active le <strong>mode professeur</strong> (👩‍🏫 en haut) pour les afficher et les imprimer."
+      )
+    );
+    viewTheme.appendChild(header);
+
+    const TYPE = { DS: "📄 DS", TP: "💻 TP noté", pratique: "🧪 Épreuve pratique" };
+    // Tri par thème (ordre du programme), DS avant TP ; transversal en dernier.
+    const numByTheme = {};
+    COURSES.forEach((c) => (numByTheme[c.id] = c.num));
+    const ordered = EVALUATIONS.slice().sort((a, b) => {
+      const na = a.themeId ? numByTheme[a.themeId] || 50 : 99;
+      const nb = b.themeId ? numByTheme[b.themeId] || 50 : 99;
+      if (na !== nb) return na - nb;
+      return (a.type === "DS" ? 0 : 1) - (b.type === "DS" ? 0 : 1);
+    });
+    ordered.forEach((ev) => {
+      const box = el("div", "exo-item");
+      const head = el("div", "exo-head");
+      head.innerHTML =
+        `<span class="lv-tag lv-moyen">${TYPE[ev.type] || ev.type}</span>` +
+        `<span class="exo-n">${ev.titre}</span>`;
+      box.appendChild(head);
+      box.appendChild(
+        el("div", "proj-meta", `<span class="chip">⏱️ ${ev.duree}</span><span class="chip">/ ${ev.total} pts</span>`)
+      );
+      box.appendChild(el("div", "exo-enonce", ev.enonce));
+
+      const tools = el("div", "proj-tools");
+      const bPrint = el("button", "btn secondary", "🖨️ Imprimer le sujet");
+      bPrint.addEventListener("click", () =>
+        openPrint(
+          ev.titre,
+          `<h1>${ev.titre}</h1><p class="intro">Durée : ${ev.duree} · Barème : / ${ev.total} points</p>${ev.enonce}`
+        )
+      );
+      tools.appendChild(bPrint);
+
+      if (ev.corrige) {
+        const det = el("details", "corrige teacher-block");
+        det.appendChild(el("summary", null, "🔑 Corrigé (enseignant)"));
+        det.appendChild(el("div", "corrige-body", ev.corrige));
+        const bCor = el("button", "btn secondary", "🖨️ Imprimer le corrigé");
+        bCor.addEventListener("click", () =>
+          openPrint(
+            "Corrigé — " + ev.titre,
+            `<h1>Corrigé — ${ev.titre}</h1>${ev.corrige}`
+          )
+        );
+        bCor.style.marginTop = ".6rem";
+        det.appendChild(bCor); // dans le corrigé masqué : caché hors mode prof
+        box.appendChild(tools);
+        box.appendChild(det);
+      } else {
+        box.appendChild(tools);
+      }
+      viewTheme.appendChild(box);
+    });
+    scrollTop();
+  }
+
   /* ---------------- Impressions communes ---------------- */
   function openPrint(title, bodyHtml) {
     const w = window.open("", "_blank");
@@ -1511,6 +1800,11 @@ sys.stderr = io.StringIO()
         sub: g.def,
       });
     });
+    if (typeof METHODES !== "undefined") {
+      METHODES.forEach((m) => {
+        idx.push({ type: "Méthode", icon: "🧭", label: m.titre, target: "methodes", hay: norm(m.titre) });
+      });
+    }
     return idx;
   }
   const SEARCH_INDEX = buildSearchIndex();
@@ -1582,6 +1876,22 @@ sys.stderr = io.StringIO()
       showThemeView("glossaire");
       renderGlossary();
       location.hash = "glossaire";
+    } else if (target === "progression") {
+      showThemeView("progression");
+      renderProgression();
+      location.hash = "progression";
+    } else if (target === "methodes") {
+      showThemeView("methodes");
+      renderMethodes();
+      location.hash = "methodes";
+    } else if (target === "evaluations") {
+      showThemeView("evaluations");
+      renderEvaluations();
+      location.hash = "evaluations";
+    } else if (target === "bo") {
+      showThemeView("bo");
+      renderBO();
+      location.hash = "bo";
     } else {
       const c = COURSES.find((x) => x.id === target);
       if (!c) return navigate("home");
@@ -1600,7 +1910,7 @@ sys.stderr = io.StringIO()
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (t === "projets" || t === "glossaire") return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }
