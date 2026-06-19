@@ -206,6 +206,7 @@
       sec.appendChild(el("h2", null, `${i + 1}. ${s.title}`));
       if (s.html) sec.appendChild(el("div", null, s.html));
       if (s.code) sec.appendChild(makeCodeCell(s.code));
+      if (s.game) sec.appendChild(makeGame(s.game));
       viewTheme.appendChild(sec);
     });
 
@@ -489,6 +490,249 @@ sys.stderr = io.StringIO()
     wrap.appendChild(actions);
 
     refreshScore();
+    return wrap;
+  }
+
+  /* ---------------- Jeu d'évasion (escape game) ---------------- */
+  // Chaque jeu : un cadenas dont chaque chiffre est gardé par une énigme.
+  const GAMES = {
+    "histoire-escape": {
+      storageKey: "nsi-escape-histoire",
+      code: "1989",
+      finale:
+        "🎉 <strong>1989</strong> — c'est l'année où Tim Berners-Lee invente le " +
+        "<strong>World Wide Web</strong> au CERN ! La porte s'ouvre… tu t'es évadé(e). " +
+        "Tu recroiseras le Web dans le thème « Interactions homme-machine sur le Web ».",
+      enigmes: [
+        {
+          id: "pascal",
+          digit: "1",
+          machine: "La Pascaline",
+          era: "1642 · Blaise Pascal",
+          riddle:
+            "Cette machine additionne avec des roues dentées. Quand une roue passe de 9 à 0, " +
+            "elle pousse sa voisine : c'est la <em>retenue</em>. Combien font <strong>7 + 5</strong> ?",
+          answers: ["12", "douze"],
+          hint: "Compte normalement en base 10 ; la retenue, c'est juste « je pose 2 et je retiens 1 ».",
+          fact: "À 19 ans, Pascal construit la Pascaline pour aider son père à calculer les impôts.",
+        },
+        {
+          id: "jacquard",
+          digit: "9",
+          machine: "Le métier à tisser de Jacquard",
+          era: "1801 · cartes perforées",
+          riddle:
+            "Une carte perforée code en binaire : un trou = <code>1</code>, pas de trou = <code>0</code>. " +
+            "Décode la carte <strong>1001</strong> en nombre décimal.",
+          answers: ["9", "neuf"],
+          hint: "1001 = 1×8 + 0×4 + 0×2 + 1×1.",
+          fact: "Les cartes perforées de Jacquard inspireront Babbage, puis les premiers ordinateurs.",
+        },
+        {
+          id: "turing",
+          digit: "8",
+          machine: "La machine de Turing",
+          era: "1936 · Alan Turing",
+          riddle:
+            "Message codé ! Décale chaque lettre d'un cran <em>en arrière</em> dans l'alphabet " +
+            "(B→A, C→B…). Décode le nom : <strong>UVSJOH</strong>.",
+          answers: ["turing"],
+          hint: "U→T, V→U, S→R… c'est le savant qui contribua à casser le code Enigma.",
+          fact: "En 1936, Turing définit ce qu'une machine peut calculer ; en 1940, il aide à percer Enigma.",
+        },
+        {
+          id: "web",
+          digit: "9",
+          machine: "Le serveur du CERN",
+          era: "1989 · Tim Berners-Lee",
+          riddle:
+            "La toute première page web est servie ici. Le langage des pages est l'HTML. " +
+            "Combien de lettres compte le sigle <strong>HTML</strong> ?",
+          answers: ["4", "quatre"],
+          hint: "H — T — M — L.",
+          fact: "En 1989, au CERN, Tim Berners-Lee propose le Web : HTML, HTTP et les URL.",
+        },
+      ],
+    },
+  };
+
+  function makeGame(type) {
+    const cfg = GAMES[type];
+    const wrap = el("div", "escape");
+    if (!cfg) return wrap;
+
+    const norm = (s) =>
+      String(s)
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/\s+/g, "");
+
+    // État persistant (énigmes résolues + évasion finale)
+    let solved = {};
+    try {
+      solved = JSON.parse(localStorage.getItem(cfg.storageKey)) || {};
+    } catch (e) {
+      solved = {};
+    }
+    const save = () =>
+      localStorage.setItem(cfg.storageKey, JSON.stringify(solved));
+
+    // Affichage du cadenas (un emplacement par énigme)
+    const top = el("div", "esc-top");
+    const lock = el("div", "esc-lock");
+    const slots = cfg.enigmes.map(() => el("div", "esc-slot", "?"));
+    slots.forEach((s) => lock.appendChild(s));
+    const counter = el("div", "esc-counter", "");
+    top.appendChild(lock);
+    top.appendChild(counter);
+    wrap.appendChild(top);
+
+    // La porte finale (cadenas à composer), masquée tant que tout n'est pas résolu
+    const door = el("div", "esc-door hidden");
+    door.innerHTML =
+      `<h3>🚪 La porte verrouillée</h3>` +
+      `<p>Tu as récupéré les 4 chiffres. Compose le code et évade-toi !</p>`;
+    const dform = el("div", "esc-form");
+    const dinput = el("input", "esc-input esc-code-input");
+    dinput.type = "text";
+    dinput.maxLength = cfg.code.length;
+    dinput.inputMode = "numeric";
+    dinput.placeholder = "••••";
+    dinput.setAttribute("aria-label", "Code du cadenas");
+    const dbtn = el("button", "btn esc-open", "🔓 Ouvrir la porte");
+    dform.appendChild(dinput);
+    dform.appendChild(dbtn);
+    const dfeedback = el("div", "esc-feedback");
+    door.appendChild(dform);
+    door.appendChild(dfeedback);
+
+    function escape() {
+      solved.__escaped = true;
+      save();
+      wrap.classList.add("escaped");
+      dfeedback.className = "esc-feedback good show";
+      dfeedback.innerHTML = cfg.finale;
+      dinput.disabled = true;
+      dbtn.disabled = true;
+    }
+    function tryOpen() {
+      if (solved.__escaped) return;
+      if (norm(dinput.value) === norm(cfg.code)) {
+        escape();
+      } else {
+        door.classList.add("shake");
+        setTimeout(() => door.classList.remove("shake"), 450);
+        dfeedback.className = "esc-feedback bad show";
+        dfeedback.textContent =
+          "❌ Code refusé. Relis les chiffres récupérés ci-dessus.";
+      }
+    }
+    dbtn.addEventListener("click", tryOpen);
+    dinput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") tryOpen();
+    });
+
+    function refresh() {
+      cfg.enigmes.forEach((en, i) => {
+        const done = !!solved[en.id];
+        slots[i].textContent = done ? en.digit : "?";
+        slots[i].classList.toggle("filled", done);
+      });
+      const nb = cfg.enigmes.filter((en) => solved[en.id]).length;
+      counter.textContent = `${nb} / ${cfg.enigmes.length} machines déverrouillées`;
+      const all = nb === cfg.enigmes.length;
+      door.classList.toggle("hidden", !all);
+      if (all && solved.__escaped) {
+        wrap.classList.add("escaped");
+        dfeedback.className = "esc-feedback good show";
+        dfeedback.innerHTML = cfg.finale;
+        dinput.disabled = true;
+        dbtn.disabled = true;
+      }
+    }
+
+    // Une carte par énigme
+    const grid = el("div", "esc-grid");
+    cfg.enigmes.forEach((en) => {
+      const card = el("div", "esc-card");
+      card.innerHTML =
+        `<div class="esc-card-head">` +
+        `<span class="esc-machine">${en.machine}</span>` +
+        `<span class="esc-era">${en.era}</span></div>` +
+        `<div class="esc-riddle">${en.riddle}</div>`;
+
+      const form = el("div", "esc-form");
+      const input = el("input", "esc-input");
+      input.type = "text";
+      input.placeholder = "Ta réponse…";
+      input.setAttribute("aria-label", "Réponse pour " + en.machine);
+      const btn = el("button", "btn esc-validate", "Valider");
+      form.appendChild(input);
+      form.appendChild(btn);
+
+      const hintBtn = el("button", "esc-hint-btn", "💡 Indice");
+      const hint = el("div", "esc-hint hidden", en.hint);
+      hintBtn.addEventListener("click", () => hint.classList.toggle("hidden"));
+
+      const feedback = el("div", "esc-feedback");
+      const fact = el(
+        "div",
+        "esc-fact hidden",
+        `🔑 Chiffre obtenu : <strong>${en.digit}</strong> — <em>${en.fact}</em>`
+      );
+
+      function markSolved() {
+        card.classList.add("solved");
+        input.disabled = true;
+        btn.disabled = true;
+        fact.classList.remove("hidden");
+      }
+      function check() {
+        if (solved[en.id]) return;
+        const val = norm(input.value);
+        if (!val) return;
+        if (en.answers.some((a) => norm(a) === val)) {
+          solved[en.id] = true;
+          save();
+          markSolved();
+          feedback.className = "esc-feedback good show";
+          feedback.textContent = "✅ Bravo ! La machine libère son chiffre.";
+          refresh();
+        } else {
+          card.classList.add("shake");
+          setTimeout(() => card.classList.remove("shake"), 450);
+          feedback.className = "esc-feedback bad show";
+          feedback.textContent =
+            "❌ Ce n'est pas ça… réessaie ou demande un indice.";
+        }
+      }
+      btn.addEventListener("click", check);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") check();
+      });
+
+      if (solved[en.id]) markSolved();
+
+      card.appendChild(form);
+      card.appendChild(hintBtn);
+      card.appendChild(hint);
+      card.appendChild(feedback);
+      card.appendChild(fact);
+      grid.appendChild(card);
+    });
+    wrap.appendChild(grid);
+    wrap.appendChild(door);
+
+    const reset = el("button", "btn secondary esc-reset", "↺ Recommencer le jeu");
+    reset.addEventListener("click", () => {
+      localStorage.removeItem(cfg.storageKey);
+      wrap.replaceWith(makeGame(type));
+    });
+    wrap.appendChild(reset);
+
+    refresh();
     return wrap;
   }
 
