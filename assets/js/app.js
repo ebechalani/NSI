@@ -511,10 +511,11 @@ sys.stderr = io.StringIO()
           machine: "La Pascaline",
           era: "1642 · Blaise Pascal",
           riddle:
-            "Cette machine additionne avec des roues dentées. Quand une roue passe de 9 à 0, " +
-            "elle pousse sa voisine : c'est la <em>retenue</em>. Combien font <strong>7 + 5</strong> ?",
-          answers: ["12", "douze"],
-          hint: "Compte normalement en base 10 ; la retenue, c'est juste « je pose 2 et je retiens 1 ».",
+            "La Pascaline gère les <em>retenues</em>. En binaire, l'addition <strong>1 + 1</strong> " +
+            "ne donne pas « 2 » : elle dépasse le plus grand chiffre disponible et déclenche une retenue. " +
+            "Écris le résultat de <strong>1 + 1</strong> <strong>en binaire</strong>.",
+          answers: ["10", "10b", "0b10"],
+          hint: "Comme 9+1 passe à « 10 » en base 10, ici on dépasse le chiffre 1 : on pose 0 et on retient 1.",
           fact: "À 19 ans, Pascal construit la Pascaline pour aider son père à calculer les impôts.",
         },
         {
@@ -523,10 +524,10 @@ sys.stderr = io.StringIO()
           machine: "Le métier à tisser de Jacquard",
           era: "1801 · cartes perforées",
           riddle:
-            "Une carte perforée code en binaire : un trou = <code>1</code>, pas de trou = <code>0</code>. " +
-            "Décode la carte <strong>1001</strong> en nombre décimal.",
-          answers: ["9", "neuf"],
-          hint: "1001 = 1×8 + 0×4 + 0×2 + 1×1.",
+            "Une rangée de la carte code un <strong>octet</strong> (8 bits) : trou = <code>1</code>, " +
+            "pas de trou = <code>0</code>. Convertis l'octet <strong>0011 0010</strong> en décimal.",
+          answers: ["50", "cinquante"],
+          hint: "Additionne les puissances de 2 des bits à 1 : 32 + 16 + 2.",
           fact: "Les cartes perforées de Jacquard inspireront Babbage, puis les premiers ordinateurs.",
         },
         {
@@ -535,10 +536,11 @@ sys.stderr = io.StringIO()
           machine: "La machine de Turing",
           era: "1936 · Alan Turing",
           riddle:
-            "Message codé ! Décale chaque lettre d'un cran <em>en arrière</em> dans l'alphabet " +
-            "(B→A, C→B…). Décode le nom : <strong>UVSJOH</strong>.",
-          answers: ["turing"],
-          hint: "U→T, V→U, S→R… c'est le savant qui contribua à casser le code Enigma.",
+            "Le ruban de la machine doit distinguer <strong>256 symboles</strong> différents. " +
+            "Sachant qu'avec <em>n</em> bits on obtient 2<sup>n</sup> combinaisons, " +
+            "combien de bits faut-il au minimum ?",
+          answers: ["8", "huit", "8 bits"],
+          hint: "Cherche n tel que 2ⁿ = 256 : 2¹=2, 2²=4, 2³=8 … continue.",
           fact: "En 1936, Turing définit ce qu'une machine peut calculer ; en 1940, il aide à percer Enigma.",
         },
         {
@@ -547,10 +549,11 @@ sys.stderr = io.StringIO()
           machine: "Le serveur du CERN",
           era: "1989 · Tim Berners-Lee",
           riddle:
-            "La toute première page web est servie ici. Le langage des pages est l'HTML. " +
-            "Combien de lettres compte le sigle <strong>HTML</strong> ?",
-          answers: ["4", "quatre"],
-          hint: "H — T — M — L.",
+            "Sur le Web, les couleurs CSS s'écrivent en <strong>hexadécimal</strong> (base 16), " +
+            "où l'on compte 0…9 puis A=10, B=11, … Convertis le nombre hexadécimal " +
+            "<strong>2A</strong> en décimal.",
+          answers: ["42", "quarante-deux", "quarante deux"],
+          hint: "2A = 2×16 + A, et le symbole A vaut 10 en base 16.",
           fact: "En 1989, au CERN, Tim Berners-Lee propose le Web : HTML, HTTP et les URL.",
         },
       ],
