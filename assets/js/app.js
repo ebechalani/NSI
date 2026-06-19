@@ -497,6 +497,7 @@ sys.stderr = io.StringIO()
   // Chaque jeu : un cadenas dont chaque chiffre est gardé par une énigme.
   const GAMES = {
     "histoire-escape": {
+      kind: "escape",
       storageKey: "nsi-escape-histoire",
       code: "1989",
       finale:
@@ -554,12 +555,44 @@ sys.stderr = io.StringIO()
         },
       ],
     },
+
+    "histoire-frise": {
+      kind: "timeline",
+      bestKey: "nsi-frise-histoire-best",
+      // 18 événements clés, du plus ancien au plus récent.
+      // L'indice (clue) ne donne JAMAIS l'année : c'est aux élèves de raisonner.
+      events: [
+        { year: 820, icon: "📜", title: "Le mot « algorithme »", clue: "Un savant perse, Al-Khwârizmî, rédige un traité de calcul ; son nom latinisé donnera le mot « algorithme »." },
+        { year: 1642, icon: "🧮", title: "La Pascaline", clue: "Blaise Pascal construit une machine à additionner à roues dentées pour aider son père." },
+        { year: 1703, icon: "🔢", title: "L'arithmétique binaire", clue: "Leibniz publie le calcul en base 2 (uniquement des 0 et des 1)." },
+        { year: 1801, icon: "🧵", title: "Le métier Jacquard", clue: "Un métier à tisser est piloté par des cartes perforées : première « machine programmée »." },
+        { year: 1843, icon: "👩‍💻", title: "Le premier algorithme (Ada Lovelace)", clue: "Ada Lovelace écrit un programme destiné à la machine analytique de Babbage." },
+        { year: 1854, icon: "🔣", title: "L'algèbre de Boole", clue: "George Boole formalise une algèbre du vrai/faux (et, ou, non)." },
+        { year: 1936, icon: "🧠", title: "La machine de Turing", clue: "Alan Turing décrit une machine abstraite qui définit ce qu'est « calculer »." },
+        { year: 1945, icon: "🖥️", title: "ENIAC & von Neumann", clue: "Un énorme calculateur électronique ; von Neumann formalise le « programme enregistré »." },
+        { year: 1947, icon: "🔌", title: "Le transistor", clue: "Aux Bell Labs, un minuscule composant remplace les encombrants tubes à vide." },
+        { year: 1958, icon: "🪙", title: "Le circuit intégré", clue: "De nombreux transistors sont gravés ensemble sur une même puce de silicium." },
+        { year: 1969, icon: "🌐", title: "ARPANET", clue: "Le réseau ancêtre d'Internet relie ses tout premiers ordinateurs." },
+        { year: 1971, icon: "🔳", title: "Le microprocesseur (Intel 4004)", clue: "Tout un processeur tient désormais sur une seule puce." },
+        { year: 1977, icon: "💻", title: "L'ordinateur personnel", clue: "L'Apple II popularise l'ordinateur individuel à la maison." },
+        { year: 1983, icon: "📡", title: "Internet (TCP/IP)", clue: "Le réseau adopte les protocoles TCP/IP : Internet tel qu'on le connaît démarre." },
+        { year: 1989, icon: "🕸️", title: "Le World Wide Web", clue: "Tim Berners-Lee invente le Web au CERN (HTML, HTTP, URL)." },
+        { year: 1991, icon: "🐧", title: "Le noyau Linux", clue: "Linus Torvalds publie un système d'exploitation libre et gratuit." },
+        { year: 2007, icon: "📱", title: "Le smartphone", clue: "L'iPhone rend l'informatique mobile, tactile et grand public." },
+        { year: 2012, icon: "🤖", title: "L'essor de l'IA", clue: "L'apprentissage profond fait bondir la reconnaissance d'images : l'IA moderne décolle." },
+      ],
+    },
   };
 
   function makeGame(type) {
     const cfg = GAMES[type];
+    if (!cfg) return el("div", "escape");
+    if (cfg.kind === "timeline") return buildTimeline(cfg, type);
+    return buildEscape(cfg, type);
+  }
+
+  function buildEscape(cfg, type) {
     const wrap = el("div", "escape");
-    if (!cfg) return wrap;
 
     const norm = (s) =>
       String(s)
@@ -733,6 +766,208 @@ sys.stderr = io.StringIO()
     wrap.appendChild(reset);
 
     refresh();
+    return wrap;
+  }
+
+  /* ---------------- Jeu de tri chronologique (« la frise à reconstituer ») ---------------- */
+  function buildTimeline(cfg, type) {
+    const wrap = el("div", "frise");
+    const events = cfg.events;
+    const N = events.length;
+
+    wrap.appendChild(
+      el(
+        "div",
+        "frise-rules",
+        `🃏 <strong>Règle du jeu.</strong> Chaque carte décrit un événement de l'histoire de l'informatique, ` +
+          `<strong>sans sa date</strong>. À vous de les classer de la <strong>plus ancienne</strong> (en haut) à la ` +
+          `<strong>plus récente</strong> (en bas), en discutant des indices. Déplacez les cartes par ` +
+          `<em>glisser-déposer</em> ou avec les flèches ▲▼, puis cliquez sur <strong>Vérifier</strong>.`
+      )
+    );
+
+    const toolbar = el("div", "frise-toolbar");
+    const bShuffle = el("button", "btn secondary", "🔀 Mélanger");
+    const bCheck = el("button", "btn", "✅ Vérifier la frise");
+    const bPrint = el("button", "btn secondary", "🖨️ Imprimer les cartes");
+    toolbar.appendChild(bShuffle);
+    toolbar.appendChild(bCheck);
+    toolbar.appendChild(bPrint);
+    wrap.appendChild(toolbar);
+
+    const board = el("div", "frise-board");
+    wrap.appendChild(board);
+
+    const result = el("div", "frise-result");
+    wrap.appendChild(result);
+
+    function clearMarks() {
+      board.querySelectorAll(".frise-card").forEach((c) => {
+        c.classList.remove("good", "bad", "revealed");
+        c.querySelector(".fc-year").textContent = "";
+      });
+      result.className = "frise-result";
+      result.textContent = "";
+    }
+
+    function getDragAfter(y) {
+      const els = [...board.querySelectorAll(".frise-card:not(.dragging)")];
+      let closest = { offset: -Infinity, element: null };
+      for (const child of els) {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset)
+          closest = { offset, element: child };
+      }
+      return closest.element;
+    }
+
+    board.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      const dragging = board.querySelector(".dragging");
+      if (!dragging) return;
+      const after = getDragAfter(e.clientY);
+      if (after == null) board.appendChild(dragging);
+      else board.insertBefore(dragging, after);
+    });
+
+    function makeCard(ev) {
+      const card = el("div", "frise-card");
+      card.draggable = true;
+      card.dataset.year = ev.year;
+      card.innerHTML =
+        `<span class="fc-handle" title="Glisser pour déplacer">⠿</span>` +
+        `<span class="fc-icon">${ev.icon}</span>` +
+        `<span class="fc-body"><span class="fc-title">${ev.title}</span>` +
+        `<span class="fc-clue">${ev.clue}</span></span>` +
+        `<span class="fc-year"></span>` +
+        `<span class="fc-moves">` +
+        `<button class="fc-up" aria-label="Monter cette carte">▲</button>` +
+        `<button class="fc-down" aria-label="Descendre cette carte">▼</button></span>`;
+
+      card.querySelector(".fc-up").addEventListener("click", () => {
+        const prev = card.previousElementSibling;
+        if (prev) board.insertBefore(card, prev);
+        clearMarks();
+      });
+      card.querySelector(".fc-down").addEventListener("click", () => {
+        const next = card.nextElementSibling;
+        if (next) board.insertBefore(next, card);
+        clearMarks();
+      });
+      card.addEventListener("dragstart", () => {
+        card.classList.add("dragging");
+      });
+      card.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
+        clearMarks();
+      });
+      return card;
+    }
+
+    function shuffle() {
+      const arr = [...events];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      board.innerHTML = "";
+      arr.forEach((ev) => board.appendChild(makeCard(ev)));
+      clearMarks();
+    }
+
+    function verify() {
+      const order = [...board.querySelectorAll(".frise-card")];
+      const sorted = [...order].sort(
+        (a, b) => Number(a.dataset.year) - Number(b.dataset.year)
+      );
+      let wellPlaced = 0;
+      order.forEach((card, i) => {
+        const ok = card === sorted[i];
+        card.classList.add("revealed");
+        card.classList.toggle("good", ok);
+        card.classList.toggle("bad", !ok);
+        card.querySelector(".fc-year").textContent = card.dataset.year;
+        if (ok) wellPlaced++;
+      });
+      let pairs = 0;
+      for (let i = 0; i < order.length - 1; i++) {
+        if (Number(order[i].dataset.year) <= Number(order[i + 1].dataset.year))
+          pairs++;
+      }
+      const perfect = wellPlaced === N;
+      result.className = "frise-result show " + (perfect ? "good" : "partial");
+      result.innerHTML =
+        `<strong>${wellPlaced} / ${N}</strong> cartes à la bonne place · ` +
+        `<strong>${pairs} / ${N - 1}</strong> paires dans le bon ordre` +
+        (perfect ? " — 🎉 Frise parfaite, bravo !" : " — réajustez les cartes rouges et revérifiez.");
+
+      // Meilleur score (par groupe / par poste)
+      if (cfg.bestKey) {
+        const prev = Number(localStorage.getItem(cfg.bestKey) || 0);
+        if (wellPlaced > prev) {
+          localStorage.setItem(cfg.bestKey, String(wellPlaced));
+          if (!perfect) result.innerHTML += ` <em>(nouveau record : ${wellPlaced})</em>`;
+        }
+      }
+    }
+
+    function printCards() {
+      const chrono = [...events].sort((a, b) => a.year - b.year);
+      const recto = events
+        .map(
+          (ev) =>
+            `<div class="pcard"><div class="pc-icon">${ev.icon}</div>` +
+            `<div class="pc-title">${ev.title}</div>` +
+            `<div class="pc-clue">${ev.clue}</div></div>`
+        )
+        .join("");
+      const corrige = chrono
+        .map(
+          (ev) =>
+            `<li><span class="pa-year">${ev.year}</span> ${ev.icon} <strong>${ev.title}</strong> — ${ev.clue}</li>`
+        )
+        .join("");
+      const w = window.open("", "_blank");
+      if (!w) {
+        result.className = "frise-result show partial";
+        result.textContent =
+          "🖨️ Le navigateur a bloqué la fenêtre d'impression. Autorise les pop-ups pour ce site.";
+        return;
+      }
+      w.document.write(
+        `<!doctype html><html lang="fr"><head><meta charset="utf-8">` +
+          `<title>Cartes — Histoire de l'informatique</title><style>` +
+          `*{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif}` +
+          `body{margin:1.5cm;color:#1f2733}` +
+          `h1{font-size:18pt}h2{font-size:15pt;margin-top:1cm}` +
+          `.intro{font-size:10pt;color:#444;margin-bottom:.6cm}` +
+          `.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4cm}` +
+          `.pcard{border:2px solid #333;border-radius:10px;padding:.45cm;min-height:4.3cm;display:flex;flex-direction:column;gap:.15cm;page-break-inside:avoid}` +
+          `.pc-icon{font-size:24pt}.pc-title{font-weight:700;font-size:12pt}` +
+          `.pc-clue{font-size:10pt;color:#333}` +
+          `ol{font-size:11pt;line-height:1.5}.pa-year{display:inline-block;min-width:1.6cm;font-weight:700}` +
+          `.no-print{margin-bottom:.6cm}` +
+          `@media print{.no-print{display:none}}` +
+          `</style></head><body>` +
+          `<button class="no-print" onclick="window.print()" style="padding:.4cm .8cm;font-size:12pt;cursor:pointer">🖨️ Imprimer</button>` +
+          `<h1>Frise de l'histoire de l'informatique — cartes à découper</h1>` +
+          `<p class="intro">Découpez les ${N} cartes, mélangez-les, puis classez-les en équipe de la plus ancienne à la plus récente. ` +
+          `Vérifiez ensuite avec la frise corrigée (dernière page, à garder par l'enseignant).</p>` +
+          `<div class="grid">${recto}</div>` +
+          `<h2 style="page-break-before:always">Frise corrigée — ${N} événements</h2>` +
+          `<ol>${corrige}</ol>` +
+          `</body></html>`
+      );
+      w.document.close();
+      w.focus();
+    }
+
+    bShuffle.addEventListener("click", shuffle);
+    bCheck.addEventListener("click", verify);
+    bPrint.addEventListener("click", printCards);
+
+    shuffle(); // démarre mélangé
     return wrap;
   }
 
