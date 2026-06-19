@@ -1052,9 +1052,32 @@ print(f"chmod {prop}{groupe}{autres}")  # chmod 750`,
     ],
     sections: [
       {
+        title: "Programmer, c'est donner des instructions précises",
+        html: `
+        <p>Un <strong>programme</strong> est une suite d'instructions exécutées par la machine, en général <em>dans l'ordre</em>, de haut en bas. La machine fait <strong>exactement</strong> ce qu'on écrit — ni plus, ni moins. Toute la difficulté (et le plaisir) de la programmation vient de cette <strong>rigueur</strong> : la moindre faute change le résultat.</p>
+        <p>En Python, on dispose de quelques briques de base que ce thème va détailler :</p>
+        <ul>
+          <li><strong>les variables</strong> : pour mémoriser des valeurs ;</li>
+          <li><strong>les conditions</strong> (<code>if</code>) : pour choisir selon les cas ;</li>
+          <li><strong>les boucles</strong> (<code>for</code>, <code>while</code>) : pour répéter ;</li>
+          <li><strong>les fonctions</strong> : pour réutiliser et organiser.</li>
+        </ul>
+        <p>Avec ces seules briques, on exprime n'importe quel algorithme. Commençons par la plus fondamentale.</p>
+        <p class="note">💡 Tout le code de ce site est <strong>exécutable</strong> : modifie les exemples, relance, observe. C'est en expérimentant qu'on apprend à programmer.</p>`,
+      },
+      {
         title: "Variables, affectation et types",
         html: `
-        <p>Une <strong>variable</strong> est un nom qui désigne une valeur stockée en mémoire. L'<strong>affectation</strong> <code>=</code> donne une valeur à une variable. Python détermine seul le <strong>type</strong> (typage dynamique).</p>`,
+        <p>Une <strong>variable</strong> est un <em>nom</em> qui désigne une valeur stockée en mémoire. On peut l'imaginer comme une <strong>étiquette</strong> collée sur une valeur. L'<strong>affectation</strong>, notée <code>=</code>, crée ou met à jour cette association.</p>
+        <p class="warnbox">⚠️ Le <code>=</code> en informatique n'est PAS l'égalité des maths : c'est « <em>reçoit la valeur</em> ». La ligne <code>x = x + 1</code> n'a aucun sens en maths, mais signifie « la nouvelle valeur de x = l'ancienne + 1 ». On lit toujours la droite d'abord, puis on range le résultat dans la variable de gauche.</p>
+        <p>Chaque valeur a un <strong>type</strong>. Python le devine tout seul (on parle de <strong>typage dynamique</strong>) ; on peut l'interroger avec <code>type()</code> :</p>
+        <table>
+          <tr><th>Type</th><th>Exemple</th><th>Sert à…</th></tr>
+          <tr><td><code>int</code></td><td><code>15</code></td><td>nombres entiers</td></tr>
+          <tr><td><code>float</code></td><td><code>1.72</code></td><td>nombres à virgule</td></tr>
+          <tr><td><code>str</code></td><td><code>"Ada"</code></td><td>chaînes de caractères (texte)</td></tr>
+          <tr><td><code>bool</code></td><td><code>True</code></td><td>vrai / faux</td></tr>
+        </table>`,
         code: `age = 15            # int (entier)
 taille = 1.72       # float (flottant)
 nom = "Ada"         # str (chaîne de caractères)
@@ -1062,14 +1085,25 @@ majeur = False      # bool (booléen)
 
 print(type(age), type(taille), type(nom), type(majeur))
 
-# L'affectation peut réutiliser l'ancienne valeur
-age = age + 1
-print("Nouvel âge :", age)`,
+# L'affectation lit la droite, puis range dans la gauche
+age = age + 1       # age vaut maintenant 16
+print("Nouvel âge :", age)
+
+# Attention au type : "15" (texte) n'est pas 15 (nombre)
+print("3" + "4")    # 34 (concaténation de texte !)
+print(3 + 4)        # 7  (addition de nombres)`,
       },
       {
         title: "Les instructions conditionnelles",
         html: `
-        <p>Une <strong>condition</strong> exécute un bloc selon qu'un test est vrai ou faux : <code>if</code> / <code>elif</code> / <code>else</code>. L'<strong>indentation</strong> (les espaces en début de ligne) délimite les blocs en Python — elle est obligatoire.</p>`,
+        <p>Une <strong>condition</strong> permet d'exécuter un bloc <em>seulement si</em> un test est vrai : c'est <code>if</code> (si) / <code>elif</code> (sinon si) / <code>else</code> (sinon). Le test est une expression <strong>booléenne</strong> (thème 2), qui vaut <code>True</code> ou <code>False</code>.</p>
+        <p>Les opérateurs de comparaison renvoient un booléen :</p>
+        <table>
+          <tr><th>Opérateur</th><td><code>==</code></td><td><code>!=</code></td><td><code>&lt;</code></td><td><code>&gt;</code></td><td><code>&lt;=</code></td><td><code>&gt;=</code></td></tr>
+          <tr><th>Sens</th><td>égal</td><td>différent</td><td>inférieur</td><td>supérieur</td><td>inf. ou égal</td><td>sup. ou égal</td></tr>
+        </table>
+        <p class="warnbox">⚠️ Deux pièges majeurs en Python : (1) ne pas confondre <code>=</code> (affectation) et <code>==</code> (test d'égalité) ; (2) l'<strong>indentation</strong> (les espaces en début de ligne) <em>délimite les blocs</em> et est <strong>obligatoire</strong> — un décalage change le sens du programme. On indente de 4 espaces après le <code>:</code>.</p>
+        <p>Dans une cascade <code>if/elif/else</code>, Python teste les conditions <em>dans l'ordre</em> et s'arrête à la première vraie. L'ordre compte donc (ici, du plus haut seuil au plus bas) :</p>`,
         code: `def mention(note):
     if note >= 16:
         return "Très bien"
@@ -1083,40 +1117,59 @@ print("Nouvel âge :", age)`,
         return "Insuffisant"
 
 for n in [18, 13, 9]:
-    print(n, "->", mention(n))`,
+    print(n, "->", mention(n))
+
+# Conditions composées avec and / or / not
+age = 16
+if age >= 15 and age < 18:
+    print("Lycéen·ne typique")`,
       },
       {
         title: "Les boucles bornées (for)",
         html: `
-        <p>Une boucle <strong>bornée</strong> répète un bloc un nombre de fois <em>connu à l'avance</em>. En Python : <code>for</code> avec <code>range</code>.</p>
-        <ul>
-          <li><code>range(n)</code> : 0, 1, …, n−1</li>
-          <li><code>range(a, b)</code> : a, …, b−1</li>
-          <li><code>range(a, b, pas)</code> : avec un pas</li>
-        </ul>`,
-        code: `# table de multiplication de 7
+        <p>Répéter à la main, c'est interminable et source d'erreurs. Une <strong>boucle</strong> répète un bloc automatiquement. La boucle <code>for</code> est dite <strong>bornée</strong> : le nombre de tours est <em>connu à l'avance</em>.</p>
+        <p>On l'utilise avec <code>range</code>, qui produit une suite d'entiers :</p>
+        <table>
+          <tr><th>Écriture</th><th>Produit</th></tr>
+          <tr><td><code>range(n)</code></td><td>0, 1, …, n−1 (n valeurs)</td></tr>
+          <tr><td><code>range(a, b)</code></td><td>a, a+1, …, b−1 (b exclu !)</td></tr>
+          <tr><td><code>range(a, b, pas)</code></td><td>de a à b−1 en avançant de <em>pas</em></td></tr>
+        </table>
+        <p class="warnbox">⚠️ Le piège le plus fréquent de l'année : <code>range(n)</code> s'arrête à <strong>n−1</strong>, pas à n. Pour parcourir 1 à 100 <em>inclus</em>, on écrit <code>range(1, 101)</code>.</p>
+        <p>On combine souvent la boucle avec une variable d'<strong>accumulation</strong> préparée avant la boucle :</p>`,
+        code: `# Table de multiplication de 7
 for i in range(1, 11):
     print("7 x", i, "=", 7 * i)
 
-# somme des entiers de 1 à 100
+# Accumulation : somme des entiers de 1 à 100
 total = 0
 for k in range(1, 101):
     total += k
-print("Somme 1..100 =", total)`,
+print("Somme 1..100 =", total)   # 5050
+
+# range avec un pas : les nombres pairs de 0 à 10
+for p in range(0, 11, 2):
+    print(p, end=" ")`,
       },
       {
         title: "Les boucles non bornées (while)",
         html: `
-        <p>Une boucle <strong>non bornée</strong> répète <em>tant qu'</em>une condition reste vraie : <code>while</code>. Le nombre de répétitions n'est pas connu d'avance. ⚠️ Il faut garantir que la condition finira par devenir fausse, sinon la boucle est <strong>infinie</strong>.</p>`,
-        code: `# Combien de fois peut-on diviser 1000 par 2 ?
+        <p>Parfois, on ne sait pas <em>combien</em> de fois répéter, mais seulement <strong>quand s'arrêter</strong>. La boucle <code>while</code> (« tant que ») répète tant qu'une condition reste vraie.</p>
+        <p>Comment choisir entre <code>for</code> et <code>while</code> ?</p>
+        <ul>
+          <li><strong>nombre de tours connu</strong> (parcourir une liste, répéter 10 fois) → <code>for</code> ;</li>
+          <li><strong>répéter jusqu'à un événement</strong> (jusqu'à une bonne saisie, jusqu'à atteindre 1) → <code>while</code>.</li>
+        </ul>
+        <p class="warnbox">⚠️ Danger : la <strong>boucle infinie</strong>. Il faut <em>garantir</em> que la condition finira par devenir fausse. Pour cela, quelque chose doit <strong>évoluer</strong> à l'intérieur de la boucle (ici, <code>n</code> diminue). Si tu lances une boucle infinie, le programme ne s'arrête jamais.</p>`,
+        code: `# Combien de fois peut-on diviser 1000 par 2 avant d'atteindre 1 ?
 n = 1000
 compteur = 0
-while n > 1:
-    n = n // 2
+while n > 1:          # condition d'arrêt
+    n = n // 2        # n évolue : la boucle finira
     compteur += 1
 print("Nombre de divisions :", compteur)
 
-# Suite de Syracuse à partir de 27
+# Suite de Syracuse à partir de 27 (on ne sait pas d'avance combien d'étapes)
 n = 27
 etapes = 0
 while n != 1:
@@ -1127,38 +1180,45 @@ print("Syracuse(27) atteint 1 en", etapes, "étapes")`,
       {
         title: "Les fonctions",
         html: `
-        <p>Une <strong>fonction</strong> regroupe des instructions réutilisables. Elle reçoit des <strong>paramètres</strong> et peut <strong>renvoyer</strong> un résultat avec <code>return</code>. Elle évite la répétition et structure le code.</p>`,
+        <p>Une <strong>fonction</strong> regroupe sous un nom un bloc d'instructions réutilisable. C'est l'outil n°1 pour <strong>ne pas se répéter</strong> et <strong>organiser</strong> un programme : on écrit la fonction une fois, on l'<em>appelle</em> autant qu'on veut.</p>
+        <ul>
+          <li>les <strong>paramètres</strong> sont les informations qu'on lui donne en entrée ;</li>
+          <li><code>return</code> renvoie un <strong>résultat</strong> à l'endroit de l'appel.</li>
+        </ul>
+        <p class="warnbox">⚠️ Distinction essentielle : <code>return</code> <em>renvoie</em> une valeur (réutilisable dans un calcul) ; <code>print</code> ne fait qu'<em>afficher</em> à l'écran. Une fonction qui <code>print</code> sans <code>return</code> ne « rend » rien : <code>x = ma_fonction()</code> donnerait <code>None</code>.</p>
+        <p>Autre point : une variable créée <em>dans</em> une fonction est <strong>locale</strong> — elle n'existe pas en dehors. La fonction communique avec l'extérieur par ses paramètres (entrée) et son <code>return</code> (sortie).</p>`,
         code: `def est_pair(n):
-    return n % 2 == 0
+    return n % 2 == 0       # renvoie un booléen
 
 def maximum(a, b):
     if a > b:
         return a
-    return b
+    return b                # pas besoin de else : return sort de la fonction
 
-print(est_pair(10), est_pair(7))
-print("max :", maximum(3, 9))
+print(est_pair(10), est_pair(7))   # True False
+print("max :", maximum(3, 9))      # 9
 
-# Une fonction peut en appeler une autre
+# Une fonction peut en appeler une autre (composition)
 def nb_pairs(liste):
     compte = 0
     for x in liste:
-        if est_pair(x):
+        if est_pair(x):     # on réutilise est_pair
             compte += 1
     return compte
 
-print(nb_pairs([1, 2, 3, 4, 5, 6]))`,
+print(nb_pairs([1, 2, 3, 4, 5, 6]))   # 3`,
       },
       {
         title: "Spécifier une fonction",
         html: `
-        <p><strong>Spécifier</strong> une fonction, c'est décrire ce qu'elle fait sans dire comment. On précise :</p>
+        <p>Avant de coder une fonction, un·e bon·ne programmeur·se dit <em>ce qu'elle fait</em> sans dire <em>comment</em> : c'est la <strong>spécification</strong>. Elle sert de contrat et facilite les tests. On précise :</p>
         <ul>
-          <li>la <strong>signature</strong> : nom, paramètres et leurs types ;</li>
-          <li>une <strong>docstring</strong> : description du rôle ;</li>
-          <li>les <strong>préconditions</strong> (ce qu'on suppose vrai en entrée) ;</li>
-          <li>un <strong>jeu de tests</strong> avec <code>assert</code>.</li>
-        </ul>`,
+          <li>la <strong>signature</strong> : le nom, les paramètres (et idéalement leurs types) ;</li>
+          <li>une <strong>docstring</strong> : une phrase décrivant le rôle (entre triples guillemets) ;</li>
+          <li>les <strong>préconditions</strong> : ce qu'on suppose vrai en entrée (ex. « liste non vide ») ;</li>
+          <li>un <strong>jeu de tests</strong> avec <code>assert</code> : des exemples « entrée → résultat attendu ».</li>
+        </ul>
+        <p><code>assert condition</code> ne fait <em>rien</em> si la condition est vraie, mais <strong>lève une erreur</strong> si elle est fausse. C'est le moyen le plus simple de vérifier qu'une fonction fait ce qu'on attend.</p>`,
         code: `def moyenne(notes):
     """Renvoie la moyenne d'une liste de notes (float).
     Précondition : notes est une liste non vide de nombres.
@@ -1170,6 +1230,31 @@ assert moyenne([10, 20]) == 15
 assert moyenne([12]) == 12
 assert moyenne([0, 0, 0]) == 0
 print("Tous les tests passent ✔")`,
+      },
+      {
+        title: "Tester et mettre au point (débogage)",
+        html: `
+        <p>Tout programme contient un jour des <strong>bugs</strong>. Savoir les <em>traquer</em> est une compétence aussi importante que savoir coder. On distingue trois familles d'erreurs :</p>
+        <table>
+          <tr><th>Type d'erreur</th><th>Symptôme</th><th>Exemple</th></tr>
+          <tr><td><strong>Syntaxe</strong></td><td>le code refuse de démarrer</td><td>oubli du <code>:</code>, parenthèse non fermée</td></tr>
+          <tr><td><strong>Exécution</strong></td><td>le programme plante en cours</td><td>division par zéro, <code>IndexError</code></td></tr>
+          <tr><td><strong>Logique</strong></td><td>il tourne mais le résultat est faux</td><td>mauvais <code>range</code>, condition inversée</td></tr>
+        </table>
+        <p>La plus sournoise est l'erreur de <strong>logique</strong> : aucun message, mais un résultat faux. Les outils du débogage : ajouter des <code>print</code> intermédiaires pour voir les valeurs, écrire des <code>assert</code>, et <strong>lire attentivement</strong> le message d'erreur (il indique souvent la ligne et la cause).</p>`,
+        code: `# Ce code contient un bug de LOGIQUE : trouve-le.
+def somme_jusqua(n):
+    total = 0
+    for i in range(n):       # <-- range(n) s'arrête à n-1 !
+        total += i
+    return total
+
+print("somme_jusqua(5) =", somme_jusqua(5))   # donne 10, pas 15
+
+# Débogage par print : affichons ce qui est additionné
+for i in range(5):
+    print("on ajoute", i)    # 0,1,2,3,4 : il manque 5 !
+# Correction : range(n + 1). Corrige et relance.`,
       },
       {
         title: "Utiliser une bibliothèque et sa documentation",
@@ -1205,27 +1290,8 @@ print("dé :", random.randint(1, 6))`,
           <tr><td>C</td><td>systèmes, performance</td><td><code>printf("Bonjour");</code></td></tr>
           <tr><td>Java</td><td>applications, Android</td><td><code>System.out.println("Bonjour");</code></td></tr>
         </table>
-        <p>Différences fréquentes : Python délimite les blocs par l'<strong>indentation</strong>, beaucoup d'autres par des <strong>accolades</strong> <code>{ }</code> ; Python a un <strong>typage dynamique</strong>, C et Java un <strong>typage statique</strong> (on déclare le type).</p>`,
-      },
-      {
-        title: "Tester et mettre au point (débogage)",
-        html: `
-        <p>Un programme contient souvent des <strong>bugs</strong>. On distingue :</p>
-        <ul>
-          <li>les <strong>erreurs de syntaxe</strong> : le code ne s'exécute pas (oubli de <code>:</code>, parenthèse) ;</li>
-          <li>les <strong>erreurs d'exécution</strong> : plantage en cours (division par zéro, mauvais indice) ;</li>
-          <li>les <strong>erreurs de logique</strong> : le programme tourne mais donne un résultat faux.</li>
-        </ul>
-        <p>Pour les traquer : ajouter des <code>print</code> intermédiaires, écrire des tests avec <code>assert</code>, lire attentivement les messages d'erreur.</p>`,
-        code: `# Ce code contient un bug de logique : à toi de le repérer.
-def somme_jusqua(n):
-    total = 0
-    for i in range(n):     # range(n) s'arrête à n-1 !
-        total += i
-    return total
-
-print("somme_jusqua(5) =", somme_jusqua(5))   # donne 10, pas 15
-# Correction : range(n + 1). Modifie le code et relance.`,
+        <p>Différences fréquentes : Python délimite les blocs par l'<strong>indentation</strong>, beaucoup d'autres par des <strong>accolades</strong> <code>{ }</code> ; Python a un <strong>typage dynamique</strong>, C et Java un <strong>typage statique</strong> (on déclare le type).</p>
+        <p class="note">🎯 Activité (en îlot) : repérez, dans les quatre exemples du tableau, ce qui change (mots-clés, ponctuation) et ce qui reste pareil (l'idée : « afficher un texte »). On programme des <em>idées</em>, pas une syntaxe.</p>`,
       },
     ],
   },
@@ -1249,62 +1315,91 @@ print("somme_jusqua(5) =", somme_jusqua(5))   # donne 10, pas 15
     ],
     sections: [
       {
+        title: "Qu'est-ce qu'un algorithme ?",
+        html: `
+        <p>Un <strong>algorithme</strong> est une suite <strong>finie</strong> et <strong>précise</strong> d'instructions qui, à partir de données d'entrée, produit un résultat. Une <em>recette de cuisine</em>, un <em>itinéraire</em>, une <em>méthode de calcul</em> sont des algorithmes du quotidien.</p>
+        <p>Attention à ne pas confondre :</p>
+        <ul>
+          <li>l'<strong>algorithme</strong> = l'<em>idée</em>, la méthode, indépendante du langage (on peut l'écrire en français) ;</li>
+          <li>le <strong>programme</strong> = la <em>traduction</em> de cet algorithme dans un langage (Python).</li>
+        </ul>
+        <p>Un bon algorithme doit être <strong>correct</strong> (il donne le bon résultat) et <strong>se terminer</strong> (il s'arrête). Souvent, plusieurs algorithmes résolvent le même problème : on apprend ici à les écrire <em>et</em> à comparer leur <strong>efficacité</strong>.</p>
+        <p class="note">🎯 Démarche îlot : avant de coder, on écrit toujours l'algorithme <strong>en langage naturel</strong> (étapes numérotées) au tableau. Coder vient après.</p>`,
+      },
+      {
         title: "Parcours séquentiel d'un tableau",
         html: `
-        <p>Beaucoup d'algorithmes consistent à <strong>parcourir</strong> un tableau du début à la fin pour en extraire une information : un maximum, une somme, la présence d'un élément.</p>`,
+        <p>L'algorithme le plus fondamental : <strong>parcourir</strong> un tableau du début à la fin pour en extraire une information. C'est le socle de presque tout. Selon le besoin, on adapte ce qu'on calcule pendant le parcours :</p>
+        <ul>
+          <li><strong>rechercher</strong> un élément (et renvoyer son indice, ou −1 s'il est absent) ;</li>
+          <li><strong>compter</strong> les éléments vérifiant une condition ;</li>
+          <li><strong>accumuler</strong> une somme, calculer une <strong>moyenne</strong> ;</li>
+          <li>trouver le <strong>maximum</strong> ou le minimum.</li>
+        </ul>
+        <p>Tous ces algorithmes parcourent le tableau <em>une fois</em> : ils font de l'ordre de <em>n</em> opérations (on dit qu'ils sont <strong>linéaires</strong>). Convention utile : une recherche qui échoue renvoie <strong>−1</strong>.</p>`,
         code: `def recherche(tab, cible):
     """Recherche séquentielle : renvoie l'indice de cible, ou -1."""
     for i in range(len(tab)):
         if tab[i] == cible:
-            return i
-    return -1
+            return i          # trouvé : on sort tout de suite
+    return -1                 # parcouru sans trouver
 
 def maximum(tab):
-    m = tab[0]
+    m = tab[0]                # on suppose que le 1er est le max
     for x in tab:
         if x > m:
-            m = x
+            m = x             # on garde le plus grand vu
     return m
 
 donnees = [4, 8, 15, 16, 23, 42]
-print("indice de 16 :", recherche(donnees, 16))
-print("indice de 99 :", recherche(donnees, 99))
-print("maximum      :", maximum(donnees))`,
+print("indice de 16 :", recherche(donnees, 16))   # 3
+print("indice de 99 :", recherche(donnees, 99))   # -1 (absent)
+print("maximum      :", maximum(donnees))          # 42`,
       },
       {
         title: "La recherche dichotomique",
         html: `
-        <p>Si le tableau est <strong>trié</strong>, on peut chercher bien plus vite. La <strong>recherche dichotomique</strong> compare la cible à l'élément du <em>milieu</em> et élimine la moitié du tableau à chaque étape.</p>
-        <p>Pour 1 000 000 d'éléments, la recherche séquentielle peut faire 1 000 000 comparaisons ; la dichotomie en fait environ <strong>20</strong> seulement (log₂).</p>`,
+        <p>Si le tableau est <strong>trié</strong>, on peut chercher <em>bien</em> plus vite qu'en le parcourant. C'est le principe du jeu « devine le nombre entre 1 et 100 » : on propose le <strong>milieu</strong>, et selon « plus grand / plus petit », on élimine <strong>la moitié</strong> des possibilités à chaque essai.</p>
+        <p>La <strong>recherche dichotomique</strong> applique cela : on garde deux bornes <code>gauche</code> et <code>droite</code>, on compare la cible à l'élément du milieu, et on resserre l'intervalle.</p>
+        <p><strong>Exemple — chercher 23 dans</strong> <code>[2, 5, 8, 12, 16, 23, 38, 56, 72, 91]</code> (indices 0 à 9) :</p>
+        <ol>
+          <li>milieu = indice 4 (valeur 16) ; 23 &gt; 16 → on garde la droite (indices 5 à 9) ;</li>
+          <li>milieu = indice 7 (valeur 56) ; 23 &lt; 56 → on garde la gauche (indices 5 à 6) ;</li>
+          <li>milieu = indice 5 (valeur 23) → trouvé en 3 comparaisons !</li>
+        </ol>
+        <p class="note">⚡ Pour 1 000 000 d'éléments, la recherche séquentielle peut faire 1 000 000 comparaisons ; la dichotomie environ <strong>20</strong> (c'est log₂). C'est l'illustration la plus parlante de la notion de coût.</p>
+        <p class="warnbox">⚠️ La dichotomie n'a de sens que sur un tableau <strong>déjà trié</strong>.</p>`,
         code: `def dichotomie(tab, cible):
-    """tab doit être trié dans l'ordre croissant."""
+    """tab doit être trié dans l'ordre croissant. Renvoie l'indice ou -1."""
     gauche, droite = 0, len(tab) - 1
     while gauche <= droite:
         milieu = (gauche + droite) // 2
         if tab[milieu] == cible:
             return milieu
         elif tab[milieu] < cible:
-            gauche = milieu + 1
+            gauche = milieu + 1     # la cible est à droite
         else:
-            droite = milieu - 1
+            droite = milieu - 1     # la cible est à gauche
     return -1
 
 t = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
-print("indice de 23 :", dichotomie(t, 23))
-print("indice de 17 :", dichotomie(t, 17))`,
+print("indice de 23 :", dichotomie(t, 23))   # 5
+print("indice de 17 :", dichotomie(t, 17))   # -1 (absent)`,
       },
       {
         title: "Le tri par sélection",
         html: `
-        <p>Le <strong>tri par sélection</strong> : on cherche le plus petit élément et on le place en première position, puis le plus petit du reste en deuxième position, etc.</p>`,
+        <p>Trier, c'est ranger les éléments dans l'ordre. Première méthode, le <strong>tri par sélection</strong> : on cherche le <strong>plus petit</strong> élément et on le place en première position, puis le plus petit du <em>reste</em> en deuxième position, et ainsi de suite.</p>
+        <p>Sur <code>[5, 2, 9, 1, 7]</code> : on trouve 1 → on l'échange avec le 5 → <code>[1, 2, 9, 5, 7]</code> ; puis le plus petit du reste est 2 (déjà en place) ; puis 5 ↔ 9 → <code>[1, 2, 5, 9, 7]</code> ; puis 7 ↔ 9 → <code>[1, 2, 5, 7, 9]</code>.</p>
+        <p>Deux boucles imbriquées (une pour la position à remplir, une pour chercher le minimum) : son coût est de l'ordre de <strong>n²</strong> (quadratique).</p>`,
         code: `def tri_selection(tab):
     n = len(tab)
     for i in range(n):
         i_min = i
-        for j in range(i + 1, n):
+        for j in range(i + 1, n):       # cherche le min du reste
             if tab[j] < tab[i_min]:
                 i_min = j
-        tab[i], tab[i_min] = tab[i_min], tab[i]  # échange
+        tab[i], tab[i_min] = tab[i_min], tab[i]   # échange
     return tab
 
 print(tri_selection([5, 2, 9, 1, 7, 3]))`,
@@ -1312,15 +1407,16 @@ print(tri_selection([5, 2, 9, 1, 7, 3]))`,
       {
         title: "Le tri par insertion",
         html: `
-        <p>Le <strong>tri par insertion</strong> : on construit la partie triée élément par élément, en <em>insérant</em> chaque nouvel élément à sa place parmi les précédents. C'est la façon dont on trie souvent un jeu de cartes à la main.</p>`,
+        <p>Deuxième méthode, le <strong>tri par insertion</strong> : c'est exactement la façon dont on trie un <strong>jeu de cartes</strong> à la main. On prend les cartes une par une et on <em>insère</em> chacune à sa bonne place parmi celles déjà triées.</p>
+        <p>La partie gauche du tableau est maintenue triée ; pour chaque nouvel élément, on le décale vers la gauche tant qu'il est plus petit que son voisin. Coût également de l'ordre de <strong>n²</strong>, mais très efficace si le tableau est <em>presque</em> trié.</p>`,
         code: `def tri_insertion(tab):
     for i in range(1, len(tab)):
-        cle = tab[i]
+        cle = tab[i]            # la carte à insérer
         j = i - 1
         while j >= 0 and tab[j] > cle:
-            tab[j + 1] = tab[j]
+            tab[j + 1] = tab[j]  # on décale vers la droite
             j -= 1
-        tab[j + 1] = cle
+        tab[j + 1] = cle         # on pose la carte à sa place
     return tab
 
 print(tri_insertion([5, 2, 9, 1, 7, 3]))`,
@@ -1328,20 +1424,24 @@ print(tri_insertion([5, 2, 9, 1, 7, 3]))`,
       {
         title: "Les algorithmes gloutons",
         html: `
-        <p>Un algorithme <strong>glouton</strong> construit une solution pas à pas, en faisant à chaque étape le choix qui semble le meilleur sur le moment, sans jamais revenir en arrière. Exemple classique : le <strong>rendu de monnaie</strong> (donner le moins de pièces possible).</p>
-        <p class="note">Le glouton est rapide mais ne donne pas toujours la solution optimale — cela dépend du système de pièces.</p>`,
+        <p>Un algorithme <strong>glouton</strong> (<em>greedy</em>) construit une solution <em>pas à pas</em>, en faisant à chaque étape le choix qui semble le meilleur <strong>sur le moment</strong>, sans jamais revenir en arrière. C'est rapide et intuitif.</p>
+        <p>Exemple classique : le <strong>rendu de monnaie</strong>. Pour rendre 67 centimes avec le moins de pièces, on donne d'abord la plus grosse pièce possible (50), puis on recommence sur ce qui reste (17 → 10, puis 5, puis 2).</p>
+        <p class="warnbox">⚠️ Le glouton est rapide mais ne donne <strong>pas toujours</strong> la solution optimale ! Cela dépend du système de pièces. Avec un système « truqué » comme [1, 3, 4], rendre 6 donne en glouton 4+1+1 (3 pièces) alors que 3+3 suffit (2 pièces).</p>`,
         code: `def rendu_monnaie(somme, pieces):
-    pieces = sorted(pieces, reverse=True)
+    pieces = sorted(pieces, reverse=True)   # de la plus grosse à la plus petite
     rendu = []
     for p in pieces:
-        while somme >= p:
+        while somme >= p:        # on prend cette pièce tant qu'on peut
             somme -= p
             rendu.append(p)
     return rendu
 
 systeme = [1, 2, 5, 10, 20, 50, 100, 200]   # centimes d'euro
 print("Rendu de 67 :", rendu_monnaie(67, systeme))
-print("Nb de pièces :", len(rendu_monnaie(67, systeme)))`,
+print("Nb de pièces :", len(rendu_monnaie(67, systeme)))
+
+# Système truqué : le glouton se trompe !
+print("Glouton sur [1,3,4] pour 6 :", rendu_monnaie(6, [1, 3, 4]))  # 4+1+1`,
       },
       {
         title: "Les k plus proches voisins (kNN)",
@@ -1371,34 +1471,57 @@ print(knn(donnees, (5.2, 4.0), k=3))   # banane`,
       {
         title: "Coût d'un algorithme (complexité)",
         html: `
-        <p>Deux algorithmes corrects ne se valent pas forcément : l'un peut être beaucoup plus <strong>rapide</strong>. On estime le coût en comptant le nombre d'opérations en fonction de la taille <em>n</em> des données.</p>
+        <p>Deux algorithmes corrects ne se valent pas forcément : l'un peut être <strong>bien plus rapide</strong> que l'autre. Plutôt que de chronométrer (cela dépend de la machine), on compte le <strong>nombre d'opérations</strong> en fonction de la taille <em>n</em> des données. C'est la <strong>complexité</strong>.</p>
+        <p>On la résume par un « ordre de grandeur », noté avec un grand O :</p>
         <table>
-          <tr><th>Coût</th><th>Nom</th><th>Exemple</th></tr>
-          <tr><td>constant</td><td>O(1)</td><td>accès <code>tab[i]</code></td></tr>
-          <tr><td>logarithmique</td><td>O(log n)</td><td>recherche dichotomique</td></tr>
-          <tr><td>linéaire</td><td>O(n)</td><td>parcours, recherche séquentielle</td></tr>
-          <tr><td>quadratique</td><td>O(n²)</td><td>tris par sélection / insertion</td></tr>
-        </table>`,
-        code: `# Comparons concrètement le NOMBRE de comparaisons
+          <tr><th>Coût</th><th>Notation</th><th>Exemple</th><th>Pour n = 1 000 000</th></tr>
+          <tr><td>constant</td><td>O(1)</td><td>accès <code>tab[i]</code></td><td>1 opération</td></tr>
+          <tr><td>logarithmique</td><td>O(log n)</td><td>recherche dichotomique</td><td>≈ 20</td></tr>
+          <tr><td>linéaire</td><td>O(n)</td><td>parcours, recherche séquentielle</td><td>1 000 000</td></tr>
+          <tr><td>quadratique</td><td>O(n²)</td><td>tris par sélection / insertion</td><td>10¹² (énorme !)</td></tr>
+        </table>
+        <p>La dernière colonne parle d'elle-même : pour de grandes données, le choix de l'algorithme est <em>décisif</em>. Vérifions concrètement, en comptant les comparaisons, l'écart entre recherche séquentielle (linéaire) et dichotomie (logarithmique) :</p>`,
+        code: `# Comparons le NOMBRE de comparaisons selon la taille n
 def cout_sequentiel(n):
     return n                  # pire cas : on parcourt tout
 
 def cout_dichotomie(n):
     comparaisons = 0
     while n > 1:
-        n //= 2
+        n //= 2               # on divise par 2 à chaque étape
         comparaisons += 1
     return comparaisons
 
 for taille in [10, 1000, 1000000]:
     print(f"n={taille:>8} | séquentiel={cout_sequentiel(taille):>8}",
-          f"| dichotomie={cout_dichotomie(taille)}")`,
+          f"| dichotomie={cout_dichotomie(taille)}")
+# C'est tout l'intérêt du projet « Recherche séquentielle vs dichotomique ».`,
       },
       {
         title: "Terminaison : le variant de boucle",
         html: `
-        <p>Une boucle <code>while</code> doit <strong>se terminer</strong>. Pour le prouver, on exhibe un <strong>variant</strong> : une quantité entière, positive, qui <em>décroît strictement</em> à chaque tour. Comme un entier positif ne peut décroître indéfiniment, la boucle s'arrête.</p>
-        <p>Exemple : dans la dichotomie, la quantité <code>droite − gauche</code> diminue à chaque tour : c'est le variant.</p>`,
+        <p>Une boucle <code>while</code> mal écrite peut tourner <strong>à l'infini</strong>. Comment <em>prouver</em> qu'une boucle s'arrête toujours ? On exhibe un <strong>variant</strong> : une quantité <strong>entière</strong>, <strong>positive</strong>, qui <strong>décroît strictement</strong> à chaque tour.</p>
+        <p>Le raisonnement est imparable : un entier positif qui diminue à chaque passage ne peut pas descendre indéfiniment (il finira par atteindre 0 ou moins) — donc la boucle s'arrête forcément.</p>
+        <p>Exemples :</p>
+        <ul>
+          <li>dans la <strong>dichotomie</strong>, la quantité <code>droite − gauche</code> diminue à chaque tour : c'est un variant ;</li>
+          <li>dans <code>while n &gt; 1: n = n // 2</code>, la valeur de <code>n</code> décroît : variant.</li>
+        </ul>
+        <p class="note">À distinguer : le <strong>variant</strong> prouve qu'une boucle <em>se termine</em> ; un <strong>invariant</strong> (vu plus tard) sert à prouver qu'elle est <em>correcte</em>.</p>`,
+      },
+      {
+        title: "Synthèse : choisir et comparer",
+        html: `
+        <p>Ce thème fournit une boîte à outils d'algorithmes classiques. L'essentiel n'est pas de les réciter, mais de savoir <strong>lequel utiliser</strong> et <strong>pourquoi</strong> :</p>
+        <table>
+          <tr><th>Problème</th><th>Algorithme</th><th>Coût</th></tr>
+          <tr><td>chercher dans un tableau quelconque</td><td>recherche séquentielle</td><td>O(n)</td></tr>
+          <tr><td>chercher dans un tableau <em>trié</em></td><td>recherche dichotomique</td><td>O(log n)</td></tr>
+          <tr><td>ranger dans l'ordre</td><td>tri par sélection / insertion</td><td>O(n²)</td></tr>
+          <tr><td>optimiser pas à pas (rendu de monnaie)</td><td>glouton</td><td>rapide, pas toujours optimal</td></tr>
+          <tr><td>classer un objet inconnu</td><td>k plus proches voisins</td><td>selon la taille des données</td></tr>
+        </table>
+        <p>Deux projets prolongent directement ce thème : <strong>« Recherche séquentielle vs dichotomique »</strong> (mesurer le coût) et <strong>« Classer avec les k plus proches voisins »</strong>.</p>`,
       },
     ],
   },
@@ -1542,57 +1665,69 @@ print("\\nNombre d'événements :", len(frise))`,
     ],
     sections: [
       {
-        title: "Qu'est-ce qu'un réseau et un protocole ?",
+        title: "Relier les machines : pourquoi un réseau ?",
         html: `
-        <p>Un <strong>réseau</strong> relie des machines pour qu'elles échangent des données. Pour se comprendre, elles suivent un <strong>protocole</strong> : un ensemble de <em>règles communes</em> (format des messages, ordre des échanges). Sans règles communes, deux machines « parlent » sans se comprendre.</p>
-        <p>Internet repose sur la famille de protocoles <strong>TCP/IP</strong>. Chaque machine possède une <strong>adresse IP</strong> qui l'identifie sur le réseau.</p>
-        <p class="note">Analogie : envoyer une lettre suppose un format commun (adresse, timbre, enveloppe). Le protocole, c'est ce « format » partagé.</p>`,
+        <p>Un seul ordinateur isolé est vite limité. La force de l'informatique moderne vient de la <strong>mise en réseau</strong> : des milliards de machines qui s'échangent des données, du téléphone à côté de toi au serveur à l'autre bout du monde. <strong>Internet</strong> est le plus grand de ces réseaux — un « réseau de réseaux ».</p>
+        <p>Mais comment des machines très différentes, reliées par des câbles, des fibres et des ondes, parviennent-elles à se comprendre ? Et comment un message arrive-t-il à bon port, intact, alors qu'il traverse des dizaines d'équipements ? C'est tout l'objet de ce thème. Trois grandes idées : le <strong>protocole</strong> (les règles), les <strong>paquets</strong> (le découpage) et le <strong>routage</strong> (le chemin).</p>`,
+      },
+      {
+        title: "Réseau, protocole et adresse IP",
+        html: `
+        <p>Un <strong>réseau</strong> relie des machines pour qu'elles échangent des données. Pour se comprendre, elles doivent suivre les mêmes règles : c'est un <strong>protocole</strong> — un ensemble de conventions sur le <em>format</em> des messages et l'<em>ordre</em> des échanges.</p>
+        <p class="note">📮 Analogie : envoyer une lettre suppose un format commun (adresse au bon endroit, timbre, enveloppe). Sans ce « protocole postal » partagé, la lettre n'arriverait pas. Sur Internet, c'est pareil.</p>
+        <p>Internet repose sur la famille de protocoles <strong>TCP/IP</strong>. Chaque machine y possède une <strong>adresse IP</strong> (ex. <code>192.168.1.10</code>) qui l'identifie de façon unique sur le réseau, un peu comme une adresse postale. On envoie donc un message « à destination de telle adresse IP ».</p>`,
       },
       {
         title: "Découper un message en paquets",
         html: `
-        <p>Un message n'est pas envoyé d'un seul bloc : il est découpé en <strong>paquets</strong>. Chaque paquet contient un <strong>numéro</strong> (pour le remettre dans l'ordre) et un morceau des données. Les paquets voyagent <em>indépendamment</em> et peuvent prendre des chemins différents.</p>
+        <p>Idée centrale d'Internet : un message n'est <strong>pas</strong> envoyé d'un seul bloc, mais découpé en petits morceaux appelés <strong>paquets</strong>. Chaque paquet transporte un <strong>numéro d'ordre</strong> et un morceau des données (plus l'adresse de destination).</p>
+        <p>Pourquoi découper ? Plusieurs avantages :</p>
         <ul>
-          <li>Avantage : si un paquet est perdu, on ne renvoie que celui-là.</li>
-          <li>Le destinataire <strong>réordonne</strong> les paquets grâce à leur numéro.</li>
-        </ul>`,
-        code: `# Un message est découpé en paquets numérotés
+          <li>les paquets voyagent <strong>indépendamment</strong>, éventuellement par des chemins différents, ce qui équilibre le trafic ;</li>
+          <li>si un paquet est perdu, on ne renvoie <strong>que celui-là</strong>, pas tout le message ;</li>
+          <li>le destinataire <strong>réordonne</strong> les paquets grâce à leur numéro, même s'ils arrivent dans le désordre.</li>
+        </ul>
+        <p>Le numéro est donc essentiel : c'est lui qui permet de recoller le message. Programmons ce découpage et cette reconstruction (un paquet = un dictionnaire <code>{num, data}</code>, vu au thème 3) :</p>`,
+        code: `# Découper un message en paquets numérotés
 message = "Bonjour le monde"
 mots = message.split(" ")
 paquets = [{"num": i + 1, "data": m} for i, m in enumerate(mots)]
 for p in paquets:
     print(p)
 
-# Reconstruction : on trie par numéro puis on recolle
+# Reconstruction : on trie par numéro, puis on recolle (thème 4 : trier une table)
 recompose = " ".join(p["data"] for p in sorted(paquets, key=lambda p: p["num"]))
 print("Message reçu :", recompose)`,
       },
       {
         title: "Le routage : trouver le chemin",
         html: `
-        <p>Entre l'expéditeur et le destinataire, les paquets traversent des <strong>routeurs</strong>. À chaque étape, le routeur choisit vers quel voisin transmettre le paquet pour se rapprocher de la destination : c'est le <strong>routage</strong>.</p>
-        <p>S'il y a plusieurs chemins possibles, le réseau peut en choisir un plus court ou contourner une panne. C'est ce qui rend Internet <strong>robuste</strong>.</p>`,
+        <p>Entre l'expéditeur et le destinataire, un paquet ne saute pas directement : il traverse une succession d'équipements appelés <strong>routeurs</strong> (ta box Internet en est un). À chaque étape, le routeur regarde l'adresse de destination et choisit vers quel voisin transmettre le paquet pour s'<em>en rapprocher</em> : c'est le <strong>routage</strong>, un peu comme passer de ville en ville vers sa destination.</p>
+        <pre><code>[Toi] → routeur A → routeur C → routeur D → [Serveur]
+                  ↘ routeur B ↗   (autre chemin possible)</code></pre>
+        <p>S'il existe plusieurs chemins, le réseau peut en choisir un plus court, ou <strong>contourner une panne</strong> : si le routeur C tombe, les paquets passent par B. C'est cette souplesse qui rend Internet <strong>robuste</strong> — il a d'ailleurs été conçu pour résister à la perte de certains nœuds.</p>`,
       },
       {
         title: "Désordre, perte et doublon",
         html: `
-        <p>Comme les paquets voyagent séparément, ils peuvent :</p>
-        <ul>
-          <li>arriver <strong>dans le désordre</strong> → on les retrie par numéro ;</li>
-          <li>être <strong>perdus</strong> → il manque un numéro : le destinataire le détecte et peut le redemander ;</li>
-          <li>arriver en <strong>double</strong> → on ignore les numéros déjà reçus.</li>
-        </ul>
-        <p>Le protocole <strong>TCP</strong> gère justement ces problèmes pour livrer un message complet et dans l'ordre.</p>`,
+        <p>Comme les paquets voyagent séparément, trois incidents peuvent survenir à l'arrivée :</p>
+        <table>
+          <tr><th>Incident</th><th>Comment le repérer</th><th>Solution</th></tr>
+          <tr><td><strong>désordre</strong></td><td>les numéros ne se suivent pas</td><td>on retrie par numéro</td></tr>
+          <tr><td><strong>perte</strong></td><td>un numéro manque dans la suite</td><td>on le détecte et on le redemande</td></tr>
+          <tr><td><strong>doublon</strong></td><td>un numéro apparaît deux fois</td><td>on ignore la copie</td></tr>
+        </table>
+        <p>Le code ci-dessous gère les trois à la fois : ranger les paquets dans un <strong>dictionnaire</strong> <code>{num: data}</code> élimine automatiquement les doublons (une clé écrase l'ancienne), et comparer les numéros présents à la suite attendue révèle les pertes.</p>`,
         code: `def reconstruire(paquets):
     vus = {}
     for p in paquets:
-        vus[p["num"]] = p["data"]          # un doublon n'est pas répété
+        vus[p["num"]] = p["data"]          # un doublon écrase : pas de répétition
     manquants = [n for n in range(1, max(vus) + 1) if n not in vus]
     if manquants:
         print("⚠️ Paquet(s) perdu(s) :", manquants)
-    return " ".join(vus[n] for n in sorted(vus))
+    return " ".join(vus[n] for n in sorted(vus))   # remis dans l'ordre
 
-# Désordre + doublon
+# Cas réaliste : désordre + doublon
 paquets = [
     {"num": 3, "data": "monde"},
     {"num": 1, "data": "Bonjour"},
@@ -1600,6 +1735,28 @@ paquets = [
     {"num": 2, "data": "le"},
 ]
 print(reconstruire(paquets))`,
+      },
+      {
+        title: "Deux protocoles complémentaires : IP et TCP",
+        html: `
+        <p>Dans « TCP/IP », il y a en réalité deux rôles complémentaires :</p>
+        <ul>
+          <li><strong>IP</strong> (<em>Internet Protocol</em>) s'occupe de l'<strong>adressage</strong> et de l'<strong>acheminement</strong> des paquets (le routage). Mais IP ne garantit rien : un paquet peut se perdre ou arriver en désordre.</li>
+          <li><strong>TCP</strong> (<em>Transmission Control Protocol</em>) ajoute la <strong>fiabilité</strong> par-dessus IP : il numérote les paquets, détecte les pertes, redemande ce qui manque et remet tout dans l'ordre. C'est exactement le travail qu'on vient de programmer !</li>
+        </ul>
+        <p>Grâce à cette coopération, une page web ou un message arrive <strong>complet et dans l'ordre</strong>, sans que l'utilisateur ait à s'en soucier. (Certaines applications, comme la visioconférence, préfèrent un protocole plus rapide mais sans garantie, UDP, où l'on tolère quelques pertes.)</p>`,
+      },
+      {
+        title: "Synthèse et mise en pratique",
+        html: `
+        <p>Les idées clés à retenir :</p>
+        <ul>
+          <li>un <strong>protocole</strong> = des règles communes (TCP/IP) ; chaque machine a une <strong>adresse IP</strong> ;</li>
+          <li>un message est découpé en <strong>paquets numérotés</strong> qui voyagent indépendamment ;</li>
+          <li>les <strong>routeurs</strong> acheminent les paquets de proche en proche (routage), ce qui rend le réseau robuste ;</li>
+          <li>à l'arrivée, on gère <strong>désordre</strong> (retri), <strong>perte</strong> (numéro manquant) et <strong>doublon</strong> (numéro répété).</li>
+        </ul>
+        <p>Deux activités prolongent ce thème : le <strong>projet « Simulation de paquets réseau »</strong> (reconstituer un message, gérer perte et doublon) et l'activité débranchée <strong>« le réseau vivant »</strong> où chaque élève joue un routeur.</p>`,
       },
     ],
   },
