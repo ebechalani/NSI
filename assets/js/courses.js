@@ -26,122 +26,254 @@ const COURSES = [
     ],
     sections: [
       {
-        title: "Le bit, l'octet et les unités",
+        title: "Pourquoi tout est-il codé en 0 et 1 ?",
         html: `
-        <p>Un <strong>bit</strong> (<em>binary digit</em>) est la plus petite unité d'information : il vaut <code>0</code> ou <code>1</code>. Un <strong>octet</strong> (<em>byte</em>) est un groupe de <strong>8 bits</strong>.</p>
-        <p>Avec <em>n</em> bits, on peut représenter <strong>2<sup>n</sup></strong> valeurs différentes. Par exemple, un octet permet 2<sup>8</sup> = 256 combinaisons (de 0 à 255).</p>
+        <p>Au cœur d'un ordinateur, il n'y a ni lettres, ni images, ni sons : il n'y a que de l'<strong>électricité</strong>. Dans un circuit, on sait fabriquer simplement et de façon fiable deux états bien distincts : le courant <strong>passe</strong> ou <strong>ne passe pas</strong>, la tension est <strong>haute</strong> ou <strong>basse</strong>. On note ces deux états <code>1</code> et <code>0</code>.</p>
+        <p>On <em>pourrait</em> imaginer une machine qui distingue 10 niveaux de tension (pour compter en base 10), mais ce serait fragile : la moindre perturbation électrique ferait confondre un « 6 » avec un « 7 ». Avec seulement deux états très éloignés, la machine ne se trompe presque jamais. C'est pour cette <strong>fiabilité</strong> que toute l'informatique repose sur le <strong>binaire</strong> (base 2).</p>
+        <p>Idée maîtresse de tout ce thème : <strong>une même suite de 0 et de 1 peut représenter des choses très différentes</strong> (un nombre entier, un nombre à virgule, un caractère, une couleur…) selon la <em>convention</em> que l'on décide d'utiliser. Apprendre la représentation des données, c'est apprendre ces conventions.</p>
+        <p class="note">🎯 Activité débranchée d'introduction (en îlot) : avec 5 cartes (1, 2, 4, 8, 16) que l'on retourne face cachée/visible, faites afficher à votre voisin tous les nombres de 0 à 31. Que remarquez-vous sur le nombre de combinaisons possibles ?</p>`,
+      },
+      {
+        title: "Le bit, l'octet et les puissances de 2",
+        html: `
+        <p>Un <strong>bit</strong> (de l'anglais <em>binary digit</em>, « chiffre binaire ») est la plus petite unité d'information possible : il vaut <code>0</code> ou <code>1</code>. C'est une seule « case » qui peut prendre deux valeurs.</p>
+        <p>Que peut-on faire avec plusieurs bits ? Comptons les possibilités :</p>
+        <ul>
+          <li><strong>1 bit</strong> → 2 valeurs : 0, 1</li>
+          <li><strong>2 bits</strong> → 4 valeurs : 00, 01, 10, 11</li>
+          <li><strong>3 bits</strong> → 8 valeurs : 000, 001, 010, … 111</li>
+          <li><strong>n bits</strong> → <strong>2<sup>n</sup></strong> valeurs</li>
+        </ul>
+        <p>Pourquoi cela double-t-il à chaque bit ajouté ? Parce que chaque combinaison existante peut être prolongée de deux façons : en lui ajoutant un <code>0</code> ou un <code>1</code> devant. On double donc le nombre de possibilités. Cette formule <strong>2<sup>n</sup></strong> est <u>la</u> formule à connaître par cœur de ce thème.</p>
+        <p>Un <strong>octet</strong> (<em>byte</em> en anglais) est un paquet de <strong>8 bits</strong>. Il permet donc 2<sup>8</sup> = <strong>256</strong> combinaisons, soit les entiers de <strong>0 à 255</strong>. C'est l'unité de base de la mémoire.</p>
         <table>
-          <tr><th>Unité</th><th>Valeur</th></tr>
-          <tr><td>1 octet (o)</td><td>8 bits</td></tr>
-          <tr><td>1 kilooctet (ko)</td><td>1000 octets (kio = 1024 o)</td></tr>
-          <tr><td>1 mégaoctet (Mo)</td><td>1000 ko</td></tr>
-          <tr><td>1 gigaoctet (Go)</td><td>1000 Mo</td></tr>
+          <tr><th>Unité</th><th>Vaut</th><th>Ordre de grandeur</th></tr>
+          <tr><td>1 octet (o)</td><td>8 bits</td><td>1 caractère</td></tr>
+          <tr><td>1 kilooctet (ko)</td><td>1000 o (kio = 1024 o)</td><td>une courte page de texte</td></tr>
+          <tr><td>1 mégaoctet (Mo)</td><td>1000 ko</td><td>une photo, un livre</td></tr>
+          <tr><td>1 gigaoctet (Go)</td><td>1000 Mo</td><td>un film</td></tr>
+          <tr><td>1 téraoctet (To)</td><td>1000 Go</td><td>un disque dur</td></tr>
         </table>
-        <p class="note">⚠️ Attention à ne pas confondre <strong>bit</strong> (b) et <strong>octet</strong> (o). Un débit Internet de « 100 Mb/s » correspond à environ 12,5 Mo/s.</p>`,
+        <p class="warnbox">⚠️ Piège classique : ne confondez pas le <strong>bit</strong> (noté <code>b</code>) et l'<strong>octet</strong> (noté <code>o</code>, ou <em>byte</em> = <code>B</code>). Un débit Internet annoncé « 100 Mb/s » (mégabits) vaut 100 ÷ 8 ≈ <strong>12,5 Mo/s</strong> (mégaoctets). C'est pour cela qu'un fichier de 100 Mo ne se télécharge pas en 1 seconde sur une ligne à 100 Mb/s.</p>`,
+        code: `# La table des puissances de 2, à connaître jusqu'à 2^10
+for n in range(11):
+    print(f"{n:>2} bits -> 2**{n} = {2**n:>4} valeurs")
+
+# Combien de valeurs sur un octet ? Et le plus grand entier codable ?
+print("Un octet :", 2**8, "valeurs, de 0 à", 2**8 - 1)`,
       },
       {
-        title: "La numération binaire et la conversion de bases",
+        title: "Comprendre une base : le rôle de la position",
         html: `
-        <p>En base 10 (décimal), on utilise 10 chiffres (0 à 9). En base 2 (binaire), seulement deux : 0 et 1. La position d'un chiffre indique une puissance de la base.</p>
-        <p>Exemple : le nombre binaire <code>1101</code> vaut :</p>
-        <p style="text-align:center">1×2³ + 1×2² + 0×2¹ + 1×2⁰ = 8 + 4 + 0 + 1 = <strong>13</strong></p>
-        <h3>Décimal → binaire (divisions successives)</h3>
-        <p>On divise par 2 et on lit les restes de bas en haut. Pour 13 : 13→1, 6→0, 3→1, 1→1 ⇒ <code>1101</code>.</p>
-        <h3>L'hexadécimal (base 16)</h3>
-        <p>On utilise 16 symboles : 0-9 puis A=10, B=11, C=12, D=13, E=14, F=15. Un chiffre hexadécimal représente exactement 4 bits, ce qui rend les conversions avec le binaire très simples. Exemple : <code>FF</code> = 255 = <code>11111111</code>.</p>`,
-        code: `# Python convertit facilement entre bases
-n = 13
-print("binaire   :", bin(n))   # 0b1101
-print("hexa      :", hex(n))   # 0xd
-print("octal     :", oct(n))
-
-# Lire une écriture binaire ou hexa
-print("0b1101 =", 0b1101)
-print("0xFF   =", 0xFF)
-
-# Conversion inverse avec int(chaine, base)
-print(int("1101", 2), int("FF", 16))`,
+        <p>Avant le binaire, redécouvrons notre propre système, le <strong>décimal</strong> (base 10). Pourquoi écrit-on « 2025 » ? Parce que la <strong>position</strong> de chaque chiffre lui donne un <em>poids</em>, qui est une puissance de 10 :</p>
+        <p style="text-align:center"><strong>2</strong>×10³ + <strong>0</strong>×10² + <strong>2</strong>×10¹ + <strong>5</strong>×10⁰ = 2000 + 0 + 20 + 5 = <strong>2025</strong></p>
+        <p>Le chiffre tout à droite a le poids le plus faible (10⁰ = 1), celui tout à gauche le poids le plus fort. C'est exactement le même principe dans <em>toutes</em> les bases — seule la base change.</p>
+        <p>En <strong>base 2</strong>, on n'a que deux chiffres (0 et 1) et les poids sont les <strong>puissances de 2</strong> : …, 16, 8, 4, 2, 1. Le binaire <code>1101</code> se lit donc :</p>
+        <table>
+          <tr><th>Poids</th><td>8 (2³)</td><td>4 (2²)</td><td>2 (2¹)</td><td>1 (2⁰)</td></tr>
+          <tr><th>Bit</th><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+          <tr><th>Contribue</th><td>8</td><td>4</td><td>0</td><td>1</td></tr>
+        </table>
+        <p style="text-align:center">8 + 4 + 0 + 1 = <strong>13</strong>. Donc <code>1101₂ = 13₁₀</code>.</p>
+        <p class="note">💡 Astuce de lecture : le bit le plus à droite vaut 1 (il indique si le nombre est impair) ; chaque bit vers la gauche vaut le double du précédent.</p>`,
       },
       {
-        title: "Les entiers relatifs : le complément à deux",
+        title: "Convertir : binaire → décimal",
         html: `
-        <p>Comment coder un nombre <strong>négatif</strong> sans signe « − » ? On utilise le <strong>complément à deux</strong>. Sur 8 bits, le bit de poids fort indique le signe.</p>
-        <p><strong>Méthode</strong> pour coder −5 sur 8 bits :</p>
+        <p><strong>Méthode (à appliquer pas à pas) :</strong></p>
         <ol>
-          <li>Écrire +5 : <code>0000 0101</code></li>
-          <li>Inverser tous les bits : <code>1111 1010</code></li>
-          <li>Ajouter 1 : <code>1111 1011</code></li>
+          <li>Écris au-dessus de chaque bit son poids (1, 2, 4, 8, 16… <em>de droite à gauche</em>).</li>
+          <li>Ne garde que les poids des bits égaux à 1.</li>
+          <li>Additionne ces poids.</li>
         </ol>
-        <p>Sur 8 bits on couvre ainsi les entiers de <strong>−128 à +127</strong>. Le grand avantage : l'addition fonctionne sans cas particulier pour les négatifs.</p>`,
-        code: `def complement_a_deux(n, bits=8):
-    """Renvoie l'écriture binaire de n en complément à deux."""
-    if n < 0:
-        n = (1 << bits) + n      # 2**bits + n
-    return format(n, '0{}b'.format(bits))
+        <p><strong>Exemple travaillé — convertir <code>101010</code> :</strong></p>
+        <p style="text-align:center">poids : 32 16 8 4 2 1 — bits : 1 0 1 0 1 0 → on garde 32 + 8 + 2 = <strong>42</strong></p>
+        <p><strong>Deuxième exemple — <code>11111111</code> (un octet plein) :</strong> 128+64+32+16+8+4+2+1 = <strong>255</strong>. On retrouve bien le maximum d'un octet.</p>
+        <p>Vérifie toujours ton calcul à la main d'abord, <em>puis</em> avec Python :</p>`,
+        code: `# Conversion binaire -> décimal "à la main" (algorithme de Horner)
+def bin_vers_dec(chaine):
+    total = 0
+    for bit in chaine:          # on lit de gauche à droite
+        total = total * 2 + int(bit)
+    return total
 
-print(" 5 ->", complement_a_deux(5))
-print("-5 ->", complement_a_deux(-5))
-print("-1 ->", complement_a_deux(-1))   # 11111111
-print("min ->", complement_a_deux(-128))`,
+print(bin_vers_dec("101010"))   # 42
+print(bin_vers_dec("11111111")) # 255
+
+# Vérification avec l'outil intégré de Python
+print(int("101010", 2), int("11111111", 2))`,
       },
       {
-        title: "Débordement (overflow)",
+        title: "Convertir : décimal → binaire (divisions successives)",
         html: `
-        <p>Quand le résultat d'un calcul dépasse la capacité du nombre de bits utilisés, on obtient un <strong>débordement</strong> : le résultat « tourne ». En Python, les entiers sont de taille illimitée, mais ce n'est pas le cas dans la plupart des langages (C, Java...) ni dans le matériel.</p>`,
-        code: `# Simulation d'un entier non signé sur 8 bits (0..255)
+        <p>Dans l'autre sens, on utilise la méthode des <strong>divisions successives par 2</strong> :</p>
+        <ol>
+          <li>Divise le nombre par 2, note le <strong>reste</strong> (0 ou 1) et garde le quotient.</li>
+          <li>Recommence avec le quotient, jusqu'à obtenir un quotient nul.</li>
+          <li>Lis les restes <strong>de bas en haut</strong> : c'est l'écriture binaire.</li>
+        </ol>
+        <p><strong>Exemple travaillé — convertir 42 :</strong></p>
+        <table>
+          <tr><th>Division</th><th>Quotient</th><th>Reste</th></tr>
+          <tr><td>42 ÷ 2</td><td>21</td><td>0</td></tr>
+          <tr><td>21 ÷ 2</td><td>10</td><td>1</td></tr>
+          <tr><td>10 ÷ 2</td><td>5</td><td>0</td></tr>
+          <tr><td>5 ÷ 2</td><td>2</td><td>1</td></tr>
+          <tr><td>2 ÷ 2</td><td>1</td><td>0</td></tr>
+          <tr><td>1 ÷ 2</td><td>0</td><td>1</td></tr>
+        </table>
+        <p>En lisant les restes <em>de bas en haut</em> : <code>101010</code>. On retrouve bien 42 → on peut vérifier en reconvertissant !</p>
+        <p class="note">🔁 <strong>Méthode alternative (soustraction des puissances)</strong> : cherche la plus grande puissance de 2 ≤ au nombre, mets un 1, soustrais, recommence. Pour 42 : 32 entre (1), reste 10 ; 16 n'entre pas (0) ; 8 entre (1), reste 2 ; 4 non (0) ; 2 oui (1) ; 1 non (0) → 101010.</p>`,
+        code: `def dec_vers_bin(n):
+    if n == 0:
+        return "0"
+    bits = ""
+    while n > 0:
+        bits = str(n % 2) + bits   # le reste, ajouté DEVANT
+        n = n // 2                 # division entière
+    return bits
+
+print(dec_vers_bin(42))    # 101010
+print(dec_vers_bin(255))   # 11111111
+
+# Python le fait aussi directement (préfixe 0b) :
+print(bin(42))`,
+      },
+      {
+        title: "L'hexadécimal (base 16) : le binaire « compact »",
+        html: `
+        <p>Le binaire est fiable pour la machine, mais pénible pour les humains : <code>11111111</code> est long et difficile à relire. D'où la <strong>base 16</strong> (hexadécimal), très utilisée en informatique (couleurs web, adresses mémoire…).</p>
+        <p>En base 16, il faut 16 symboles. On réutilise 0 à 9, puis les lettres :</p>
+        <table>
+          <tr><th>Hexa</th><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr>
+          <tr><th>Décimal</th><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
+        </table>
+        <p><strong>Le lien magique :</strong> 16 = 2⁴, donc <u>un chiffre hexadécimal correspond exactement à 4 bits</u> (un « quartet »). Convertir entre binaire et hexa devient un simple découpage en paquets de 4 bits :</p>
+        <p style="text-align:center"><code>1111 1111</code> → <code>F F</code> → <strong>FF</strong> &nbsp;&nbsp; et &nbsp;&nbsp; <code>0010 1010</code> → <code>2 A</code> → <strong>2A</strong></p>
+        <p><strong>Hexa → décimal :</strong> même principe positionnel, avec des poids en puissances de 16. <code>2A</code> = 2×16 + 10 = 32 + 10 = <strong>42</strong>.</p>
+        <p>C'est pour cela qu'une couleur web comme <code>#FF8800</code> se lit : rouge = FF = 255 (max), vert = 88 = 136, bleu = 00 = 0 → un orange.</p>`,
+        code: `# Python jongle entre les trois bases
+n = 42
+print("décimal :", n)
+print("binaire :", bin(n))   # 0b101010
+print("hexa    :", hex(n))   # 0x2a
+
+# Lire des littéraux directement
+print(0b101010, 0x2A)        # 42 42
+
+# Conversions depuis une chaîne avec int(chaine, base)
+print(int("2A", 16), int("FF", 16))   # 42 255
+
+# Décomposer une couleur #FF8800
+couleur = "FF8800"
+r, v, b = int(couleur[0:2],16), int(couleur[2:4],16), int(couleur[4:6],16)
+print("R,V,B =", r, v, b)`,
+      },
+      {
+        title: "Coder les entiers négatifs : le complément à deux",
+        html: `
+        <p>Tout ce qu'on a vu code des entiers <strong>positifs</strong>. Mais comment coder <strong>−5</strong> alors qu'on n'a que des 0 et des 1, pas de signe « − » ? On pourrait réserver un bit pour le signe, mais cela crée des soucis (deux écritures du zéro, addition compliquée). La solution universelle est le <strong>complément à deux</strong>.</p>
+        <p><strong>Recette pour coder un négatif sur 8 bits (exemple : −5) :</strong></p>
+        <ol>
+          <li>Coder la valeur <em>positive</em> : +5 = <code>0000 0101</code></li>
+          <li><strong>Inverser</strong> tous les bits (0↔1) : <code>1111 1010</code></li>
+          <li><strong>Ajouter 1</strong> : <code>1111 1011</code> ← voilà −5</li>
+        </ol>
+        <p><strong>Pourquoi ça marche ?</strong> Parce qu'alors <code>5 + (−5)</code> en binaire donne <code>1 0000 0000</code> : le 9ᵉ bit déborde et disparaît (on n'a que 8 bits), il reste <code>0000 0000</code> = 0. L'addition redonne bien zéro, <em>sans règle spéciale pour les négatifs</em> : c'est tout l'intérêt, le processeur additionne positifs et négatifs avec le même circuit.</p>
+        <p>Le bit de gauche (poids fort) joue le rôle de <strong>signe</strong> : 0 → positif, 1 → négatif. Sur 8 bits, on couvre les entiers de <strong>−128 à +127</strong> (128 négatifs, le zéro, et 127 positifs = 256 valeurs au total).</p>`,
+        code: `def complement_a_deux(n, bits=8):
+    """Écriture binaire de n (positif ou négatif) sur 'bits' bits."""
+    if n < 0:
+        n = (1 << bits) + n      # équivaut à 2**bits + n
+    return format(n, "0{}b".format(bits))
+
+print(" 5 ->", complement_a_deux(5))     # 00000101
+print("-5 ->", complement_a_deux(-5))    # 11111011
+print("-1 ->", complement_a_deux(-1))    # 11111111
+print("-128 ->", complement_a_deux(-128))# 10000000
+
+# Vérifions que 5 + (-5) = 0 sur 8 bits
+print((5 + (-5)) % 256)   # 0`,
+      },
+      {
+        title: "Le débordement (overflow)",
+        html: `
+        <p>Un nombre de bits fixé impose une <strong>limite</strong>. Que se passe-t-il si un calcul dépasse cette limite ? Le résultat « tourne », comme le <strong>compteur kilométrique</strong> d'une voiture qui repasse à 000000 après 999999.</p>
+        <p>Sur un octet non signé (0 à 255), <code>255 + 1</code> ne donne pas 256 (impossible à écrire sur 8 bits) mais <strong>0</strong>. C'est un <strong>débordement</strong> (<em>overflow</em>). Ce phénomène est une source de bugs célèbres (et de failles de sécurité) dans les vrais programmes.</p>
+        <p class="note">En <strong>Python</strong>, les entiers sont de taille <em>illimitée</em> : ils grandissent automatiquement, donc pas de débordement. Mais dans la plupart des langages (C, Java…) et dans le matériel, la taille est fixe : il faut y penser.</p>`,
+        code: `# Simulons un octet non signé (0..255) avec le modulo 256
 def add8(a, b):
     return (a + b) % 256
 
-print("255 + 1 =", add8(255, 1))   # déborde -> 0
-print("200 + 100 =", add8(200, 100))
+print("255 + 1   =", add8(255, 1))     # 0  (déborde !)
+print("200 + 100 =", add8(200, 100))   # 44
 
-# En Python pur, pas de limite :
-print(2**100)`,
+# Python pur, lui, ne déborde jamais :
+print(2 ** 100)`,
       },
       {
-        title: "Les nombres à virgule flottante (IEEE 754)",
+        title: "Les nombres à virgule : les flottants",
         html: `
-        <p>Les nombres réels sont approchés par des <strong>flottants</strong> (type <code>float</code>), codés selon la norme <strong>IEEE 754</strong> : un signe, un exposant et une mantisse. Comme la mémoire est finie, beaucoup de nombres n'ont pas d'écriture exacte en binaire.</p>
-        <p class="warnbox">C'est pourquoi <code>0.1 + 0.2</code> ne donne pas exactement <code>0.3</code> ! Il ne faut jamais tester l'égalité stricte entre deux flottants.</p>`,
-        code: `print(0.1 + 0.2)              # 0.30000000000000004
-print(0.1 + 0.2 == 0.3)      # False !
+        <p>Pour les nombres « à virgule » (3,14 ; 0,5 ; …), l'ordinateur utilise le type <strong>flottant</strong> (<code>float</code>). L'idée importante à retenir n'est <em>pas</em> le détail technique du codage, mais une <strong>conséquence pratique</strong> :</p>
+        <p class="warnbox">🔑 Les flottants sont des <strong>approximations</strong>. La mémoire étant finie, beaucoup de nombres décimaux n'ont pas d'écriture binaire <em>exacte</em> — exactement comme 1/3 = 0,3333… n'a pas d'écriture décimale finie. Résultat : <code>0.1 + 0.2</code> ne vaut pas exactement <code>0.3</code> en machine.</p>
+        <p>Ce n'est pas un bug de Python : c'est une limite de <em>tous</em> les ordinateurs. La règle d'or qui en découle : <strong>on ne teste jamais l'égalité stricte (<code>==</code>) entre deux flottants</strong>. On vérifie plutôt qu'ils sont <em>proches</em>, à une petite tolérance près.</p>`,
+        code: `print(0.1 + 0.2)             # 0.30000000000000004 (!)
+print(0.1 + 0.2 == 0.3)      # False : surprenant mais normal
 
-# Bonne pratique : comparer à une tolérance près
+# Bonne pratique : comparer à une tolérance (epsilon)
 def proche(a, b, eps=1e-9):
     return abs(a - b) < eps
 
-print(proche(0.1 + 0.2, 0.3))   # True`,
+print(proche(0.1 + 0.2, 0.3))   # True
+
+# Autre conséquence : attention aux arrondis d'affichage
+print(round(0.1 + 0.2, 2))      # 0.3`,
       },
       {
-        title: "L'algèbre de Boole",
+        title: "Les booléens et l'algèbre de Boole",
         html: `
-        <p>Un <strong>booléen</strong> n'a que deux valeurs : <code>True</code> (Vrai) ou <code>False</code> (Faux). On les combine avec trois opérateurs logiques de base.</p>
+        <p>Le type <strong>booléen</strong> (<code>bool</code>) n'a que deux valeurs : <code>True</code> (Vrai) et <code>False</code> (Faux). C'est le type des <em>conditions</em> (thème « Langages »). On combine les booléens avec trois opérateurs, formalisés par George Boole en 1854 :</p>
+        <ul>
+          <li><strong>et</strong> (<code>and</code>) : vrai seulement si les <em>deux</em> sont vrais ;</li>
+          <li><strong>ou</strong> (<code>or</code>) : vrai si <em>au moins un</em> est vrai ;</li>
+          <li><strong>non</strong> (<code>not</code>) : inverse la valeur.</li>
+        </ul>
+        <p>On résume leur comportement dans une <strong>table de vérité</strong> (V = Vrai, F = Faux) :</p>
         <table>
-          <tr><th>a</th><th>b</th><th>a et b (and)</th><th>a ou b (or)</th><th>non a (not)</th></tr>
+          <tr><th>a</th><th>b</th><th>a et b</th><th>a ou b</th><th>non a</th></tr>
           <tr><td>F</td><td>F</td><td>F</td><td>F</td><td>V</td></tr>
           <tr><td>F</td><td>V</td><td>F</td><td>V</td><td>V</td></tr>
           <tr><td>V</td><td>F</td><td>F</td><td>V</td><td>F</td></tr>
           <tr><td>V</td><td>V</td><td>V</td><td>V</td><td>F</td></tr>
         </table>
-        <p>Ces opérateurs sont à la base des circuits électroniques (portes logiques, thème 5).</p>`,
-        code: `for a in (False, True):
+        <p>Ces opérations sont la base des <strong>circuits électroniques</strong> (portes logiques, thème « Architecture ») et des conditions de tous les programmes. Exemple parlant : « je prends un parapluie <em>si</em> il pleut <strong>et</strong> je sors » = <code>pluie and je_sors</code>.</p>`,
+        code: `# Affichons la table de vérité de and / or
+for a in (False, True):
     for b in (False, True):
-        print(a, b, "| and =", a and b, "| or =", a or b)
+        print(a, b, "| et =", a and b, "| ou =", a or b)
 
-print("not True =", not True)`,
+print("non True =", not True)
+
+# Exemple concret : un mot de passe valide a >= 8 caractères ET un chiffre
+mdp = "robot2026"
+valide = len(mdp) >= 8 and any(c.isdigit() for c in mdp)
+print("Mot de passe valide ?", valide)`,
       },
       {
-        title: "Le codage des caractères",
+        title: "Le codage des caractères : ASCII, Unicode, UTF-8",
         html: `
-        <p>Les caractères sont eux aussi des nombres. La table <strong>ASCII</strong> (1960s) code 128 caractères sur 7 bits (lettres latines, chiffres, ponctuation). Insuffisant pour les langues du monde, elle a été remplacée par <strong>Unicode</strong>, qui attribue un numéro (<em>code point</em>) à plus de 140 000 caractères. <strong>UTF-8</strong> est l'encodage le plus répandu : il code chaque caractère sur 1 à 4 octets et reste compatible avec l'ASCII.</p>`,
-        code: `print(ord('A'))     # 65  : code du caractère
-print(chr(97))      # 'a' : caractère du code
-print(ord('é'))     # 233 (Unicode)
-print(ord('😀'))    # 128512
+        <p>Et les <strong>lettres</strong> ? Puisque la machine ne connaît que des nombres, on attribue à chaque caractère un <strong>numéro</strong>, via une table de correspondance.</p>
+        <p>La première grande table est l'<strong>ASCII</strong> (années 1960) : 128 caractères codés sur 7 bits — lettres latines non accentuées, chiffres, ponctuation, espaces. Quelques repères utiles : <code>'A'</code> = 65, <code>'a'</code> = 97 (donc minuscule = majuscule + 32), <code>'0'</code> = 48, l'espace = 32.</p>
+        <p>128 caractères, c'est bien trop peu pour les langues du monde (accents, grec, arabe, chinois, emoji…). D'où <strong>Unicode</strong>, qui attribue un numéro (<em>code point</em>) à plus de 140 000 caractères. <strong>UTF-8</strong> est la façon la plus répandue de stocker l'Unicode : il code chaque caractère sur <strong>1 à 4 octets</strong>, et reste <em>compatible</em> avec l'ASCII (les 128 premiers caractères sont codés à l'identique).</p>
+        <p class="note">En Python : <code>ord(c)</code> donne le numéro d'un caractère, <code>chr(n)</code> fait l'inverse. C'est la base de petits chiffrages (décalage de César, par exemple).</p>`,
+        code: `print(ord("A"), ord("a"), ord("0"))   # 65 97 48
+print(chr(78), chr(83), chr(73))      # N S I
+print(ord("é"))                        # 233 (au-delà de l'ASCII)
+print(ord("😀"))                       # 128512 (emoji Unicode)
 
-# La table ASCII des majuscules
-for c in "NSI":
-    print(c, "->", ord(c))`,
+# La majuscule est 32 de plus que la minuscule
+for c in "nsi":
+    print(c, "->", chr(ord(c) - 32))   # passage en majuscule "à la main"`,
       },
     ],
   },
