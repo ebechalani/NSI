@@ -917,6 +917,15 @@ for taille in [10, 1000, 1000000]:
     ],
     sections: [
       {
+        title: "🔓 Jeu d'évasion : la salle des machines",
+        game: "histoire-escape",
+        html: `
+        <p>Avant de plonger dans l'histoire, à toi de jouer ! Te voilà enfermé(e) dans la réserve du
+        <strong>musée de l'informatique</strong>. La seule sortie est verrouillée par un <strong>cadenas à 4 chiffres</strong>.
+        Quatre machines mythiques gardent chacune un chiffre du code : résous leur énigme pour le libérer,
+        puis compose le code complet et évade-toi !</p>`,
+      },
+      {
         title: "Pourquoi une histoire de l'informatique ?",
         html: `
         <p>L'informatique n'est pas apparue avec les ordinateurs : elle est l'aboutissement de siècles de recherches en <strong>mathématiques</strong>, en <strong>logique</strong> et en <strong>technique</strong>. Comprendre cette histoire aide à saisir <em>pourquoi</em> les machines fonctionnent comme elles le font (binaire, programme enregistré, langages…).</p>
