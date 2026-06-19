@@ -324,6 +324,55 @@ html[data-theme="dark"] .code-toolbar { background: #0c1424; }
 .shake { animation: esc-shake .42s; }
 @keyframes esc-shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
 
+/* ---------- Jeu de tri chronologique (la frise) ---------- */
+.frise {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--bg-soft), var(--bg-elev));
+  padding: 1.2rem; margin: 1.4rem 0; box-shadow: var(--shadow);
+}
+.frise-rules { font-size: .9rem; margin-bottom: 1rem; }
+.frise-toolbar { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1rem; }
+.frise-board { display: flex; flex-direction: column; gap: .55rem; counter-reset: rank; }
+.frise-card {
+  position: relative; display: flex; align-items: center; gap: .75rem;
+  background: var(--bg-elev); border: 1px solid var(--border); border-left: 5px solid var(--accent-2);
+  border-radius: 11px; padding: .7rem .8rem; cursor: grab; user-select: none;
+  transition: border-color .15s, box-shadow .15s, transform .1s, opacity .15s;
+}
+.frise-card:hover { box-shadow: var(--shadow); }
+.frise-card.dragging { opacity: .45; cursor: grabbing; border-style: dashed; }
+.frise-card::before {
+  counter-increment: rank; content: counter(rank);
+  flex-shrink: 0; width: 26px; height: 26px; display: grid; place-items: center;
+  font-family: var(--mono); font-size: .8rem; font-weight: 700;
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 7px; color: var(--text-soft);
+}
+.fc-handle { color: var(--text-soft); font-size: 1.1rem; cursor: grab; line-height: 1; }
+.fc-icon { font-size: 1.6rem; flex-shrink: 0; }
+.fc-body { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.fc-title { font-weight: 700; font-size: .95rem; }
+.fc-clue { font-size: .85rem; color: var(--text-soft); }
+.fc-year {
+  font-family: var(--mono); font-weight: 800; font-size: 1rem; min-width: 0;
+  color: var(--accent); white-space: nowrap;
+}
+.frise-card.revealed .fc-year { padding: .1rem .5rem; border-radius: 7px; background: var(--bg-soft); }
+.fc-moves { display: flex; flex-direction: column; gap: .15rem; flex-shrink: 0; }
+.fc-moves button {
+  width: 30px; height: 22px; line-height: 1; padding: 0; cursor: pointer;
+  border: 1px solid var(--border); background: var(--bg-soft); color: var(--text);
+  border-radius: 6px; font-size: .7rem;
+}
+.fc-moves button:hover { border-color: var(--accent); color: var(--accent); }
+.frise-card.good { border-color: var(--ok); border-left-color: var(--ok); background: var(--ok-soft); }
+.frise-card.bad { border-color: var(--bad); border-left-color: var(--bad); background: var(--bad-soft); }
+.frise-card.good .fc-year { color: var(--ok); }
+.frise-card.bad .fc-year { color: var(--bad); }
+.frise-result { font-size: .92rem; border-radius: 9px; margin-top: 1rem; display: none; }
+.frise-result.show { display: block; padding: .6rem .9rem; }
+.frise-result.good { background: var(--ok-soft); color: var(--ok); font-weight: 600; }
+.frise-result.partial { background: var(--accent-soft); border: 1px solid var(--accent); }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
   .menu-toggle { display: block; }

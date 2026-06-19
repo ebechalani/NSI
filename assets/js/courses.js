@@ -917,13 +917,15 @@ for taille in [10, 1000, 1000000]:
     ],
     sections: [
       {
-        title: "🔓 Jeu d'évasion : la salle des machines",
-        game: "histoire-escape",
+        title: "🃏 Jeu : la frise à reconstituer",
+        game: "histoire-frise",
         html: `
-        <p>Avant de plonger dans l'histoire, à toi de jouer ! Te voilà enfermé(e) dans la réserve du
-        <strong>musée de l'informatique</strong>. La seule sortie est verrouillée par un <strong>cadenas à 4 chiffres</strong>.
-        Quatre machines mythiques gardent chacune un chiffre du code : résous leur énigme pour le libérer,
-        puis compose le code complet et évade-toi !</p>`,
+        <p>Pour ouvrir le thème, un défi en équipe ! Voici 18 cartes ; chacune décrit une grande étape de
+        l'histoire de l'informatique, mais <strong>aucune n'affiche sa date</strong>. À vous de raisonner à partir
+        des indices pour classer la frise, de la plus ancienne à la plus récente.</p>
+        <p class="note">👥 <strong>En îlot</strong> : discutez à 2 ou 4, mettez-vous d'accord sur l'ordre, puis cliquez
+        sur <em>Vérifier</em> pour la mise en commun. Le bouton <em>Imprimer les cartes</em> fournit aussi une version
+        papier à découper, avec la frise corrigée pour l'enseignant.</p>`,
       },
       {
         title: "Pourquoi une histoire de l'informatique ?",
@@ -1009,6 +1011,15 @@ for e in sorted(frise, key=lambda x: x["annee"]):
     print(e["annee"], "—", e["evenement"])
 
 print("\\nNombre d'événements :", len(frise))`,
+      },
+      {
+        title: "🔓 Bonus — Jeu d'évasion : la salle des machines",
+        game: "histoire-escape",
+        html: `
+        <p>Pour finir, un défi individuel ! Te voilà enfermé(e) dans la réserve du
+        <strong>musée de l'informatique</strong>. La seule sortie est verrouillée par un <strong>cadenas à 4 chiffres</strong>.
+        Quatre machines mythiques gardent chacune un chiffre du code : résous leur énigme pour le libérer,
+        puis compose le code complet et évade-toi !</p>`,
       },
     ],
   },
