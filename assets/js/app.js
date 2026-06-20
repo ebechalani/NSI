@@ -126,15 +126,18 @@
     navList.appendChild(sep);
 
     const extraLinks = [
+      { target: "classe", num: "🏫", emoji: "", text: "Ma classe", prof: true },
       { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
       { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
       { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
       { target: "tp", num: "🧪", emoji: "", text: "TP guidés (DIU)" },
-      { target: "progression", num: "🗓️", emoji: "", text: "Progression annuelle" },
-      { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)" },
-      { target: "bo", num: "✅", emoji: "", text: "Conformité au BO" },
+      { target: "progression", num: "🗓️", emoji: "", text: "Progression annuelle", prof: true },
+      { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)", prof: true },
+      { target: "bo", num: "✅", emoji: "", text: "Conformité au BO", prof: true },
     ];
-    extraLinks.forEach((x) => {
+    extraLinks
+      .filter((x) => !x.prof || P.isTeacher())
+      .forEach((x) => {
       const li = el("li");
       const link = el(
         "a",
@@ -215,11 +218,20 @@
     const rgrid = el("div", "card-grid");
     const ressources = [
       {
+        emoji: "🏫",
+        tag: "espace prof",
+        title: "Ma classe",
+        desc: "Crée ta classe, ajoute tes élèves et suis leur progression et leurs capacités.",
+        target: "classe",
+        prof: true,
+      },
+      {
         emoji: "✅",
         tag: "8 thèmes BO",
         title: "Conformité au BO",
         desc: "Les 8 thèmes officiels de Première et les capacités attendues, avec où chacune est traitée.",
         target: "bo",
+        prof: true,
       },
       {
         emoji: "🏝️",
@@ -255,6 +267,7 @@
         title: "Progression annuelle",
         desc: "Planning indicatif des séquences sur l'année + l'encart « coder pour de vrai ».",
         target: "progression",
+        prof: true,
       },
       {
         emoji: "📝",
@@ -262,9 +275,12 @@
         title: "Évaluations (prof)",
         desc: "DS et TP notés avec barème ; corrigés affichés en mode professeur.",
         target: "evaluations",
+        prof: true,
       },
     ];
-    ressources.forEach((r) => {
+    ressources
+      .filter((r) => !r.prof || P.isTeacher())
+      .forEach((r) => {
       const card = el("button", "theme-card");
       card.innerHTML = `
         <div class="tc-top"><span class="tc-emoji">${r.emoji}</span><span class="tc-num">${r.tag}</span></div>
@@ -703,6 +719,7 @@ except Exception:
         // sauvegarde
         progress[themeId] = { score: nbOk, total: questions.length };
         saveProgress(progress);
+        P.recordQcm(themeId, nbOk, questions.length); // suivi côté plateforme
         buildNav();
         setActiveNav(themeId);
         updateGlobalProgress();
@@ -2131,6 +2148,229 @@ except Exception:
     scrollTop();
   }
 
+  /* ====================================================================
+     PLATEFORME : connexion, rôles prof/élève, espace « Ma classe »
+     ==================================================================== */
+  const P = window.Platform;
+
+  function applyRole() {
+    const teacher = P.isTeacher();
+    const student = P.isStudent();
+    document.body.classList.toggle("role-teacher", teacher);
+    document.body.classList.toggle("role-student", student);
+    applyTeacher(teacher); // le prof voit automatiquement tous les corrigés
+    document.body.classList.toggle(
+      "corrections-pushed",
+      student && P.isCorrectionsPushed()
+    );
+    const tt = $("#teacherToggle");
+    if (tt) tt.style.display = "none"; // le rôle pilote la visibilité, plus le bouton
+    renderAccountBox();
+  }
+
+  function renderAccountBox() {
+    const box = $("#accountBox");
+    if (!box) return;
+    const s = P.getSession();
+    if (!s) { box.innerHTML = ""; return; }
+    const role = s.role === "teacher" ? "👩‍🏫 Prof" : "🎓 Élève";
+    box.innerHTML =
+      `<span class="acc-name" title="${escapeHtml(s.name)}">${role} · ${escapeHtml(s.name)}</span>` +
+      `<button class="acc-logout" title="Se déconnecter">Quitter</button>`;
+    box.querySelector(".acc-logout").addEventListener("click", () => {
+      P.logout();
+      location.hash = "";
+      showAuthGate();
+    });
+  }
+
+  /* ---------------- Écran de connexion ---------------- */
+  function showAuthGate() {
+    const gate = $("#authGate");
+    document.body.classList.add("gated");
+    gate.classList.remove("hidden");
+    gate.innerHTML = `
+      <div class="auth-card">
+        <div class="auth-brand"><span class="brand-logo">&lt;/&gt;</span> NSI Première</div>
+        <p class="auth-lead">Plateforme de la classe — choisis ton espace.</p>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="eleve">🎓 Espace élève</button>
+          <button class="auth-tab" data-tab="prof">👩‍🏫 Espace professeur</button>
+        </div>
+        <form class="auth-form" data-form="eleve">
+          <label>Code de la classe<input name="code" placeholder="NSI-XXXX" autocomplete="off" required></label>
+          <label>Ton nom (celui donné par le prof)<input name="nom" placeholder="Prénom Nom" autocomplete="off" required></label>
+          <div class="auth-error"></div>
+          <button type="submit" class="btn">Entrer dans la classe</button>
+        </form>
+        <form class="auth-form hidden" data-form="prof">
+          <label>Ton nom<input name="nom" placeholder="M./Mme …" autocomplete="off" required></label>
+          <div class="auth-error"></div>
+          <button type="submit" class="btn">Ouvrir l'espace professeur</button>
+          <p class="auth-note">Mode local (phase 1) : tes classes restent sur ce navigateur. La synchro entre postes (Firebase) arrive en phase 2.</p>
+        </form>
+      </div>`;
+
+    gate.querySelectorAll(".auth-tab").forEach((t) =>
+      t.addEventListener("click", () => {
+        gate.querySelectorAll(".auth-tab").forEach((x) => x.classList.toggle("active", x === t));
+        gate.querySelectorAll(".auth-form").forEach((f) =>
+          f.classList.toggle("hidden", f.dataset.form !== t.dataset.tab)
+        );
+      })
+    );
+
+    gate.querySelector('[data-form="eleve"]').addEventListener("submit", (e) => {
+      e.preventDefault();
+      const err = e.target.querySelector(".auth-error");
+      const res = P.loginStudent(e.target.code.value, e.target.nom.value);
+      if (res.error) { err.textContent = "❌ " + res.error; return; }
+      enterApp();
+    });
+    gate.querySelector('[data-form="prof"]').addEventListener("submit", (e) => {
+      e.preventDefault();
+      P.loginTeacher(e.target.nom.value);
+      enterApp();
+    });
+  }
+
+  function enterApp() {
+    $("#authGate").classList.add("hidden");
+    document.body.classList.remove("gated");
+    startApp();
+  }
+
+  /* ---------------- Espace « Ma classe » (prof) ---------------- */
+  let selectedClassId = null;
+  function renderClasse() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "🏫 Ma classe"));
+    header.appendChild(el("p", "theme-intro", "Crée ta classe, ajoute tes élèves et suis leur progression. Donne-leur le <strong>code de classe</strong> pour qu'ils se connectent."));
+    viewTheme.appendChild(header);
+
+    // Barre des classes + création
+    const classes = P.getClasses();
+    if (!selectedClassId && classes.length) selectedClassId = classes[0].id;
+    const bar = el("div", "du-filter");
+    classes.forEach((c) => {
+      const b = el("button", "btn secondary" + (c.id === selectedClassId ? " active-filter" : ""));
+      b.textContent = c.name;
+      b.addEventListener("click", () => { selectedClassId = c.id; renderClasse(); });
+      bar.appendChild(b);
+    });
+    const bNew = el("button", "btn", "+ Nouvelle classe");
+    bNew.addEventListener("click", () => {
+      const nom = prompt("Nom de la classe (ex. 1NSI groupe 1) :", "1NSI");
+      if (nom) { const c = P.createClass(nom); selectedClassId = c.id; renderClasse(); }
+    });
+    bar.appendChild(bNew);
+    viewTheme.appendChild(bar);
+
+    if (!classes.length) {
+      viewTheme.appendChild(el("div", "info-callout", "👋 Commence par créer une classe avec « + Nouvelle classe »."));
+      scrollTop();
+      return;
+    }
+
+    const cls = P.getClass(selectedClassId);
+    if (!cls) { selectedClassId = classes[0].id; return renderClasse(); }
+
+    // En-tête classe : code + corrigés + suppression
+    const head = el("div", "classe-head");
+    head.innerHTML =
+      `<div><span class="muted-text">Code de classe (à donner aux élèves)</span>` +
+      `<div class="classe-code">${cls.code}</div></div>`;
+    const pushWrap = el("label", "switch-wrap");
+    const pushed = P.isCorrectionsPushed(cls.id);
+    pushWrap.innerHTML = `<input type="checkbox" ${pushed ? "checked" : ""}> Pousser les corrigés aux élèves`;
+    pushWrap.querySelector("input").addEventListener("change", (e) => {
+      P.setCorrectionsPushed(cls.id, e.target.checked);
+    });
+    head.appendChild(pushWrap);
+    viewTheme.appendChild(head);
+
+    // Ajout d'élève
+    const addForm = el("form", "classe-add");
+    addForm.innerHTML = `<input name="nom" placeholder="Nom d'un élève à ajouter" autocomplete="off"><button class="btn" type="submit">Ajouter</button>`;
+    addForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (P.addStudent(cls.id, e.target.nom.value)) renderClasse();
+    });
+    viewTheme.appendChild(addForm);
+
+    // Tableau des élèves
+    const students = P.getStudents(cls.id);
+    if (!students.length) {
+      viewTheme.appendChild(el("p", "muted-text", "Aucun élève pour l'instant. Ajoute-les ci-dessus."));
+    } else {
+      const tbl = el("div", "classe-table");
+      const rows = students
+        .map((st) => {
+          const sum = P.studentSummary(st.uid, COURSES);
+          const prog = P.getProgress(st.uid);
+          const nbCap = Object.values(prog.capacites || {}).filter(Boolean).length;
+          return (
+            `<tr data-uid="${st.uid}">` +
+            `<td><strong>${escapeHtml(st.name)}</strong></td>` +
+            `<td class="num">${sum.themesValidés}/${COURSES.length}</td>` +
+            `<td class="num">${sum.qcmFaits}</td>` +
+            `<td class="num">${nbCap}</td>` +
+            `<td><input class="note-input" value="${escapeHtml(sum.note || "")}" placeholder="note/appréc."></td>` +
+            `<td><button class="btn secondary btn-detail">Capacités</button> <button class="btn secondary btn-del">✕</button></td>` +
+            `</tr>`
+          );
+        })
+        .join("");
+      tbl.innerHTML =
+        `<table><tr><th>Élève</th><th>Thèmes validés</th><th>QCM faits</th><th>Capacités</th><th>Note / appréciation</th><th></th></tr>${rows}</table>`;
+      tbl.querySelectorAll("tr[data-uid]").forEach((tr) => {
+        const u = tr.dataset.uid;
+        tr.querySelector(".note-input").addEventListener("change", (e) => P.setNote(u, e.target.value));
+        tr.querySelector(".btn-del").addEventListener("click", () => {
+          if (confirm("Retirer cet élève ?")) { P.removeStudent(u); renderClasse(); }
+        });
+        tr.querySelector(".btn-detail").addEventListener("click", () => openCapacites(u, students.find((s) => s.uid === u).name));
+      });
+      viewTheme.appendChild(tbl);
+    }
+    scrollTop();
+  }
+
+  // Grille des capacités BO d'un élève (cochables par le prof)
+  function openCapacites(studentUid, name) {
+    const prog = P.getProgress(studentUid);
+    const wrap = el("div", "extra-block");
+    wrap.appendChild(el("h2", null, "✅ Capacités — " + name));
+    COURSES.slice().sort((a, b) => a.num - b.num).forEach((c) => {
+      const det = el("details", "cap-theme");
+      const done = (c.capacites || []).filter((_, i) => prog.capacites[c.id + ":" + i]).length;
+      det.appendChild(el("summary", null, `${c.emoji} ${c.title} — ${done}/${(c.capacites || []).length}`));
+      (c.capacites || []).forEach((cap, i) => {
+        const key = c.id + ":" + i;
+        const lab = el("label", "cap-item");
+        const cb = el("input");
+        cb.type = "checkbox";
+        cb.checked = !!prog.capacites[key];
+        cb.addEventListener("change", () => P.setCapacite(studentUid, key, cb.checked));
+        lab.appendChild(cb);
+        lab.appendChild(el("span", null, cap));
+        det.appendChild(lab);
+      });
+      wrap.appendChild(det);
+    });
+    // remplace la vue par la grille, avec retour
+    viewTheme.innerHTML = "";
+    const back = el("span", "crumb", "← Retour à la classe");
+    back.addEventListener("click", () => renderClasse());
+    viewTheme.appendChild(back);
+    viewTheme.appendChild(wrap);
+    scrollTop();
+  }
+
   /* ---------------- Impressions communes ---------------- */
   function openPrint(title, bodyHtml) {
     const w = window.open("", "_blank");
@@ -2332,6 +2572,11 @@ except Exception:
       showThemeView("tp");
       renderTP();
       location.hash = "tp";
+    } else if (target === "classe") {
+      if (!P.isTeacher()) return navigate("home");
+      showThemeView("classe");
+      renderClasse();
+      location.hash = "classe";
     } else {
       const c = COURSES.find((x) => x.id === target);
       if (!c) return navigate("home");
@@ -2350,18 +2595,30 @@ except Exception:
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp"].includes(t)) return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }
 
   /* ---------------- Démarrage ---------------- */
-  buildNav();
-  updateGlobalProgress();
-  const initial = location.hash.replace("#", "");
-  navigate(isKnownTarget(initial) ? initial : "home");
+  function startApp() {
+    applyRole();
+    buildNav();
+    updateGlobalProgress();
+    const initial = location.hash.replace("#", "");
+    let target = isKnownTarget(initial) ? initial : "home";
+    if (target === "classe" && !P.isTeacher()) target = "home";
+    navigate(target);
+  }
+
+  if (P.getSession()) {
+    startApp();
+  } else {
+    showAuthGate();
+  }
 
   window.addEventListener("hashchange", () => {
+    if (!P.getSession()) return;
     const t = location.hash.replace("#", "");
     const current = viewTheme.classList.contains("hidden") ? "home" : "theme";
     // évite les boucles : ne renavigue que si nécessaire

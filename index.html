@@ -6,7 +6,7 @@
   <title>NSI Première — Cours interactif</title>
   <meta name="description" content="Site interactif pour apprendre la NSI en Première : cours, code Python exécutable et QCM. Conforme au programme officiel (BO)." />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-  <link rel="stylesheet" href="assets/css/style.css?v=5" />
+  <link rel="stylesheet" href="assets/css/style.css?v=6" />
 </head>
 <body>
   <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -30,7 +30,10 @@
     </div>
     <button id="teacherToggle" class="icon-btn" aria-label="Activer le mode professeur" title="Mode professeur (corrigés)">👩‍🏫</button>
     <button id="themeToggle" class="icon-btn" aria-label="Basculer le thème clair/sombre">🌙</button>
+    <div id="accountBox" class="account-box"></div>
   </header>
+
+  <div id="authGate" class="auth-gate hidden"></div>
 
   <div class="layout">
     <nav id="sidebar" class="sidebar" aria-label="Sommaire des thèmes">
@@ -51,14 +54,16 @@
 
   <!-- Données du cours, QCM, projets, glossaire, compléments -->
   <!-- ?v=N : pense à incrémenter N après une mise à jour pour forcer le rechargement chez les élèves -->
-  <script src="assets/js/courses.js?v=5"></script>
-  <script src="assets/js/quizzes.js?v=5"></script>
-  <script src="assets/js/exercises.js?v=5"></script>
-  <script src="assets/js/projects.js?v=5"></script>
-  <script src="assets/js/glossary.js?v=5"></script>
-  <script src="assets/js/resources.js?v=5"></script>
-  <script src="assets/js/tp.js?v=5"></script>
+  <script src="assets/js/courses.js?v=6"></script>
+  <script src="assets/js/quizzes.js?v=6"></script>
+  <script src="assets/js/exercises.js?v=6"></script>
+  <script src="assets/js/projects.js?v=6"></script>
+  <script src="assets/js/glossary.js?v=6"></script>
+  <script src="assets/js/resources.js?v=6"></script>
+  <script src="assets/js/tp.js?v=6"></script>
+  <!-- Plateforme (comptes, rôles, classes) -->
+  <script src="assets/js/platform.js?v=6"></script>
   <!-- Logique applicative -->
-  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/app.js?v=6"></script>
 </body>
 </html>
