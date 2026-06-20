@@ -22,6 +22,9 @@
   var auth = FB ? window.fbAuth : null;
   var db = FB ? window.fbDB : null;
 
+  // Administrateur unique : accès professeur réservé / validé par lui.
+  var ADMIN_EMAIL = "ebechalani@gmail.com";
+
   var LS = { classes: "nsi-classes", students: "nsi-students", session: "nsi-session", link: "nsi-student-link" };
 
   function loadLS(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
@@ -224,13 +227,37 @@
         return cache.session;
       });
     }
-    // Prof (compte e-mail)
-    return db.collection("users").doc(user.uid).get().then(function (d) {
-      var name = (d.exists && d.data().name) || (user.email ? user.email.split("@")[0] : "Professeur");
-      if (!d.exists) fbSet("users", user.uid, { role: "teacher", name: name });
-      cache.session = { role: "teacher", uid: "prof", name: name, classId: null, fbUid: user.uid };
+    // Prof (compte e-mail) — accès soumis à validation par l'admin
+    var email = (user.email || "").toLowerCase();
+    var isAdmin = email === ADMIN_EMAIL;
+    return db.collection("teachers").doc(user.uid).get().then(function (d) {
+      var name = (d.exists && d.data().name) || (email ? email.split("@")[0] : "Professeur");
+      var approved = isAdmin || (d.exists && d.data().status === "approved");
+      if (!d.exists) {
+        fbSet("teachers", user.uid, { email: email, name: name, status: isAdmin ? "approved" : "pending", requestedAt: Date.now() });
+      } else if (isAdmin && d.data().status !== "approved") {
+        fbSet("teachers", user.uid, { status: "approved" });
+      }
+      if (!approved) {
+        cache.session = null;
+        cache.pending = { email: email };
+        establishedUid = user.uid; // évite une re-boucle d'auth
+        return { pending: true, email: email };
+      }
+      cache.pending = null;
+      cache.session = { role: "teacher", uid: "prof", name: name, classId: null, fbUid: user.uid, admin: isAdmin };
       persistLocal(); subscribeTeacher(user.uid); establishedUid = user.uid;
       return cache.session;
+    }).catch(function () {
+      // Règles "teachers" pas encore publiées : l'admin entre via l'e-mail, les autres attendent.
+      if (isAdmin) {
+        cache.pending = null;
+        cache.session = { role: "teacher", uid: "prof", name: email.split("@")[0] || "Professeur", classId: null, fbUid: user.uid, admin: true };
+        persistLocal(); subscribeTeacher(user.uid); establishedUid = user.uid;
+        return cache.session;
+      }
+      cache.session = null; cache.pending = { email: email }; establishedUid = user.uid;
+      return { pending: true, email: email };
     });
   }
 
@@ -312,10 +339,13 @@
 
   window.Platform = {
     mode: FB ? "firebase" : "local",
+    adminEmail: ADMIN_EMAIL,
     ready: ready,
     set onData(fn) { onData = fn; },
     get onData() { return onData; },
     getSession: getSession, isTeacher: isTeacher, isStudent: isStudent, logout: logout,
+    isAdmin: isAdmin, pendingInfo: pendingInfo,
+    fetchTeachers: fetchTeachers, approveTeacher: approveTeacher, rejectTeacher: rejectTeacher,
     loginTeacher: loginTeacher, loginStudent: loginStudent,
     getClasses: getClasses, getClass: getClass, createClass: createClass, renameClass: renameClass, deleteClass: deleteClass,
     getStudents: getStudents, addStudent: addStudent, removeStudent: removeStudent,
@@ -323,4 +353,15 @@
     setCapacite: setCapacite, setNote: setNote, studentSummary: studentSummary,
     isCorrectionsPushed: isCorrectionsPushed, setCorrectionsPushed: setCorrectionsPushed,
   };
+
+  function isAdmin() { return !!(cache.session && cache.session.admin); }
+  function pendingInfo() { return cache.pending || null; }
+  function fetchTeachers() {
+    if (!FB || !db) return Promise.resolve([]);
+    return db.collection("teachers").get().then(function (snap) {
+      return snap.docs.map(function (d) { return Object.assign({ uid: d.id }, d.data()); });
+    }).catch(function () { return []; });
+  }
+  function approveTeacher(uid) { fbSet("teachers", uid, { status: "approved" }); }
+  function rejectTeacher(uid) { fbSet("teachers", uid, { status: "rejected" }); }
 })();

@@ -21,15 +21,26 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.email == 'ebechalani@gmail.com'; }
 
-    // MVP classe : tout utilisateur connecté (prof e-mail OU élève anonyme)
-    // peut lire/écrire les données de classe. Données pseudonymes (scores QCM).
+    // Données de classe : tout utilisateur connecté (prof e-mail OU élève anonyme).
     match /users/{uid}     { allow read, write: if signedIn(); }
     match /classes/{cid}   { allow read, write: if signedIn(); }
     match /students/{sid}  { allow read, write: if signedIn(); }
+
+    // Comptes professeurs : chacun crée SA demande ; seul l'admin valide/refuse.
+    match /teachers/{uid} {
+      allow read:   if signedIn();
+      allow create: if signedIn() && uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
   }
 }
 ```
+
+> ⚠️ **Important** : ces règles ajoutent la collection `teachers`. Tant qu'elles ne
+> sont pas publiées, seul l'admin (`ebechalani@gmail.com`) peut ouvrir l'espace prof
+> (l'appli le reconnaît à son e-mail) ; les autres restent « en attente ».
 
 3. Console Firebase → **Authentication → Sign-in method** : vérifie que
    **E-mail/Mot de passe** ET **Anonyme** sont **activés** (l'anonyme sert à la

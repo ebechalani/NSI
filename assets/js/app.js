@@ -143,6 +143,7 @@
 
     const extraLinks = [
       { target: "classe", num: "🏫", emoji: "", text: "Ma classe", prof: true },
+      { target: "profs", num: "👤", emoji: "", text: "Comptes profs", admin: true },
       { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
       { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
       { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
@@ -152,7 +153,7 @@
       { target: "bo", num: "✅", emoji: "", text: "Conformité au BO", prof: true },
     ];
     extraLinks
-      .filter((x) => !x.prof || P.isTeacher())
+      .filter((x) => (!x.prof || P.isTeacher()) && (!x.admin || P.isAdmin()))
       .forEach((x) => {
       const li = el("li");
       const link = el(
@@ -2273,6 +2274,12 @@ except Exception:
           : await P.loginTeacher(e.target.nom.value);
       busy(e.target, false);
       if (res && res.error) { err.textContent = "❌ " + res.error; return; }
+      if (res && res.pending) {
+        err.innerHTML =
+          "⏳ Ton accès professeur est <strong>en attente de validation</strong> par l'administrateur (" +
+          P.adminEmail + "). Tu pourras te connecter une fois approuvé.";
+        return;
+      }
       enterApp();
     });
   }
@@ -2412,6 +2419,45 @@ except Exception:
     back.addEventListener("click", () => renderClasse());
     viewTheme.appendChild(back);
     viewTheme.appendChild(wrap);
+    scrollTop();
+  }
+
+  /* ---------------- Espace admin : valider les comptes professeurs ---------------- */
+  function renderTeachers() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "👤 Comptes professeurs"));
+    header.appendChild(
+      el("p", "theme-intro", `Seul l'administrateur (<strong>${P.adminEmail}</strong>) accède à l'espace professeur. Les autres demandes apparaissent ici et doivent être <strong>validées</strong>.`)
+    );
+    viewTheme.appendChild(header);
+
+    const box = el("div", "classe-table");
+    box.innerHTML = "<p class='muted-text'>Chargement…</p>";
+    viewTheme.appendChild(box);
+
+    P.fetchTeachers().then((teachers) => {
+      const order = { pending: 0, approved: 1, rejected: 2 };
+      teachers.sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3));
+      if (!teachers.length) { box.innerHTML = "<p class='muted-text'>Aucune demande pour l'instant.</p>"; return; }
+      const label = { pending: "⏳ en attente", approved: "✅ validé", rejected: "⛔ refusé" };
+      const rows = teachers.map((t) =>
+        `<tr data-uid="${t.uid}"><td><strong>${escapeHtml(t.email || t.name || "?")}</strong></td>` +
+        `<td>${label[t.status] || t.status}</td>` +
+        `<td>${t.email === P.adminEmail ? "<em>admin</em>" : `<button class="btn secondary t-approve">Valider</button> <button class="btn secondary t-reject">Refuser</button>`}</td></tr>`
+      ).join("");
+      box.innerHTML = `<table><tr><th>Compte</th><th>Statut</th><th>Action</th></tr>${rows}</table>`;
+      box.querySelectorAll("tr[data-uid]").forEach((tr) => {
+        const u = tr.dataset.uid;
+        const ap = tr.querySelector(".t-approve");
+        const rj = tr.querySelector(".t-reject");
+        if (ap) ap.addEventListener("click", () => { P.approveTeacher(u); renderTeachers(); });
+        if (rj) rj.addEventListener("click", () => { P.rejectTeacher(u); renderTeachers(); });
+      });
+    });
     scrollTop();
   }
 
@@ -2621,6 +2667,11 @@ except Exception:
       showThemeView("classe");
       renderClasse();
       location.hash = "classe";
+    } else if (target === "profs") {
+      if (!P.isAdmin()) return navigate("home");
+      showThemeView("profs");
+      renderTeachers();
+      location.hash = "profs";
     } else {
       const c = COURSES.find((x) => x.id === target);
       if (!c) return navigate("home");
@@ -2639,7 +2690,7 @@ except Exception:
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe"].includes(t)) return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }
