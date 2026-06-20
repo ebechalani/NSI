@@ -69,12 +69,24 @@
              : { qcm: {}, exos: {}, capacites: {}, note: "" };
   }
   function studentSummary(u, courses) {
-    var pr = getProgress(u), validés = 0, nbQcm = 0;
+    var pr = getProgress(u), validés = 0, nbQcm = 0, sumRatio = 0;
+    var total = (courses || []).length || 1;
     (courses || []).forEach(function (c) {
       var q = pr.qcm[c.id];
-      if (q) { nbQcm++; if (q.total > 0 && q.score === q.total) validés++; }
+      if (q && q.total > 0) {
+        nbQcm++;
+        sumRatio += q.score / q.total;
+        if (q.score === q.total) validés++;
+      }
     });
-    return { themesValidés: validés, qcmFaits: nbQcm, capacites: pr.capacites, note: pr.note };
+    return {
+      themesValidés: validés,
+      qcmFaits: nbQcm,
+      progression: Math.round((nbQcm / total) * 100), // % de thèmes abordés
+      reussite: nbQcm > 0 ? Math.round((sumRatio / nbQcm) * 100) : 0, // % de réussite moyenne aux QCM
+      capacites: pr.capacites,
+      note: pr.note,
+    };
   }
   function isCorrectionsPushed(classId) {
     var cid = classId || (cache.session && cache.session.classId);

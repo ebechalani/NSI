@@ -91,15 +91,19 @@
   }
 
   function updateGlobalProgress() {
-    let acquis = 0;
+    // Progression = part des thèmes ABORDÉS (un QCM fait), pour que la barre
+    // bouge dès qu'on travaille. Le ✓ du sommaire marque, lui, les thèmes
+    // entièrement validés (QCM parfait).
+    let abordes = 0;
     let totalThemes = COURSES.length;
     COURSES.forEach((c) => {
       const p = progress[c.id];
-      if (p && p.total > 0 && p.score === p.total) acquis++;
+      if (p && p.total > 0) abordes++;
     });
-    const pct = Math.round((acquis / totalThemes) * 100);
+    const pct = Math.round((abordes / totalThemes) * 100);
     $("#globalProgress").style.width = pct + "%";
     $("#globalProgressLabel").textContent = pct + " %";
+    $("#globalProgressLabel").title = abordes + " / " + totalThemes + " thèmes abordés";
   }
 
   /* ---------------- Construction du sommaire ---------------- */
@@ -2355,8 +2359,9 @@ except Exception:
           return (
             `<tr data-uid="${st.uid}">` +
             `<td><strong>${escapeHtml(st.name)}</strong></td>` +
-            `<td class="num">${sum.themesValidés}/${COURSES.length}</td>` +
-            `<td class="num">${sum.qcmFaits}</td>` +
+            `<td class="num" title="${sum.qcmFaits} thème(s) abordé(s) sur ${COURSES.length}">${sum.progression} %</td>` +
+            `<td class="num" title="${sum.themesValidés} thème(s) au QCM parfait">${sum.themesValidés}/${COURSES.length}</td>` +
+            `<td class="num" title="réussite moyenne aux QCM faits">${sum.reussite} %</td>` +
             `<td class="num">${nbCap}</td>` +
             `<td><input class="note-input" value="${escapeHtml(sum.note || "")}" placeholder="note/appréc."></td>` +
             `<td><button class="btn secondary btn-detail">Capacités</button> <button class="btn secondary btn-del">✕</button></td>` +
@@ -2365,7 +2370,7 @@ except Exception:
         })
         .join("");
       tbl.innerHTML =
-        `<table><tr><th>Élève</th><th>Thèmes validés</th><th>QCM faits</th><th>Capacités</th><th>Note / appréciation</th><th></th></tr>${rows}</table>`;
+        `<table><tr><th>Élève</th><th>Progression</th><th>Validés</th><th>Réussite</th><th>Capacités</th><th>Note / appréciation</th><th></th></tr>${rows}</table>`;
       tbl.querySelectorAll("tr[data-uid]").forEach((tr) => {
         const u = tr.dataset.uid;
         tr.querySelector(".note-input").addEventListener("change", (e) => P.setNote(u, e.target.value));
