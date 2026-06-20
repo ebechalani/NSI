@@ -129,6 +129,7 @@
       { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
       { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
       { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
+      { target: "tp", num: "🧪", emoji: "", text: "TP guidés (DIU)" },
       { target: "progression", num: "🗓️", emoji: "", text: "Progression annuelle" },
       { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)" },
       { target: "bo", num: "✅", emoji: "", text: "Conformité au BO" },
@@ -242,6 +243,13 @@
         target: "methodes",
       },
       {
+        emoji: "🧪",
+        tag: `${typeof GUIDED_TP !== "undefined" ? GUIDED_TP.length : 0} TP + Logisim`,
+        title: "TP guidés (DIU)",
+        desc: "TP pas-à-pas Linux & Python et circuits Logisim, importés de ma formation DIU NSI.",
+        target: "tp",
+      },
+      {
         emoji: "🗓️",
         tag: "4 h / sem.",
         title: "Progression annuelle",
@@ -333,6 +341,10 @@
     // Erreurs fréquentes + fiche résumé (après le QCM)
     if (ex && ex.erreurs) viewTheme.appendChild(makeErreurs(ex.erreurs));
     if (ex && ex.resume) viewTheme.appendChild(makeResume(c, ex.resume));
+
+    // Ressources importées du DIU rattachées à ce thème
+    const du = makeThemeDUResources(c.id);
+    if (du) viewTheme.appendChild(du);
 
     // Navigation précédent / suivant
     viewTheme.appendChild(makeThemeNav(c));
@@ -1705,6 +1717,209 @@ sys.stderr = io.StringIO()
     scrollTop();
   }
 
+  /* ---------------- TP guidés & ressources du DIU ---------------- */
+  function themeTitle(id) {
+    const c = COURSES.find((x) => x.id === id);
+    return c ? c.title : id;
+  }
+
+  function makeTPStep(step, lang) {
+    const box = el("div", "tp-step");
+    box.appendChild(
+      el("div", "tp-step-head", `<span class="tp-num">${step.num}</span>${step.titre}` + (step.bonus ? ` <span class="lv-tag lv-defi">bonus</span>` : ""))
+    );
+    if (step.code) {
+      if (lang === "python" && step.run) {
+        box.appendChild(makeCodeCell(step.code));
+      } else {
+        const pre = el("pre", lang === "bash" ? "tp-bash" : null);
+        pre.appendChild(el("code", null, escapeHtml(step.code)));
+        box.appendChild(pre);
+      }
+    }
+    if (step.note) box.appendChild(el("div", "note", step.note));
+    if (step.questions && step.questions.length) {
+      const ul = el("ul", "tp-questions");
+      step.questions.forEach((q) => ul.appendChild(el("li", null, q)));
+      box.appendChild(ul);
+    }
+    if (step.correction && step.correction.length) {
+      const det = el("details", "corrige");
+      det.appendChild(el("summary", null, "✅ Voir la correction"));
+      const ol = el("ol", "corrige-body");
+      step.correction.forEach((c) => ol.appendChild(el("li", null, c)));
+      det.appendChild(ol);
+      box.appendChild(det);
+    }
+    return box;
+  }
+
+  function makeTPCard(tp) {
+    const card = el("div", "tp-card");
+    const head = el("div", "exo-head");
+    head.innerHTML =
+      `<span class="lv-tag ${tp.lang === "python" ? "lv-facile" : "lv-moyen"}">${tp.lang === "python" ? "🐍 Python" : "🖥️ Terminal"}</span>` +
+      `<span class="exo-n">${tp.titre}</span>`;
+    card.appendChild(head);
+    const link = el("button", "tp-theme-link", "→ " + themeTitle(tp.theme));
+    link.addEventListener("click", () => navigate(tp.theme));
+    card.appendChild(link);
+    if (tp.intro) card.appendChild(el("p", "tp-intro", tp.intro));
+
+    if (tp.type === "memo" && tp.table) {
+      const rows = tp.table
+        .map((r) => `<tr><td><code>${r.cmd}</code></td><td><code>${escapeHtml(r.synt)}</code></td><td>${r.desc}</td></tr>`)
+        .join("");
+      card.appendChild(
+        el("div", "tp-memo", `<table><tr><th>Commande</th><th>Syntaxe</th><th>Rôle</th></tr>${rows}</table>`)
+      );
+    } else if (tp.steps) {
+      tp.steps.forEach((s) => card.appendChild(makeTPStep(s, tp.lang)));
+    }
+    card.appendChild(el("div", "tp-source", "📎 " + TP_SOURCE));
+    return card;
+  }
+
+  function makeFichePlus(f) {
+    const card = el("div", "tp-card fiche-plus");
+    const head = el("div", "exo-head");
+    head.innerHTML = `<span class="lv-tag lv-moyen">📘 Fiche +</span><span class="exo-n">${f.titre}</span>`;
+    card.appendChild(head);
+    const link = el("button", "tp-theme-link", "→ " + themeTitle(f.theme));
+    link.addEventListener("click", () => navigate(f.theme));
+    card.appendChild(link);
+    if (f.summary) card.appendChild(el("p", "tp-intro", f.summary));
+    if (f.contenu) card.appendChild(el("div", null, f.contenu));
+    if (f.code) card.appendChild(makeCodeCell(f.code));
+    return card;
+  }
+
+  function makeLogisimBlock() {
+    const wrap = el("div", "logisim-block");
+    wrap.appendChild(
+      el(
+        "div",
+        null,
+        `<strong>🔌 ${LOGISIM_PLATFORM.title}</strong> — ${LOGISIM_PLATFORM.desc} ` +
+          `<a href="${LOGISIM_PLATFORM.url}" target="_blank" rel="noopener">Télécharger Logisim ↗</a>`
+      )
+    );
+    const cats = ["Logique combinatoire", "Logique séquentielle", "Microprocesseur"];
+    cats.forEach((cat) => {
+      const list = LOGISIM_CIRCUITS.filter((c) => c.cat === cat);
+      if (!list.length) return;
+      wrap.appendChild(el("h4", "logisim-cat", cat));
+      const grid = el("div", "logisim-grid");
+      list.forEach((c) => {
+        const a = el("a", "logisim-item");
+        a.href = LOGISIM_PLATFORM.dir + c.file;
+        a.setAttribute("download", "");
+        a.innerHTML =
+          `<span class="logisim-icon">${c.icon}</span>` +
+          `<span class="logisim-body"><strong>${c.titre}</strong><span>${c.desc}</span>` +
+          `<span class="logisim-file">⬇ ${c.file}</span></span>`;
+        grid.appendChild(a);
+      });
+      wrap.appendChild(grid);
+    });
+    if (typeof ARCHI_PDFS !== "undefined" && ARCHI_PDFS.length) {
+      wrap.appendChild(el("h4", "logisim-cat", "📄 Supports de cours (PDF)"));
+      const pl = el("div", "pdf-list");
+      ARCHI_PDFS.forEach((p) => {
+        const a = el("a", "pdf-item");
+        a.href = p.file;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.innerHTML = `📄 ${p.titre}`;
+        pl.appendChild(a);
+      });
+      wrap.appendChild(pl);
+    }
+    return wrap;
+  }
+
+  // Bloc « Ressources du DIU » injecté en bas d'une page de thème.
+  function makeThemeDUResources(themeId) {
+    const tps = (typeof GUIDED_TP !== "undefined" ? GUIDED_TP : []).filter((t) => t.theme === themeId);
+    const fiches = (typeof FICHES_PLUS !== "undefined" ? FICHES_PLUS : []).filter((f) => f.theme === themeId);
+    const hasLogisim = themeId === "architecture-os" && typeof LOGISIM_CIRCUITS !== "undefined";
+    if (!tps.length && !fiches.length && !hasLogisim) return null;
+
+    const wrap = el("div", "extra-block du-block");
+    wrap.appendChild(el("h2", null, "📦 Ressources du DIU"));
+    wrap.appendChild(el("p", "extra-hint", "Du matériel issu de ma formation DIU NSI, rattaché à ce thème."));
+    if (tps.length || fiches.length) {
+      const ul = el("div", "du-links");
+      tps.forEach((t) => {
+        const b = el("button", "btn secondary", (t.lang === "python" ? "🐍 " : "🖥️ ") + t.titre);
+        b.addEventListener("click", () => navigate("tp"));
+        ul.appendChild(b);
+      });
+      fiches.forEach((f) => {
+        const b = el("button", "btn secondary", "📘 " + f.titre);
+        b.addEventListener("click", () => navigate("tp"));
+        ul.appendChild(b);
+      });
+      wrap.appendChild(ul);
+    }
+    if (hasLogisim) wrap.appendChild(makeLogisimBlock());
+    return wrap;
+  }
+
+  /* ---------------- Vue : TP guidés (rubrique) ---------------- */
+  let tpFilter = "all";
+  function renderTP() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "🧪 TP guidés (DIU)"));
+    header.appendChild(
+      el(
+        "p",
+        "theme-intro",
+        "Travaux pratiques pas-à-pas importés de mon DIU NSI : énoncé, code, questions et <strong>corrections masquées</strong> (clique pour révéler). Idéal à faire au poste, ou sur Capytale/Thonny."
+      )
+    );
+    viewTheme.appendChild(header);
+
+    // Filtre par thème
+    const themesPresents = [];
+    GUIDED_TP.concat(FICHES_PLUS).forEach((x) => {
+      if (!themesPresents.includes(x.theme)) themesPresents.push(x.theme);
+    });
+    const bar = el("div", "du-filter");
+    const mkBtn = (label, val) => {
+      const b = el("button", "btn secondary" + (val === tpFilter ? " active-filter" : ""));
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        tpFilter = val;
+        renderTP();
+      });
+      return b;
+    };
+    bar.appendChild(mkBtn("Tout", "all"));
+    themesPresents.forEach((id) => bar.appendChild(mkBtn(themeTitle(id), id)));
+    if (typeof LOGISIM_CIRCUITS !== "undefined") bar.appendChild(mkBtn("🔌 Logisim", "logisim"));
+    viewTheme.appendChild(bar);
+
+    const show = (id) => tpFilter === "all" || tpFilter === id;
+
+    if (tpFilter === "logisim") {
+      viewTheme.appendChild(el("h2", "home-h2", "🔌 Circuits Logisim"));
+      viewTheme.appendChild(makeLogisimBlock());
+    } else {
+      GUIDED_TP.filter((t) => show(t.theme)).forEach((t) => viewTheme.appendChild(makeTPCard(t)));
+      FICHES_PLUS.filter((f) => show(f.theme)).forEach((f) => viewTheme.appendChild(makeFichePlus(f)));
+      if (tpFilter === "all" || tpFilter === "architecture-os") {
+        viewTheme.appendChild(el("h2", "home-h2", "🔌 Circuits Logisim (Architectures)"));
+        viewTheme.appendChild(makeLogisimBlock());
+      }
+    }
+    scrollTop();
+  }
+
   /* ---------------- Impressions communes ---------------- */
   function openPrint(title, bodyHtml) {
     const w = window.open("", "_blank");
@@ -1805,6 +2020,11 @@ sys.stderr = io.StringIO()
         idx.push({ type: "Méthode", icon: "🧭", label: m.titre, target: "methodes", hay: norm(m.titre) });
       });
     }
+    if (typeof GUIDED_TP !== "undefined") {
+      GUIDED_TP.forEach((t) => {
+        idx.push({ type: "TP", icon: t.lang === "python" ? "🐍" : "🖥️", label: t.titre, target: "tp", hay: norm(t.titre + " " + (t.intro || "")) });
+      });
+    }
     return idx;
   }
   const SEARCH_INDEX = buildSearchIndex();
@@ -1892,6 +2112,10 @@ sys.stderr = io.StringIO()
       showThemeView("bo");
       renderBO();
       location.hash = "bo";
+    } else if (target === "tp") {
+      showThemeView("tp");
+      renderTP();
+      location.hash = "tp";
     } else {
       const c = COURSES.find((x) => x.id === target);
       if (!c) return navigate("home");
@@ -1910,7 +2134,7 @@ sys.stderr = io.StringIO()
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo"].includes(t)) return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }
