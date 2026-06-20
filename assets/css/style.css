@@ -509,6 +509,7 @@ body.gated .topbar, body.gated .layout, body.gated #overlay { display: none; }
 
 /* Masquage selon le rôle */
 #teacherToggle { display: none; }                         /* piloté par le rôle */
+body.role-teacher .progress-wrap { display: none; }       /* barre de progression = côté élève */
 body.role-student details.corrige { display: none; }      /* élève : pas de corrigés… */
 body.role-student.corrections-pushed details.corrige { display: block; } /* …sauf si poussés */
 

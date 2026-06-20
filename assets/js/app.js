@@ -78,6 +78,18 @@
   }
   let progress = loadProgress(); // { themeId: {score, total} }
 
+  // Recharge la progression de l'élève connecté depuis la plateforme (Firestore),
+  // pour que la barre, les badges et les ✓ du sommaire le suivent d'un poste à l'autre.
+  function syncStudentProgress() {
+    if (!P.isStudent()) return;
+    const pp = P.getProgress(P.getSession().uid);
+    progress = {};
+    Object.keys(pp.qcm || {}).forEach((t) => {
+      progress[t] = pp.qcm[t];
+    });
+    saveProgress(progress);
+  }
+
   function updateGlobalProgress() {
     let acquis = 0;
     let totalThemes = COURSES.length;
@@ -292,8 +304,8 @@
     });
     viewHome.appendChild(rgrid);
 
-    // --- Badges de progression ---
-    viewHome.appendChild(renderBadges());
+    // --- Badges de progression (côté élève) ---
+    if (!P.isTeacher()) viewHome.appendChild(renderBadges());
 
     const note = el(
       "div",
@@ -2179,6 +2191,8 @@ except Exception:
       `<button class="acc-logout" title="Se déconnecter">Quitter</button>`;
     box.querySelector(".acc-logout").addEventListener("click", () => {
       P.logout();
+      progress = {}; // n'expose pas la progression au prochain utilisateur du poste
+      localStorage.removeItem(PROG_KEY);
       location.hash = "";
       showAuthGate();
     });
@@ -2629,6 +2643,7 @@ except Exception:
   function startApp() {
     document.body.classList.remove("gated");
     applyRole();
+    syncStudentProgress();
     buildNav();
     updateGlobalProgress();
     const initial = location.hash.replace("#", "");
@@ -2641,6 +2656,13 @@ except Exception:
   function handlePlatformData() {
     if (!P.getSession()) return;
     applyRole(); // pour l'élève : révèle/masque les corrigés poussés en direct
+    if (P.isStudent()) {
+      syncStudentProgress();
+      updateGlobalProgress();
+      const active = navList.querySelector(".nav-link.active");
+      buildNav();
+      if (active) setActiveNav(active.dataset.target);
+    }
     if (P.isTeacher() && location.hash.replace("#", "") === "classe" && !document.querySelector(".cap-theme")) {
       renderClasse();
     }
