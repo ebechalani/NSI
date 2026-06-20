@@ -77,6 +77,54 @@
     localStorage.setItem(PROG_KEY, JSON.stringify(p));
   }
   let progress = loadProgress(); // { themeId: {answered, correct, total} }  (QCM par thème)
+  let exosDone = {}; // { "themeId:exo:i": true }  exercices travaillés (code exécuté / texte à trou)
+
+  // Nombre d'« items » à faire dans un thème (questions de QCM + exercices avec activité).
+  function themeItems(themeId) {
+    const q = (QUIZZES[themeId] || []).length;
+    let ex = 0;
+    const X = typeof THEME_EXTRAS !== "undefined" ? THEME_EXTRAS[themeId] : null;
+    if (X && X.exercices) ex = X.exercices.filter((e) => e.code || e.gapcode).length;
+    return q + ex;
+  }
+  function themeExosDone(themeId) {
+    let n = 0;
+    Object.keys(exosDone).forEach((k) => { if (k.indexOf(themeId + ":exo:") === 0) n++; });
+    return n;
+  }
+  // Statistiques d'un élève (utilisé côté prof) à partir de sa fiche {qcm, exos, activite}.
+  function statsFrom(qcm, exos, activite) {
+    qcm = qcm || {}; exos = exos || {}; activite = activite || {};
+    let done = 0, tot = 0, ansSum = 0, corrSum = 0, validés = 0, qcmFaits = 0;
+    COURSES.forEach((c) => {
+      const qTot = (QUIZZES[c.id] || []).length;
+      tot += themeItems(c.id);
+      const q = qcm[c.id];
+      const ans = qcmAnswered(q), corr = qcmCorrect(q), t = qcmTotal(q);
+      let ex = 0;
+      Object.keys(exos).forEach((k) => { if (k.indexOf(c.id + ":exo:") === 0) ex++; });
+      done += Math.min(ans, qTot) + ex;
+      ansSum += ans; corrSum += corr;
+      if (ans > 0) qcmFaits++;
+      if (t > 0 && ans === t && corr === t) validés++;
+    });
+    const act = Object.values(activite).reduce((a, b) => a + (b || 0), 0);
+    return {
+      progression: tot ? Math.round((done / tot) * 100) : 0,
+      reussite: ansSum ? Math.round((corrSum / ansSum) * 100) : 0,
+      themesValidés: validés,
+      qcmFaits: qcmFaits,
+      activites: act,
+    };
+  }
+  // Marque un exercice comme fait → fait monter la complétion du thème.
+  function markExoDone(key) {
+    exosDone[key] = true;
+    if (!P.isStudent()) return;
+    P.recordExo(key);
+    updateGlobalProgress();
+    refreshThemeBars(currentThemeId);
+  }
 
   // Lecture tolérante (compatibilité avec l'ancien format {score, total}).
   function qcmTotal(p) { return p && p.total > 0 ? p.total : 0; }
@@ -101,6 +149,8 @@
     const pp = P.getProgress(P.getSession().uid);
     progress = {};
     Object.keys(pp.qcm || {}).forEach((t) => { progress[t] = pp.qcm[t]; });
+    exosDone = {};
+    Object.keys(pp.exos || {}).forEach((k) => { if (pp.exos[k]) exosDone[k] = true; });
     saveProgress(progress);
   }
 
@@ -112,18 +162,18 @@
   }
 
   function updateGlobalProgress() {
-    // Progression globale = part des QUESTIONS de QCM répondues sur l'ensemble
-    // du programme → 100 % quand tous les thèmes sont complétés.
-    let ans = 0, tot = 0;
+    // Progression globale = items faits (questions de QCM répondues + exercices
+    // travaillés) sur le total du programme → 100 % quand tout est complété.
+    let done = 0, tot = 0;
     COURSES.forEach((c) => {
-      const total = (QUIZZES[c.id] || []).length;
-      tot += total;
-      ans += Math.min(qcmAnswered(progress[c.id]), total);
+      const qTot = (QUIZZES[c.id] || []).length;
+      tot += themeItems(c.id);
+      done += Math.min(qcmAnswered(progress[c.id]), qTot) + themeExosDone(c.id);
     });
-    const pct = tot ? Math.round((ans / tot) * 100) : 0;
+    const pct = tot ? Math.round((done / tot) * 100) : 0;
     $("#globalProgress").style.width = pct + "%";
     $("#globalProgressLabel").textContent = pct + " %";
-    $("#globalProgressLabel").title = ans + " / " + tot + " questions répondues";
+    $("#globalProgressLabel").title = done + " / " + tot + " activités faites";
   }
 
   // Barres « de ce thème » : complétion (QCM répondu) + taux de réussite.
@@ -141,13 +191,16 @@
     refreshThemeBars(themeId);
     return wrap;
   }
-  function refreshThemeBars(themeId, ans, corr, total) {
+  function refreshThemeBars(themeId, ans, corr) {
     if (!themeBars || themeBars.dataset.theme !== themeId) return;
     const p = progress[themeId];
-    total = total != null ? total : qcmTotal(p) || (QUIZZES[themeId] || []).length;
-    ans = ans != null ? ans : qcmAnswered(p);
+    const qTot = (QUIZZES[themeId] || []).length;
+    ans = ans != null ? ans : qcmAnswered(p); // questions de QCM répondues
     corr = corr != null ? corr : qcmCorrect(p);
-    const prog = total ? Math.round((ans / total) * 100) : 0;
+    // Complétion = (questions répondues + exercices faits) / (questions + exercices)
+    const items = themeItems(themeId) || 1;
+    const done = Math.min(ans, qTot) + themeExosDone(themeId);
+    const prog = Math.round((done / items) * 100);
     const reuss = ans ? Math.round((corr / ans) * 100) : 0;
     themeBars.querySelector(".tb-fill.prog").style.width = prog + "%";
     themeBars.querySelector(".tb-pct.prog").textContent = prog + " %";
@@ -501,7 +554,7 @@
   }
 
   /* ---------------- Éditeur de code Python ---------------- */
-  function makeCodeCell(code) {
+  function makeCodeCell(code, onRun) {
     const cell = el("div", "code-cell");
     const bar = el("div", "code-toolbar");
     bar.innerHTML = `
@@ -541,7 +594,10 @@
       out.textContent = "";
     });
 
-    btnRun.addEventListener("click", () => runPython(ta.value, out, btnRun));
+    btnRun.addEventListener("click", () => {
+      runPython(ta.value, out, btnRun);
+      if (onRun) onRun();
+    });
     btnBasthon.addEventListener("click", () => openInBasthon(ta.value));
 
     cell.appendChild(bar);
@@ -580,7 +636,7 @@
   /* ---------------- Textes à trou (cloze interactif) ---------------- */
   // code : texte avec des marqueurs ___ ; gaps : réponses attendues
   //   (chaîne ou tableau de variantes acceptées, dans l'ordre des ___).
-  function makeGapFill(code, gaps) {
+  function makeGapFill(code, gaps, onCheck) {
     const wrap = el("div", "gapfill");
     const bar = el("div", "code-toolbar");
     bar.innerHTML =
@@ -630,6 +686,7 @@
 
     btnCheck.addEventListener("click", () => {
       noteActivity(currentThemeId); // texte à trou = activité de travail
+      if (onCheck) onCheck();
       let ok = 0;
       inputs.forEach((inp, i) => {
         const good = accepts(gaps[i], inp.value);
@@ -1371,8 +1428,10 @@ except Exception:
         )
       );
       box.appendChild(el("div", "exo-enonce", exo.enonce));
-      if (exo.gapcode && exo.gaps) box.appendChild(makeGapFill(exo.gapcode, exo.gaps));
-      if (exo.code) box.appendChild(makeCodeCell(exo.code));
+      const exoKey = themeId + ":exo:" + i;
+      const done = () => markExoDone(exoKey);
+      if (exo.gapcode && exo.gaps) box.appendChild(makeGapFill(exo.gapcode, exo.gaps, done));
+      if (exo.code) box.appendChild(makeCodeCell(exo.code, done));
       if (exo.solution) {
         const det = el("details", "corrige");
         det.appendChild(el("summary", null, "✅ Voir le corrigé"));
@@ -2416,8 +2475,8 @@ except Exception:
       const tbl = el("div", "classe-table");
       const rows = students
         .map((st) => {
-          const sum = P.studentSummary(st.uid, COURSES);
           const prog = P.getProgress(st.uid);
+          const sum = statsFrom(prog.qcm, prog.exos, prog.activite);
           const nbCap = Object.values(prog.capacites || {}).filter(Boolean).length;
           return (
             `<tr data-uid="${st.uid}">` +
