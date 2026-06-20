@@ -346,10 +346,183 @@ while True:
       },
     ],
   },
+
+  {
+    id: "py-structures",
+    theme: "types-construits",
+    lang: "python",
+    titre: "TP Python — Fonctions & structures de données",
+    intro: "Fonctions (return, défaut, portée), listes (slicing, copie vs référence), tuples, dictionnaires et compréhensions. Les démos sont des extraits de notebook (▶ ou ⚡ Basthon pour exécuter) ; les corrections contiennent du code exécutable.",
+    steps: [
+      {
+        num: "1", titre: "Fonctions : return, paramètre par défaut, portée",
+        code: `def carre(n):
+    """Retourne le carré de n."""
+    return n * n
+
+def mention(note, seuil=10):
+    return "Admis" if note >= seuil else "Ajourné"
+
+print(mention(14))                 # Admis (seuil par défaut = 10)
+print(mention(14, 15))             # Ajourné
+print(mention(note=14, seuil=12))  # arguments nommés
+
+# Renvoyer plusieurs valeurs (un tuple)
+def statistiques(notes):
+    return min(notes), max(notes), sum(notes) / len(notes)
+
+mini, maxi, moy = statistiques([12, 15, 8, 17, 11])
+print(mini, maxi, round(moy, 2))`,
+        run: true,
+        questions: [
+          "Que vaut carre(carre(3)) ?",
+          "Que se passe-t-il si on écrit print(x) hors de la fonction qui crée x ?",
+          "Exercice : écris statistiques_complete(notes) renvoyant aussi l'écart-type.",
+        ],
+        correction: [
+          "carre(3) = 9, puis carre(9) = 81 : une fonction peut prendre le résultat d'une autre.",
+          "NameError : une variable créée dans une fonction est LOCALE (portée/scope) ; elle n'existe pas dehors. On note aussi le paramètre par défaut, les arguments nommés et le renvoi de plusieurs valeurs (tuple).",
+          { text: "Solution — on calcule la moyenne, la variance (moyenne des carrés des écarts), puis l'écart-type (racine de la variance) :" },
+          { code: `import math
+
+def statistiques_complete(notes):
+    n = len(notes)
+    moyenne = sum(notes) / n
+    variance = sum((x - moyenne) ** 2 for x in notes) / n
+    return {"moyenne": round(moyenne, 2), "min": min(notes),
+            "max": max(notes), "ecart_type": round(math.sqrt(variance), 2)}
+
+print(statistiques_complete([12, 15, 8, 17, 11]))` },
+        ],
+      },
+      {
+        num: "2", titre: "Listes : slicing, méthodes, copie vs référence",
+        code: `notes = [12, 15, 8, 17, 11, 14]
+print(notes[0], notes[-1])   # 12 14
+print(notes[1:4])            # [15, 8, 17]
+print(notes[::-1])           # liste inversée
+print(notes[::2])            # un sur deux
+
+# PIÈGE : copie vs référence
+a = [1, 2, 3]
+b = a           # même liste
+b.append(99)
+print(a)        # [1, 2, 3, 99] : a aussi modifiée !
+c = a.copy()    # vraie copie indépendante`,
+        run: true,
+        questions: [
+          "Prédis notes[2:5] et notes[::2] sur [12, 15, 8, 17, 11, 14].",
+          "Différence entre b = a et c = a.copy() ?",
+        ],
+        correction: [
+          "notes[2:5] → [8, 17, 11] (le 5 est exclu). notes[::2] → [12, 8, 11].",
+          "b = a copie la RÉFÉRENCE (a et b = même liste, modifier l'une modifie l'autre) ; c = a.copy() crée une liste indépendante. Distinction clé pour les objets mutables.",
+          { text: "Exercice analyser_classe — solution (nb_admis via une compréhension) :" },
+          { code: `def analyser_classe(notes):
+    return {"min": min(notes), "max": max(notes),
+            "moyenne": round(sum(notes) / len(notes), 2),
+            "nb_admis": len([n for n in notes if n >= 10])}
+
+print(analyser_classe([12, 15, 8, 17, 11, 14, 6, 18, 9, 13]))` },
+        ],
+      },
+      {
+        num: "3", titre: "Tuples et dictionnaires",
+        code: `# Tuple : immuable
+coord = (48.8566, 2.3522)
+lat, lon = coord          # déballage
+# coord[0] = 0  ->  TypeError
+
+# Dictionnaire : clé -> valeur
+eleve = {"nom": "Dupont", "prenom": "Alice", "note": 18}
+print(eleve["nom"])
+print(eleve.get("age", "non renseigné"))   # défaut si absent
+eleve["classe"] = "1NSI"
+for cle, val in eleve.items():
+    print(cle, ":", val)`,
+        run: true,
+        questions: ["Quand préfère-t-on un tuple à une liste ?"],
+        correction: [
+          "Quand les données ne doivent PAS changer (coordonnées, date) : l'immuabilité protège et permet d'utiliser le tuple comme clé de dictionnaire. La liste sert quand le contenu évolue.",
+          ".get(cle, defaut) évite l'erreur si la clé manque ; .items() parcourt les couples (clé, valeur).",
+        ],
+      },
+      {
+        num: "4", titre: "Compréhensions de liste et de dictionnaire",
+        code: `notes = [12, 15, 8, 17, 11, 14, 6]
+print([n**2 for n in notes])            # transformer
+print([n for n in notes if n >= 10])    # filtrer
+
+# Compréhension de dictionnaire + zip()
+noms = ["Alice", "Bob", "Clara"]
+vals = [15, 12, 17]
+print({nom: note for nom, note in zip(noms, vals)})`,
+        run: true,
+        questions: [
+          "Exercice final : sur une liste de dicts {nom, maths, info}, écris (1) les noms admis en info, (2) la moyenne en info, (3) le dict {nom: moyenne maths-info}.",
+        ],
+        correction: [
+          { text: "Solution — chaque question est une compréhension [expression for élément in itérable if condition] :" },
+          { code: `classe = [
+    {"nom": "Alice", "maths": 15, "info": 18},
+    {"nom": "Bob",   "maths": 12, "info": 14},
+    {"nom": "Clara", "maths": 17, "info": 16},
+    {"nom": "David", "maths":  9, "info": 11},
+]
+admis = [e["nom"] for e in classe if e["info"] >= 10]
+moy_info = sum(e["info"] for e in classe) / len(classe)
+moyennes = {e["nom"]: (e["maths"] + e["info"]) / 2 for e in classe}
+print(admis); print(moy_info); print(moyennes)` },
+        ],
+      },
+    ],
+  },
 ];
 
 /* ---------------- Fiches « pour aller plus loin » ---------------- */
 const FICHES_PLUS = [
+  {
+    theme: "langages-prog",
+    titre: "Les 4 piliers de l'informatique",
+    summary:
+      "L'informatique repose sur 4 piliers : les données (ce qu'on manipule), les algorithmes (comment), les langages (comment on l'exprime), les machines (ce qui exécute).",
+    contenu: `<ul>
+      <li><strong>Données</strong> : toute information manipulée (nombres, texte, images, sons).</li>
+      <li><strong>Algorithmes</strong> : la méthode pour résoudre un problème — indépendante du langage.</li>
+      <li><strong>Langages</strong> : le moyen d'exprimer les algorithmes (du bas au haut niveau).</li>
+      <li><strong>Machines</strong> : le matériel qui exécute (CPU, mémoire, entrées/sorties).</li>
+    </ul>
+    <p>Et les <strong>interfaces</strong> : le point de contact entre deux systèmes (clavier ↔ OS, OS ↔ programme). Chaque programme se situe dans ces 4 dimensions — ex. trier une liste : données (la liste), algorithme (le tri), langage (Python), machine (l'ordinateur).</p>`,
+  },
+  {
+    theme: "langages-prog",
+    titre: "Instructions de saut : break, continue, exceptions",
+    summary:
+      "Les sauts interrompent le flux séquentiel. break quitte la boucle, continue passe à l'itération suivante, return quitte la fonction. try/except gère les erreurs sans planter.",
+    contenu: `<ul>
+      <li><code>break</code> : sort immédiatement de la boucle la plus proche.</li>
+      <li><code>continue</code> : passe directement à l'itération suivante (ignore la suite du bloc).</li>
+      <li><code>return</code> : quitte la fonction (et renvoie éventuellement une valeur).</li>
+      <li><code>try / except</code> : exécute un bloc « à risque » et rattrape l'erreur (ex. <code>ValueError</code> sur <code>int("abc")</code>) au lieu de planter.</li>
+    </ul>`,
+    code: `# break : sortir d'une boucle
+for i in range(10):
+    if i == 5:
+        break
+    print(i)        # 0 1 2 3 4
+
+# continue : sauter une itération
+for i in range(6):
+    if i % 2 == 0:
+        continue    # saute les pairs
+    print(i)        # 1 3 5
+
+# try / except : saisie sécurisée (input fonctionne ici)
+try:
+    n = int("abc")
+except ValueError:
+    print("Erreur : ce n'est pas un entier.")`,
+  },
   {
     theme: "langages-prog",
     titre: "Le typage : fort/faible, statique/dynamique",

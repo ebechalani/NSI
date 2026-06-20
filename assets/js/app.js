@@ -1898,7 +1898,18 @@ except Exception:
       const det = el("details", "corrige");
       det.appendChild(el("summary", null, "✅ Voir la correction"));
       const ol = el("ol", "corrige-body");
-      step.correction.forEach((c) => ol.appendChild(el("li", null, c)));
+      step.correction.forEach((c) => {
+        // c peut être une chaîne, {text} ou {code} (solution exécutable)
+        if (typeof c === "string") {
+          ol.appendChild(el("li", null, c));
+        } else if (c && c.text) {
+          ol.appendChild(el("li", null, c.text));
+        } else if (c && c.code) {
+          const li = el("li");
+          li.appendChild(makeCodeCell(c.code));
+          ol.appendChild(li);
+        }
+      });
       det.appendChild(ol);
       box.appendChild(det);
     }
