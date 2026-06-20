@@ -2204,10 +2204,19 @@ except Exception:
           <button type="submit" class="btn">Entrer dans la classe</button>
         </form>
         <form class="auth-form hidden" data-form="prof">
-          <label>Ton nom<input name="nom" placeholder="M./Mme …" autocomplete="off" required></label>
+          ${
+            P.mode === "firebase"
+              ? `<label>Adresse e-mail<input name="email" type="email" placeholder="prof@exemple.fr" autocomplete="username" required></label>
+                 <label>Mot de passe<input name="password" type="password" placeholder="••••••" autocomplete="current-password" required></label>`
+              : `<label>Ton nom<input name="nom" placeholder="M./Mme" autocomplete="off" required></label>`
+          }
           <div class="auth-error"></div>
           <button type="submit" class="btn">Ouvrir l'espace professeur</button>
-          <p class="auth-note">Mode local (phase 1) : tes classes restent sur ce navigateur. La synchro entre postes (Firebase) arrive en phase 2.</p>
+          <p class="auth-note">${
+            P.mode === "firebase"
+              ? "Première connexion ? Ton compte est créé automatiquement. Tes classes sont synchronisées."
+              : "Mode local : tes classes restent sur ce navigateur."
+          }</p>
         </form>
       </div>`;
 
@@ -2220,16 +2229,32 @@ except Exception:
       })
     );
 
-    gate.querySelector('[data-form="eleve"]').addEventListener("submit", (e) => {
+    function busy(form, on) {
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = on;
+      btn.textContent = on ? "Connexion…" : btn.dataset.label || btn.textContent;
+    }
+    gate.querySelector('[data-form="eleve"]').addEventListener("submit", async (e) => {
       e.preventDefault();
       const err = e.target.querySelector(".auth-error");
-      const res = P.loginStudent(e.target.code.value, e.target.nom.value);
-      if (res.error) { err.textContent = "❌ " + res.error; return; }
+      err.textContent = "";
+      busy(e.target, true);
+      const res = await P.loginStudent(e.target.code.value, e.target.nom.value);
+      busy(e.target, false);
+      if (res && res.error) { err.textContent = "❌ " + res.error; return; }
       enterApp();
     });
-    gate.querySelector('[data-form="prof"]').addEventListener("submit", (e) => {
+    gate.querySelector('[data-form="prof"]').addEventListener("submit", async (e) => {
       e.preventDefault();
-      P.loginTeacher(e.target.nom.value);
+      const err = e.target.querySelector(".auth-error");
+      err.textContent = "";
+      busy(e.target, true);
+      const res =
+        P.mode === "firebase"
+          ? await P.loginTeacher(e.target.email.value, e.target.password.value)
+          : await P.loginTeacher(e.target.nom.value);
+      busy(e.target, false);
+      if (res && res.error) { err.textContent = "❌ " + res.error; return; }
       enterApp();
     });
   }
@@ -2602,6 +2627,7 @@ except Exception:
 
   /* ---------------- Démarrage ---------------- */
   function startApp() {
+    document.body.classList.remove("gated");
     applyRole();
     buildNav();
     updateGlobalProgress();
@@ -2611,11 +2637,21 @@ except Exception:
     navigate(target);
   }
 
-  if (P.getSession()) {
-    startApp();
-  } else {
-    showAuthGate();
+  // Rafraîchissement temps réel (snapshots Firebase) : met à jour l'UI.
+  function handlePlatformData() {
+    if (!P.getSession()) return;
+    applyRole(); // pour l'élève : révèle/masque les corrigés poussés en direct
+    if (P.isTeacher() && location.hash.replace("#", "") === "classe" && !document.querySelector(".cap-theme")) {
+      renderClasse();
+    }
   }
+  P.onData = handlePlatformData;
+
+  document.body.classList.add("gated"); // page neutre pendant l'attente de l'auth
+  P.ready(function () {
+    if (P.getSession()) startApp();
+    else showAuthGate();
+  });
 
   window.addEventListener("hashchange", () => {
     if (!P.getSession()) return;
