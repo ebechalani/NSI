@@ -117,14 +117,18 @@
       activites: act,
     };
   }
-  // Marque un exercice comme fait → fait monter la complétion du thème.
-  function markExoDone(key) {
-    exosDone[key] = true;
+  // Marque/démarque un exercice comme fait → fait monter/descendre la complétion.
+  function setExoDone(key, val) {
+    if (val) exosDone[key] = true; else delete exosDone[key];
+    // reflète l'état sur la case à cocher correspondante
+    const cb = document.querySelector('.exo-done input[data-key="' + (window.CSS && CSS.escape ? CSS.escape(key) : key) + '"]');
+    if (cb) cb.checked = !!val;
     if (!P.isStudent()) return;
-    P.recordExo(key);
+    P.setExo(key, val);
     updateGlobalProgress();
     refreshThemeBars(currentThemeId);
   }
+  function markExoDone(key) { setExoDone(key, true); }
 
   // Lecture tolérante (compatibilité avec l'ancien format {score, total}).
   function qcmTotal(p) { return p && p.total > 0 ? p.total : 0; }
@@ -183,7 +187,7 @@
     wrap.dataset.theme = themeId;
     wrap.innerHTML =
       `<div class="tb-title">📊 Ta progression sur ce thème</div>` +
-      `<div class="tb-row"><span class="tb-label">Complétion (QCM)</span>` +
+      `<div class="tb-row"><span class="tb-label">Progression du thème</span>` +
       `<div class="tb-track"><span class="tb-fill prog"></span></div><span class="tb-pct prog">0 %</span></div>` +
       `<div class="tb-row"><span class="tb-label">Taux de réussite</span>` +
       `<div class="tb-track"><span class="tb-fill reuss"></span></div><span class="tb-pct reuss">0 %</span></div>`;
@@ -1437,6 +1441,18 @@ except Exception:
         det.appendChild(el("summary", null, "✅ Voir le corrigé"));
         det.appendChild(el("div", "corrige-body", exo.solution));
         box.appendChild(det);
+      }
+      // Case explicite « fait » (fait monter la barre du thème) — côté élève.
+      if (P.isStudent()) {
+        const doneRow = el("label", "exo-done");
+        const cb = el("input");
+        cb.type = "checkbox";
+        cb.dataset.key = exoKey;
+        cb.checked = !!exosDone[exoKey];
+        cb.addEventListener("change", () => setExoDone(exoKey, cb.checked));
+        doneRow.appendChild(cb);
+        doneRow.appendChild(el("span", null, "J'ai fait cet exercice"));
+        box.appendChild(doneRow);
       }
       wrap.appendChild(box);
     });

@@ -438,6 +438,8 @@ html[data-theme="dark"] .lv-moyen { background: #3a2c10; }
 .exo-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; }
 .exo-n { font-weight: 700; font-size: .9rem; color: var(--text-soft); }
 .exo-enonce { font-size: .95rem; }
+.exo-done { display: inline-flex; align-items: center; gap: .5rem; margin-top: .8rem; font-size: .9rem; font-weight: 600; cursor: pointer; background: var(--ok-soft); color: var(--ok); border: 1px solid var(--ok); border-radius: 9px; padding: .4rem .8rem; }
+.exo-done input { accent-color: var(--ok); width: 16px; height: 16px; }
 details.corrige {
   margin-top: .8rem; border: 1px solid var(--border); border-radius: 9px;
   background: var(--bg-soft); padding: .4rem .8rem;

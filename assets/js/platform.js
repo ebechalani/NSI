@@ -166,11 +166,19 @@
     s.qcm = s.qcm || {}; s.qcm[themeId] = data;
     persistLocal(); fbUpdatePath("students", s.uid, ["qcm", themeId], data);
   }
-  function recordExo(key) {
+  function recordExo(key) { setExo(key, true); }
+  function setExo(key, val) {
     if (!isStudent()) return;
     var s = studentByUid(cache.session.uid); if (!s) return;
-    s.exos = s.exos || {}; s.exos[key] = true;
-    persistLocal(); fbUpdatePath("students", s.uid, ["exos", key], true);
+    s.exos = s.exos || {};
+    if (val) s.exos[key] = true; else delete s.exos[key];
+    persistLocal();
+    if (FB && db) {
+      try {
+        var fv = val ? true : firebase.firestore.FieldValue.delete();
+        db.collection("students").doc(s.uid).update(new firebase.firestore.FieldPath("exos", key), fv).catch(fbErr);
+      } catch (e) {}
+    }
   }
   // Activité de travail dans un thème (code exécuté, texte à trou, exercice…),
   // comptée à chaque fois (les répétitions s'additionnent).
@@ -371,7 +379,7 @@
     loginTeacher: loginTeacher, loginStudent: loginStudent,
     getClasses: getClasses, getClass: getClass, createClass: createClass, renameClass: renameClass, deleteClass: deleteClass,
     getStudents: getStudents, addStudent: addStudent, removeStudent: removeStudent,
-    getProgress: getProgress, recordQcm: recordQcm, recordExo: recordExo, recordActivity: recordActivity,
+    getProgress: getProgress, recordQcm: recordQcm, recordExo: recordExo, setExo: setExo, recordActivity: recordActivity,
     setCapacite: setCapacite, setNote: setNote, studentSummary: studentSummary,
     isCorrectionsPushed: isCorrectionsPushed, setCorrectionsPushed: setCorrectionsPushed,
   };
