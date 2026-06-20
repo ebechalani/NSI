@@ -76,47 +76,83 @@
   function saveProgress(p) {
     localStorage.setItem(PROG_KEY, JSON.stringify(p));
   }
-  let progress = loadProgress(); // { themeId: {score, total} }  (QCM)
-  let worked = {}; // { themeId: true }  thèmes travaillés (activité : code, texte à trou…)
+  let progress = loadProgress(); // { themeId: {answered, correct, total} }  (QCM par thème)
+
+  // Lecture tolérante (compatibilité avec l'ancien format {score, total}).
+  function qcmTotal(p) { return p && p.total > 0 ? p.total : 0; }
+  function qcmAnswered(p) {
+    if (!p) return 0;
+    if (p.answered != null) return p.answered;
+    return p.score != null ? p.total || 0 : 0; // ancien format = QCM terminé
+  }
+  function qcmCorrect(p) {
+    if (!p) return 0;
+    if (p.correct != null) return p.correct;
+    return p.score != null ? p.score : 0;
+  }
+  function themePct(p) { return qcmTotal(p) ? Math.round((qcmAnswered(p) / p.total) * 100) : 0; } // complétion
+  function themeReussite(p) { return qcmAnswered(p) ? Math.round((qcmCorrect(p) / qcmAnswered(p)) * 100) : 0; }
+  function themePerfait(p) { return qcmTotal(p) > 0 && qcmAnswered(p) === p.total && qcmCorrect(p) === p.total; }
 
   // Recharge la progression de l'élève connecté depuis la plateforme (Firestore),
-  // pour que la barre, les badges et les ✓ du sommaire le suivent d'un poste à l'autre.
+  // pour que les barres, badges et ✓ du sommaire le suivent d'un poste à l'autre.
   function syncStudentProgress() {
     if (!P.isStudent()) return;
     const pp = P.getProgress(P.getSession().uid);
     progress = {};
-    Object.keys(pp.qcm || {}).forEach((t) => {
-      progress[t] = pp.qcm[t];
-    });
-    worked = {};
-    Object.keys(pp.activite || {}).forEach((t) => {
-      if (pp.activite[t] > 0) worked[t] = true;
-    });
+    Object.keys(pp.qcm || {}).forEach((t) => { progress[t] = pp.qcm[t]; });
     saveProgress(progress);
   }
 
-  // Note une activité de travail dans un thème (fait monter la barre).
+  // Activité de travail (code exécuté, texte à trou) — comptée pour le suivi prof
+  // (le nombre d'actions), sans piloter la barre de progression.
   function noteActivity(themeId) {
     if (!P.isStudent() || !themeId) return;
-    worked[themeId] = true;
     P.recordActivity(themeId);
-    updateGlobalProgress();
   }
 
   function updateGlobalProgress() {
-    // Progression = part des thèmes TRAVAILLÉS : un QCM fait OU une activité
-    // (code exécuté, texte à trou…). La barre bouge dès qu'on travaille un thème.
-    // Le ✓ du sommaire marque, lui, les thèmes validés (QCM parfait).
-    let travailles = 0;
-    let totalThemes = COURSES.length;
+    // Progression globale = part des QUESTIONS de QCM répondues sur l'ensemble
+    // du programme → 100 % quand tous les thèmes sont complétés.
+    let ans = 0, tot = 0;
     COURSES.forEach((c) => {
-      const p = progress[c.id];
-      if ((p && p.total > 0) || worked[c.id]) travailles++;
+      const total = (QUIZZES[c.id] || []).length;
+      tot += total;
+      ans += Math.min(qcmAnswered(progress[c.id]), total);
     });
-    const pct = Math.round((travailles / totalThemes) * 100);
+    const pct = tot ? Math.round((ans / tot) * 100) : 0;
     $("#globalProgress").style.width = pct + "%";
     $("#globalProgressLabel").textContent = pct + " %";
-    $("#globalProgressLabel").title = travailles + " / " + totalThemes + " thèmes travaillés";
+    $("#globalProgressLabel").title = ans + " / " + tot + " questions répondues";
+  }
+
+  // Barres « de ce thème » : complétion (QCM répondu) + taux de réussite.
+  let themeBars = null;
+  function makeThemeBars(themeId) {
+    const wrap = el("div", "theme-bars");
+    wrap.dataset.theme = themeId;
+    wrap.innerHTML =
+      `<div class="tb-title">📊 Ta progression sur ce thème</div>` +
+      `<div class="tb-row"><span class="tb-label">Complétion (QCM)</span>` +
+      `<div class="tb-track"><span class="tb-fill prog"></span></div><span class="tb-pct prog">0 %</span></div>` +
+      `<div class="tb-row"><span class="tb-label">Taux de réussite</span>` +
+      `<div class="tb-track"><span class="tb-fill reuss"></span></div><span class="tb-pct reuss">0 %</span></div>`;
+    themeBars = wrap;
+    refreshThemeBars(themeId);
+    return wrap;
+  }
+  function refreshThemeBars(themeId, ans, corr, total) {
+    if (!themeBars || themeBars.dataset.theme !== themeId) return;
+    const p = progress[themeId];
+    total = total != null ? total : qcmTotal(p) || (QUIZZES[themeId] || []).length;
+    ans = ans != null ? ans : qcmAnswered(p);
+    corr = corr != null ? corr : qcmCorrect(p);
+    const prog = total ? Math.round((ans / total) * 100) : 0;
+    const reuss = ans ? Math.round((corr / ans) * 100) : 0;
+    themeBars.querySelector(".tb-fill.prog").style.width = prog + "%";
+    themeBars.querySelector(".tb-pct.prog").textContent = prog + " %";
+    themeBars.querySelector(".tb-fill.reuss").style.width = reuss + "%";
+    themeBars.querySelector(".tb-pct.reuss").textContent = reuss + " %";
   }
 
   /* ---------------- Construction du sommaire ---------------- */
@@ -135,8 +171,7 @@
 
     COURSES.forEach((c) => {
       const li = el("li");
-      const done = progress[c.id] && progress[c.id].total > 0 &&
-        progress[c.id].score === progress[c.id].total;
+      const done = themePerfait(progress[c.id]);
       const link = el(
         "a",
         "nav-link",
@@ -367,6 +402,9 @@
       c.capacites.map((x) => `<li>${x}</li>`).join("") +
       `</ul>`;
     viewTheme.appendChild(cap);
+
+    // Barres « de ce thème » (progression de complétion + taux de réussite)
+    viewTheme.appendChild(makeThemeBars(c.id));
 
     // Déroulé de séance (réservé au prof, masqué hors mode professeur)
     if (c.seance) viewTheme.appendChild(makeSeance(c.seance));
@@ -745,18 +783,20 @@ except Exception:
       const nbOk = correct.filter(Boolean).length;
       scoreLine.textContent = `Score : ${nbOk} / ${questions.length}` +
         (nbRep < questions.length ? `  (${nbRep} répondue${nbRep > 1 ? "s" : ""})` : "");
+      // barres « de ce thème » mises à jour en direct
+      refreshThemeBars(themeId, nbRep, nbOk, questions.length);
+      // sauvegarde au fil des réponses, sans dégrader une meilleure progression
+      if (nbRep > 0 && nbRep >= qcmAnswered(progress[themeId])) {
+        progress[themeId] = { answered: nbRep, correct: nbOk, total: questions.length };
+        saveProgress(progress);
+        P.recordQcm(themeId, nbRep, nbOk, questions.length);
+        updateGlobalProgress();
+      }
       if (nbRep === questions.length) {
         scoreLine.classList.add("done");
-        if (nbOk === questions.length) {
-          scoreLine.textContent += "  🎉 Thème validé !";
-        }
-        // sauvegarde
-        progress[themeId] = { score: nbOk, total: questions.length };
-        saveProgress(progress);
-        P.recordQcm(themeId, nbOk, questions.length); // suivi côté plateforme
+        if (nbOk === questions.length) scoreLine.textContent += "  🎉 Thème validé !";
         buildNav();
         setActiveNav(themeId);
-        updateGlobalProgress();
       }
     }
 
@@ -782,7 +822,6 @@ except Exception:
         input.addEventListener("change", () => {
           if (answered[qi]) return;
           answered[qi] = true;
-          noteActivity(themeId); // répondre au QCM = activité de travail
           const ok = ci === item.answer;
           correct[qi] = ok;
 
@@ -1396,8 +1435,7 @@ except Exception:
     const wrap = el("div", "badges-block");
     wrap.appendChild(el("h2", "home-h2", "🏅 Tes badges"));
     const done = COURSES.filter((c) => {
-      const p = progress[c.id];
-      return p && p.total > 0 && p.score === p.total;
+      return themePerfait(progress[c.id]);
     }).length;
     const anyQuiz = Object.keys(progress).length > 0;
     const defs = [

@@ -481,6 +481,18 @@ details.corrige[open] > summary { margin-bottom: .5rem; }
 .grille-table .pts { text-align: center; font-weight: 700; color: var(--accent); }
 .grille-table .total td { background: var(--accent-soft); font-weight: 700; }
 
+/* ---------- Barres de progression par thème (élève) ---------- */
+.theme-bars { background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: .8rem 1rem; margin: 1.25rem 0; }
+.tb-title { font-weight: 700; font-size: .92rem; margin-bottom: .5rem; }
+.tb-row { display: grid; grid-template-columns: 130px 1fr 52px; align-items: center; gap: .6rem; margin: .35rem 0; }
+.tb-label { font-size: .85rem; color: var(--text-soft); }
+.tb-track { height: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 99px; overflow: hidden; }
+.tb-fill { display: block; height: 100%; width: 0%; transition: width .4s; border-radius: 99px; }
+.tb-fill.prog { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.tb-fill.reuss { background: linear-gradient(90deg, var(--ok), #4ade80); }
+.tb-pct { font-family: var(--mono); font-size: .82rem; font-weight: 700; text-align: right; }
+@media (max-width: 520px) { .tb-row { grid-template-columns: 1fr 44px; } .tb-track { grid-column: 1 / -1; } }
+
 /* ---------- Plateforme : connexion, rôles, classe ---------- */
 .account-box { display: flex; align-items: center; gap: .4rem; }
 .acc-name { font-size: .8rem; color: var(--text-soft); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

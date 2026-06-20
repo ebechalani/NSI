@@ -72,28 +72,28 @@
              : { qcm: {}, exos: {}, capacites: {}, note: "", activite: {} };
   }
   function studentSummary(u, courses) {
-    var pr = getProgress(u), validés = 0, nbQcm = 0, sumRatio = 0;
-    var total = (courses || []).length || 1;
+    var pr = getProgress(u), validés = 0, nbQcm = 0;
+    var sumAns = 0, sumCorr = 0, sumTot = 0;
     var act = pr.activite || {};
-    var travaillés = 0, totalActivites = 0;
+    var totalActivites = 0;
     (courses || []).forEach(function (c) {
       var q = pr.qcm[c.id];
-      var hasQcm = q && q.total > 0;
-      if (hasQcm) {
-        nbQcm++;
-        sumRatio += q.score / q.total;
-        if (q.score === q.total) validés++;
+      if (q && q.total > 0) {
+        // compat ancien format {score,total}
+        var ans = q.answered != null ? q.answered : (q.score != null ? q.total : 0);
+        var corr = q.correct != null ? q.correct : (q.score != null ? q.score : 0);
+        if (ans > 0) nbQcm++;
+        sumAns += ans; sumCorr += corr; sumTot += q.total;
+        if (ans === q.total && corr === q.total) validés++;
       }
-      var a = act[c.id] || 0;
-      totalActivites += a;
-      if (hasQcm || a > 0) travaillés++; // thème « travaillé »
+      totalActivites += act[c.id] || 0;
     });
     return {
       themesValidés: validés,
       qcmFaits: nbQcm,
-      activites: totalActivites, // nb d'actions (compte aussi les répétitions)
-      progression: Math.round((travaillés / total) * 100), // % de thèmes travaillés
-      reussite: nbQcm > 0 ? Math.round((sumRatio / nbQcm) * 100) : 0, // % de réussite moyenne aux QCM
+      activites: totalActivites,
+      progression: sumTot > 0 ? Math.round((sumAns / sumTot) * 100) : 0, // % de questions répondues (complétion)
+      reussite: sumAns > 0 ? Math.round((sumCorr / sumAns) * 100) : 0, // % de bonnes réponses
       capacites: pr.capacites,
       note: pr.note,
     };
@@ -159,11 +159,12 @@
     cache.students = cache.students.filter(function (s) { return s.uid !== u; });
     persistLocal(); notify(); fbDelete("students", u);
   }
-  function recordQcm(themeId, score, total) {
+  function recordQcm(themeId, answered, correct, total) {
     if (!isStudent()) return;
     var s = studentByUid(cache.session.uid); if (!s) return;
-    s.qcm = s.qcm || {}; s.qcm[themeId] = { score: score, total: total };
-    persistLocal(); fbUpdatePath("students", s.uid, ["qcm", themeId], { score: score, total: total });
+    var data = { answered: answered, correct: correct, total: total };
+    s.qcm = s.qcm || {}; s.qcm[themeId] = data;
+    persistLocal(); fbUpdatePath("students", s.uid, ["qcm", themeId], data);
   }
   function recordExo(key) {
     if (!isStudent()) return;
