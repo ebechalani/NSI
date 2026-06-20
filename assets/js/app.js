@@ -76,7 +76,8 @@
   function saveProgress(p) {
     localStorage.setItem(PROG_KEY, JSON.stringify(p));
   }
-  let progress = loadProgress(); // { themeId: {score, total} }
+  let progress = loadProgress(); // { themeId: {score, total} }  (QCM)
+  let worked = {}; // { themeId: true }  thèmes travaillés (activité : code, texte à trou…)
 
   // Recharge la progression de l'élève connecté depuis la plateforme (Firestore),
   // pour que la barre, les badges et les ✓ du sommaire le suivent d'un poste à l'autre.
@@ -87,23 +88,35 @@
     Object.keys(pp.qcm || {}).forEach((t) => {
       progress[t] = pp.qcm[t];
     });
+    worked = {};
+    Object.keys(pp.activite || {}).forEach((t) => {
+      if (pp.activite[t] > 0) worked[t] = true;
+    });
     saveProgress(progress);
   }
 
+  // Note une activité de travail dans un thème (fait monter la barre).
+  function noteActivity(themeId) {
+    if (!P.isStudent() || !themeId) return;
+    worked[themeId] = true;
+    P.recordActivity(themeId);
+    updateGlobalProgress();
+  }
+
   function updateGlobalProgress() {
-    // Progression = part des thèmes ABORDÉS (un QCM fait), pour que la barre
-    // bouge dès qu'on travaille. Le ✓ du sommaire marque, lui, les thèmes
-    // entièrement validés (QCM parfait).
-    let abordes = 0;
+    // Progression = part des thèmes TRAVAILLÉS : un QCM fait OU une activité
+    // (code exécuté, texte à trou…). La barre bouge dès qu'on travaille un thème.
+    // Le ✓ du sommaire marque, lui, les thèmes validés (QCM parfait).
+    let travailles = 0;
     let totalThemes = COURSES.length;
     COURSES.forEach((c) => {
       const p = progress[c.id];
-      if (p && p.total > 0) abordes++;
+      if ((p && p.total > 0) || worked[c.id]) travailles++;
     });
-    const pct = Math.round((abordes / totalThemes) * 100);
+    const pct = Math.round((travailles / totalThemes) * 100);
     $("#globalProgress").style.width = pct + "%";
     $("#globalProgressLabel").textContent = pct + " %";
-    $("#globalProgressLabel").title = abordes + " / " + totalThemes + " thèmes abordés";
+    $("#globalProgressLabel").title = travailles + " / " + totalThemes + " thèmes travaillés";
   }
 
   /* ---------------- Construction du sommaire ---------------- */
@@ -322,7 +335,9 @@
   }
 
   /* ---------------- Vue Thème ---------------- */
+  let currentThemeId = null; // thème affiché (pour rattacher l'activité de l'élève)
   function renderTheme(c) {
+    currentThemeId = c.id;
     viewTheme.innerHTML = "";
 
     const header = el("div", "theme-header");
@@ -576,6 +591,7 @@
     }
 
     btnCheck.addEventListener("click", () => {
+      noteActivity(currentThemeId); // texte à trou = activité de travail
       let ok = 0;
       inputs.forEach((inp, i) => {
         const good = accepts(gaps[i], inp.value);
@@ -646,6 +662,7 @@
   }
 
   async function runPython(source, out, btn) {
+    noteActivity(currentThemeId); // l'élève travaille ce thème
     out.className = "code-output";
     out.innerHTML = `<span class="muted">Exécution…</span>`;
     btn.disabled = true;
@@ -765,6 +782,7 @@ except Exception:
         input.addEventListener("change", () => {
           if (answered[qi]) return;
           answered[qi] = true;
+          noteActivity(themeId); // répondre au QCM = activité de travail
           const ok = ci === item.answer;
           correct[qi] = ok;
 
@@ -2366,7 +2384,7 @@ except Exception:
           return (
             `<tr data-uid="${st.uid}">` +
             `<td><strong>${escapeHtml(st.name)}</strong></td>` +
-            `<td class="num" title="${sum.qcmFaits} thème(s) abordé(s) sur ${COURSES.length}">${sum.progression} %</td>` +
+            `<td class="num" title="thèmes travaillés · ${sum.activites} activité(s) au total">${sum.progression} %</td>` +
             `<td class="num" title="${sum.themesValidés} thème(s) au QCM parfait">${sum.themesValidés}/${COURSES.length}</td>` +
             `<td class="num" title="réussite moyenne aux QCM faits">${sum.reussite} %</td>` +
             `<td class="num">${nbCap}</td>` +
@@ -2624,6 +2642,7 @@ except Exception:
   let currentTarget = "home";
   function navigate(target) {
     currentTarget = target && target !== "home" ? target : "";
+    currentThemeId = null; // renderTheme le réaffectera pour les pages de thème
     if (target === "home" || !target) {
       viewHome.classList.remove("hidden");
       viewTheme.classList.add("hidden");

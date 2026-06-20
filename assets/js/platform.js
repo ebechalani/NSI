@@ -68,24 +68,31 @@
   function studentByUid(u) { return cache.students.filter(function (s) { return s.uid === u; })[0] || null; }
   function getProgress(u) {
     var s = studentByUid(u);
-    return s ? { qcm: s.qcm || {}, exos: s.exos || {}, capacites: s.capacites || {}, note: s.note || "" }
-             : { qcm: {}, exos: {}, capacites: {}, note: "" };
+    return s ? { qcm: s.qcm || {}, exos: s.exos || {}, capacites: s.capacites || {}, note: s.note || "", activite: s.activite || {} }
+             : { qcm: {}, exos: {}, capacites: {}, note: "", activite: {} };
   }
   function studentSummary(u, courses) {
     var pr = getProgress(u), validés = 0, nbQcm = 0, sumRatio = 0;
     var total = (courses || []).length || 1;
+    var act = pr.activite || {};
+    var travaillés = 0, totalActivites = 0;
     (courses || []).forEach(function (c) {
       var q = pr.qcm[c.id];
-      if (q && q.total > 0) {
+      var hasQcm = q && q.total > 0;
+      if (hasQcm) {
         nbQcm++;
         sumRatio += q.score / q.total;
         if (q.score === q.total) validés++;
       }
+      var a = act[c.id] || 0;
+      totalActivites += a;
+      if (hasQcm || a > 0) travaillés++; // thème « travaillé »
     });
     return {
       themesValidés: validés,
       qcmFaits: nbQcm,
-      progression: Math.round((nbQcm / total) * 100), // % de thèmes abordés
+      activites: totalActivites, // nb d'actions (compte aussi les répétitions)
+      progression: Math.round((travaillés / total) * 100), // % de thèmes travaillés
       reussite: nbQcm > 0 ? Math.round((sumRatio / nbQcm) * 100) : 0, // % de réussite moyenne aux QCM
       capacites: pr.capacites,
       note: pr.note,
@@ -163,6 +170,20 @@
     var s = studentByUid(cache.session.uid); if (!s) return;
     s.exos = s.exos || {}; s.exos[key] = true;
     persistLocal(); fbUpdatePath("students", s.uid, ["exos", key], true);
+  }
+  // Activité de travail dans un thème (code exécuté, texte à trou, exercice…),
+  // comptée à chaque fois (les répétitions s'additionnent).
+  function recordActivity(themeId) {
+    if (!isStudent()) return;
+    var s = studentByUid(cache.session.uid); if (!s) return;
+    s.activite = s.activite || {};
+    s.activite[themeId] = (s.activite[themeId] || 0) + 1;
+    persistLocal();
+    if (FB && db) {
+      try {
+        fbUpdatePath("students", s.uid, ["activite", themeId], firebase.firestore.FieldValue.increment(1));
+      } catch (e) {}
+    }
   }
   function setCapacite(u, capKey, val) {
     var s = studentByUid(u); if (!s) return;
@@ -349,7 +370,7 @@
     loginTeacher: loginTeacher, loginStudent: loginStudent,
     getClasses: getClasses, getClass: getClass, createClass: createClass, renameClass: renameClass, deleteClass: deleteClass,
     getStudents: getStudents, addStudent: addStudent, removeStudent: removeStudent,
-    getProgress: getProgress, recordQcm: recordQcm, recordExo: recordExo,
+    getProgress: getProgress, recordQcm: recordQcm, recordExo: recordExo, recordActivity: recordActivity,
     setCapacite: setCapacite, setNote: setNote, studentSummary: studentSummary,
     isCorrectionsPushed: isCorrectionsPushed, setCorrectionsPushed: setCorrectionsPushed,
   };
