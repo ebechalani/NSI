@@ -232,16 +232,14 @@ print(int('42'))    # depuis une chaîne`,
         correction: ["int(3.9) renvoie 3 : c'est une TRONCATURE (on enlève la partie décimale). Un arrondi donnerait 4 ; pour cela on utilise round(3.9)."],
       },
       {
-        num: "4", titre: "Exercice — calculatrice de moyenne",
-        code: `# Complète les blancs, puis recopie dans l'éditeur pour exécuter :
-note1 = ___
-note2 = ___
-note3 = ___
-moyenne = ___
+        num: "4", titre: "Texte à trou — calculatrice de moyenne",
+        gapcode: `note1, note2, note3 = 15, 12, 18
+moyenne = (note1 + note2 + note3) ___ ___
 print(f'Moyenne : {moyenne:.2f}')
-print(f'Meilleure : {max(note1, note2, note3)}')`,
-        questions: ["Complète les quatre blancs."],
-        correction: ["note1 = 15 ; note2 = 12 ; note3 = 18 ; moyenne = (note1 + note2 + note3) / 3. Affiche « Moyenne : 15.00 » (le :.2f impose 2 décimales) et « Meilleure : 18 »."],
+print(f'Meilleure : {___(note1, note2, note3)}')`,
+        gaps: ["/", "3", "max"],
+        questions: ["Complète les trous, vérifie, puis exécute."],
+        correction: ["moyenne = (note1 + note2 + note3) / 3 → 15.00 (le :.2f impose 2 décimales). La meilleure note s'obtient avec max(note1, note2, note3) → 18."],
       },
     ],
   },
@@ -281,15 +279,15 @@ print(mention)`,
         correction: ["Dès qu'une condition est vraie, Python ignore les elif suivants. Si l'ordre est inversé, une note de 17 valide d'abord >= 14 et reçoit 'Bien' à tort. Il faut tester du seuil le plus haut au plus bas."],
       },
       {
-        num: "3", titre: "Exercice — valider la note",
-        code: `# Refuser une note < 0 ou > 20 AVANT de calculer la mention.
-note = 25
-# if ___:
-#     print('Note invalide !')
-# else:
-#     ... (mention)`,
-        questions: ["Complète la validation."],
-        correction: ["if note < 0 or note > 20: print('Note invalide !') else: (calcul de la mention). Le or est essentiel : la note est invalide si trop petite OU trop grande."],
+        num: "3", titre: "Texte à trou — valider la note",
+        gapcode: `note = 25
+if note < 0 ___ note > 20:
+    print('Note invalide !')
+else:
+    print('Note acceptée')`,
+        gaps: ["or"],
+        questions: ["Complète, vérifie, puis exécute. Pourquoi or et pas and ?"],
+        correction: ["if note < 0 or note > 20 : la note est invalide si elle est trop petite OU trop grande. Avec and, aucune note ne serait jamais invalide (un nombre ne peut être à la fois < 0 et > 20)."],
       },
     ],
   },
@@ -298,7 +296,7 @@ note = 25
     theme: "langages-prog",
     lang: "python",
     titre: "TP Python — Les boucles",
-    intro: "for : nombre de tours connu (avec range). while : jusqu'à ce qu'une condition change.",
+    intro: "for : nombre de tours connu (avec range). while : jusqu'à ce qu'une condition change. (Les saisies input() fonctionnent ici via une petite fenêtre.)",
     steps: [
       {
         num: "1", titre: "Boucle for avec range()", run: true,
@@ -328,8 +326,8 @@ print('divisions :', compteur)`,
         correction: ["n est un entier positif qui décroît strictement à chaque tour (division par 2) : il finit par atteindre 1, donc la condition n > 1 devient fausse. C'est un variant de boucle."],
       },
       {
-        num: "3", titre: "Exercice — jeu du nombre (à finir en vrai)",
-        code: `# À recopier dans Capytale/Thonny (input ne marche pas ici) :
+        num: "3", titre: "Le jeu du nombre deviné", run: true,
+        code: `# input() fonctionne ici : clique ▶ Exécuter et joue (ou ⚡ Basthon).
 import random
 secret = random.randint(1, 20)
 tentative = 0
@@ -429,4 +427,220 @@ const ARCHI_PDFS = [
   { file: "assets/ressources/architecture/04-combinatoire.pdf", titre: "4 — Logique combinatoire" },
   { file: "assets/ressources/architecture/05-sequentielle.pdf", titre: "5 — Logique séquentielle" },
   { file: "assets/ressources/architecture/06-microprocesseur.pdf", titre: "6 — Microprocesseur" },
+];
+
+/* ---------------- Mini-projets Python (importés du DU) ---------------- */
+/* Chaque projet : objectif + solution commentée (révélable) exécutable. */
+const MINI_PROJETS = [
+  {
+    id: "mp-crible", cat: "Algorithmique & maths", theme: "algorithmique",
+    titre: "Crible d'Ératosthène",
+    summary: "Trouver tous les nombres premiers jusqu'à n en éliminant les multiples.",
+    objectifs: ["Manipuler une liste de booléens.", "Comprendre une optimisation (s'arrêter à la racine de n)."],
+    explication: "On suppose tous les nombres premiers, puis on barre les multiples de chaque premier trouvé. On ne teste que jusqu'à √n ; on commence à barrer à i×i.",
+    code: `def crible(n):
+    est_premier = [True] * (n + 1)
+    est_premier[0] = est_premier[1] = False
+    for i in range(2, int(n ** 0.5) + 1):
+        if est_premier[i]:
+            for multiple in range(i * i, n + 1, i):
+                est_premier[multiple] = False
+    return [i for i in range(n + 1) if est_premier[i]]
+
+print(crible(30))   # [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]`,
+    extensions: ["Afficher seulement le nombre de premiers ≤ n.", "Comparer le temps avec une méthode naïve."],
+  },
+  {
+    id: "mp-bases", cat: "Algorithmique & maths", theme: "donnees-base",
+    titre: "Conversion de bases",
+    summary: "Convertir un nombre entre base 10, binaire et hexadécimal.",
+    objectifs: ["Utiliser le modulo et la division entière.", "Construire une chaîne caractère par caractère."],
+    explication: "n % 2 donne le bit de poids faible, n // 2 « décale » vers la droite. On reconstruit la chaîne en ajoutant chaque reste devant. Python fournit aussi bin(), hex() et int(s, base).",
+    code: `def decimal_vers_binaire(n):
+    if n == 0:
+        return "0"
+    bits = ""
+    while n > 0:
+        bits = str(n % 2) + bits   # on ajoute le reste DEVANT
+        n = n // 2
+    return bits
+
+print(decimal_vers_binaire(13))   # 1101
+print(int("1101", 2))             # 13
+print(bin(13), hex(255))          # 0b1101 0xff`,
+    extensions: ["Écrire decimal_vers_base(n, b) pour une base 2 à 16.", "Écrire la conversion binaire → décimal à la main."],
+  },
+  {
+    id: "mp-cesar", cat: "Cryptographie", theme: "donnees-base",
+    titre: "Chiffre de César",
+    summary: "Chiffrer et déchiffrer un texte par décalage des lettres.",
+    objectifs: ["Utiliser ord(), chr() et le modulo 26.", "Comprendre un chiffrement par décalage."],
+    explication: "ord(c) donne le code du caractère, chr() l'inverse. On ramène la lettre entre 0 et 25, on ajoute le décalage, le modulo 26 gère le repli (Z → A). Déchiffrer = décaler en sens inverse.",
+    code: `def cesar(texte, decalage):
+    res = ""
+    for c in texte:
+        if c.isalpha():
+            base = ord("A") if c.isupper() else ord("a")
+            res += chr((ord(c) - base + decalage) % 26 + base)
+        else:
+            res += c
+    return res
+
+print(cesar("BONJOUR NSI", 3))    # ERQMRXU QVL
+print(cesar("ERQMRXU QVL", -3))   # BONJOUR NSI`,
+    extensions: ["Casser le code par force brute (26 décalages).", "Conserver minuscules/majuscules d'origine."],
+  },
+  {
+    id: "mp-pgcd", cat: "Algorithmique & maths", theme: "langages-prog",
+    titre: "PGCD (algorithme d'Euclide)",
+    summary: "Calculer le plus grand commun diviseur de deux entiers.",
+    objectifs: ["Comprendre l'algorithme d'Euclide.", "Écrire la même fonction de deux façons."],
+    explication: "À chaque étape on remplace (a, b) par (b, a % b) ; le reste diminue strictement, donc on atteint b = 0 et la réponse est a.",
+    code: `def pgcd(a, b):
+    while b != 0:
+        a, b = b, a % b      # (a, b) -> (b, reste)
+    return a
+
+print(pgcd(36, 24))      # 12
+print(45 * 30 // pgcd(45, 30))   # PPCM`,
+    extensions: ["Écrire ppcm(a, b) à partir de pgcd.", "Compter le nombre d'étapes de l'algorithme."],
+  },
+  {
+    id: "mp-montecarlo", cat: "Algorithmique & maths", theme: "algorithmique",
+    titre: "Approximation de π (Monte-Carlo)",
+    summary: "Estimer π par tirage aléatoire de points dans un carré.",
+    objectifs: ["Utiliser le hasard (random).", "Relier une proportion géométrique à π."],
+    explication: "La proportion de points tombant dans le quart de cercle vaut π/4 (rapport des aires). On multiplie donc par 4. Plus n est grand, plus c'est précis.",
+    code: `import random
+
+def estimer_pi(n):
+    dedans = 0
+    for _ in range(n):
+        x, y = random.random(), random.random()
+        if x * x + y * y <= 1:
+            dedans += 1
+    return 4 * dedans / n
+
+print(estimer_pi(100000))   # ≈ 3.14...`,
+    extensions: ["Afficher l'erreur (écart avec math.pi) pour n = 100, 1000, 100000.", "Tracer les points avec matplotlib."],
+  },
+  {
+    id: "mp-morpion", cat: "Jeux", theme: "types-construits",
+    titre: "Morpion — détection du gagnant",
+    summary: "Représenter une grille 3×3 et tester toutes les conditions de victoire.",
+    objectifs: ["Représenter et afficher une grille 2D.", "Tester lignes, colonnes et diagonales."],
+    explication: "zip(*g) transpose la grille (colonnes → lignes). On rassemble lignes, colonnes et les deux diagonales, puis on teste si l'une a trois symboles identiques non vides.",
+    code: `def afficher(g):
+    for ligne in g:
+        print(" | ".join(ligne))
+
+def gagnant(g):
+    lignes = [list(l) for l in g]
+    lignes += [list(col) for col in zip(*g)]
+    lignes.append([g[i][i] for i in range(3)])
+    lignes.append([g[i][2 - i] for i in range(3)])
+    for l in lignes:
+        if l[0] != " " and l[0] == l[1] == l[2]:
+            return l[0]
+    return None
+
+g = [[" "] * 3 for _ in range(3)]
+g[0][0] = g[1][1] = g[2][2] = "X"
+afficher(g)
+print("Gagnant :", gagnant(g))   # X`,
+    extensions: ["Écrire la boucle de jeu complète à deux joueurs.", "Étendre à un Puissance 4."],
+  },
+  {
+    id: "mp-pendu", cat: "Jeux", theme: "langages-prog",
+    titre: "Le Pendu",
+    summary: "Deviner un mot lettre par lettre, avec un nombre d'essais limité.",
+    objectifs: ["Manipuler chaînes et ensembles.", "Gérer une boucle de jeu avec condition de fin."],
+    explication: "L'ensemble trouvees mémorise les bonnes lettres. L'affichage se reconstruit à chaque tour par compréhension. La partie s'arrête quand il n'y a plus de « _ » (gagné) ou plus d'essais (perdu).",
+    interactif: true,
+    code: `import random
+
+def pendu():
+    mots = ["python", "ordinateur", "algorithme", "variable"]
+    mot = random.choice(mots)
+    trouvees = set()
+    essais = 6
+    while essais > 0:
+        affichage = "".join(c if c in trouvees else "_" for c in mot)
+        print(affichage, "  essais restants :", essais)
+        if "_" not in affichage:
+            print("Gagné !"); return
+        lettre = input("Propose une lettre : ").lower()
+        if lettre in mot:
+            trouvees.add(lettre)
+        else:
+            essais -= 1
+    print("Perdu ! Le mot était :", mot)
+
+pendu()`,
+    extensions: ["Lire la liste de mots depuis un fichier .txt.", "Dessiner un pendu ASCII selon les erreurs."],
+  },
+  {
+    id: "mp-mastermind", cat: "Jeux", theme: "algorithmique",
+    titre: "Mastermind",
+    summary: "Deviner une combinaison de chiffres avec des indices bien/mal placés.",
+    objectifs: ["Comparer deux listes terme à terme.", "Compter des occurrences."],
+    explication: "« bien placés » = mêmes chiffres aux mêmes positions. « communs » compte pour chaque chiffre le minimum entre proposition et code. « mal placés » = communs − bien.",
+    interactif: true,
+    code: `import random
+
+def mastermind():
+    code = [random.randint(1, 6) for _ in range(4)]
+    for tour in range(10):
+        prop = [int(c) for c in input("4 chiffres (1-6) : ")]
+        bien = sum(1 for i in range(4) if prop[i] == code[i])
+        communs = sum(min(prop.count(d), code.count(d)) for d in set(prop))
+        mal = communs - bien
+        print(bien, "bien placés,", mal, "mal placés")
+        if bien == 4:
+            print("Gagné en", tour + 1, "coups !"); return
+    print("Perdu ! Code :", code)
+
+mastermind()`,
+    extensions: ["Vérifier la validité de la saisie.", "Faire jouer l'ordinateur (deviner)."],
+  },
+  {
+    id: "mp-vigenere", cat: "Cryptographie", theme: "donnees-base", bonus: true,
+    titre: "Chiffre de Vigenère",
+    summary: "Chiffrement poly-alphabétique : un décalage variable donné par une clé.",
+    objectifs: ["Réutiliser une clé de façon cyclique (modulo).", "Généraliser le chiffre de César."],
+    explication: "La clé donne une suite de décalages ; cle[j % len(cle)] la répète en boucle. Le compteur j n'avance que sur les lettres. Déchiffrer = sens opposé (-1).",
+    code: `def vigenere(texte, cle, sens=1):
+    res, j = "", 0
+    for c in texte:
+        if c.isalpha():
+            d = (ord(cle[j % len(cle)].lower()) - ord("a")) * sens
+            base = ord("A") if c.isupper() else ord("a")
+            res += chr((ord(c) - base + d) % 26 + base)
+            j += 1
+        else:
+            res += c
+    return res
+
+chiffre = vigenere("BONJOUR", "CLE")
+print(chiffre)
+print(vigenere(chiffre, "CLE", -1))   # déchiffrement`,
+    extensions: ["Gérer une clé avec espaces/accents.", "Expliquer pourquoi l'analyse de fréquences échoue."],
+  },
+  {
+    id: "mp-tris", cat: "Algorithmique & maths", theme: "algorithmique", bonus: true,
+    titre: "Tri rapide & tri fusion (récursifs)",
+    summary: "Deux tris efficaces en O(n log n) (diviser pour régner).",
+    objectifs: ["Écrire un algorithme récursif.", "Comprendre « diviser pour régner »."],
+    explication: "Bonus (récursivité = Terminale). Tri rapide : pivot, plus petits à gauche, plus grands à droite. Tri fusion : couper en deux, trier chaque moitié, fusionner. Les deux sont en O(n log n).",
+    code: `def tri_rapide(lst):
+    if len(lst) <= 1:
+        return lst
+    pivot = lst[0]
+    petits = [x for x in lst[1:] if x < pivot]
+    grands = [x for x in lst[1:] if x >= pivot]
+    return tri_rapide(petits) + [pivot] + tri_rapide(grands)
+
+print(tri_rapide([5, 2, 9, 1, 7, 3]))`,
+    extensions: ["Chronométrer sur 10000 éléments.", "Que se passe-t-il sur une liste déjà triée ?"],
+  },
 ];

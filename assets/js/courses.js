@@ -1050,6 +1050,17 @@ print(f"chmod {prop}{groupe}{autres}")  # chmod 750`,
       "Utiliser la documentation d'une bibliothèque (module).",
       "Comparer la syntaxe de plusieurs langages.",
     ],
+    seance: {
+      duree: "≈ 2 h (séance type « variables & conditions »)",
+      etapes: [
+        { temps: "0–10 min", phase: "Accroche", detail: "Question au tableau : « comment l'ordinateur retient-il votre score dans un jeu ? » Recueillir les idées. Faire émerger le mot <em>variable</em> (une mémoire qui a un nom)." },
+        { temps: "10–30 min", phase: "Découverte (îlot)", detail: "Sans machine : sur ardoise, faire « jouer l'ordinateur ». On dicte <code>x = 5</code>, <code>x = x + 3</code>, <code>x = x * 2</code> ; chaque îlot suit la valeur de x. Mise en commun : faire verbaliser que <code>=</code> n'est pas l'égalité maths." },
+        { temps: "30–50 min", phase: "Institutionnalisation", detail: "Trace écrite : variable, affectation, types (int/float/str/bool), <code>type()</code>. Projeter le schéma de l'affectation. Insister sur le piège <code>=</code> vs <code>==</code>." },
+        { temps: "50–80 min", phase: "Pratique (postes en U)", detail: "Les élèves exécutent les exemples du cours (bouton ▶), modifient les valeurs, observent. TP Python « Variables et types » (texte à trou de la moyenne)." },
+        { temps: "80–105 min", phase: "Conditions", detail: "Introduire <code>if/elif/else</code> avec la fonction <code>mention(note)</code>. Schéma de l'arbre de décision. Exercices gradués facile → moyen. Pointer l'erreur d'ordre des conditions." },
+        { temps: "105–120 min", phase: "Bilan & trace", detail: "QCM rapide du thème (2-3 questions). Chaque élève complète sa fiche résumé. Annoncer le mini-défi / la suite (boucles)." },
+      ],
+    },
     sections: [
       {
         title: "Programmer, c'est donner des instructions précises",
@@ -1092,6 +1103,27 @@ print("Nouvel âge :", age)
 # Attention au type : "15" (texte) n'est pas 15 (nombre)
 print("3" + "4")    # 34 (concaténation de texte !)
 print(3 + 4)        # 7  (addition de nombres)`,
+        schema: `
+        <svg viewBox="0 0 480 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma de l'affectation age = age + 1">
+          <text x="240" y="20" text-anchor="middle" fill="var(--text-soft)" font-size="13">age = age + 1  &#8594;  on lit la DROITE, on range à GAUCHE</text>
+          <rect x="40" y="55" width="130" height="60" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+          <text x="105" y="48" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="700">age</text>
+          <text x="105" y="95" text-anchor="middle" fill="var(--text)" font-size="26" font-family="monospace">15</text>
+          <text x="230" y="92" text-anchor="middle" fill="var(--text-soft)" font-size="22" font-family="monospace">15 + 1</text>
+          <line x1="290" y1="85" x2="350" y2="85" stroke="var(--accent-2)" stroke-width="3"/>
+          <polygon points="350,78 366,85 350,92" fill="var(--accent-2)"/>
+          <rect x="380" y="55" width="80" height="60" rx="10" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2"/>
+          <text x="420" y="95" text-anchor="middle" fill="var(--text)" font-size="26" font-family="monospace">16</text>
+        </svg>
+        <div class="schema-legend">L'ancienne valeur (15) sert à calculer la nouvelle (16), qui remplace l'ancienne dans la même « boîte ».</div>`,
+        prof: `
+        <ul>
+          <li><strong>Erreur d'élève n°1 :</strong> lire <code>x = x + 1</code> comme une équation (« impossible ! »). Remède : l'activité ardoise (faire jouer l'ordinateur pas à pas).</li>
+          <li><strong>Erreur n°2 :</strong> confondre <code>=</code> et <code>==</code> ; et oublier les guillemets → <code>str</code> vs nombre.</li>
+          <li><strong>Question à poser :</strong> « que vaut <code>"3" + "4"</code> ? » → fait surgir le rôle du <em>type</em>.</li>
+          <li><strong>Analogie :</strong> une variable = une boîte avec une étiquette ; l'affectation = remplacer ce qu'il y a dans la boîte.</li>
+          <li><strong>Différenciation :</strong> élèves rapides → leur faire prédire le type de plusieurs expressions avant d'exécuter.</li>
+        </ul>`,
       },
       {
         title: "Les instructions conditionnelles",
@@ -1123,6 +1155,39 @@ for n in [18, 13, 9]:
 age = 16
 if age >= 15 and age < 18:
     print("Lycéen·ne typique")`,
+        schema: `
+        <svg viewBox="0 0 480 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Arbre de décision de la fonction mention">
+          <text x="240" y="18" text-anchor="middle" fill="var(--text-soft)" font-size="13">On teste DANS L'ORDRE ; on s'arrête à la 1re condition vraie</text>
+          <g font-family="monospace" font-size="13">
+            <rect x="20"  y="35" width="150" height="34" rx="8" fill="var(--bg-soft)" stroke="var(--accent)"/>
+            <text x="95" y="57" text-anchor="middle" fill="var(--text)">note &gt;= 16 ?</text>
+            <rect x="20"  y="80" width="150" height="34" rx="8" fill="var(--bg-soft)" stroke="var(--accent)"/>
+            <text x="95" y="102" text-anchor="middle" fill="var(--text)">note &gt;= 14 ?</text>
+            <rect x="20"  y="125" width="150" height="34" rx="8" fill="var(--bg-soft)" stroke="var(--accent)"/>
+            <text x="95" y="147" text-anchor="middle" fill="var(--text)">note &gt;= 12 ?</text>
+            <rect x="20"  y="170" width="150" height="34" rx="8" fill="var(--bg-soft)" stroke="var(--accent)"/>
+            <text x="95" y="192" text-anchor="middle" fill="var(--text)">sinon</text>
+            <g fill="var(--ok-soft)" stroke="var(--ok)"><rect x="300" y="35" width="160" height="34" rx="8"/><rect x="300" y="80" width="160" height="34" rx="8"/><rect x="300" y="125" width="160" height="34" rx="8"/><rect x="300" y="170" width="160" height="34" rx="8"/></g>
+            <g fill="var(--text)" text-anchor="middle">
+              <text x="380" y="57">"Très bien"</text>
+              <text x="380" y="102">"Bien"</text>
+              <text x="380" y="147">"Assez bien"</text>
+              <text x="380" y="192">"Insuffisant"</text>
+            </g>
+            <g stroke="var(--ok)" stroke-width="2"><line x1="170" y1="52" x2="300" y2="52"/><line x1="170" y1="97" x2="300" y2="97"/><line x1="170" y1="142" x2="300" y2="142"/><line x1="170" y1="187" x2="300" y2="187"/></g>
+            <g stroke="var(--text-soft)" stroke-width="2" stroke-dasharray="4 3"><line x1="95" y1="69" x2="95" y2="80"/><line x1="95" y1="114" x2="95" y2="125"/><line x1="95" y1="159" x2="95" y2="170"/></g>
+            <text x="235" y="48" text-anchor="middle" fill="var(--ok)" font-size="11">vrai</text>
+            <text x="110" y="78" fill="var(--text-soft)" font-size="11">faux</text>
+          </g>
+        </svg>
+        <div class="schema-legend">Si on plaçait <code>note &gt;= 14</code> avant <code>note &gt;= 16</code>, une note de 17 recevrait « Bien » à tort.</div>`,
+        prof: `
+        <ul>
+          <li><strong>Point de vigilance :</strong> l'ordre des <code>elif</code>. Faire trouver l'erreur sur un exemple piégé (note = 17 avec un ordre inversé).</li>
+          <li><strong>Erreur fréquente :</strong> oublier le <code>:</code> en fin de ligne, ou mal indenter le bloc → faire lire le message d'erreur.</li>
+          <li><strong>Activité débranchée :</strong> un organigramme à reconstituer (étiquettes à placer) avant de coder.</li>
+          <li><strong>Question :</strong> « combien de conditions sont testées pour une note de 18 ? et pour une note de 8 ? » → comprendre l'arrêt à la 1re vraie.</li>
+        </ul>`,
       },
       {
         title: "Les boucles bornées (for)",
@@ -1150,6 +1215,23 @@ print("Somme 1..100 =", total)   # 5050
 # range avec un pas : les nombres pairs de 0 à 10
 for p in range(0, 11, 2):
     print(p, end=" ")`,
+        schema: `
+        <p style="text-align:left;font-size:.9rem;color:var(--text-soft);margin:0 0 .3rem">Exemple travaillé — « trace » de l'accumulation <code>for k in range(1,5): total += k</code> :</p>
+        <table style="margin:0 auto;font-size:.9rem">
+          <tr><th>tour</th><th>k</th><th>total avant</th><th>total après</th></tr>
+          <tr><td>1</td><td>1</td><td>0</td><td>0 + 1 = 1</td></tr>
+          <tr><td>2</td><td>2</td><td>1</td><td>1 + 2 = 3</td></tr>
+          <tr><td>3</td><td>3</td><td>3</td><td>3 + 3 = 6</td></tr>
+          <tr><td>4</td><td>4</td><td>6</td><td>6 + 4 = 10</td></tr>
+        </table>
+        <div class="schema-legend">Faire remplir ce tableau à la main <em>avant</em> d'exécuter : c'est ce qui ancre le schéma d'accumulation.</div>`,
+        prof: `
+        <ul>
+          <li><strong>Le piège de l'année :</strong> <code>range(n)</code> s'arrête à n−1. Le faire constater en exécutant <code>list(range(5))</code>.</li>
+          <li><strong>Trace au tableau :</strong> remplir la table des valeurs de <code>total</code> tour par tour (colonne « avant / après »).</li>
+          <li><strong>Activité débranchée :</strong> compter à voix haute en équipe avec un pas, ou « robot quadrillage » (avancer de range).</li>
+          <li><strong>Question :</strong> « comment sommer de 1 à 100 <em>inclus</em> ? » → <code>range(1, 101)</code>.</li>
+        </ul>`,
       },
       {
         title: "Les boucles non bornées (while)",
@@ -1176,6 +1258,12 @@ while n != 1:
     n = n // 2 if n % 2 == 0 else 3 * n + 1
     etapes += 1
 print("Syracuse(27) atteint 1 en", etapes, "étapes")`,
+        prof: `
+        <ul>
+          <li><strong>Démo marquante :</strong> écrire (puis interrompre) une vraie boucle infinie pour faire ressentir le danger, et la corriger ensemble.</li>
+          <li><strong>Critère de choix for/while :</strong> faire trier des exemples par les élèves (« nombre de tours connu ? »).</li>
+          <li><strong>Vigilance :</strong> toujours vérifier qu'une variable <em>évolue</em> dans la boucle vers la condition d'arrêt.</li>
+        </ul>`,
       },
       {
         title: "Les fonctions",
@@ -1207,6 +1295,29 @@ def nb_pairs(liste):
     return compte
 
 print(nb_pairs([1, 2, 3, 4, 5, 6]))   # 3`,
+        schema: `
+        <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Une fonction comme une machine entrée-traitement-sortie">
+          <text x="240" y="18" text-anchor="middle" fill="var(--text-soft)" font-size="13">Une fonction = une machine : des entrées &#8594; un résultat</text>
+          <text x="55" y="90" text-anchor="middle" fill="var(--text)" font-size="14" font-family="monospace">3, 9</text>
+          <text x="55" y="108" text-anchor="middle" fill="var(--text-soft)" font-size="11">paramètres</text>
+          <line x1="90" y1="85" x2="150" y2="85" stroke="var(--accent-2)" stroke-width="3"/>
+          <polygon points="150,78 166,85 150,92" fill="var(--accent-2)"/>
+          <rect x="170" y="50" width="150" height="70" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+          <text x="245" y="82" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="700">maximum(a, b)</text>
+          <text x="245" y="102" text-anchor="middle" fill="var(--text-soft)" font-size="11">traitement (return)</text>
+          <line x1="320" y1="85" x2="385" y2="85" stroke="var(--ok)" stroke-width="3"/>
+          <polygon points="385,78 401,85 385,92" fill="var(--ok)"/>
+          <rect x="405" y="62" width="60" height="46" rx="10" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2"/>
+          <text x="435" y="92" text-anchor="middle" fill="var(--text)" font-size="20" font-family="monospace">9</text>
+        </svg>
+        <div class="schema-legend"><code>return</code> renvoie une valeur réutilisable (différent de <code>print</code> qui ne fait qu'<em>afficher</em>).</div>`,
+        prof: `
+        <ul>
+          <li><strong>Confusion clé :</strong> <code>return</code> vs <code>print</code>. Démo : <code>x = ma_fonction()</code> donne <code>None</code> si la fonction ne fait que <code>print</code>.</li>
+          <li><strong>Analogie :</strong> la fonction est une machine (entrée → résultat) ; on la réutilise sans rouvrir le capot.</li>
+          <li><strong>Vigilance :</strong> portée locale — une variable créée dans la fonction n'existe pas dehors.</li>
+          <li><strong>Progression :</strong> faire d'abord appeler des fonctions toutes faites, puis en écrire, puis les composer.</li>
+        </ul>`,
       },
       {
         title: "Spécifier une fonction",
@@ -1255,6 +1366,13 @@ print("somme_jusqua(5) =", somme_jusqua(5))   # donne 10, pas 15
 for i in range(5):
     print("on ajoute", i)    # 0,1,2,3,4 : il manque 5 !
 # Correction : range(n + 1). Corrige et relance.`,
+        prof: `
+        <ul>
+          <li><strong>Posture à installer :</strong> un message d'erreur est une aide, pas une punition. Le lire <em>de bas en haut</em> ensemble.</li>
+          <li><strong>Atelier « chasse au bug » :</strong> distribuer 3 programmes buggés (1 par type d'erreur) à corriger en îlot.</li>
+          <li><strong>Réflexe à ancrer :</strong> ajouter des <code>print</code> intermédiaires pour « voir » les valeurs ; écrire un <code>assert</code> qui reproduit le bug.</li>
+          <li><strong>Lien :</strong> renvoyer à la fiche méthode « Lire un message d'erreur Python ».</li>
+        </ul>`,
       },
       {
         title: "Utiliser une bibliothèque et sa documentation",

@@ -481,6 +481,69 @@ details.corrige[open] > summary { margin-bottom: .5rem; }
 .grille-table .pts { text-align: center; font-weight: 700; color: var(--accent); }
 .grille-table .total td { background: var(--accent-soft); font-weight: 700; }
 
+/* ---------- Notes prof, schémas, déroulé de séance ---------- */
+.prof-note {
+  background: #fffbeb; border: 1px solid #f59e0b; border-left: 4px solid #f59e0b;
+  border-radius: 10px; padding: .7rem 1rem; margin: 1rem 0; font-size: .9rem;
+}
+html[data-theme="dark"] .prof-note { background: #2a2410; border-color: #b45309; }
+.prof-note-head { font-weight: 700; color: var(--warn); margin-bottom: .3rem; }
+.prof-note ul { margin: .3rem 0; padding-left: 1.2rem; }
+.prof-note li { margin: .2rem 0; }
+
+.schema { margin: 1.2rem 0; text-align: center; }
+.schema svg { max-width: 100%; height: auto; }
+.schema-legend { font-size: .8rem; color: var(--text-soft); margin-top: .4rem; }
+
+.seance {
+  border: 1px solid var(--accent); border-radius: 12px; background: var(--accent-soft);
+  padding: .5rem 1rem; margin: 1.25rem 0;
+}
+.seance > summary { cursor: pointer; font-weight: 700; color: var(--accent); padding: .3rem 0; }
+.seance-body { margin-top: .6rem; }
+.seance-etape { display: grid; grid-template-columns: 70px 130px 1fr; gap: .6rem; padding: .5rem 0; border-top: 1px dashed var(--border); align-items: start; }
+.seance-temps { font-family: var(--mono); font-size: .8rem; font-weight: 700; color: var(--accent); }
+.seance-phase { font-weight: 700; font-size: .85rem; }
+.seance-detail { font-size: .88rem; }
+@media (max-width: 600px) { .seance-etape { grid-template-columns: 1fr; gap: .15rem; } }
+
+/* ---------- Bouton Basthon ---------- */
+.btn-basthon-cell {
+  font-family: var(--sans); font-size: .8rem; font-weight: 600;
+  border: none; border-radius: 7px; padding: .35rem .7rem; cursor: pointer;
+  background: #facc15; color: #422006;
+}
+.btn-basthon-cell:hover { background: #eab308; }
+
+/* ---------- Textes à trou (cloze interactif) ---------- */
+.gapfill { margin: 1.2rem 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--code-bg); box-shadow: var(--shadow); }
+.gap-pre {
+  margin: 0; padding: .8rem 1rem; color: var(--code-text);
+  font-family: var(--mono); font-size: .9rem; line-height: 1.9;
+  white-space: pre-wrap; word-break: break-word; overflow-x: auto;
+}
+.gap-input {
+  font-family: var(--mono); font-size: .85rem; font-weight: 700;
+  background: #1e293b; color: #fde68a; border: 1px solid #475569;
+  border-radius: 5px; padding: .05rem .35rem; margin: 0 .1rem; text-align: center;
+}
+.gap-input:focus { outline: none; border-color: var(--accent-2); }
+.gap-input.gap-ok { background: #11321f; color: #4ade80; border-color: #22c55e; }
+.gap-input.gap-bad { background: #3a1717; color: #fda4af; border-color: #dc2626; }
+.gap-feedback { font-size: .85rem; padding: 0 1rem; display: none; }
+.gap-feedback.show { display: block; padding: .5rem 1rem; }
+.gap-feedback.good { color: #4ade80; }
+.gap-feedback.bad { color: #fda4af; }
+
+/* ---------- Toast ---------- */
+.nsi-toast {
+  position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%) translateY(2rem);
+  background: var(--text); color: var(--bg); padding: .6rem 1.1rem; border-radius: 10px;
+  font-size: .88rem; box-shadow: var(--shadow); z-index: 80; opacity: 0;
+  transition: opacity .25s, transform .25s; pointer-events: none; max-width: 90vw;
+}
+.nsi-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* ---------- TP guidés & ressources du DIU ---------- */
 .du-filter { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1rem 0; }
 .du-filter .btn { font-size: .82rem; padding: .4rem .8rem; }

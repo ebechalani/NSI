@@ -244,9 +244,9 @@
       },
       {
         emoji: "🧪",
-        tag: `${typeof GUIDED_TP !== "undefined" ? GUIDED_TP.length : 0} TP + Logisim`,
-        title: "TP guidés (DIU)",
-        desc: "TP pas-à-pas Linux & Python et circuits Logisim, importés de ma formation DIU NSI.",
+        tag: `${(typeof GUIDED_TP !== "undefined" ? GUIDED_TP.length : 0)} TP · ${(typeof MINI_PROJETS !== "undefined" ? MINI_PROJETS.length : 0)} projets`,
+        title: "TP guidés & mini-projets (DIU)",
+        desc: "TP pas-à-pas Linux & Python, mini-projets Python avec corrigés, et circuits Logisim — importés de mon DIU NSI.",
         target: "tp",
       },
       {
@@ -320,13 +320,18 @@
       `</ul>`;
     viewTheme.appendChild(cap);
 
+    // Déroulé de séance (réservé au prof, masqué hors mode professeur)
+    if (c.seance) viewTheme.appendChild(makeSeance(c.seance));
+
     // Sections
     c.sections.forEach((s, i) => {
       const sec = el("div", "section");
       sec.appendChild(el("h2", null, `${i + 1}. ${s.title}`));
       if (s.html) sec.appendChild(el("div", null, s.html));
+      if (s.schema) sec.appendChild(el("div", "schema", s.schema));
       if (s.code) sec.appendChild(makeCodeCell(s.code));
       if (s.game) sec.appendChild(makeGame(s.game));
+      if (s.prof) sec.appendChild(makeProfNote(s.prof));
       viewTheme.appendChild(sec);
     });
 
@@ -352,6 +357,33 @@
     viewTheme.scrollIntoView({ behavior: "instant", block: "start" });
     $("#contenu").scrollTop = 0;
     window.scrollTo(0, 0);
+  }
+
+  // Note pédagogique réservée au prof (visible en mode professeur)
+  function makeProfNote(html) {
+    const d = el("div", "prof-note teacher-block");
+    d.innerHTML = `<div class="prof-note-head">👩‍🏫 Pour le prof</div>` + html;
+    return d;
+  }
+
+  // Déroulé de séance (prof) — bloc dépliable, réservé au mode professeur
+  function makeSeance(seance) {
+    const det = el("details", "seance teacher-block");
+    det.appendChild(el("summary", null, "📋 Déroulé de séance (prof) — " + (seance.duree || "")));
+    const body = el("div", "seance-body");
+    seance.etapes.forEach((e) => {
+      body.appendChild(
+        el(
+          "div",
+          "seance-etape",
+          `<span class="seance-temps">${e.temps}</span>` +
+            `<span class="seance-phase">${e.phase}</span>` +
+            `<div class="seance-detail">${e.detail}</div>`
+        )
+      );
+    });
+    det.appendChild(body);
+    return det;
   }
 
   function makeThemeNav(c) {
@@ -391,8 +423,11 @@
       <span class="code-title">python</span>
       <span class="spacer"></span>
     `;
+    const btnBasthon = el("button", "btn-basthon-cell", "⚡ Basthon");
+    btnBasthon.title = "Ouvrir ce code dans Basthon (Python en ligne, gère input())";
     const btnReset = el("button", "btn-reset", "↺ Réinitialiser");
     const btnRun = el("button", "btn-run", "▶ Exécuter");
+    bar.appendChild(btnBasthon);
     bar.appendChild(btnReset);
     bar.appendChild(btnRun);
 
@@ -421,11 +456,113 @@
     });
 
     btnRun.addEventListener("click", () => runPython(ta.value, out, btnRun));
+    btnBasthon.addEventListener("click", () => openInBasthon(ta.value));
 
     cell.appendChild(bar);
     cell.appendChild(ta);
     cell.appendChild(out);
     return cell;
+  }
+
+  /* ---------------- Basthon (ouvrir le code dans la console en ligne) ---------------- */
+  function openInBasthon(code) {
+    const win = window.open("https://console.basthon.fr/", "_blank", "noopener");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard
+        .writeText(code)
+        .then(() => toast("⚡ Code copié — colle-le dans Basthon avec Ctrl+V puis Entrée."))
+        .catch(() => toast("Ouvre Basthon puis recopie ton code."));
+    } else {
+      toast("Ouvre Basthon puis recopie ton code.");
+    }
+    if (!win) toast("Autorise les pop-ups pour ouvrir Basthon.");
+  }
+
+  function toast(msg) {
+    let t = $("#nsiToast");
+    if (!t) {
+      t = el("div", "nsi-toast");
+      t.id = "nsiToast";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove("show"), 4000);
+  }
+
+  /* ---------------- Textes à trou (cloze interactif) ---------------- */
+  // code : texte avec des marqueurs ___ ; gaps : réponses attendues
+  //   (chaîne ou tableau de variantes acceptées, dans l'ordre des ___).
+  function makeGapFill(code, gaps) {
+    const wrap = el("div", "gapfill");
+    const bar = el("div", "code-toolbar");
+    bar.innerHTML =
+      `<span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span>` +
+      `<span class="code-title">texte à trou</span><span class="spacer"></span>`;
+    const btnCheck = el("button", "btn-run", "✅ Vérifier");
+    const btnTry = el("button", "btn-reset", "▶ Tester");
+    bar.appendChild(btnTry);
+    bar.appendChild(btnCheck);
+
+    const pre = el("pre", "gap-pre");
+    const parts = code.split("___");
+    const inputs = [];
+    parts.forEach((part, i) => {
+      pre.appendChild(document.createTextNode(part));
+      if (i < parts.length - 1) {
+        const inp = el("input", "gap-input");
+        inp.type = "text";
+        inp.spellcheck = false;
+        inp.setAttribute("aria-label", "Trou " + (i + 1));
+        const expected = gaps[i];
+        const longest = Array.isArray(expected)
+          ? expected.reduce((a, b) => (b.length > a.length ? b : a), "")
+          : String(expected);
+        inp.size = Math.max(longest.length + 1, 3);
+        inputs.push(inp);
+        pre.appendChild(inp);
+      }
+    });
+
+    const feedback = el("div", "gap-feedback");
+    const out = el("div", "code-output empty");
+
+    const norm = (s) => String(s).trim().replace(/\s+/g, " ").replace(/\s*([(),:=+\-*/%<>])\s*/g, "$1");
+    function accepts(expected, val) {
+      const variants = Array.isArray(expected) ? expected : [expected];
+      return variants.some((v) => norm(v) === norm(val));
+    }
+    function filledCode() {
+      let r = "";
+      parts.forEach((part, i) => {
+        r += part;
+        if (i < parts.length - 1) r += inputs[i].value;
+      });
+      return r;
+    }
+
+    btnCheck.addEventListener("click", () => {
+      let ok = 0;
+      inputs.forEach((inp, i) => {
+        const good = accepts(gaps[i], inp.value);
+        inp.classList.toggle("gap-ok", good);
+        inp.classList.toggle("gap-bad", !good && inp.value.trim() !== "");
+        if (good) ok++;
+      });
+      feedback.className = "gap-feedback show " + (ok === inputs.length ? "good" : "bad");
+      feedback.textContent =
+        ok === inputs.length
+          ? "🎉 Tous les trous sont corrects ! Clique sur ▶ Tester pour exécuter."
+          : `${ok} / ${inputs.length} trou(s) correct(s). Réessaie les cases rouges.`;
+    });
+    btnTry.addEventListener("click", () => runPython(filledCode(), out, btnTry));
+
+    wrap.appendChild(bar);
+    wrap.appendChild(pre);
+    wrap.appendChild(feedback);
+    wrap.appendChild(out);
+    return wrap;
   }
 
   /* ---------------- Pyodide (Python dans le navigateur) ---------------- */
@@ -481,11 +618,22 @@
     btn.disabled = true;
     try {
       const py = await loadPyodideOnce();
-      // Redirige la sortie standard et les erreurs
+      // Redirige la sortie standard et les erreurs ; input() via prompt (comme Basthon)
       py.runPython(`
-import sys, io
+import sys, io, builtins
 sys.stdout = io.StringIO()
 sys.stderr = io.StringIO()
+try:
+    from js import prompt as _nsi_prompt
+    def _nsi_input(invite=""):
+        r = _nsi_prompt(str(invite))
+        if r is None:
+            raise KeyboardInterrupt("Saisie annulée")
+        print(str(invite) + str(r))   # écho de la saisie dans la sortie
+        return str(r)
+    builtins.input = _nsi_input
+except Exception:
+    pass
 `);
       let errored = false;
       try {
@@ -1132,6 +1280,7 @@ sys.stderr = io.StringIO()
         )
       );
       box.appendChild(el("div", "exo-enonce", exo.enonce));
+      if (exo.gapcode && exo.gaps) box.appendChild(makeGapFill(exo.gapcode, exo.gaps));
       if (exo.code) box.appendChild(makeCodeCell(exo.code));
       if (exo.solution) {
         const det = el("details", "corrige");
@@ -1728,7 +1877,9 @@ sys.stderr = io.StringIO()
     box.appendChild(
       el("div", "tp-step-head", `<span class="tp-num">${step.num}</span>${step.titre}` + (step.bonus ? ` <span class="lv-tag lv-defi">bonus</span>` : ""))
     );
-    if (step.code) {
+    if (step.gaps && step.gapcode) {
+      box.appendChild(makeGapFill(step.gapcode, step.gaps));
+    } else if (step.code) {
       if (lang === "python" && step.run) {
         box.appendChild(makeCodeCell(step.code));
       } else {
@@ -1794,6 +1945,40 @@ sys.stderr = io.StringIO()
     return card;
   }
 
+  function makeMiniProjet(p) {
+    const card = el("div", "tp-card mini-projet");
+    const head = el("div", "exo-head");
+    head.innerHTML =
+      `<span class="lv-tag ${p.bonus ? "lv-defi" : "lv-facile"}">${p.bonus ? "⭐ bonus" : "🐍 Projet"}</span>` +
+      `<span class="exo-n">${p.titre}</span>`;
+    card.appendChild(head);
+    card.appendChild(el("div", "proj-meta", `<span class="chip">${p.cat}</span>`));
+    const link = el("button", "tp-theme-link", "→ " + themeTitle(p.theme));
+    link.addEventListener("click", () => navigate(p.theme));
+    card.appendChild(link);
+    if (p.summary) card.appendChild(el("p", "tp-intro", p.summary));
+    if (p.objectifs) {
+      const ul = el("ul", "tp-questions");
+      p.objectifs.forEach((o) => ul.appendChild(el("li", null, o)));
+      card.appendChild(ul);
+    }
+    if (p.interactif) {
+      card.appendChild(el("div", "note", "🎮 Jeu interactif (input) : clique ▶ Exécuter et réponds dans la fenêtre, ou ⚡ Basthon."));
+    }
+    const det = el("details", "corrige");
+    det.appendChild(el("summary", null, "💡 Solution commentée"));
+    if (p.explication) det.appendChild(el("p", "corrige-body", p.explication));
+    if (p.code) det.appendChild(makeCodeCell(p.code));
+    if (p.extensions && p.extensions.length) {
+      const ul = el("ul", "corrige-body");
+      p.extensions.forEach((e) => ul.appendChild(el("li", null, "Extension — " + e)));
+      det.appendChild(ul);
+    }
+    card.appendChild(det);
+    card.appendChild(el("div", "tp-source", "📎 " + TP_SOURCE));
+    return card;
+  }
+
   function makeLogisimBlock() {
     const wrap = el("div", "logisim-block");
     wrap.appendChild(
@@ -1842,16 +2027,22 @@ sys.stderr = io.StringIO()
   function makeThemeDUResources(themeId) {
     const tps = (typeof GUIDED_TP !== "undefined" ? GUIDED_TP : []).filter((t) => t.theme === themeId);
     const fiches = (typeof FICHES_PLUS !== "undefined" ? FICHES_PLUS : []).filter((f) => f.theme === themeId);
+    const mps = (typeof MINI_PROJETS !== "undefined" ? MINI_PROJETS : []).filter((p) => p.theme === themeId);
     const hasLogisim = themeId === "architecture-os" && typeof LOGISIM_CIRCUITS !== "undefined";
-    if (!tps.length && !fiches.length && !hasLogisim) return null;
+    if (!tps.length && !fiches.length && !mps.length && !hasLogisim) return null;
 
     const wrap = el("div", "extra-block du-block");
     wrap.appendChild(el("h2", null, "📦 Ressources du DIU"));
     wrap.appendChild(el("p", "extra-hint", "Du matériel issu de ma formation DIU NSI, rattaché à ce thème."));
-    if (tps.length || fiches.length) {
+    if (tps.length || fiches.length || mps.length) {
       const ul = el("div", "du-links");
       tps.forEach((t) => {
         const b = el("button", "btn secondary", (t.lang === "python" ? "🐍 " : "🖥️ ") + t.titre);
+        b.addEventListener("click", () => navigate("tp"));
+        ul.appendChild(b);
+      });
+      mps.forEach((p) => {
+        const b = el("button", "btn secondary", "🐍 Projet — " + p.titre);
         b.addEventListener("click", () => navigate("tp"));
         ul.appendChild(b);
       });
@@ -1901,6 +2092,7 @@ sys.stderr = io.StringIO()
     };
     bar.appendChild(mkBtn("Tout", "all"));
     themesPresents.forEach((id) => bar.appendChild(mkBtn(themeTitle(id), id)));
+    if (typeof MINI_PROJETS !== "undefined") bar.appendChild(mkBtn("🐍 Mini-projets", "miniprojets"));
     if (typeof LOGISIM_CIRCUITS !== "undefined") bar.appendChild(mkBtn("🔌 Logisim", "logisim"));
     viewTheme.appendChild(bar);
 
@@ -1909,9 +2101,17 @@ sys.stderr = io.StringIO()
     if (tpFilter === "logisim") {
       viewTheme.appendChild(el("h2", "home-h2", "🔌 Circuits Logisim"));
       viewTheme.appendChild(makeLogisimBlock());
+    } else if (tpFilter === "miniprojets") {
+      viewTheme.appendChild(el("h2", "home-h2", "🐍 Mini-projets Python"));
+      MINI_PROJETS.forEach((p) => viewTheme.appendChild(makeMiniProjet(p)));
     } else {
       GUIDED_TP.filter((t) => show(t.theme)).forEach((t) => viewTheme.appendChild(makeTPCard(t)));
       FICHES_PLUS.filter((f) => show(f.theme)).forEach((f) => viewTheme.appendChild(makeFichePlus(f)));
+      const mps = (typeof MINI_PROJETS !== "undefined" ? MINI_PROJETS : []).filter((p) => show(p.theme));
+      if (mps.length) {
+        viewTheme.appendChild(el("h2", "home-h2", "🐍 Mini-projets Python"));
+        mps.forEach((p) => viewTheme.appendChild(makeMiniProjet(p)));
+      }
       if (tpFilter === "all" || tpFilter === "architecture-os") {
         viewTheme.appendChild(el("h2", "home-h2", "🔌 Circuits Logisim (Architectures)"));
         viewTheme.appendChild(makeLogisimBlock());
@@ -2023,6 +2223,11 @@ sys.stderr = io.StringIO()
     if (typeof GUIDED_TP !== "undefined") {
       GUIDED_TP.forEach((t) => {
         idx.push({ type: "TP", icon: t.lang === "python" ? "🐍" : "🖥️", label: t.titre, target: "tp", hay: norm(t.titre + " " + (t.intro || "")) });
+      });
+    }
+    if (typeof MINI_PROJETS !== "undefined") {
+      MINI_PROJETS.forEach((p) => {
+        idx.push({ type: "Projet", icon: "🐍", label: p.titre, target: "tp", hay: norm(p.titre + " " + p.summary + " " + p.cat) });
       });
     }
     return idx;
