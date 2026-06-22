@@ -281,6 +281,39 @@ const DIDACTIQUE = {
             </ul>
             <p class="note">💡 En classe : traiter le <strong>débogage comme une activité normale</strong> (pas une faute), instaurer le <strong>droit à l'erreur</strong>, et faire relire le code entre pairs. La charge cognitive d'un débutant est énorme : avancer par petits pas.</p>`,
         },
+        {
+          t: "Écueils fréquents des élèves (et comment les lever)",
+          fiche: `
+            <p>Une liste d'<strong>obstacles récurrents</strong> en Première, avec un exemple et la manière d'y remédier. À garder sous le coude pour anticiper les questions.</p>
+            <h3>1. « = » n'est pas une égalité</h3>
+            <p>L'affectation <em>range</em> une valeur ; ce n'est pas une équation mathématique.</p>
+            <pre><code>x = 5
+x = x + 1   # x vaut maintenant 6 (et non « x = x+1 » impossible)</code></pre>
+            <p>👉 Faire visualiser pas à pas (bouton « 🔎 Pas à pas ») pour <em>voir</em> la variable changer d'état.</p>
+            <h3>2. Confondre = et ==</h3>
+            <pre><code>if note = 10:   # ❌ SyntaxError
+if note == 10:  # ✅ comparaison</code></pre>
+            <h3>3. Oublier de convertir l'entrée</h3>
+            <pre><code>age = input("Âge ? ")      # age est une CHAÎNE
+if age &gt; 18:               # ❌ compare texte et nombre
+age = int(input("Âge ? "))  # ✅</code></pre>
+            <p>👉 Même piège avec les valeurs lues dans un CSV (toujours des chaînes).</p>
+            <h3>4. Les bornes de range</h3>
+            <pre><code>for i in range(1, 5):   # 1, 2, 3, 4  → 5 EXCLU
+    print(i)</code></pre>
+            <h3>5. Comparer des flottants</h3>
+            <pre><code>0.1 + 0.2 == 0.3   # ❌ False (arrondis binaires)</code></pre>
+            <p>👉 Comparer avec une tolérance, ou rester sur l'idée « approximation ».</p>
+            <h3>6. Alias de listes (effet de bord)</h3>
+            <pre><code>a = [1, 2, 3]
+b = a          # b et a désignent la MÊME liste
+b.append(4)
+print(a)       # [1, 2, 3, 4] — surprise !</code></pre>
+            <p>👉 Pour copier : <code>b = a.copy()</code>.</p>
+            <h3>7. return dans la boucle</h3>
+            <p>Un <code>return</code> placé <em>dans</em> la boucle sort dès le 1ᵉʳ tour : souvent on le veut <em>après</em> la boucle.</p>
+            <p class="note">🧠 Beaucoup de ces écueils relèvent de l'<strong>assignation</strong> et de l'<strong>abstraction</strong> (cf. fiches « didactique » et « ADAGE »). Les nommer explicitement en classe aide énormément.</p>`,
+        },
       ],
     },
     {

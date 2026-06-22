@@ -632,17 +632,38 @@
   }
 
   /* ---------------- Basthon (ouvrir le code dans la console en ligne) ---------------- */
+  // Encode une chaîne UTF-8 en base64 (gère les accents).
+  function utf8ToB64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  // Ouvre le code dans le NOTEBOOK Basthon (et non la console) :
+  // on fabrique un notebook .ipynb minimal (1 cellule de code) passé en ?ipynb=.
   function openInBasthon(code) {
-    const win = window.open("https://console.basthon.fr/", "_blank", "noopener");
+    const lines = code.split("\n");
+    const source = lines.map((l, i) => (i < lines.length - 1 ? l + "\n" : l));
+    const nb = {
+      cells: [{ cell_type: "code", metadata: {}, execution_count: null, outputs: [], source }],
+      metadata: {
+        kernelspec: { name: "python3", display_name: "Python 3" },
+        language_info: { name: "python" },
+      },
+      nbformat: 4,
+      nbformat_minor: 5,
+    };
+    let url = "https://notebook.basthon.fr/";
+    try {
+      url += "?ipynb=" + encodeURIComponent(utf8ToB64(JSON.stringify(nb)));
+    } catch (e) {
+      /* repli : notebook vide + presse-papiers */
+    }
+    const win = window.open(url, "_blank", "noopener");
+    // Filet de sécurité : on copie aussi le code (au cas où l'import échoue).
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(code)
-        .then(() => toast("⚡ Code copié — colle-le dans Basthon avec Ctrl+V puis Entrée."))
-        .catch(() => toast("Ouvre Basthon puis recopie ton code."));
-    } else {
-      toast("Ouvre Basthon puis recopie ton code.");
+      navigator.clipboard.writeText(code).catch(() => {});
     }
     if (!win) toast("Autorise les pop-ups pour ouvrir Basthon.");
+    else toast("⚡ Notebook Basthon ouvert (code aussi copié, au cas où).");
   }
 
   // Visualiseur pas à pas (Python Tutor) — variables, mémoire, appels de fonctions.
@@ -2152,6 +2173,57 @@ except Exception:
     return card;
   }
 
+  // Exemple d'utilisation de la « boîte noire » (.pyc) par mini-projet.
+  const PYC_USAGE = {
+    "mp-crible": "crible(30)",
+    "mp-bases": 'decimal_vers_binaire(13)   # "1101"',
+    "mp-cesar": 'cesar("BONJOUR", 3)        # "ERQMRXU"',
+    "mp-pgcd": "pgcd(36, 24)               # 12",
+    "mp-montecarlo": "estimer_pi(100000)         # ≈ 3.14",
+    "mp-morpion": "gagnant(grille)            # 'X', 'O' ou None",
+    "mp-pendu": "pendu()                    # lance le jeu",
+    "mp-mastermind": "mastermind()               # lance le jeu",
+    "mp-vigenere": 'vigenere("BONJOUR", "CLE")',
+    "mp-tris": "tri_rapide([5, 2, 9, 1])   # [1, 2, 5, 9]",
+  };
+
+  // Bloc « boîte noire » : le corrigé compilé (.pyc) à distribuer aux élèves,
+  // + (côté prof) le source et la recette de recompilation.
+  function makeBoiteNoire(p) {
+    const mod = p.id.replace(/-/g, "_");
+    const pycUrl = "assets/projets/pyc/" + mod + ".pyc";
+    const srcUrl = "assets/projets/src/" + mod + ".py";
+    const usage = PYC_USAGE[p.id] || "";
+    const wrap = el("div", "boite-noire");
+    wrap.appendChild(el("div", "bn-head", "📦 Module « boîte noire » (.pyc)"));
+    wrap.appendChild(
+      el("p", "bn-desc", "Le corrigé <strong>compilé</strong> : on l'utilise comme un module, sans voir le code source.")
+    );
+    const dl = el("a", "btn secondary bn-dl", "⬇️ Télécharger " + mod + ".pyc");
+    dl.href = pycUrl;
+    dl.setAttribute("download", mod + ".pyc");
+    wrap.appendChild(dl);
+    if (usage) {
+      wrap.appendChild(
+        el("pre", "bn-usage", `<code>&gt;&gt;&gt; import ${mod}\n&gt;&gt;&gt; ${mod}.${usage}</code>`)
+      );
+    }
+    wrap.appendChild(
+      el("p", "bn-note", "ℹ️ Compilé pour <strong>Python 3.14</strong>. Si tes élèves utilisent une autre version, recompile (voir « Pour le prof »).")
+    );
+    const prof = el("details", "teacher-block bn-prof");
+    prof.appendChild(el("summary", null, "👩‍🏫 Pour le prof — source & recette de recompilation"));
+    const body = el("div", "corrige-body");
+    body.innerHTML =
+      `<a href="${srcUrl}" target="_blank" rel="noopener">Voir / télécharger le code source (.py) ↗</a>` +
+      `<p>Recompiler le <code>.pyc</code> pour <strong>ta</strong> version de Python :</p>` +
+      `<pre><code>python -m py_compile ${mod}.py\n# puis renomme __pycache__/${mod}.cpython-XY.pyc  en  ${mod}.pyc</code></pre>` +
+      `<p>Ou tout recompiler d'un coup : <code>python assets/projets/build_pyc.py</code></p>`;
+    prof.appendChild(body);
+    wrap.appendChild(prof);
+    return wrap;
+  }
+
   function makeMiniProjet(p) {
     const card = el("div", "tp-card mini-projet");
     const head = el("div", "exo-head");
@@ -2182,6 +2254,7 @@ except Exception:
       det.appendChild(ul);
     }
     card.appendChild(det);
+    if (p.code) card.appendChild(makeBoiteNoire(p));
     card.appendChild(el("div", "tp-source", "📎 " + TP_SOURCE));
     return card;
   }
