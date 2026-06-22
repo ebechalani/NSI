@@ -444,6 +444,22 @@ print(a)       # [1, 2, 3, 4] — surprise !</code></pre>
   ],
 };
 
+/* ---------------- Ressources externes rattachées à un thème ----------------
+   Supports d'autres formations DIU, LIÉS avec attribution (pas de copie). */
+const THEME_RESSOURCES_EXT = {
+  "donnees-base": {
+    titre: "Représentation des données en machine",
+    auteur: "Cours de J-M Barbier — DIU EIL 2026",
+    base: "https://diu-representations-0abb3a.forge.apps.education.fr/",
+    items: [
+      { t: "📄 Cours — Représentation des nombres (bases, complément à deux, IEEE 754)", url: "representation-nombres.html" },
+      { t: "📄 Cours — Représentation des caractères (ASCII, ISO-8859, Unicode, UTF-8, HTML)", url: "representation-caracteres.html" },
+      { t: "🖥️ Diaporama — Nombres (PDF)", url: "prez-representation-nombres.prez.pdf" },
+      { t: "🖥️ Diaporama — Caractères (PDF)", url: "prez-representation-caracteres.prez.pdf" },
+    ],
+  },
+};
+
 /* ---------------- Progression annuelle indicative ---------------- */
 const PROGRESSION_INTRO =
   "Progression <strong>indicative</strong> pour 4 h hebdomadaires (~30 semaines effectives, soit ~120 h). " +

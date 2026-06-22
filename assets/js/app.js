@@ -511,6 +511,10 @@
     const du = makeThemeDUResources(c.id);
     if (du) viewTheme.appendChild(du);
 
+    // Ressources externes (autres formations) liées avec attribution
+    const ext = makeThemeExtResources(c.id);
+    if (ext) viewTheme.appendChild(ext);
+
     // Navigation précédent / suivant
     viewTheme.appendChild(makeThemeNav(c));
 
@@ -2187,11 +2191,13 @@ except Exception:
     "mp-tris": "tri_rapide([5, 2, 9, 1])   # [1, 2, 5, 9]",
   };
 
+  // Versions de .pyc disponibles (3.12 par défaut = la plus répandue en lycée).
+  const PYC_VERSIONS = ["3.12", "3.11", "3.14"];
+
   // Bloc « boîte noire » : le corrigé compilé (.pyc) à distribuer aux élèves,
   // + (côté prof) le source et la recette de recompilation.
   function makeBoiteNoire(p) {
     const mod = p.id.replace(/-/g, "_");
-    const pycUrl = "assets/projets/pyc/" + mod + ".pyc";
     const srcUrl = "assets/projets/src/" + mod + ".py";
     const usage = PYC_USAGE[p.id] || "";
     const wrap = el("div", "boite-noire");
@@ -2199,17 +2205,32 @@ except Exception:
     wrap.appendChild(
       el("p", "bn-desc", "Le corrigé <strong>compilé</strong> : on l'utilise comme un module, sans voir le code source.")
     );
-    const dl = el("a", "btn secondary bn-dl", "⬇️ Télécharger " + mod + ".pyc");
-    dl.href = pycUrl;
-    dl.setAttribute("download", mod + ".pyc");
-    wrap.appendChild(dl);
+    // Sélecteur de version + bouton de téléchargement (un .pyc ne marche qu'avec SA version).
+    const row = el("div", "bn-verrow");
+    row.appendChild(el("label", "bn-verlabel", "Version Python des élèves :"));
+    const sel = el("select", "bn-ver");
+    PYC_VERSIONS.forEach((v) => {
+      const o = el("option", null, "Python " + v);
+      o.value = v;
+      sel.appendChild(o);
+    });
+    const dl = el("a", "btn secondary bn-dl", "⬇️ Télécharger le .pyc");
+    const setHref = () => {
+      dl.href = "assets/projets/pyc/" + sel.value + "/" + mod + ".pyc";
+      dl.setAttribute("download", mod + ".pyc");
+    };
+    setHref();
+    sel.addEventListener("change", setHref);
+    row.appendChild(sel);
+    row.appendChild(dl);
+    wrap.appendChild(row);
     if (usage) {
       wrap.appendChild(
         el("pre", "bn-usage", `<code>&gt;&gt;&gt; import ${mod}\n&gt;&gt;&gt; ${mod}.${usage}</code>`)
       );
     }
     wrap.appendChild(
-      el("p", "bn-note", "ℹ️ Compilé pour <strong>Python 3.14</strong>. Si tes élèves utilisent une autre version, recompile (voir « Pour le prof »).")
+      el("p", "bn-note", "ℹ️ Choisis la version de Python de tes élèves (Thonny / Capytale l'affichent). Dispo : 3.11, 3.12, 3.14 — autre version : voir « Pour le prof ».")
     );
     const prof = el("details", "teacher-block bn-prof");
     prof.appendChild(el("summary", null, "👩‍🏫 Pour le prof — source & recette de recompilation"));
@@ -2340,6 +2361,27 @@ except Exception:
       wrap.appendChild(ul);
     }
     if (hasLogisim) wrap.appendChild(makeLogisimBlock());
+    return wrap;
+  }
+
+  // Ressources d'une autre formation, LIÉES avec attribution (jamais recopiées).
+  function makeThemeExtResources(themeId) {
+    const R = (typeof THEME_RESSOURCES_EXT !== "undefined" ? THEME_RESSOURCES_EXT : {})[themeId];
+    if (!R) return null;
+    const wrap = el("div", "extra-block du-block");
+    wrap.appendChild(el("h2", null, "🔗 Pour aller plus loin — " + R.titre));
+    wrap.appendChild(el("p", "extra-hint", "Support d'une autre formation (" + R.auteur + "), accessible en ligne."));
+    const grid = el("div", "didac-grid");
+    R.items.forEach((it) => {
+      const a = el("a", "didac-card");
+      a.href = /^https?:/i.test(it.url) ? it.url : R.base + it.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.innerHTML = `<strong>${it.t} ↗</strong>`;
+      grid.appendChild(a);
+    });
+    wrap.appendChild(grid);
+    wrap.appendChild(el("p", "tp-source", "📎 Ces supports restent la propriété de leur auteur ; le site se contente de pointer vers eux."));
     return wrap;
   }
 

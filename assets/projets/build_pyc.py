@@ -278,17 +278,19 @@ if __name__ == "__main__":
 
 def main():
     os.makedirs(SRC, exist_ok=True)
-    os.makedirs(PYC, exist_ok=True)
     ver = f"{sys.version_info.major}.{sys.version_info.minor}"
+    # Les .pyc sont rangés par version de Python (un .pyc ne marche qu'avec SA version).
+    out_dir = os.path.join(PYC, ver)
+    os.makedirs(out_dir, exist_ok=True)
     for name, source in MODULES.items():
         src_path = os.path.join(SRC, name + ".py")
-        pyc_path = os.path.join(PYC, name + ".pyc")
+        pyc_path = os.path.join(out_dir, name + ".pyc")
         with open(src_path, "w", encoding="utf-8", newline="\n") as f:
             f.write(source)
-        # cfile = chemin de sortie direct ; on enlève le tag de version du nom.
+        # cfile = chemin de sortie direct ; on enleve le tag de version du nom.
         py_compile.compile(src_path, cfile=pyc_path, optimize=2)
-        print(f"  [ok] {name}.py  ->  {name}.pyc  (Python {ver})")
-    print(f"{len(MODULES)} modules generes (Python {ver}).")
+        print(f"  [ok] {name}.pyc  (Python {ver})")
+    print(f"{len(MODULES)} modules generes dans pyc/{ver}/ (Python {ver}).")
 
 
 if __name__ == "__main__":

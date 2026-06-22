@@ -54,7 +54,8 @@ const COURSES = [
           <tr><td>1 gigaoctet (Go)</td><td>1000 Mo</td><td>un film</td></tr>
           <tr><td>1 téraoctet (To)</td><td>1000 Go</td><td>un disque dur</td></tr>
         </table>
-        <p class="warnbox">⚠️ Piège classique : ne confondez pas le <strong>bit</strong> (noté <code>b</code>) et l'<strong>octet</strong> (noté <code>o</code>, ou <em>byte</em> = <code>B</code>). Un débit Internet annoncé « 100 Mb/s » (mégabits) vaut 100 ÷ 8 ≈ <strong>12,5 Mo/s</strong> (mégaoctets). C'est pour cela qu'un fichier de 100 Mo ne se télécharge pas en 1 seconde sur une ligne à 100 Mb/s.</p>`,
+        <p class="warnbox">⚠️ Piège classique : ne confondez pas le <strong>bit</strong> (noté <code>b</code>) et l'<strong>octet</strong> (noté <code>o</code>, ou <em>byte</em> = <code>B</code>). Un débit Internet annoncé « 100 Mb/s » (mégabits) vaut 100 ÷ 8 ≈ <strong>12,5 Mo/s</strong> (mégaoctets). C'est pour cela qu'un fichier de 100 Mo ne se télécharge pas en 1 seconde sur une ligne à 100 Mb/s.</p>
+        <p class="note">📏 Subtilité <strong>1000 ou 1024 ?</strong> Historiquement, 1 ko « informaticien » valait 1024 o (2<sup>10</sup>). La norme officielle réserve désormais <strong>ko = 1000 o</strong> et note <strong>Kio (kibioctet) = 1024 o</strong> (de même Mio, Gio…). Les fabricants de disques comptent en 1000 : un disque vendu « 1 To » affiche ≈ 931 Gio une fois dans la machine.</p>`,
         code: `# La table des puissances de 2, à connaître jusqu'à 2^10
 for n in range(11):
     print(f"{n:>2} bits -> 2**{n} = {2**n:>4} valeurs")
@@ -274,6 +275,26 @@ print(ord("😀"))                       # 128512 (emoji Unicode)
 # La majuscule est 32 de plus que la minuscule
 for c in "nsi":
     print(c, "->", chr(ord(c) - 32))   # passage en majuscule "à la main"`,
+      },
+      {
+        title: "Comment UTF-8 code un caractère (1 à 4 octets)",
+        html: `
+        <p>On a dit qu'UTF-8 code chaque caractère sur <strong>1 à 4 octets</strong>. Voici l'idée — l'important n'est pas de la mémoriser, mais de comprendre le principe de <strong>longueur variable</strong>.</p>
+        <ul>
+          <li><strong>Numéro &lt; 128</strong> (un caractère ASCII) → <strong>1 octet</strong> de la forme <code>0xxxxxxx</code>. Le bit de gauche à 0 signifie « je suis seul » : c'est ce qui rend UTF-8 <em>compatible</em> avec l'ASCII.</li>
+          <li><strong>Numéro ≥ 128</strong> → <strong>2, 3 ou 4 octets</strong>. Le premier octet annonce <em>combien</em> il y en a (préfixes <code>110…</code>, <code>1110…</code>, <code>11110…</code>) et chaque octet suivant commence par <code>10…</code>.</li>
+        </ul>
+        <p><strong>Exemple — le « é »</strong> (numéro Unicode 233). Comme 233 ≥ 128, il faut 2 octets ; le codage donne les octets <code>0xC3 0xA9</code>. Une lettre accentuée « pèse » donc <strong>2 octets</strong>, là où une lettre ASCII n'en pèse qu'un.</p>
+        <p class="warnbox">⚠️ Conséquence : en UTF-8, <strong>le nombre d'octets n'est pas le nombre de caractères</strong>. C'est aussi l'origine des fameux « Ã© » : ils apparaissent quand un texte écrit en UTF-8 est relu avec un <em>mauvais</em> codage (ISO-8859). Toujours déclarer son codage (<code>&lt;meta charset="utf-8"&gt;</code> en HTML).</p>`,
+        code: `mot = "été"
+print(len(mot))                  # 3  -> Python compte les CARACTÈRES
+octets = mot.encode("utf-8")     # passage en octets (bytes)
+print(len(octets))               # 5  -> é=2, t=1, é=2
+print([hex(b) for b in octets])  # ['0xc3', '0xa9', '0x74', '0xc3', '0xa9']
+
+# Combien d'octets selon le caractère ?
+for c in "Aé€😀":
+    print(c, "->", len(c.encode("utf-8")), "octet(s)")  # 1, 2, 3, 4`,
       },
     ],
   },
