@@ -663,7 +663,24 @@ html[data-theme="dark"] .prof-note { background: #2a2410; border-color: #b45309;
 .db-block ul, .db-block ol { margin: .3rem 0; padding-left: 1.3rem; }
 .db-block li { margin: .3rem 0; }
 
-/* ---------- Didactique (prof) ---------- */
+/* ---------- Didactique (prof) — ordre du jour ---------- */
+.agenda-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem 1.4rem; margin: 1rem 0 1.4rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.agenda-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: .9rem; border-bottom: 1px solid var(--border); }
+.agenda-bloc { font-size: 1.15rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+.agenda-badge { background: var(--accent); color: #fff; font-size: .72rem; font-weight: 700; padding: .2rem .55rem; border-radius: 999px; }
+.agenda-meta { color: var(--text-soft); font-size: .85rem; margin-top: .3rem; }
+.agenda-index-btn { border: 1px solid var(--border); border-radius: 9px; padding: .5rem .9rem; font-size: .85rem; font-weight: 600; color: var(--text); text-decoration: none; white-space: nowrap; }
+.agenda-index-btn:hover { border-color: var(--accent); color: var(--accent); }
+.agenda-section { padding: .9rem 0; border-bottom: 1px solid var(--border); }
+.agenda-section:last-of-type { border-bottom: none; }
+.agenda-section-head { font-weight: 700; color: var(--accent); font-size: 1rem; margin-bottom: .5rem; }
+.agenda-duree { color: var(--text-soft); font-weight: 500; font-size: .85rem; }
+.agenda-item { display: flex; align-items: center; gap: .6rem; padding: .4rem .2rem .4rem .8rem; border-radius: 7px; }
+.agenda-item:hover { background: var(--bg); }
+.agenda-item-ico { flex: none; }
+.agenda-item-title { flex: 1; font-size: .92rem; }
+.agenda-source { flex: none; font-size: .82rem; color: var(--text-soft); text-decoration: none; font-weight: 600; }
+.agenda-source:hover { color: var(--accent); text-decoration: underline; }
 .didac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .7rem; margin: .6rem 0 1rem; }
 .didac-card { display: flex; flex-direction: column; gap: .25rem; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 10px; padding: .7rem .9rem; text-decoration: none; color: var(--text); }
 .didac-card:hover { border-color: var(--accent); }

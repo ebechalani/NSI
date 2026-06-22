@@ -123,54 +123,55 @@ const DEBRANCHE = [
 ];
 
 /* ---------------- Didactique & ressources (prof) ----------------
-   Liens curés depuis la formation DIU NSI (B. Mermet, GREYC) et ressources
-   officielles/externes. On LIE (avec attribution), on ne recopie pas. */
-const DIDACTIQUE_INTRO =
-  "Ressources de <strong>didactique</strong> pour préparer et enrichir tes cours, issues de la formation DIU NSI " +
-  "(B. Mermet, GREYC) et de ressources officielles. Liens externes, attribués.";
-const DIDACTIQUE = [
-  {
-    groupe: "🧠 Didactique & pensée informatique",
-    items: [
-      { titre: "Didactique de l'informatique", desc: "Repères, définitions pédagogiques (B. Mermet).", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/didactique.html" },
-      { titre: "Computational Thinking (pensée informatique)", desc: "Le concept clé : décomposer, abstraire, algorithmiser.", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/computationalThinking.html" },
-      { titre: "Compétences ADAGE", desc: "Cadre de compétences pour situer et évaluer.", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/adage.html" },
-      { titre: "« Pensée informatique » — G. Berry (Collège de France)", desc: "Conférence/vidéo de référence sur la pensée informatique.", url: "https://www.college-de-france.fr/fr/agenda/lecon-inaugurale/penser-coder-calculer-de-la-mesopotamie-aux-reseaux-sociaux" },
-      { titre: "Interstices", desc: "Plateforme de ressources et de vulgarisation (Inria).", url: "https://interstices.info/" },
-    ],
-  },
-  {
-    groupe: "📘 Programmes & évaluation",
-    items: [
-      { titre: "Eduscol NSI", desc: "Programmes officiels et ressources NSI.", url: "https://eduscol.education.gouv.fr/2630/programmes-et-ressources-en-numerique-et-sciences-informatiques-voie-g" },
-      { titre: "Organisation NSI Première", desc: "Pistes d'organisation et de séquençage (B. Mermet).", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/organisationPremiere.html" },
-    ],
-  },
-  {
-    groupe: "🎲 Activités & projets (îlots, débranché)",
-    items: [
-      { titre: "CS Unplugged / Informatique débranchée", desc: "Activités sans ordinateur (binaire, tri, routage…) — parfait en îlot.", url: "https://www.csunplugged.org/fr/" },
-      { titre: "Jeu des 7 familles de l'informatique", desc: "Activité ludique (Interstices) pour la culture informatique.", url: "https://interstices.info/jeux-de-cartes-le-jeu-des-7-familles-de-linformatique/" },
-      { titre: "Idées de projets", desc: "Banque d'idées de projets NSI (B. Mermet).", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/ideesProjets.html" },
-    ],
-  },
-  {
-    groupe: "🛠️ Outils pour la classe",
-    items: [
-      { titre: "Python Tutor", desc: "Visualiseur d'exécution pas à pas (intégré sur le site : bouton « 🔎 Pas à pas »).", url: "https://pythontutor.com/" },
-      { titre: "PEP8", desc: "Conventions d'écriture du code Python (lisibilité).", url: "https://pep8.org/" },
-      { titre: "Jupyter / Capytale", desc: "Notebooks interactifs pour distribuer/ramasser le travail.", url: "https://jupyter.org/" },
-      { titre: "Kanboard", desc: "Tableau Kanban pour gérer les projets en groupe.", url: "https://kanboard.org/" },
-    ],
-  },
-  {
-    groupe: "📄 Pour aller plus loin (recherche)",
-    items: [
-      { titre: "Futschek — Algorithmic Thinking (2006)", desc: "Article fondateur sur la pensée algorithmique.", url: "https://www.researchgate.net/publication/220698648_Algorithmic_Thinking_The_Key_for_Understanding_Computer_Science" },
-      { titre: "G. Dowek — Informatique (ressources gratuites)", desc: "Ouvrages et ressources en libre accès.", url: "https://www.epi.asso.fr/revue/articles/a1402d.htm" },
-    ],
-  },
-];
+   Présentation type « ordre du jour » de la formation (B. Mermet, DIU NSI Le
+   Havre) : blocs → sections → supports, chacun avec un lien « source ↗ » vers
+   la ressource originale. On LIE (attribution), on ne recopie pas. */
+const DIDACTIQUE_BASE = "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/";
+const DIDACTIQUE = {
+  bloc: "Bloc 1 — Culture & didactique de l'informatique",
+  meta: "Bruno Mermet · DIU NSI Le Havre · distanciel · 3 h",
+  index: "index.html",
+  sections: [
+    {
+      num: "I", titre: "Culture informatique", duree: "1 h",
+      items: [
+        { titre: "Histoire de l'informatique", file: "histoireInformatique.html" },
+        { titre: "Typologie des langages de programmation", file: "typologieLangages.html" },
+        { titre: "Projets informatiques : caractéristiques", file: "projetInformatique.html" },
+        { titre: "Psychologie du développeur", file: "psychologieDeveloppeur.html" },
+        { titre: "Les études pour devenir informaticien", file: "etudes.html" },
+      ],
+    },
+    {
+      num: "II", titre: "Didactique de l'informatique", duree: "1 h",
+      items: [
+        { titre: "Introduction à la didactique de l'informatique", file: "didactique.html" },
+        { titre: "Computational Thinking (pensée informatique)", file: "computationalThinking.html" },
+        { titre: "Compétences ADAGE", file: "adage.html" },
+        { titre: "Résumé « Enseigner l'Informatique »", file: "resumeLivreEnseignerInformatique.html" },
+        { titre: "Organisation de la NSI en Première", file: "organisationPremiere.html" },
+        { titre: "Résumé du programme de Terminale", file: "resumeProgrammeTerminale.html" },
+      ],
+    },
+    {
+      num: "III", titre: "Travail pratique & conclusion", duree: "1 h",
+      items: [
+        { titre: "Trucs pratiques", file: "trucs.html" },
+        { titre: "Idées de projets", file: "ideesProjets.html" },
+        { titre: "Rendu de la formation", file: "rendu.html" },
+      ],
+    },
+  ],
+  // Ressources complémentaires (utiles en classe), clairement séparées.
+  complement: [
+    { titre: "Python Tutor", desc: "Visualiseur d'exécution pas à pas (intégré : bouton « 🔎 Pas à pas »).", url: "https://pythontutor.com/" },
+    { titre: "CS Unplugged — informatique débranchée", desc: "Activités sans ordinateur (binaire, tri, routage).", url: "https://www.csunplugged.org/fr/" },
+    { titre: "Interstices (Inria)", desc: "Ressources et vulgarisation, jeu des 7 familles.", url: "https://interstices.info/" },
+    { titre: "G. Berry — « Pensée informatique » (Collège de France)", desc: "Conférence de référence.", url: "https://www.college-de-france.fr/fr/personne/gerard-berry" },
+    { titre: "Eduscol NSI", desc: "Programmes officiels et ressources.", url: "https://eduscol.education.gouv.fr/2630/programmes-et-ressources-en-numerique-et-sciences-informatiques-voie-g" },
+    { titre: "PEP8", desc: "Conventions d'écriture du code Python.", url: "https://pep8.org/" },
+  ],
+};
 
 /* ---------------- Progression annuelle indicative ---------------- */
 const PROGRESSION_INTRO =

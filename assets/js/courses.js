@@ -1409,6 +1409,14 @@ print("dé :", random.randint(1, 6))`,
           <tr><td>Java</td><td>applications, Android</td><td><code>System.out.println("Bonjour");</code></td></tr>
         </table>
         <p>Différences fréquentes : Python délimite les blocs par l'<strong>indentation</strong>, beaucoup d'autres par des <strong>accolades</strong> <code>{ }</code> ; Python a un <strong>typage dynamique</strong>, C et Java un <strong>typage statique</strong> (on déclare le type).</p>
+        <h3>Comment situer un langage ? (3 axes)</h3>
+        <table>
+          <tr><th>Axe</th><th>De… à…</th><th>Exemples</th></tr>
+          <tr><td><strong>Niveau</strong></td><td>bas (proche machine) → haut (abstrait)</td><td>assembleur → C → Python/Java</td></tr>
+          <tr><td><strong>Exécution</strong></td><td>compilé → interprété</td><td>C (compilé) ; Python (interprété) ; Java (hybride : bytecode)</td></tr>
+          <tr><td><strong>Typage</strong></td><td>statique/fort → dynamique/faible</td><td>Java (statique) ; Python (dynamique)</td></tr>
+        </table>
+        <p class="note">⭐ <strong>Ouverture (Terminale) :</strong> on classe aussi les langages par <em>paradigme</em> — <strong>impératif</strong> (suite d'instructions : Python, C), <strong>fonctionnel</strong> (composition de fonctions : Lisp, Haskell), <strong>objet</strong> et <strong>logique</strong> (Prolog). En Première, on reste sur l'impératif.</p>
         <p class="note">🎯 Activité (en îlot) : repérez, dans les quatre exemples du tableau, ce qui change (mots-clés, ponctuation) et ce qui reste pareil (l'idée : « afficher un texte »). On programme des <em>idées</em>, pas une syntaxe.</p>`,
       },
     ],
@@ -1677,6 +1685,19 @@ for taille in [10, 1000, 1000000]:
         <p>Ce thème est <strong>transversal</strong> : chaque notion des autres chapitres a une histoire (le binaire vient de Leibniz, l'algorithme du nom d'Al-Khwârizmî, le Web de 1989…).</p>`,
       },
       {
+        title: "Aux racines : l'algorithme et la logique (Antiquité → XIXᵉ s.)",
+        html: `
+        <p>Bien avant les machines, on inventait déjà des <strong>algorithmes</strong> — des méthodes de calcul précises :</p>
+        <ul>
+          <li><strong>≈ −300 — Euclide</strong> : l'<em>algorithme d'Euclide</em> pour calculer le PGCD de deux nombres (toujours enseigné aujourd'hui !).</li>
+          <li><strong>≈ −250 — Archimède</strong> : une méthode pour approcher le nombre <strong>π</strong> par des polygones.</li>
+          <li><strong>IXᵉ s. — Al-Khwârizmî</strong> (savant perse) : ses traités de calcul donnent, par latinisation de son nom, le mot <strong>« algorithme »</strong> ; le titre de l'un d'eux (<em>al-jabr</em>) donne <strong>« algèbre »</strong>.</li>
+          <li><strong>1703 — Leibniz</strong> : l'<strong>arithmétique binaire</strong> (tout coder avec des 0 et des 1).</li>
+          <li><strong>1847 — George Boole</strong> : l'<strong>algèbre de Boole</strong> (vrai/faux), socle de la logique des circuits.</li>
+        </ul>
+        <p class="note">💡 Le mot « algorithme » est donc bien plus vieux que l'ordinateur : l'informatique hérite de <strong>siècles de mathématiques</strong>.</p>`,
+      },
+      {
         title: "Des premières machines à calculer (XVIIᵉ–XIXᵉ s.)",
         html: `
         <p>Avant l'électronique, on calculait avec des machines mécaniques :</p>
@@ -1693,14 +1714,17 @@ for taille in [10, 1000, 1000000]:
         <p><strong>Ada Lovelace</strong> écrit en 1843 ce qui est considéré comme le <strong>premier algorithme destiné à être exécuté par une machine</strong>. Elle pressent qu'une telle machine pourrait manipuler bien plus que des nombres (symboles, musique…). On la considère comme la première programmeuse.</p>`,
       },
       {
-        title: "Les fondements théoriques (1850–1940)",
+        title: "Les fondements théoriques (1850–1945)",
         html: `
+        <p>Au début du XXᵉ siècle, les mathématiciens se posent une question vertigineuse : <em>peut-on tout calculer ? existe-t-il une méthode automatique pour résoudre n'importe quel problème ?</em></p>
         <ul>
-          <li><strong>1854 — George Boole</strong> : l'<em>algèbre de Boole</em> (vrai/faux, et/ou/non), base de la logique des circuits (thème 1 et 5).</li>
-          <li><strong>1936 — Alan Turing</strong> : la <em>machine de Turing</em>, modèle théorique qui définit ce qu'est un calcul et les limites du <strong>calculable</strong>.</li>
-          <li><strong>1937 — Claude Shannon</strong> : montre que les circuits électriques peuvent réaliser l'algèbre de Boole ; il fonde la <em>théorie de l'information</em>.</li>
-          <li><strong>1945 — John von Neumann</strong> : formalise l'architecture à <strong>programme enregistré</strong> (thème 5).</li>
-        </ul>`,
+          <li><strong>≈ 1920 — David Hilbert</strong> : lance son « programme » et la question de la <strong>décision automatique</strong> (l'<em>Entscheidungsproblem</em>).</li>
+          <li><strong>1931 — Kurt Gödel</strong> : ses <strong>théorèmes d'incomplétude</strong> montrent qu'aucun système ne peut tout démontrer.</li>
+          <li><strong>1936 — Alonzo Church</strong> (le <em>lambda-calcul</em>) et <strong>Alan Turing</strong> (la <em>machine de Turing</em>) définissent, chacun de leur côté, ce qu'est un <strong>calcul</strong> — et prouvent qu'il existe des problèmes <strong>indécidables</strong> (non calculables).</li>
+          <li><strong>1937 — Claude Shannon</strong> : montre que les circuits électriques réalisent l'algèbre de Boole ; il fonde la <em>théorie de l'information</em>.</li>
+          <li><strong>1945 — John von Neumann</strong> : formalise l'architecture à <strong>programme enregistré</strong> (thème « Architecture »).</li>
+        </ul>
+        <p class="note">🧠 La <strong>machine de Turing</strong> (1936) est le modèle abstrait qui définit ce qu'un ordinateur peut, ou ne peut pas, calculer — bien avant qu'un ordinateur existe.</p>`,
       },
       {
         title: "Les premiers ordinateurs (1940–1970)",
@@ -1727,12 +1751,43 @@ for taille in [10, 1000, 1000000]:
         title: "Le Web, le mobile et aujourd'hui (1990 →)",
         html: `
         <ul>
-          <li><strong>1989–1991 — Tim Berners-Lee</strong> invente le <strong>World Wide Web</strong> au CERN (HTML, HTTP, URL) — thème 4.</li>
-          <li><strong>Années 2000</strong> : explosion d'Internet, moteurs de recherche, réseaux sociaux, <strong>données massives</strong> (big data).</li>
-          <li><strong>2007 — smartphone</strong> : l'informatique devient mobile et omniprésente.</li>
-          <li><strong>Années 2010–2020</strong> : essor de l'<strong>apprentissage automatique</strong> et de l'<strong>intelligence artificielle</strong>.</li>
+          <li><strong>1989–1991 — Tim Berners-Lee</strong> invente le <strong>World Wide Web</strong> au CERN (HTML, HTTP, URL) — thème « IHM Web ».</li>
+          <li><strong>1991 — Linux</strong> ; <strong>1995 — Java</strong> ; explosion du Web (Mosaic 1993, Netscape 1994).</li>
+          <li><strong>1998 — Google</strong> ; <strong>2001 — Wikipédia</strong> ; années 2000 : réseaux sociaux, <strong>données massives</strong> (big data).</li>
+          <li><strong>2007 — iPhone</strong> : l'informatique devient <strong>mobile</strong> et omniprésente ; 2010 — cloud computing.</li>
+          <li><strong>2018 — RGPD</strong> : un cadre européen pour la protection des données personnelles.</li>
         </ul>
+        <p class="note">🇫🇷 Repères français : le mot <strong>« informatique »</strong> est créé en 1962 (P. Dreyfus) ; l'<strong>INRIA</strong> est fondé en 1967 ; les premières maîtrises d'informatique datent de 1966.</p>
         <p>L'histoire continue : chaque notion que tu apprends en NSI s'inscrit dans cette longue chaîne d'innovations.</p>`,
+      },
+      {
+        title: "L'intelligence artificielle : une longue histoire",
+        html: `
+        <p>L'IA n'est pas née hier : elle progresse par vagues depuis les débuts de l'informatique.</p>
+        <ul>
+          <li><strong>1950 — Alan Turing</strong> : le <em>test de Turing</em> (une machine peut-elle « passer » pour un humain ?).</li>
+          <li><strong>1957 — Frank Rosenblatt</strong> : le <em>perceptron</em>, ancêtre des <strong>réseaux de neurones</strong>.</li>
+          <li><strong>1965</strong> : les premiers <strong>systèmes experts</strong>.</li>
+          <li><strong>1997 — Deep Blue</strong> (IBM) bat le champion d'échecs Garry Kasparov.</li>
+          <li><strong>années 2010 — apprentissage profond (deep learning)</strong> : bond de la reconnaissance d'images et de la parole.</li>
+          <li><strong>2017 — AlphaGo</strong> bat les meilleurs joueurs de Go ; depuis, essor des IA génératives.</li>
+        </ul>
+        <p class="note">⚠️ L'IA « apprend » à partir de <strong>données</strong> : la qualité et les biais des données comptent énormément. C'est un enjeu de société (vie privée, désinformation, RGPD).</p>`,
+      },
+      {
+        title: "L'évolution du stockage des données",
+        html: `
+        <p>Comment garde-t-on les données ? Les <strong>supports</strong> ont énormément changé — et leur capacité a explosé pour un encombrement de plus en plus faible.</p>
+        <table>
+          <tr><th>Époque</th><th>Support</th><th>Idée</th></tr>
+          <tr><td>1801 / 1890</td><td>carte perforée</td><td>trou = 1, pas de trou = 0 (Jacquard, recensement Hollerith)</td></tr>
+          <tr><td>1950s</td><td>bande magnétique</td><td>stockage en série, gros volumes</td></tr>
+          <tr><td>1967</td><td>disquette (IBM)</td><td>premier support amovible pratique</td></tr>
+          <tr><td>1980 / 1995</td><td>CD / DVD</td><td>support optique (laser)</td></tr>
+          <tr><td>1996</td><td>clé USB</td><td>mémoire « flash », sans pièce mobile</td></tr>
+          <tr><td>2010s</td><td>SSD & cloud</td><td>flash rapide ; données « dans les serveurs »</td></tr>
+        </table>
+        <p>Point commun à tous : <strong>tout finit en binaire</strong> (des 0 et des 1), seul le support physique change (thème « Représentation des données »).</p>`,
       },
       {
         title: "Construire et trier une frise chronologique",

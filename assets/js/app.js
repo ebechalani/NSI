@@ -402,9 +402,9 @@
       },
       {
         emoji: "📚",
-        tag: "ressources",
+        tag: "ordre du jour",
         title: "Didactique (prof)",
-        desc: "Pensée informatique, ADAGE, débranché, outils, articles — liens curés de ta formation DIU.",
+        desc: "Le programme de ta formation DIU, bloc par bloc, avec un lien « source » vers chaque support.",
         target: "didactique",
         prof: true,
       },
@@ -2696,18 +2696,59 @@ except Exception:
   /* ---------------- Vue : Didactique & ressources (prof) ---------------- */
   function renderDidactique() {
     viewTheme.innerHTML = "";
+    const D = typeof DIDACTIQUE !== "undefined" ? DIDACTIQUE : null;
+    const base = typeof DIDACTIQUE_BASE !== "undefined" ? DIDACTIQUE_BASE : "";
+
     const header = el("div", "theme-header");
     const crumb = el("span", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
-    header.appendChild(el("h1", null, "📚 Didactique & ressources"));
-    header.appendChild(el("p", "theme-intro", DIDACTIQUE_INTRO));
+    header.appendChild(el("h1", null, "📚 Ordre du jour — formation didactique"));
+    header.appendChild(
+      el("p", "theme-intro", "Programme de la formation, avec accès direct à chaque support du formateur. Liens externes (attribués), tu ne quittes pas ton cours.")
+    );
     viewTheme.appendChild(header);
+    if (!D) {
+      scrollTop();
+      return;
+    }
 
-    (typeof DIDACTIQUE !== "undefined" ? DIDACTIQUE : []).forEach((g) => {
-      viewTheme.appendChild(el("h2", "home-h2", g.groupe));
+    // Carte « bloc » façon ordre du jour.
+    const card = el("div", "agenda-card");
+    const top = el("div", "agenda-top");
+    const titWrap = el("div");
+    titWrap.appendChild(el("div", "agenda-bloc", `<span class="agenda-badge">Bloc 1</span>${D.bloc.replace(/^Bloc 1 — /, "")}`));
+    titWrap.appendChild(el("div", "agenda-meta", D.meta));
+    top.appendChild(titWrap);
+    const idx = el("a", "agenda-index-btn", "Ouvrir l'index ↗");
+    idx.href = base + D.index;
+    idx.target = "_blank";
+    idx.rel = "noopener";
+    top.appendChild(idx);
+    card.appendChild(top);
+
+    (D.sections || []).forEach((s) => {
+      const sec = el("div", "agenda-section");
+      sec.appendChild(el("div", "agenda-section-head", `${s.num}. ${s.titre} <span class="agenda-duree">· ${s.duree}</span>`));
+      s.items.forEach((it) => {
+        const row = el("div", "agenda-item");
+        row.innerHTML = `<span class="agenda-item-ico">📄</span><span class="agenda-item-title">${it.titre}</span>`;
+        const a = el("a", "agenda-source", "source ↗");
+        a.href = base + it.file;
+        a.target = "_blank";
+        a.rel = "noopener";
+        row.appendChild(a);
+        sec.appendChild(row);
+      });
+      card.appendChild(sec);
+    });
+    viewTheme.appendChild(card);
+
+    // Ressources complémentaires (utiles en classe).
+    if (D.complement && D.complement.length) {
+      viewTheme.appendChild(el("h2", "home-h2", "🧰 Ressources complémentaires"));
       const grid = el("div", "didac-grid");
-      g.items.forEach((it) => {
+      D.complement.forEach((it) => {
         const a = el("a", "didac-card");
         a.href = it.url;
         a.target = "_blank";
@@ -2716,9 +2757,10 @@ except Exception:
         grid.appendChild(a);
       });
       viewTheme.appendChild(grid);
-    });
+    }
+
     viewTheme.appendChild(
-      el("p", "tp-source", "📎 Liens curés depuis la formation DIU NSI (B. Mermet, GREYC) et ressources officielles.")
+      el("p", "tp-source", "📎 Source : formation DIU NSI — Bruno Mermet (GREYC, Université Le Havre). Tous les supports restent la propriété de leur auteur ; ce site se contente de pointer vers eux.")
     );
     scrollTop();
   }
