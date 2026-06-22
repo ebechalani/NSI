@@ -1790,6 +1790,27 @@ for taille in [10, 1000, 1000000]:
         <p>Point commun à tous : <strong>tout finit en binaire</strong> (des 0 et des 1), seul le support physique change (thème « Représentation des données »).</p>`,
       },
       {
+        title: "Et demain ? Métiers et études de l'informatique",
+        html: `
+        <p>L'informatique est partout : santé, jeux vidéo, transports, banque, environnement… Les <strong>métiers</strong> sont très variés :</p>
+        <ul>
+          <li><strong>Développeur·se</strong> (web, mobile, jeux vidéo, logiciels) ;</li>
+          <li><strong>Data analyst / data scientist</strong> : analyser de grandes quantités de <strong>données</strong> ;</li>
+          <li><strong>Cybersécurité</strong> : protéger les systèmes et les données ;</li>
+          <li><strong>Administrateur·rice systèmes &amp; réseaux</strong> ; <strong>DevOps</strong> ;</li>
+          <li><strong>Ingénieur·e en intelligence artificielle</strong> ; <strong>chef·fe de projet</strong>.</li>
+        </ul>
+        <p>Les <strong>études</strong> après le bac (en France) :</p>
+        <table>
+          <tr><th>Parcours</th><th>Durée</th><th>Exemples</th></tr>
+          <tr><td>BTS</td><td>bac+2</td><td>SIO (services info aux organisations), SN</td></tr>
+          <tr><td>BUT Informatique</td><td>bac+3</td><td>en IUT (ex-DUT)</td></tr>
+          <tr><td>Licence → Master</td><td>bac+3 → +5</td><td>informatique, science des données, IA…</td></tr>
+          <tr><td>École d'ingénieur</td><td>bac+5</td><td>après prépa ou post-bac (INSA, ENSI…)</td></tr>
+        </table>
+        <p class="note">🎯 Compétences qui comptent : <strong>logique &amp; algorithmique</strong>, rigueur, travail d'<strong>équipe</strong>, curiosité, anglais. La <strong>spé NSI</strong> (que tu pourras garder en Terminale) est un vrai atout pour <strong>Parcoursup</strong> dans toutes ces filières.</p>`,
+      },
+      {
         title: "Construire et trier une frise chronologique",
         html: `
         <p>On peut représenter l'histoire comme une <strong>table de données</strong> (thème 3) et la trier par date. Voici une petite frise interactive : modifie-la, ajoute un événement !</p>`,
