@@ -580,6 +580,12 @@ html[data-theme="dark"] .prof-note { background: #2a2410; border-color: #b45309;
   background: #facc15; color: #422006;
 }
 .btn-basthon-cell:hover { background: #eab308; }
+.btn-viz-cell {
+  font-family: var(--sans); font-size: .8rem; font-weight: 600;
+  border: none; border-radius: 7px; padding: .35rem .7rem; cursor: pointer;
+  background: #38bdf8; color: #042f3d;
+}
+.btn-viz-cell:hover { background: #0ea5e9; color: #fff; }
 
 /* ---------- Textes à trou (cloze interactif) ---------- */
 .gapfill { margin: 1.2rem 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--code-bg); box-shadow: var(--shadow); }
@@ -648,6 +654,13 @@ html[data-theme="dark"] .prof-note { background: #2a2410; border-color: #b45309;
 .pdf-list { display: flex; flex-wrap: wrap; gap: .5rem; }
 .pdf-item { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 8px; padding: .4rem .7rem; font-size: .82rem; text-decoration: none; color: var(--text); }
 .pdf-item:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Didactique (prof) ---------- */
+.didac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .7rem; margin: .6rem 0 1rem; }
+.didac-card { display: flex; flex-direction: column; gap: .25rem; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 10px; padding: .7rem .9rem; text-decoration: none; color: var(--text); }
+.didac-card:hover { border-color: var(--accent); }
+.didac-card strong { font-size: .9rem; color: var(--accent); }
+.didac-card span { font-size: .82rem; color: var(--text-soft); }
 
 /* ---------- Conformité au BO ---------- */
 .bo-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.2rem; margin: 1rem 0; }

@@ -254,6 +254,7 @@
       { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
       { target: "tp", num: "🧪", emoji: "", text: "TP guidés (DIU)" },
       { target: "progression", num: "🗓️", emoji: "", text: "Progression annuelle", prof: true },
+      { target: "didactique", num: "📚", emoji: "", text: "Didactique (prof)", prof: true },
       { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)", prof: true },
       { target: "bo", num: "✅", emoji: "", text: "Conformité au BO", prof: true },
     ];
@@ -389,6 +390,14 @@
         title: "Progression annuelle",
         desc: "Planning indicatif des séquences sur l'année + l'encart « coder pour de vrai ».",
         target: "progression",
+        prof: true,
+      },
+      {
+        emoji: "📚",
+        tag: "ressources",
+        title: "Didactique (prof)",
+        desc: "Pensée informatique, ADAGE, débranché, outils, articles — liens curés de ta formation DIU.",
+        target: "didactique",
         prof: true,
       },
       {
@@ -566,10 +575,13 @@
       <span class="code-title">python</span>
       <span class="spacer"></span>
     `;
+    const btnViz = el("button", "btn-viz-cell", "🔎 Pas à pas");
+    btnViz.title = "Visualiser l'exécution pas à pas (Python Tutor) : variables, mémoire, appels";
     const btnBasthon = el("button", "btn-basthon-cell", "⚡ Basthon");
     btnBasthon.title = "Ouvrir ce code dans Basthon (Python en ligne, gère input())";
     const btnReset = el("button", "btn-reset", "↺ Réinitialiser");
     const btnRun = el("button", "btn-run", "▶ Exécuter");
+    bar.appendChild(btnViz);
     bar.appendChild(btnBasthon);
     bar.appendChild(btnReset);
     bar.appendChild(btnRun);
@@ -603,6 +615,7 @@
       if (onRun) onRun();
     });
     btnBasthon.addEventListener("click", () => openInBasthon(ta.value));
+    btnViz.addEventListener("click", () => openInPythonTutor(ta.value));
 
     cell.appendChild(bar);
     cell.appendChild(ta);
@@ -622,6 +635,16 @@
       toast("Ouvre Basthon puis recopie ton code.");
     }
     if (!win) toast("Autorise les pop-ups pour ouvrir Basthon.");
+  }
+
+  // Visualiseur pas à pas (Python Tutor) — variables, mémoire, appels de fonctions.
+  function openInPythonTutor(code) {
+    const url =
+      "https://pythontutor.com/visualize.html#code=" +
+      encodeURIComponent(code) +
+      "&cumulative=false&py=3&mode=display&origin=opt-frontend.js&rawInputLstJSON=%5B%5D";
+    const win = window.open(url, "_blank", "noopener");
+    if (!win) toast("Autorise les pop-ups pour ouvrir le visualiseur pas à pas.");
   }
 
   function toast(msg) {
@@ -2592,6 +2615,36 @@ except Exception:
     scrollTop();
   }
 
+  /* ---------------- Vue : Didactique & ressources (prof) ---------------- */
+  function renderDidactique() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "📚 Didactique & ressources"));
+    header.appendChild(el("p", "theme-intro", DIDACTIQUE_INTRO));
+    viewTheme.appendChild(header);
+
+    (typeof DIDACTIQUE !== "undefined" ? DIDACTIQUE : []).forEach((g) => {
+      viewTheme.appendChild(el("h2", "home-h2", g.groupe));
+      const grid = el("div", "didac-grid");
+      g.items.forEach((it) => {
+        const a = el("a", "didac-card");
+        a.href = it.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.innerHTML = `<strong>${it.titre} ↗</strong><span>${it.desc}</span>`;
+        grid.appendChild(a);
+      });
+      viewTheme.appendChild(grid);
+    });
+    viewTheme.appendChild(
+      el("p", "tp-source", "📎 Liens curés depuis la formation DIU NSI (B. Mermet, GREYC) et ressources officielles.")
+    );
+    scrollTop();
+  }
+
   /* ---------------- Impressions communes ---------------- */
   function openPrint(title, bodyHtml) {
     const w = window.open("", "_blank");
@@ -2804,6 +2857,11 @@ except Exception:
       showThemeView("profs");
       renderTeachers();
       location.hash = "profs";
+    } else if (target === "didactique") {
+      if (!P.isTeacher()) return navigate("home");
+      showThemeView("didactique");
+      renderDidactique();
+      location.hash = "didactique";
     } else {
       const c = COURSES.find((x) => x.id === target);
       if (!c) return navigate("home");
@@ -2822,7 +2880,7 @@ except Exception:
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs"].includes(t)) return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }

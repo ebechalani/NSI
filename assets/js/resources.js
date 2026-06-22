@@ -6,6 +6,56 @@
    - EVALUATIONS : DS et TP notés avec barème ; corrigés réservés au prof
    ===================================================================== */
 
+/* ---------------- Didactique & ressources (prof) ----------------
+   Liens curés depuis la formation DIU NSI (B. Mermet, GREYC) et ressources
+   officielles/externes. On LIE (avec attribution), on ne recopie pas. */
+const DIDACTIQUE_INTRO =
+  "Ressources de <strong>didactique</strong> pour préparer et enrichir tes cours, issues de la formation DIU NSI " +
+  "(B. Mermet, GREYC) et de ressources officielles. Liens externes, attribués.";
+const DIDACTIQUE = [
+  {
+    groupe: "🧠 Didactique & pensée informatique",
+    items: [
+      { titre: "Didactique de l'informatique", desc: "Repères, définitions pédagogiques (B. Mermet).", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/didactique.html" },
+      { titre: "Computational Thinking (pensée informatique)", desc: "Le concept clé : décomposer, abstraire, algorithmiser.", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/computationalThinking.html" },
+      { titre: "Compétences ADAGE", desc: "Cadre de compétences pour situer et évaluer.", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/adage.html" },
+      { titre: "« Pensée informatique » — G. Berry (Collège de France)", desc: "Conférence/vidéo de référence sur la pensée informatique.", url: "https://www.college-de-france.fr/fr/agenda/lecon-inaugurale/penser-coder-calculer-de-la-mesopotamie-aux-reseaux-sociaux" },
+      { titre: "Interstices", desc: "Plateforme de ressources et de vulgarisation (Inria).", url: "https://interstices.info/" },
+    ],
+  },
+  {
+    groupe: "📘 Programmes & évaluation",
+    items: [
+      { titre: "Eduscol NSI", desc: "Programmes officiels et ressources NSI.", url: "https://eduscol.education.gouv.fr/2630/programmes-et-ressources-en-numerique-et-sciences-informatiques-voie-g" },
+      { titre: "Organisation NSI Première", desc: "Pistes d'organisation et de séquençage (B. Mermet).", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/organisationPremiere.html" },
+    ],
+  },
+  {
+    groupe: "🎲 Activités & projets (îlots, débranché)",
+    items: [
+      { titre: "CS Unplugged / Informatique débranchée", desc: "Activités sans ordinateur (binaire, tri, routage…) — parfait en îlot.", url: "https://www.csunplugged.org/fr/" },
+      { titre: "Jeu des 7 familles de l'informatique", desc: "Activité ludique (Interstices) pour la culture informatique.", url: "https://interstices.info/jeux-de-cartes-le-jeu-des-7-familles-de-linformatique/" },
+      { titre: "Idées de projets", desc: "Banque d'idées de projets NSI (B. Mermet).", url: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/ideesProjets.html" },
+    ],
+  },
+  {
+    groupe: "🛠️ Outils pour la classe",
+    items: [
+      { titre: "Python Tutor", desc: "Visualiseur d'exécution pas à pas (intégré sur le site : bouton « 🔎 Pas à pas »).", url: "https://pythontutor.com/" },
+      { titre: "PEP8", desc: "Conventions d'écriture du code Python (lisibilité).", url: "https://pep8.org/" },
+      { titre: "Jupyter / Capytale", desc: "Notebooks interactifs pour distribuer/ramasser le travail.", url: "https://jupyter.org/" },
+      { titre: "Kanboard", desc: "Tableau Kanban pour gérer les projets en groupe.", url: "https://kanboard.org/" },
+    ],
+  },
+  {
+    groupe: "📄 Pour aller plus loin (recherche)",
+    items: [
+      { titre: "Futschek — Algorithmic Thinking (2006)", desc: "Article fondateur sur la pensée algorithmique.", url: "https://www.researchgate.net/publication/220698648_Algorithmic_Thinking_The_Key_for_Understanding_Computer_Science" },
+      { titre: "G. Dowek — Informatique (ressources gratuites)", desc: "Ouvrages et ressources en libre accès.", url: "https://www.epi.asso.fr/revue/articles/a1402d.htm" },
+    ],
+  },
+];
+
 /* ---------------- Progression annuelle indicative ---------------- */
 const PROGRESSION_INTRO =
   "Progression <strong>indicative</strong> pour 4 h hebdomadaires (~30 semaines effectives, soit ~120 h). " +
@@ -104,6 +154,19 @@ const CODER_REEL = {
 
 /* ---------------- Fiches méthode (élève) ---------------- */
 const METHODES = [
+  {
+    titre: "Écrire un code Python lisible (PEP8) & le visualiser",
+    html: `
+      <p>Un code <strong>lisible</strong> se relit et se corrige plus facilement. Quelques règles (norme <strong>PEP8</strong>) :</p>
+      <ul>
+        <li><strong>Indentation</strong> de 4 espaces (jamais de mélange espaces/tabulations).</li>
+        <li><strong>Noms parlants</strong> en minuscules : <code>note_moyenne</code> plutôt que <code>nm</code> ou <code>x</code>.</li>
+        <li>Une <strong>espace</strong> autour des opérateurs : <code>a = b + 1</code> (pas <code>a=b+1</code>).</li>
+        <li>Des <strong>commentaires</strong> utiles (le pourquoi), et une <strong>docstring</strong> pour chaque fonction.</li>
+        <li>Lignes pas trop longues ; une instruction par ligne.</li>
+      </ul>
+      <p class="note">🔎 <strong>Comprendre l'exécution :</strong> sur chaque bloc de code du site, le bouton <strong>« 🔎 Pas à pas »</strong> ouvre <em>Python Tutor</em> : il déroule le programme ligne par ligne et montre les <strong>variables</strong>, la <strong>mémoire</strong> et les <strong>appels de fonctions</strong>. Idéal pour visualiser une boucle ou une fonction.</p>`,
+  },
   {
     titre: "Lire et comprendre un message d'erreur Python",
     html: `
