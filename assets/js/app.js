@@ -2694,6 +2694,8 @@ except Exception:
   }
 
   /* ---------------- Vue : Didactique & ressources (prof) ---------------- */
+  const didacUrl = (base, file) => (/^https?:/i.test(file) ? file : base + file);
+
   function renderDidactique() {
     viewTheme.innerHTML = "";
     const D = typeof DIDACTIQUE !== "undefined" ? DIDACTIQUE : null;
@@ -2705,7 +2707,7 @@ except Exception:
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "📚 Ordre du jour — formation didactique"));
     header.appendChild(
-      el("p", "theme-intro", "Programme de la formation, avec accès direct à chaque support du formateur. Liens externes (attribués), tu ne quittes pas ton cours.")
+      el("p", "theme-intro", "Le programme de la formation : clique un thème pour ouvrir sa <strong>fiche</strong> (résumé), avec un lien « source ↗ » vers la page d'origine.")
     );
     viewTheme.appendChild(header);
     if (!D) {
@@ -2713,7 +2715,7 @@ except Exception:
       return;
     }
 
-    // Carte « bloc » façon ordre du jour.
+    // En-tête « bloc » façon ordre du jour.
     const card = el("div", "agenda-card");
     const top = el("div", "agenda-top");
     const titWrap = el("div");
@@ -2727,20 +2729,47 @@ except Exception:
     top.appendChild(idx);
     card.appendChild(top);
 
-    (D.sections || []).forEach((s) => {
-      const sec = el("div", "agenda-section");
-      sec.appendChild(el("div", "agenda-section-head", `${s.num}. ${s.titre} <span class="agenda-duree">· ${s.duree}</span>`));
-      s.items.forEach((it) => {
-        const row = el("div", "agenda-item");
-        row.innerHTML = `<span class="agenda-item-ico">📄</span><span class="agenda-item-title">${it.titre}</span>`;
-        const a = el("a", "agenda-source", "source ↗");
-        a.href = base + it.file;
+    // Une ligne d'item : bouton « fiche interne » (si fiche) + lien source.
+    const makeItemRow = (it) => {
+      const row = el("div", "agenda-item");
+      if (it.fiche) {
+        const btn = el("button", "agenda-fiche-btn", `<span class="agenda-item-ico">📝</span><span class="agenda-item-title">${it.t}</span>`);
+        btn.addEventListener("click", () => showDidactiqueFiche(it, base));
+        row.appendChild(btn);
+        if (it.file) {
+          const a = el("a", "agenda-source", "source ↗");
+          a.href = didacUrl(base, it.file);
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.title = "Page d'origine (B. Mermet)";
+          row.appendChild(a);
+        }
+      } else {
+        const a = el("a", "agenda-link-ext", `<span class="agenda-item-ico">🔗</span><span class="agenda-item-title">${it.t}</span><span class="agenda-arrow">↗</span>`);
+        a.href = didacUrl(base, it.file);
         a.target = "_blank";
         a.rel = "noopener";
         row.appendChild(a);
-        sec.appendChild(row);
-      });
-      card.appendChild(sec);
+      }
+      return row;
+    };
+
+    // Parties dépliables (la première ouverte).
+    (D.parties || []).forEach((p, i) => {
+      const det = el("details", "agenda-part");
+      if (i === 0) det.open = true;
+      det.appendChild(el("summary", "agenda-part-head", `${p.titre} <span class="agenda-duree">· ${p.duree}</span>`));
+      const body = el("div", "agenda-part-body");
+      if (p.groupes) {
+        p.groupes.forEach((g) => {
+          body.appendChild(el("div", "agenda-sub", g.sous));
+          g.items.forEach((it) => body.appendChild(makeItemRow(it)));
+        });
+      } else {
+        (p.items || []).forEach((it) => body.appendChild(makeItemRow(it)));
+      }
+      det.appendChild(body);
+      card.appendChild(det);
     });
     viewTheme.appendChild(card);
 
@@ -2760,8 +2789,37 @@ except Exception:
     }
 
     viewTheme.appendChild(
-      el("p", "tp-source", "📎 Source : formation DIU NSI — Bruno Mermet (GREYC, Université Le Havre). Tous les supports restent la propriété de leur auteur ; ce site se contente de pointer vers eux.")
+      el("p", "tp-source", "📎 Source : formation DIU NSI — Bruno Mermet (GREYC, Université Le Havre). Les fiches sont des résumés rédigés pour le site ; les supports d'origine restent la propriété de leur auteur (liens « source »).")
     );
+    scrollTop();
+  }
+
+  // Lecteur de fiche interne (document de lecture clair, façon DU).
+  function showDidactiqueFiche(it, base) {
+    viewTheme.innerHTML = "";
+    const back = el("button", "fiche-back", "← Retour à l'ordre du jour");
+    back.addEventListener("click", () => renderDidactique());
+    viewTheme.appendChild(back);
+
+    const doc = el("article", "fiche-doc");
+    doc.appendChild(el("div", "fiche-eyebrow", "Didactique · DIU NSI — B. Mermet"));
+    doc.appendChild(el("h1", "fiche-title", it.t));
+
+    const tools = el("div", "fiche-tools");
+    if (it.file) {
+      const src = el("a", "btn secondary", "Page d'origine ↗");
+      src.href = didacUrl(base, it.file);
+      src.target = "_blank";
+      src.rel = "noopener";
+      tools.appendChild(src);
+    }
+    const pr = el("button", "btn secondary", "🖨️ Imprimer");
+    pr.addEventListener("click", () => openPrint("Fiche — " + it.t, `<h1>${it.t}</h1>` + it.fiche));
+    tools.appendChild(pr);
+    doc.appendChild(tools);
+
+    doc.appendChild(el("div", "fiche-body", it.fiche));
+    viewTheme.appendChild(doc);
     scrollTop();
   }
 
