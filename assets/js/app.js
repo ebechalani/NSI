@@ -2685,7 +2685,7 @@ except Exception:
             `<td class="num" title="${sum.themesValidés} thème(s) au QCM parfait">${sum.themesValidés}/${COURSES.length}</td>` +
             `<td class="num" title="réussite moyenne aux QCM faits">${sum.reussite} %</td>` +
             `<td class="num">${nbCap}</td>` +
-            `<td><input class="note-input" value="${escapeHtml(sum.note || "")}" placeholder="note/appréc."></td>` +
+            `<td><input class="note-input" value="${escapeHtml(prog.note || "")}" placeholder="note/appréc."></td>` +
             `<td><button class="btn secondary btn-detail">Capacités</button> <button class="btn secondary btn-del">✕</button></td>` +
             `</tr>`
           );
@@ -3221,10 +3221,43 @@ except Exception:
     syncStudentProgress();
     buildNav();
     updateGlobalProgress();
+    maybeSeedDemo();
     const initial = location.hash.replace("#", "");
     let target = isKnownTarget(initial) ? initial : "home";
     if (target === "classe" && !P.isTeacher()) target = "home";
     navigate(target);
+  }
+
+  // Données de démonstration : si le compte démo prof n'a aucune classe,
+  // on crée une classe d'exemple + 3 élèves avec un peu de progression.
+  function buildDemoSpec() {
+    const qt = (t) => (typeof QUIZZES !== "undefined" && QUIZZES[t] ? QUIZZES[t].length : 0);
+    const full = (t) => ({ answered: qt(t), correct: qt(t), total: qt(t) });
+    const part = (t, frac, corrFrac) => {
+      const tot = qt(t);
+      const ans = Math.max(1, Math.round(tot * frac));
+      return { answered: ans, correct: Math.round(ans * corrFrac), total: tot };
+    };
+    return {
+      className: "1re NSI — Démo",
+      students: [
+        { name: "Ada Lovelace", note: "16 / 20 — excellent travail, continue ! 👏",
+          qcm: { "histoire-informatique": full("histoire-informatique"), "donnees-base": full("donnees-base"),
+                 "types-construits": full("types-construits"), "langages-prog": part("langages-prog", 0.7, 0.9) } },
+        { name: "Alan Turing", note: "12 / 20 — bon début, revois les boucles.",
+          qcm: { "histoire-informatique": full("histoire-informatique"), "donnees-base": part("donnees-base", 1, 0.7),
+                 "langages-prog": part("langages-prog", 0.5, 0.7) } },
+        { name: "Grace Hopper", note: "À encourager — viens me voir pour les bases. 🙂",
+          qcm: { "donnees-base": part("donnees-base", 0.4, 0.6) } },
+      ],
+    };
+  }
+  function maybeSeedDemo() {
+    const s = P.getSession();
+    if (!s || !s.demo || !P.ensureDemoData) return;
+    P.ensureDemoData(buildDemoSpec()).then((seeded) => {
+      if (seeded && location.hash.replace("#", "") === "classe") renderClasse();
+    });
   }
 
   // Rafraîchissement temps réel (snapshots Firebase) : met à jour l'UI.

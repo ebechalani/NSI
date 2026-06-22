@@ -164,6 +164,35 @@
     cache.students = cache.students.filter(function (s) { return s.uid !== u; });
     persistLocal(); notify(); fbDelete("students", u);
   }
+  // Garnit le compte démo (une seule fois) : crée une classe + des élèves avec
+  // un peu de progression. Vérif AUTORITAIRE dans Firestore pour éviter les doublons.
+  function ensureDemoData(spec) {
+    if (!cache.session) return Promise.resolve(false);
+    var uid = cache.session.fbUid || "prof";
+    var doSeed = function () {
+      var cls = createClass(spec.className);
+      var writes = [];
+      (spec.students || []).forEach(function (stu) {
+        var st = addStudent(cls.id, stu.name);
+        if (!st) return;
+        var data = {};
+        if (stu.qcm) data.qcm = stu.qcm;
+        if (stu.exos) data.exos = stu.exos;
+        if (stu.note != null) data.note = stu.note;
+        st.qcm = data.qcm || {}; st.exos = data.exos || {}; if (data.note != null) st.note = data.note;
+        if (FB && db) writes.push(db.collection("students").doc(st.uid).set(data, { merge: true }).catch(fbErr));
+      });
+      persistLocal(); notify();
+      return Promise.all(writes).then(function () { return true; });
+    };
+    if (!FB || !db) { // mode local : se baser sur le cache
+      if (cache.classes.some(function (c) { return c.teacherUid === uid; })) return Promise.resolve(false);
+      return doSeed();
+    }
+    return db.collection("classes").where("teacherUid", "==", uid).limit(1).get()
+      .then(function (q) { return q.empty ? doSeed() : false; })
+      .catch(function () { return false; });
+  }
   function recordQcm(themeId, answered, correct, total) {
     if (!isStudent()) return;
     var s = studentByUid(cache.session.uid); if (!s) return;
@@ -281,14 +310,14 @@
         return { pending: true, email: email };
       }
       cache.pending = null;
-      cache.session = { role: "teacher", uid: "prof", name: name, classId: null, fbUid: user.uid, admin: isAdmin };
+      cache.session = { role: "teacher", uid: "prof", name: name, classId: null, fbUid: user.uid, admin: isAdmin, demo: isDemo };
       persistLocal(); subscribeTeacher(user.uid); establishedUid = user.uid;
       return cache.session;
     }).catch(function () {
       // Règles "teachers" pas encore publiées : l'admin et les comptes démo entrent via l'e-mail, les autres attendent.
       if (isAdmin || isDemo) {
         cache.pending = null;
-        cache.session = { role: "teacher", uid: "prof", name: isDemo ? "Prof démo" : (email.split("@")[0] || "Professeur"), classId: null, fbUid: user.uid, admin: isAdmin };
+        cache.session = { role: "teacher", uid: "prof", name: isDemo ? "Prof démo" : (email.split("@")[0] || "Professeur"), classId: null, fbUid: user.uid, admin: isAdmin, demo: isDemo };
         persistLocal(); subscribeTeacher(user.uid); establishedUid = user.uid;
         return cache.session;
       }
@@ -384,7 +413,7 @@
     fetchTeachers: fetchTeachers, approveTeacher: approveTeacher, rejectTeacher: rejectTeacher,
     loginTeacher: loginTeacher, loginStudent: loginStudent,
     getClasses: getClasses, getClass: getClass, createClass: createClass, renameClass: renameClass, deleteClass: deleteClass,
-    getStudents: getStudents, addStudent: addStudent, removeStudent: removeStudent,
+    getStudents: getStudents, addStudent: addStudent, removeStudent: removeStudent, ensureDemoData: ensureDemoData,
     getProgress: getProgress, recordQcm: recordQcm, recordExo: recordExo, setExo: setExo, recordActivity: recordActivity,
     setCapacite: setCapacite, setNote: setNote, studentSummary: studentSummary,
     isCorrectionsPushed: isCorrectionsPushed, setCorrectionsPushed: setCorrectionsPushed,
