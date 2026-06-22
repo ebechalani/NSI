@@ -255,7 +255,7 @@
       { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
       { target: "tp", num: "🧪", emoji: "", text: "TP guidés (DIU)" },
       { target: "progression", num: "🗓️", emoji: "", text: "Progression annuelle", prof: true },
-      { target: "didactique", num: "📚", emoji: "", text: "Didactique (prof)", prof: true },
+      { target: "didactique", num: "📚", emoji: "", text: "Enseigner la NSI (prof)", prof: true },
       { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)", prof: true },
       { target: "bo", num: "✅", emoji: "", text: "Conformité au BO", prof: true },
     ];
@@ -402,9 +402,9 @@
       },
       {
         emoji: "📚",
-        tag: "ordre du jour",
-        title: "Didactique (prof)",
-        desc: "Le programme de ta formation DIU, bloc par bloc, avec un lien « source » vers chaque support.",
+        tag: "prof",
+        title: "Enseigner la NSI",
+        desc: "Programme & répartition, didactique, culture à transmettre, mise en œuvre — fiches développées + liens source.",
         target: "didactique",
         prof: true,
       },
@@ -2705,9 +2705,9 @@ except Exception:
     const crumb = el("span", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
-    header.appendChild(el("h1", null, "📚 Ordre du jour — formation didactique"));
+    header.appendChild(el("h1", null, "📚 Enseigner la NSI en Première"));
     header.appendChild(
-      el("p", "theme-intro", "Le programme de la formation : clique un thème pour ouvrir sa <strong>fiche</strong> (résumé), avec un lien « source ↗ » vers la page d'origine.")
+      el("p", "theme-intro", "Repères pour préparer et donner le cours : programme & organisation, didactique, culture à transmettre, mise en œuvre. Clique un thème pour ouvrir sa <strong>fiche</strong> ; le lien « source ↗ » mène à la page d'origine.")
     );
     viewTheme.appendChild(header);
     if (!D) {
@@ -2715,11 +2715,11 @@ except Exception:
       return;
     }
 
-    // En-tête « bloc » façon ordre du jour.
+    // En-tête de la carte (repères pour enseigner).
     const card = el("div", "agenda-card");
     const top = el("div", "agenda-top");
     const titWrap = el("div");
-    titWrap.appendChild(el("div", "agenda-bloc", `<span class="agenda-badge">Bloc 1</span>${D.bloc.replace(/^Bloc 1 — /, "")}`));
+    titWrap.appendChild(el("div", "agenda-bloc", `<span class="agenda-badge">👩‍🏫 Prof</span>${D.bloc}`));
     titWrap.appendChild(el("div", "agenda-meta", D.meta));
     top.appendChild(titWrap);
     const idx = el("a", "agenda-index-btn", "Ouvrir l'index ↗");
@@ -2758,7 +2758,7 @@ except Exception:
     (D.parties || []).forEach((p, i) => {
       const det = el("details", "agenda-part");
       if (i === 0) det.open = true;
-      det.appendChild(el("summary", "agenda-part-head", `${p.titre} <span class="agenda-duree">· ${p.duree}</span>`));
+      det.appendChild(el("summary", "agenda-part-head", `${p.titre}${p.duree ? ` <span class="agenda-duree">· ${p.duree}</span>` : ""}`));
       const body = el("div", "agenda-part-body");
       if (p.groupes) {
         p.groupes.forEach((g) => {

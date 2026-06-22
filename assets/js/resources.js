@@ -128,222 +128,275 @@ const DEBRANCHE = [
    lien « source ↗ » vers la page d'origine. On résume/lie, on ne recopie pas. */
 const DIDACTIQUE_BASE = "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Didactique/";
 const DIDACTIQUE = {
-  bloc: "Bloc 1 — Culture & didactique de l'informatique",
-  meta: "Bruno Mermet · DIU NSI Le Havre · distanciel · 3 h",
+  bloc: "Enseigner la NSI en Première — repères & ressources",
+  meta: "Fiches d'après la formation DIU NSI — Bruno Mermet (GREYC, Université Le Havre)",
   index: "index.html",
   parties: [
     {
-      titre: "I. Culture informatique", duree: "1 h",
+      titre: "1 · Le programme de NSI et son organisation",
       items: [
         {
-          t: "Histoire de l'informatique", file: "histoireInformatique.html",
+          t: "Le programme de Première & sa répartition annuelle", file: "organisationPremiere.html",
           fiche: `
-            <p>L'informatique est l'aboutissement de <strong>siècles de mathématiques, de logique et de technique</strong>. Quelques jalons à connaître :</p>
-            <ul>
-              <li><strong>Antiquité → IXᵉ s.</strong> : premiers algorithmes (Euclide), et le mot « algorithme » vient d'<strong>Al-Khwârizmî</strong>.</li>
-              <li><strong>XVIIᵉ–XIXᵉ s.</strong> : machines à calculer (Pascal, Leibniz), métier Jacquard, <strong>Babbage &amp; Lovelace</strong> (machine + premier algorithme).</li>
-              <li><strong>1850–1945</strong> : fondements théoriques (Boole, Hilbert, Gödel, Church, <strong>Turing 1936</strong>, Shannon, von Neumann).</li>
-              <li><strong>1945–1970</strong> : ENIAC, transistor (1947), circuit intégré (1958), premiers langages.</li>
-              <li><strong>1970–1990</strong> : microprocesseur (1971), micro-ordinateur, ARPANET → Internet, logiciel libre.</li>
-              <li><strong>1990 →</strong> : Web (1989), mobile (2007), big data, IA.</li>
-            </ul>
-            <p class="note">📚 Ce contenu est <strong>entièrement développé</strong> dans le thème <strong>« Histoire de l'informatique »</strong> du site (frise interactive, IA, stockage, métiers).</p>`,
-        },
-        {
-          t: "Typologie des langages de programmation", file: "typologieLangages.html",
-          fiche: `
-            <p>On classe les langages selon plusieurs <strong>axes</strong> :</p>
+            <p>Le programme de <strong>Première NSI</strong> (Bulletin officiel) s'organise en <strong>8 thèmes</strong>, pour <strong>4 h hebdomadaires</strong> (≈ 30 semaines utiles, soit ≈ 120 h). Le BO impose qu'une part importante du temps soit consacrée à la <strong>pratique sur machine</strong> et aux <strong>projets</strong> (≈ 25 à 30 %).</p>
+            <h3>Répartition indicative par thème (cohérente avec le BO)</h3>
             <table>
-              <tr><th>Axe</th><th>De… à…</th><th>Exemples</th></tr>
-              <tr><td>Niveau</td><td>bas → haut</td><td>assembleur → C → Python</td></tr>
-              <tr><td>Exécution</td><td>compilé → interprété</td><td>C ; Python ; Java (bytecode)</td></tr>
-              <tr><td>Typage</td><td>statique/fort → dynamique/faible</td><td>Java ; Python</td></tr>
+              <tr><th>Thème du programme</th><th>Volume indicatif</th></tr>
+              <tr><td>Histoire de l'informatique <em>(transversal)</em></td><td>≈ 4 h</td></tr>
+              <tr><td>Représentation des données — types de base</td><td>≈ 12 h</td></tr>
+              <tr><td>Représentation des données — types construits</td><td>≈ 10 h</td></tr>
+              <tr><td>Traitement de données en tables</td><td>≈ 10 h</td></tr>
+              <tr><td>Interactions homme-machine sur le Web</td><td>≈ 14 h</td></tr>
+              <tr><td>Architectures matérielles & systèmes d'exploitation</td><td>≈ 14 h</td></tr>
+              <tr><td>Langages et programmation</td><td>≈ 22 h</td></tr>
+              <tr><td>Algorithmique</td><td>≈ 16 h</td></tr>
+              <tr><td><strong>Projets en îlots</strong> (≈ 25-30 %)</td><td>≈ 30 h</td></tr>
             </table>
-            <h3>Les paradigmes</h3>
+            <p>La <strong>programmation Python est introduite très tôt</strong> et <em>filée</em> toute l'année : elle sert d'outil pour tous les autres thèmes (données, tables, Web, algorithmique). On évite donc de « bloquer » 22 h d'affilée de programmation.</p>
+            <h3>Articuler cours, TP et projets</h3>
             <ul>
-              <li><strong>Impératif</strong> : une suite d'instructions qui modifient l'état (C, Python, Java).</li>
-              <li><strong>Fonctionnel</strong> : composition de fonctions (Lisp dès 1958, Haskell, OCaml).</li>
-              <li><strong>Objet</strong> : données + traitements regroupés (Java, Python).</li>
-              <li><strong>Logique</strong> : faits et règles, unification (Prolog).</li>
+              <li><strong>Projets ≈ 25-30 %</strong> du temps : soit un grand projet (≈ 30-35 h à partir de janvier), soit un projet court (semestre 1) + un projet long (semestre 2).</li>
+              <li>Sujets « <strong>motivants et réalisables</strong> », choisis par les élèves dans une liste validée.</li>
+              <li>Alterner <strong>débranché</strong> → <strong>formalisation</strong> → <strong>machine</strong> dans une même séquence.</li>
             </ul>
-            <p class="note">🎓 En Première, on reste sur l'<strong>impératif</strong> ; les paradigmes sont une ouverture (Terminale).</p>`,
+            <h3>Formats de séance efficaces</h3>
+            <ul>
+              <li><strong>Informatique débranchée</strong> : exploration concrète (≈ 45 min) → formalisation (≈ 30 min) → exercices machine (≈ 45 min).</li>
+              <li>Apprendre <strong>à partir de code existant</strong> : exécuter → modifier → créer en autonomie.</li>
+              <li>Méthode du <strong>puzzle</strong> : des groupes « experts » d'un sous-thème, puis recomposition pour un projet intégrateur.</li>
+            </ul>
+            <p class="note">📝 <strong>Évaluation :</strong> combiner QCM (connaissances) et travail <strong>sur machine</strong> (code, projets), avec un <strong>barème annoncé dès le départ</strong>. La rubrique « Progression annuelle » du site propose un planning détaillé semaine par semaine.</p>`,
+        },
+        { t: "Programme officiel de Première (PDF, Éduscol)", file: "https://cache.media.education.gouv.fr/file/SP1-MEN-22-1-2019/26/8/spe633_annexe_1063268.pdf" },
+        { t: "Modalités d'évaluation en Première (BO)", file: "https://www.education.gouv.fr/pid285/bulletin_officiel.html?cid_bo=141199" },
+        {
+          t: "Le programme de Terminale (pour situer la suite)", file: "resumeProgrammeTerminale.html",
+          fiche: `
+            <p>Savoir <strong>où mène la Première</strong> aide à doser ses cours. La Terminale NSI (<strong>6 h/semaine</strong>, dont ≈ 1/3 en projets) élargit fortement le programme et débouche sur l'<strong>épreuve de spécialité au bac</strong>.</p>
+            <h3>Les grands domaines de Terminale</h3>
+            <ul>
+              <li><strong>Structures de données</strong> : listes, piles, files, dictionnaires, <strong>arbres</strong>, <strong>graphes</strong> ; distinction interface / implémentation ; notions de <strong>programmation objet</strong>.</li>
+              <li><strong>Bases de données</strong> : modèle relationnel, rôle d'un SGBD, langage <strong>SQL</strong> (sélections, jointures, mises à jour).</li>
+              <li><strong>Programmation</strong> : <strong>récursivité</strong>, calculabilité/décidabilité, paradigmes, mise au point et tests.</li>
+              <li><strong>Algorithmique</strong> : parcours d'arbres et de graphes, « <strong>diviser pour régner</strong> », programmation dynamique, recherche textuelle.</li>
+              <li><strong>Architectures & réseaux</strong> : gestion des processus, protocoles de routage, sécurisation des communications.</li>
+            </ul>
+            <p class="note">🎓 En Première, on <strong>installe les bases</strong> (types, boucles, fonctions, tables, dichotomie, tris simples) sur lesquelles tout cela reposera. Inutile d'anticiper la POO ou la récursivité : mieux vaut consolider.</p>`,
+        },
+      ],
+    },
+    {
+      titre: "2 · Repères didactiques (comment enseigner)",
+      items: [
+        {
+          t: "Qu'est-ce que la didactique de l'informatique ?", file: "didactique.html",
+          fiche: `
+            <p>La <strong>didactique</strong> étudie l'enseignement d'un <em>savoir précis</em> : comment le rendre apprenable, quels obstacles surgissent, comment les dépasser. Elle est plus ciblée que la <strong>pédagogie</strong> (qui concerne la relation et la gestion de classe en général).</p>
+            <h3>Le triangle pédagogique (Houssaye, 1988)</h3>
+            <p>Trois pôles : <strong>enseignant</strong>, <strong>élève</strong>, <strong>savoir</strong>. Au départ, seul existe le lien enseignant ↔ savoir ; le but de l'enseignement est de consolider le lien <strong>élève ↔ savoir</strong>, jusqu'à ce qu'il soit le seul à subsister (l'élève sait, sans le prof).</p>
+            <h3>L'informatique est une science (épistémologie)</h3>
+            <p>Pour bien l'enseigner, il faut savoir ce qu'elle est. G. <strong>Dowek</strong> propose <strong>4 piliers</strong> :</p>
+            <ul>
+              <li><strong>Information</strong> (les données et leur représentation) ;</li>
+              <li><strong>Algorithmes</strong> (la description des traitements) ;</li>
+              <li><strong>Machines</strong> (les systèmes physiques qui exécutent) ;</li>
+              <li><strong>Langages</strong> (pour décrire les traitements à la machine).</li>
+            </ul>
+            <p>G. <strong>Berry</strong> y ajoute les <strong>interfaces et interactions</strong>. On retrouve directement ces piliers dans les thèmes du programme.</p>
+            <h3>Deux idées clés pour la classe</h3>
+            <ul>
+              <li><strong>Knuth</strong> : la pensée algorithmique a deux traits absents des maths — l'<strong>efficacité</strong> (le coût compte) et l'<strong>assignation</strong> (une variable change d'état au fil du temps). C'est souvent un obstacle pour les élèves : <code>x = x + 1</code> n'est pas une équation !</li>
+              <li><strong>Brousseau</strong> — <em>situations a-didactiques</em> : l'enseignant s'efface et organise une situation où l'élève <strong>découvre</strong> lui-même la solution et la règle, plutôt que de la recevoir.</li>
+            </ul>`,
         },
         {
-          t: "Les projets informatiques et le génie logiciel", file: "projetInformatique.html",
+          t: "La pensée informatique (Computational Thinking)", file: "computationalThinking.html",
           fiche: `
-            <p>Un projet informatique a des <strong>caractéristiques propres</strong> qui le rendent difficile :</p>
+            <p>La <strong>pensée informatique</strong> désigne l'ensemble des démarches mentales pour <strong>formuler un problème</strong> de façon à le faire résoudre par une machine. C'est l'objectif de fond de la NSI : développer une <em>manière de penser</em>, pas seulement apprendre une syntaxe.</p>
+            <h3>Repères historiques</h3>
             <ul>
-              <li><strong>Deux mondes</strong> : le domaine <em>technique</em> (développeurs) et le domaine <em>métier</em> (client) — d'où des malentendus.</li>
-              <li><strong>Cahier des charges souvent vague</strong> : beaucoup d'implicites non explicités.</li>
-              <li><strong>Estimation difficile</strong> : évaluer la charge de travail est complexe, même pour des experts.</li>
-              <li><strong>Validation complexe</strong> : impossible de tout tester ; on cherche à minimiser les erreurs.</li>
-              <li><strong>Cycle de vie long</strong> : un logiciel n'est jamais « fini » (maintenance, code <em>legacy</em>).</li>
+              <li><strong>Seymour Papert</strong> (1980) introduit l'idée avec le langage Logo.</li>
+              <li><strong>Jeannette Wing</strong> (2006) la popularise par un article fondateur.</li>
+              <li><strong>Dagienė & Jevsikova</strong> en explorent les liens avec les compétences numériques (et le concours <strong>Bebras</strong> / Castor informatique).</li>
             </ul>
-            <h3>Méthodes de développement</h3>
+            <h3>Les démarches à faire pratiquer</h3>
             <ul>
-              <li><strong>Cascade</strong> : phases linéaires (spécif → conception → implémentation).</li>
-              <li><strong>Cycle en V</strong> : la cascade + les tests associés à chaque phase.</li>
-              <li><strong>Itératif</strong> : fonctionnalité par fonctionnalité.</li>
-              <li><strong>Agile</strong> : petites itérations, qualité, réactivité, relations humaines.</li>
+              <li><strong>Décomposer</strong> un problème complexe en sous-problèmes ;</li>
+              <li><strong>Abstraire</strong> : ne garder que l'essentiel, modéliser les données ;</li>
+              <li><strong>Reconnaître des motifs</strong> (des régularités, des cas semblables) ;</li>
+              <li><strong>Algorithmiser</strong> : décrire une suite d'étapes non ambiguë ;</li>
+              <li><strong>Généraliser</strong> et <strong>évaluer</strong> la qualité d'une solution.</li>
             </ul>
-            <p class="note">🏝️ En classe (îlots), l'<strong>agile guidé</strong> est le plus adapté. Voir la fiche méthode « Conduire un projet en équipe ».</p>`,
+            <p class="note">🧠 Idée forte de Wing : viser la <strong>conceptualisation</strong> (« penser comme un informaticien ») plutôt que la seule programmation. Ces démarches se travaillent très bien en <strong>débranché</strong> (voir la rubrique « Activités débranchées »).</p>`,
+        },
+        {
+          t: "Les compétences ADAGE", file: "adage.html",
+          fiche: `
+            <p><strong>ADAGE</strong> est un moyen mnémotechnique pour <strong>5 compétences</strong> de la pensée informatique (d'après Selby & Woollard, 2013 ; reprises par le concours Bebras et le programme anglais « Computing at School »). C'est un cadre commode pour <strong>concevoir ses séances</strong> et ses <strong>évaluations</strong>.</p>
+            <table>
+              <tr><th>Lettre</th><th>Compétence</th><th>Exemple en classe</th></tr>
+              <tr><td><strong>A</strong></td><td>Abstraction</td><td>représenter un élève par un dictionnaire {nom, note}</td></tr>
+              <tr><td><strong>D</strong></td><td>Décomposition</td><td>découper « gérer un bulletin » en lire / calculer / afficher</td></tr>
+              <tr><td><strong>A</strong></td><td>Algorithmique (pensée)</td><td>écrire une boucle qui parcourt et accumule</td></tr>
+              <tr><td><strong>G</strong></td><td>Généralisation</td><td>voir que tri de notes = tri de n'importe quelle liste</td></tr>
+              <tr><td><strong>É</strong></td><td>Évaluation</td><td>comparer deux solutions (lisibilité, coût)</td></tr>
+            </table>
+            <p class="note">📋 Astuce : pour chaque activité, demande-toi <em>quelle(s) lettre(s) d'ADAGE</em> elle fait travailler. Cela aide à équilibrer l'année et à rédiger des critères d'évaluation explicites.</p>`,
+        },
+        {
+          t: "« Enseigner l'informatique » — synthèse", file: "resumeLivreEnseignerInformatique.html",
+          fiche: `
+            <p>Quelques thèses et conseils marquants de l'ouvrage :</p>
+            <h3>Posture de l'enseignant</h3>
+            <ul>
+              <li>Le prof de NSI n'est <strong>pas</strong> un « monsieur TICE » ni un dépanneur matériel : il enseigne une <strong>science</strong> qui évolue vite et demande une mise à jour constante.</li>
+              <li>Privilégier les <strong>concepts fondamentaux</strong> (qui durent) plutôt que les technologies (vite obsolètes).</li>
+            </ul>
+            <h3>Conduite des séances</h3>
+            <ul>
+              <li>Alterner <strong>descendant</strong> (théorie) et <strong>ascendant</strong> (pratique) : partir d'un <strong>problème concret</strong>, formaliser, puis réinvestir.</li>
+              <li>Enseigner la <strong>lecture</strong> de code de qualité <em>avant</em> la production.</li>
+              <li>Utiliser des <strong>métaphores</strong> et des <strong>visualisations</strong> pour rendre l'abstrait concret (ex. Python Tutor).</li>
+              <li>Planifier en tenant compte de la <strong>lenteur réelle</strong> des élèves sur machine.</li>
+            </ul>
+            <h3>TP & travail de groupe</h3>
+            <ul>
+              <li>TP à <strong>deux niveaux</strong> : une partie obligatoire pour tous + une partie optionnelle pour les plus rapides (éviter l'ennui et la démotivation).</li>
+              <li>Travail de groupe : méthode du <strong>puzzle</strong> ou binômes avec <strong>rotation des rôles</strong>.</li>
+              <li>Préférer une démarche <strong>agile guidée</strong> à une gestion de projet classique.</li>
+            </ul>`,
         },
         {
           t: "Psychologie du développeur", file: "psychologieDeveloppeur.html",
           fiche: `
-            <p>Bien programmer mobilise des <strong>qualités mentales</strong> autant que techniques :</p>
+            <p>Programmer mobilise des <strong>qualités mentales</strong> autant que des connaissances techniques. Les connaître aide à <strong>valoriser les bons réflexes</strong> chez les élèves.</p>
+            <h3>Sept qualités à cultiver</h3>
             <ul>
-              <li><strong>Curiosité</strong> : le domaine évolue vite, il faut apprendre en continu.</li>
-              <li><strong>Esprit critique</strong> : peser les solutions, éviter le « marteau doré » (toujours le même outil).</li>
-              <li><strong>Paresse constructive</strong> : réutiliser le code plutôt que dupliquer.</li>
-              <li><strong>Humilité</strong> : accepter que son code a des bugs, ne pas se vexer du débogage.</li>
-              <li><strong>Esprit d'équipe</strong> : penser aux développeurs suivants (lisibilité, documentation).</li>
-              <li><strong>Qualité</strong> : refuser le travail bâclé, <em>refactorer</em> régulièrement.</li>
+              <li><strong>Curiosité</strong> : le domaine évolue vite, on apprend en continu.</li>
+              <li><strong>Esprit critique</strong> : peser chaque solution, éviter le « marteau doré » (utiliser toujours le même outil familier au lieu du plus adapté).</li>
+              <li><strong>Paresse constructive</strong> : réutiliser/factoriser le code plutôt que dupliquer (moins d'incohérences).</li>
+              <li><strong>Humilité</strong> : accepter que son code contient des bugs, ne pas se vexer du débogage.</li>
+              <li><strong>Esprit d'équipe</strong> : penser aux développeurs suivants — documentation, <strong>lisibilité</strong>.</li>
+              <li><strong>Exigence de qualité</strong> : refuser le travail bâclé, <em>refactorer</em> au lieu de se contenter d'un code « qui marche ».</li>
             </ul>
-            <p class="note">💡 Utile en classe : valoriser la <strong>lisibilité</strong>, le droit à l'erreur et le débogage comme activité normale.</p>`,
+            <p class="note">💡 En classe : traiter le <strong>débogage comme une activité normale</strong> (pas une faute), instaurer le <strong>droit à l'erreur</strong>, et faire relire le code entre pairs. La charge cognitive d'un débutant est énorme : avancer par petits pas.</p>`,
+        },
+      ],
+    },
+    {
+      titre: "3 · Culture informatique à transmettre",
+      items: [
+        {
+          t: "Histoire de l'informatique", file: "histoireInformatique.html",
+          fiche: `
+            <p>L'informatique n'est pas née avec l'ordinateur : c'est l'aboutissement de <strong>siècles de mathématiques, de logique et de technique</strong>. Ce thème, <strong>transversal</strong>, donne du sens à tous les autres (le binaire vient de Leibniz, le mot « algorithme » d'Al-Khwârizmî, le Web de 1989…).</p>
+            <h3>Grandes périodes</h3>
+            <ul>
+              <li><strong>Antiquité → IXᵉ s.</strong> : premiers algorithmes (Euclide, Archimède) ; <strong>Al-Khwârizmî</strong> donne son nom à « algorithme » et « algèbre ».</li>
+              <li><strong>XVIIᵉ–XIXᵉ s.</strong> : machines à calculer (Pascal, Leibniz), métier Jacquard à cartes perforées, <strong>Babbage & Lovelace</strong> (machine programmable + premier algorithme).</li>
+              <li><strong>1850–1945</strong> : fondements théoriques — Boole, Hilbert, Gödel, Church, <strong>Turing (1936)</strong>, Shannon, von Neumann.</li>
+              <li><strong>1945–1970</strong> : ENIAC, <strong>transistor (1947)</strong>, circuit intégré (1958), premiers langages (Fortran, Lisp, COBOL).</li>
+              <li><strong>1970–1990</strong> : <strong>microprocesseur (1971)</strong>, micro-ordinateur, ARPANET → Internet, logiciel libre.</li>
+              <li><strong>1990 →</strong> : <strong>Web (1989)</strong>, mobile (2007), big data, intelligence artificielle.</li>
+            </ul>
+            <p class="note">📚 Tout est <strong>développé et illustré</strong> dans le thème <strong>« Histoire de l'informatique »</strong> du site : frise interactive, histoire de l'IA, évolution du stockage, métiers et études.</p>`,
         },
         {
-          t: "Les études et métiers de l'informatique", file: "etudes.html",
+          t: "Typologie des langages de programmation", file: "typologieLangages.html",
           fiche: `
+            <p>Il existe des centaines de langages, mais on les <strong>situe</strong> selon quelques axes et on les regroupe en <strong>paradigmes</strong>. En Première, l'enjeu est seulement de faire comprendre la <em>diversité</em> : on apprend des <strong>idées</strong>, pas une syntaxe.</p>
+            <h3>Trois axes pour situer un langage</h3>
+            <table>
+              <tr><th>Axe</th><th>De… à…</th><th>Exemples</th></tr>
+              <tr><td>Niveau</td><td>bas (proche machine) → haut (abstrait)</td><td>assembleur → C → Python</td></tr>
+              <tr><td>Exécution</td><td>compilé → interprété</td><td>C (compilé) ; Python (interprété) ; Java (bytecode)</td></tr>
+              <tr><td>Typage</td><td>statique/fort → dynamique/faible</td><td>Java (statique) ; Python (dynamique)</td></tr>
+            </table>
+            <h3>Les grands paradigmes</h3>
+            <ul>
+              <li><strong>Impératif</strong> : une suite d'instructions qui modifient l'état (C, Python, Java).</li>
+              <li><strong>Fonctionnel</strong> : composition de fonctions (Lisp dès 1958, Haskell, OCaml).</li>
+              <li><strong>Objet</strong> : on regroupe données et traitements (Java, Python).</li>
+              <li><strong>Logique</strong> : on décrit des faits et des règles, la machine déduit (Prolog).</li>
+            </ul>
+            <p class="note">🎓 En Première on reste sur le paradigme <strong>impératif</strong> (Python) ; les autres sont une ouverture (Terminale). Activité simple : comparer le « Bonjour » dans 3 langages pour voir ce qui change… et ce qui reste.</p>`,
+        },
+        {
+          t: "Projets informatiques & génie logiciel", file: "projetInformatique.html",
+          fiche: `
+            <p>Comprendre pourquoi un projet logiciel est <strong>difficile</strong> aide à encadrer les projets des élèves.</p>
+            <h3>Caractéristiques d'un projet informatique</h3>
+            <ul>
+              <li><strong>Deux mondes</strong> : le domaine <em>technique</em> (développeurs) et le domaine <em>métier</em> (client) — communication difficile.</li>
+              <li><strong>Cahier des charges souvent vague</strong> : beaucoup d'implicites humains non explicités pour la machine.</li>
+              <li><strong>Estimation difficile</strong> : évaluer la charge de travail est complexe, même pour des experts.</li>
+              <li><strong>Validation complexe</strong> : impossible de tout tester ; on cherche à <em>minimiser</em> les erreurs.</li>
+              <li><strong>Cycle de vie long</strong> : un logiciel n'est jamais « fini » (maintenance, corrections, code <em>legacy</em>).</li>
+            </ul>
+            <h3>Méthodes de développement</h3>
+            <ul>
+              <li><strong>Cascade</strong> : phases linéaires (spécification → conception → implémentation).</li>
+              <li><strong>Cycle en V</strong> : la cascade + les tests associés à chaque phase.</li>
+              <li><strong>Itératif / spirale</strong> : on avance fonctionnalité par fonctionnalité.</li>
+              <li><strong>Agile</strong> : petites itérations, qualité, réactivité, relations humaines.</li>
+            </ul>
+            <p class="note">🏝️ En classe (îlots), l'<strong>agile guidé</strong> est le plus adapté : de petites versions qui marchent, qu'on enrichit. Voir la fiche méthode « Conduire un projet en équipe ».</p>`,
+        },
+        {
+          t: "Études et métiers de l'informatique", file: "etudes.html",
+          fiche: `
+            <p>Un repère utile pour <strong>motiver</strong> les élèves et les aider à choisir de poursuivre la NSI.</p>
             <h3>Filières après le bac (France)</h3>
             <table>
               <tr><th>Parcours</th><th>Durée</th><th>Exemples</th></tr>
-              <tr><td>BTS</td><td>bac+2</td><td>SIO (options SISR/SLAM), SN</td></tr>
-              <tr><td>BUT Informatique</td><td>bac+3</td><td>en IUT</td></tr>
-              <tr><td>Licence → Master</td><td>bac+3 → +5</td><td>informatique, science des données, sécurité, génie logiciel</td></tr>
-              <tr><td>École d'ingénieur</td><td>bac+5</td><td>post-prépa ou post-bac (INSA, ENSI…)</td></tr>
+              <tr><td>BTS</td><td>bac+2</td><td>SIO (options SISR réseaux / SLAM développement), SN</td></tr>
+              <tr><td>BUT Informatique</td><td>bac+3</td><td>en IUT (ex-DUT)</td></tr>
+              <tr><td>Licence → Master</td><td>bac+3 → +5</td><td>informatique, science des données, sécurité, génie logiciel, IA</td></tr>
+              <tr><td>École d'ingénieur</td><td>bac+5</td><td>après prépa ou post-bac (INSA, ENSI…)</td></tr>
             </table>
-            <h3>Métiers</h3>
-            <p>Développeur·se, data analyst/scientist, cybersécurité, admin systèmes &amp; réseaux, DevOps, ingénieur·e IA, chef·fe de projet…</p>
-            <p class="note">🎯 La <strong>spé NSI</strong> conservée en Terminale est un atout fort pour Parcoursup dans ces filières.</p>`,
+            <h3>Quelques métiers</h3>
+            <p>Développeur·se (web, mobile, jeux), <strong>data analyst / scientist</strong>, <strong>cybersécurité</strong>, administrateur·rice systèmes & réseaux, DevOps, ingénieur·e <strong>IA</strong>, chef·fe de projet, chercheur·se…</p>
+            <p class="note">🎯 Compétences qui comptent : logique & algorithmique, rigueur, travail d'équipe, anglais, curiosité. La <strong>spé NSI</strong> gardée en Terminale est un atout fort pour <strong>Parcoursup</strong>.</p>`,
         },
       ],
     },
     {
-      titre: "II. Didactique de l'informatique", duree: "1 h",
-      groupes: [
-        {
-          sous: "Points de repère",
-          items: [
-            {
-              t: "Introduction à la didactique de l'informatique", file: "didactique.html",
-              fiche: `
-                <p>La <strong>didactique</strong> étudie l'enseignement d'un <em>savoir précis</em> (≠ pédagogie, plus générale).</p>
-                <ul>
-                  <li><strong>Triangle pédagogique</strong> (Houssaye, 1988) : enseignant – élève – savoir. Le but : que se consolide le lien <em>élève ↔ savoir</em>.</li>
-                  <li><strong>Les 4 piliers de l'informatique</strong> (G. Dowek) : <strong>information</strong>, <strong>algorithmes</strong>, <strong>machines</strong>, <strong>langages</strong> — G. Berry y ajoute <strong>interfaces &amp; interactions</strong>.</li>
-                  <li><strong>Pensée algorithmique</strong> (Knuth) : deux traits absents des maths — l'<em>efficacité</em> et l'<em>assignation</em> (variable qui change d'état).</li>
-                  <li><strong>Situations a-didactiques</strong> (Brousseau) : l'enseignant s'efface pour laisser l'élève <em>découvrir</em> la solution.</li>
-                </ul>`,
-            },
-            {
-              t: "La pensée informatique (Computational Thinking)", file: "computationalThinking.html",
-              fiche: `
-                <p>La <strong>pensée informatique</strong> = l'ensemble des démarches pour faire résoudre des problèmes par une machine.</p>
-                <ul>
-                  <li><strong>Seymour Papert</strong> (1980) introduit l'idée ; <strong>Jeannette Wing</strong> (2006) la popularise ; Dagienė en explore les liens avec les compétences numériques.</li>
-                  <li>Composantes : <strong>reformuler</strong> un problème pour le rendre soluble, raisonnement <strong>algorithmique</strong> et récursif, <strong>abstraction</strong> des données, analyse coût/bénéfice, heuristiques.</li>
-                </ul>
-                <p class="note">🧠 Idée forte de Wing : viser la <strong>conceptualisation</strong> (penser comme un informaticien), pas seulement « programmer ». Transversal à tous les domaines.</p>`,
-            },
-            {
-              t: "Les compétences ADAGE", file: "adage.html",
-              fiche: `
-                <p><strong>ADAGE</strong> est l'acronyme de <strong>5 compétences</strong> que doit développer un cours d'informatique (d'après Selby &amp; Woollard, 2013 ; projets Bebras / Computing at School) :</p>
-                <ul>
-                  <li><strong>A</strong>bstraction : ne garder que les données pertinentes pour modéliser.</li>
-                  <li><strong>D</strong>écomposition : diviser un problème complexe en sous-problèmes.</li>
-                  <li><strong>A</strong>lgorithmique (pensée) : enchaîner des étapes (dont itération et condition) pour atteindre un but.</li>
-                  <li><strong>G</strong>énéralisation : voir des problèmes différents comme cas d'une même famille.</li>
-                  <li><strong>É</strong>valuation : juger la correction, l'efficacité et la qualité d'une solution.</li>
-                </ul>
-                <p class="note">📋 Pratique pour <strong>cadrer le contenu</strong> des séances et <strong>construire les évaluations</strong>.</p>`,
-            },
-            {
-              t: "Enseigner l'informatique (résumé du livre)", file: "resumeLivreEnseignerInformatique.html",
-              fiche: `
-                <p>Idées clés de l'ouvrage :</p>
-                <ul>
-                  <li>Le prof d'informatique n'est <strong>pas</strong> un « monsieur TICE » ni un dépanneur matériel : il enseigne une <strong>science</strong> qui évolue vite.</li>
-                  <li>Privilégier les <strong>concepts fondamentaux</strong> plutôt que les technologies (vite obsolètes).</li>
-                  <li>Alterner <strong>descendant</strong> (théorie) et <strong>ascendant</strong> (pratique) : problème concret → formalisation → réinvestissement.</li>
-                  <li>TP à <strong>deux niveaux</strong> : une partie obligatoire + une partie optionnelle pour les rapides (éviter l'ennui).</li>
-                  <li>Travail de groupe : méthode du <strong>puzzle</strong> ou binômes avec rotation des rôles.</li>
-                  <li>Enseigner la <strong>lecture</strong> de code de qualité avant la production ; utiliser métaphores et visualisations ; démarche <strong>agile guidée</strong>.</li>
-                </ul>`,
-            },
-          ],
-        },
-        {
-          sous: "En Première",
-          items: [
-            {
-              t: "Organiser le cours de NSI en Première", file: "organisationPremiere.html",
-              fiche: `
-                <h3>Répartition indicative (~100 h)</h3>
-                <ul>
-                  <li>Algorithmique &amp; programmation ≈ 32 h ; Traitement de données ≈ 16 h ; Architectures &amp; OS ≈ 16 h ; Web ≈ 16 h ; Algorithmique avancée ≈ 16 h ; Histoire ≈ 4 h.</li>
-                  <li><strong>Projets ≈ 25 %</strong> du temps : soit un grand projet (~35 h dès janvier), soit un court + un long.</li>
-                </ul>
-                <h3>Formats de séance efficaces</h3>
-                <ul>
-                  <li><strong>Débranché</strong> : exploration concrète (45 min) → formalisation (30 min) → machine (45 min).</li>
-                  <li>Apprendre <strong>à partir de code existant</strong> : exécuter → modifier → créer.</li>
-                  <li><strong>Puzzle</strong> : groupes d'experts puis recomposition.</li>
-                </ul>
-                <p class="note">📝 Évaluation : combiner QCM (théorie) + travail sur machine, avec un <strong>barème annoncé</strong> dès le départ.</p>`,
-            },
-            { t: "Programme officiel de Première (PDF)", file: "https://cache.media.education.gouv.fr/file/SP1-MEN-22-1-2019/26/8/spe633_annexe_1063268.pdf" },
-            { t: "Évaluation de NSI en Première (BO)", file: "https://www.education.gouv.fr/pid285/bulletin_officiel.html?cid_bo=141199" },
-          ],
-        },
-        {
-          sous: "En Terminale",
-          items: [
-            {
-              t: "Programme de Terminale NSI (grandes lignes)", file: "resumeProgrammeTerminale.html",
-              fiche: `
-                <p>La Terminale (6 h/sem., 1/3 en projets) élargit fortement le programme :</p>
-                <ul>
-                  <li><strong>Structures de données</strong> : listes, piles, files, dictionnaires, arbres, graphes (interface vs implémentation, objet).</li>
-                  <li><strong>Bases de données</strong> : modèle relationnel, SGBD, <strong>SQL</strong> (sélections, jointures, mises à jour).</li>
-                  <li><strong>Programmation</strong> : récursivité, calculabilité, paradigmes, gestion des bugs.</li>
-                  <li><strong>Algorithmique</strong> : arbres &amp; graphes, « diviser pour régner », programmation dynamique, recherche textuelle.</li>
-                  <li><strong>Architectures &amp; réseaux</strong> : processus, routage, sécurisation.</li>
-                </ul>
-                <p class="note">🎓 Utile pour <strong>situer</strong> ce que la Première prépare et l'épreuve du bac.</p>`,
-            },
-            {
-              t: "Trucs pratiques : livrer un programme en boîte noire (.pyc)", file: "trucs.html",
-              fiche: `
-                <p>Pour distribuer un programme aux élèves <strong>sans révéler le code</strong> (tests « boîte noire ») :</p>
-                <ol>
-                  <li>Compiler : <code>python -m py_compile operation.py</code> (crée un <code>.pyc</code> dans <code>__pycache__</code>).</li>
-                  <li>Renommer : dans <code>__pycache__</code>, <code>operation.cpython-3x.pyc</code> → <code>operation.pyc</code>.</li>
-                  <li>Distribuer le <code>.pyc</code> ; les élèves font <code>import operation</code> comme un module normal.</li>
-                </ol>
-                <p class="note">⚠️ La compilation doit se faire avec la <strong>même version de Python / même système</strong> que les élèves, sinon le <code>.pyc</code> ne se chargera pas.</p>`,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      titre: "III. Travail pratique & conclusion", duree: "1 h",
+      titre: "4 · Mettre en œuvre en classe",
       items: [
         {
-          t: "Idées de projets NSI (brainstorming)", file: "ideesProjets.html",
+          t: "Idées de projets NSI", file: "ideesProjets.html",
           fiche: `
-            <p>Quelques sujets de projets, du plus accessible au plus ambitieux :</p>
+            <p>Une banque de sujets, du plus accessible au plus ambitieux. Bien choisis, ils couvrent à eux seuls la plupart des capacités du programme.</p>
+            <h3>Jeux & logique</h3>
             <ul>
-              <li><strong>Jeux</strong> : Mastermind, Tic-tac-toe (avec IA), Qui est-ce ?, Tours de Hanoï.</li>
-              <li><strong>Maths &amp; algo</strong> : fractions en valeur exacte, enveloppe convexe, générateur de calcul mental.</li>
-              <li><strong>Texte</strong> : chiffre de César (et déchiffrement automatique), « Cent mille milliards de poèmes ».</li>
-              <li><strong>Graphique / simulation</strong> : tortue Logo, dessin de plantes, une balle qui rebond, <strong>jeu de la vie</strong> de Conway.</li>
+              <li><strong>Mastermind</strong>, <strong>Tic-tac-toe</strong> (avec une petite IA), <strong>Qui est-ce ?</strong> (questions binaires), <strong>Tours de Hanoï</strong>.</li>
             </ul>
-            <p class="note">🏝️ Choisir des sujets « motivants et réalisables », dans une liste validée par le prof (cf. rubrique <strong>Projets en îlots</strong>).</p>`,
+            <h3>Maths & algorithmique</h3>
+            <ul>
+              <li>Calcul <strong>en valeur exacte</strong> sur des fractions, <strong>enveloppe convexe</strong>, générateur d'<strong>exercices de calcul mental</strong>.</li>
+            </ul>
+            <h3>Texte & cryptographie</h3>
+            <ul>
+              <li>Chiffre de <strong>César</strong> (et son déchiffrement automatique), « <strong>Cent mille milliards de poèmes</strong> ».</li>
+            </ul>
+            <h3>Graphisme & simulation</h3>
+            <ul>
+              <li><strong>Tortue Logo</strong>, dessin de plantes (L-systèmes), une <strong>balle</strong> qui rebondit, le <strong>jeu de la vie</strong> de Conway.</li>
+            </ul>
+            <p class="note">🏝️ Choisir des sujets « <strong>motivants et réalisables</strong> », dans une liste validée par le prof. Le site propose déjà 10 mini-projets clés en main (rubrique <strong>Projets en îlots</strong>).</p>`,
         },
-        { t: "Rendu de la formation", file: "rendu.html" },
+        {
+          t: "Truc pratique : livrer un programme en boîte noire (.pyc)", file: "trucs.html",
+          fiche: `
+            <p>Parfois on veut distribuer un programme aux élèves <strong>sans révéler le code source</strong> (pour qu'ils l'utilisent comme une « boîte noire » avant de l'écrire eux-mêmes, ou pour des tests).</p>
+            <h3>Procédure</h3>
+            <ol>
+              <li><strong>Compiler</strong> : <code>python -m py_compile operation.py</code> → crée un <code>.pyc</code> dans le dossier <code>__pycache__</code>.</li>
+              <li><strong>Renommer</strong> : dans <code>__pycache__</code>, renommer <code>operation.cpython-3x.pyc</code> en <code>operation.pyc</code>.</li>
+              <li><strong>Distribuer</strong> le <code>.pyc</code> : les élèves le placent dans leur dossier et font <code>import operation</code> comme un module normal.</li>
+            </ol>
+            <p class="note">⚠️ Le <code>.pyc</code> doit être compilé avec la <strong>même version de Python et le même système</strong> que ceux des élèves, sinon il refusera de se charger.</p>`,
+        },
       ],
     },
   ],
