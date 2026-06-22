@@ -250,6 +250,7 @@
       { target: "classe", num: "🏫", emoji: "", text: "Ma classe", prof: true },
       { target: "profs", num: "👤", emoji: "", text: "Comptes profs", admin: true },
       { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
+      { target: "debranche", num: "🎲", emoji: "", text: "Activités débranchées" },
       { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
       { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
       { target: "tp", num: "🧪", emoji: "", text: "TP guidés (DIU)" },
@@ -362,6 +363,13 @@
         title: "Projets en îlots",
         desc: "Des missions à mener en équipe : réfléchir, écrire l'algorithme, coder, tester, présenter.",
         target: "projets",
+      },
+      {
+        emoji: "🎲",
+        tag: `${typeof DEBRANCHE !== "undefined" ? DEBRANCHE.length : 0} activités`,
+        title: "Activités débranchées",
+        desc: "Sans ordinateur, en îlot : binaire, tri, réseau, robot, dichotomie — prêtes à animer.",
+        target: "debranche",
       },
       {
         emoji: "📖",
@@ -2227,14 +2235,20 @@ except Exception:
     const tps = (typeof GUIDED_TP !== "undefined" ? GUIDED_TP : []).filter((t) => t.theme === themeId);
     const fiches = (typeof FICHES_PLUS !== "undefined" ? FICHES_PLUS : []).filter((f) => f.theme === themeId);
     const mps = (typeof MINI_PROJETS !== "undefined" ? MINI_PROJETS : []).filter((p) => p.theme === themeId);
+    const dbs = (typeof DEBRANCHE !== "undefined" ? DEBRANCHE : []).filter((a) => a.theme === themeId);
     const hasLogisim = themeId === "architecture-os" && typeof LOGISIM_CIRCUITS !== "undefined";
-    if (!tps.length && !fiches.length && !mps.length && !hasLogisim) return null;
+    if (!tps.length && !fiches.length && !mps.length && !dbs.length && !hasLogisim) return null;
 
     const wrap = el("div", "extra-block du-block");
     wrap.appendChild(el("h2", null, "📦 Ressources du DIU"));
     wrap.appendChild(el("p", "extra-hint", "Du matériel issu de ma formation DIU NSI, rattaché à ce thème."));
-    if (tps.length || fiches.length || mps.length) {
+    if (tps.length || fiches.length || mps.length || dbs.length) {
       const ul = el("div", "du-links");
+      dbs.forEach((a) => {
+        const b = el("button", "btn secondary", "🎲 " + a.titre);
+        b.addEventListener("click", () => navigate("debranche"));
+        ul.appendChild(b);
+      });
       tps.forEach((t) => {
         const b = el("button", "btn secondary", (t.lang === "python" ? "🐍 " : "🖥️ ") + t.titre);
         b.addEventListener("click", () => navigate("tp"));
@@ -2615,6 +2629,70 @@ except Exception:
     scrollTop();
   }
 
+  /* ---------------- Vue : Activités débranchées (sans ordinateur) ---------------- */
+  function makeDebrancheCard(a) {
+    const card = el("div", "debranche-card");
+    const head = el("div", "exo-head");
+    head.innerHTML = `<span class="db-emoji">${a.emoji}</span><span class="exo-n">${a.titre}</span>`;
+    card.appendChild(head);
+    const meta = el("div", "proj-meta");
+    meta.innerHTML =
+      `<button class="tp-theme-link">→ ${themeTitle(a.theme)}</button>` +
+      `<span class="chip">⏱️ ${a.duree}</span>` +
+      `<span class="chip">🚫💻 sans ordinateur</span>`;
+    meta.querySelector(".tp-theme-link").addEventListener("click", () => navigate(a.theme));
+    card.appendChild(meta);
+
+    card.appendChild(el("div", "db-block", `<strong>🎯 Objectif</strong><p>${a.objectif}</p>`));
+    card.appendChild(el("div", "db-block", `<strong>📘 Capacité BO</strong><p>${a.bo}</p>`));
+    card.appendChild(el("div", "db-block", `<strong>🧰 Matériel</strong><ul>${a.materiel.map((m) => `<li>${m}</li>`).join("")}</ul>`));
+    card.appendChild(el("div", "db-block", `<strong>🗺️ Déroulé</strong><ol>${a.deroule.map((s) => `<li>${s}</li>`).join("")}</ol>`));
+    if (a.variante) card.appendChild(el("div", "db-block", `<strong>⭐ Variante</strong><p>${a.variante}</p>`));
+
+    const tools = el("div", "proj-tools");
+    const bPrint = el("button", "btn secondary", "🖨️ Imprimer la fiche");
+    bPrint.addEventListener("click", () => printDebranche(a));
+    tools.appendChild(bPrint);
+    card.appendChild(tools);
+
+    if (a.noteProf) {
+      const det = el("details", "corrige teacher-block");
+      det.appendChild(el("summary", null, "👩‍🏫 Note pour le prof"));
+      det.appendChild(el("div", "corrige-body", a.noteProf));
+      card.appendChild(det);
+    }
+    return card;
+  }
+
+  function renderDebranche() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("span", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "🎲 Activités débranchées"));
+    header.appendChild(
+      el("p", "theme-intro", "Des activités <strong>sans ordinateur</strong>, à faire en <strong>îlot</strong> : comprendre une notion en la vivant, avant de coder. Prêtes à animer (objectif, matériel, déroulé, variante).")
+    );
+    viewTheme.appendChild(header);
+    (typeof DEBRANCHE !== "undefined" ? DEBRANCHE : []).forEach((a) => viewTheme.appendChild(makeDebrancheCard(a)));
+    scrollTop();
+  }
+
+  function printDebranche(a) {
+    openPrint(
+      "Activité débranchée — " + a.titre,
+      `<h1>${a.emoji} ${a.titre}</h1>` +
+        `<p class="intro">${themeTitle(a.theme)} · ${a.duree} · sans ordinateur</p>` +
+        `<h2>🎯 Objectif</h2><p>${a.objectif}</p>` +
+        `<h2>📘 Capacité (BO)</h2><p>${a.bo}</p>` +
+        `<h2>🧰 Matériel</h2><ul>${a.materiel.map((m) => `<li>${m}</li>`).join("")}</ul>` +
+        `<h2>🗺️ Déroulé</h2><ol>${a.deroule.map((s) => `<li>${s}</li>`).join("")}</ol>` +
+        (a.variante ? `<h2>⭐ Variante</h2><p>${a.variante}</p>` : "") +
+        (a.noteProf ? `<h2>👩‍🏫 Note pour le prof</h2><p>${a.noteProf}</p>` : "")
+    );
+  }
+
   /* ---------------- Vue : Didactique & ressources (prof) ---------------- */
   function renderDidactique() {
     viewTheme.innerHTML = "";
@@ -2862,6 +2940,10 @@ except Exception:
       showThemeView("didactique");
       renderDidactique();
       location.hash = "didactique";
+    } else if (target === "debranche") {
+      showThemeView("debranche");
+      renderDebranche();
+      location.hash = "debranche";
     } else {
       const c = COURSES.find((x) => x.id === target);
       if (!c) return navigate("home");
@@ -2880,7 +2962,7 @@ except Exception:
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique"].includes(t)) return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique", "debranche"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }

@@ -6,6 +6,122 @@
    - EVALUATIONS : DS et TP notés avec barème ; corrigés réservés au prof
    ===================================================================== */
 
+/* ---------------- Activités débranchées (sans ordinateur, en îlot) ----------------
+   Clés en main : objectif BO, matériel, déroulé, variante, notes prof.
+   Inspirées des classiques « informatique débranchée » (CS Unplugged, CC), réécrites. */
+const DEBRANCHE = [
+  {
+    id: "binaire-cartes",
+    emoji: "🃏",
+    titre: "Le coffre binaire (cartes)",
+    theme: "donnees-base",
+    bo: "Passer d'une base à une autre ; évaluer le nombre de bits.",
+    duree: "30–40 min",
+    materiel: ["5 cartes par îlot : 16, 8, 4, 2, 1 (points dessinés au recto, vide au verso)"],
+    objectif:
+      "Comprendre que le binaire code un nombre avec des « interrupteurs » (bit = carte visible ou cachée), et que n bits donnent 2ⁿ valeurs.",
+    deroule: [
+      "Chaque îlot pose les 5 cartes côte à côte, dans l'ordre 16 8 4 2 1.",
+      "Convention : carte <strong>visible</strong> = bit 1 (on compte ses points), carte <strong>cachée</strong> = bit 0.",
+      "Le prof annonce un nombre (ex. 13) : l'îlot le forme en retournant les bonnes cartes (8+4+1).",
+      "Inverse : le prof montre une configuration, les îlots lisent le nombre.",
+      "Mise en commun : combien de nombres différents avec 5 cartes ? (0 à 31 = 2⁵). Relier à 2ⁿ.",
+    ],
+    variante:
+      "ASCII : avec 8 cartes (un octet), coder son initiale (A = 65 = 0100 0001). Échanger des « messages binaires » entre îlots.",
+    noteProf:
+      "Erreurs fréquentes : oublier le 0 (carte cachée compte pour 0), inverser l'ordre des poids. Institutionnaliser ensuite le cours « bit/octet/2ⁿ » et la conversion. Prolonge avec le projet « Le coffre binaire ».",
+  },
+  {
+    id: "tri-cartes",
+    emoji: "🔢",
+    titre: "Trier à la main & compter le coût",
+    theme: "algorithmique",
+    bo: "Mettre en œuvre les tris par sélection/insertion ; comparer le coût de deux algorithmes.",
+    duree: "30–45 min",
+    materiel: ["Un jeu de 6 à 8 cartes numérotées par îlot (ou objets de tailles différentes)"],
+    objectif:
+      "Exécuter à la main un tri par sélection, puis par insertion, et compter le nombre de comparaisons pour ressentir le coût (complexité).",
+    deroule: [
+      "Mélanger les cartes, face cachée, alignées.",
+      "<strong>Tri par sélection</strong> : chercher la plus petite (en comparant deux à deux), la mettre en tête ; recommencer sur le reste.",
+      "Compter un jeton à chaque comparaison de deux cartes.",
+      "Recommencer le même paquet avec le <strong>tri par insertion</strong> (insérer chaque carte à sa place comme au jeu).",
+      "Comparer le nombre de comparaisons des deux méthodes ; discuter : et avec 100 cartes ?",
+    ],
+    variante:
+      "Réseau de tri : tracer au sol des « comparateurs » (deux élèves échangent s'ils sont dans le désordre) et faire passer une rangée d'élèves numérotés.",
+    noteProf:
+      "Faire émerger que les deux sont en ~n² (quadratique). Relier au cours « tris » et « coût d'un algorithme ». Prolonge avec le projet « Recherche séquentielle vs dichotomique ».",
+  },
+  {
+    id: "reseau-vivant",
+    emoji: "📡",
+    titre: "Le réseau vivant (paquets)",
+    theme: "reseaux",
+    bo: "Découpage d'un message en paquets ; désordre, perte, reconstruction.",
+    duree: "25–35 min",
+    materiel: ["Cartes-paquets numérotées (n° + un mot) ; les élèves jouent les routeurs"],
+    objectif:
+      "Comprendre pourquoi un message est découpé en paquets numérotés, et comment le destinataire le reconstitue malgré le désordre et les pertes.",
+    deroule: [
+      "Écrire une phrase courte ; la découper en 5 cartes-paquets numérotées (1 mot par carte).",
+      "Les élèves « routeurs » se font passer les cartes dans le désordre jusqu'au « destinataire ».",
+      "Le destinataire <strong>retrie par numéro</strong> et lit le message.",
+      "Le prof <strong>retire une carte</strong> en route (paquet perdu) : le destinataire détecte le numéro manquant et le <strong>redemande</strong>.",
+      "Glisser un <strong>doublon</strong> : montrer qu'on l'ignore.",
+    ],
+    variante:
+      "Plusieurs chemins : si un « routeur » tombe en panne, faire passer les paquets par un autre (robustesse / routage).",
+    noteProf:
+      "Relier au cours « réseaux » (protocole, paquets, routage, TCP/IP). Prolonge avec le projet « Simulation de paquets réseau » (version codée).",
+  },
+  {
+    id: "robot-humain",
+    emoji: "🤖",
+    titre: "Programmer un robot humain",
+    theme: "langages-prog",
+    bo: "Séquence d'instructions, boucles ; rigueur et débogage (pensée informatique).",
+    duree: "30–40 min",
+    materiel: ["Un quadrillage au sol (ou tapis), des obstacles, une cible"],
+    objectif:
+      "Écrire un algorithme précis et non ambigu, le faire exécuter littéralement, repérer et corriger les bugs.",
+    deroule: [
+      "Un élève est le « robot » ; il n'obéit qu'à 3 ordres : <em>avance d'une case</em>, <em>tourne à gauche</em>, <em>tourne à droite</em>.",
+      "L'îlot écrit sur papier la suite d'instructions pour amener le robot du départ à la cible.",
+      "Le robot exécute <strong>exactement</strong> les instructions (pas d'initiative) → on voit les bugs.",
+      "L'îlot corrige son « programme » et réessaie (débogage).",
+      "Introduire une <strong>boucle</strong> : « répéter 3 fois (avance) » pour raccourcir le programme.",
+    ],
+    variante:
+      "Ajouter une condition : « si mur devant, tourne à droite ». Faire écrire le programme d'un autre îlot (lecture de code).",
+    noteProf:
+      "C'est le cœur du « computational thinking » : décomposer, séquencer, abstraire (boucle). Relier au cours « langages » (séquence, boucles, débogage).",
+  },
+  {
+    id: "dichotomie-annuaire",
+    emoji: "🔎",
+    titre: "Recherche : au hasard vs dichotomie",
+    theme: "algorithmique",
+    bo: "Recherche séquentielle et dichotomique ; coût (log n).",
+    duree: "20–30 min",
+    materiel: ["Rien (jeu oral) ou une liste triée (annuaire, cartes triées)"],
+    objectif:
+      "Comparer deux stratégies de recherche dans un ensemble trié et compter les étapes pour découvrir l'intérêt de la dichotomie.",
+    deroule: [
+      "Jeu « devine le nombre entre 1 et 100 » : un élève choisit, l'îlot devine.",
+      "1ʳᵉ manche : deviner <strong>au hasard / dans l'ordre</strong> ; compter les essais.",
+      "2ᵉ manche : deviner en <strong>coupant en deux</strong> à chaque fois (« plus grand / plus petit ») ; compter.",
+      "Comparer : ~50 essais au pire contre ~7 (log₂ 100 ≈ 7).",
+      "Faire le lien : pourquoi la dichotomie exige une liste <strong>triée</strong> ?",
+    ],
+    variante:
+      "Chercher un nom dans un annuaire papier : à la main, puis en ouvrant « au milieu ». Estimer pour 1 000 000 d'éléments (~20 étapes).",
+    noteProf:
+      "Relier au cours « recherche dichotomique » et « coût » (O(n) vs O(log n)). Prolonge avec le projet « Recherche séquentielle vs dichotomique ».",
+  },
+];
+
 /* ---------------- Didactique & ressources (prof) ----------------
    Liens curés depuis la formation DIU NSI (B. Mermet, GREYC) et ressources
    officielles/externes. On LIE (avec attribution), on ne recopie pas. */
