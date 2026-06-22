@@ -25,6 +25,11 @@
   // Administrateur unique : accès professeur réservé / validé par lui.
   var ADMIN_EMAIL = "ebechalani@gmail.com";
 
+  // Comptes « démo prof » : accès professeur immédiat (sans validation admin),
+  // mais SANS les droits admin (pas de gestion des comptes profs).
+  var DEMO_EMAILS = ["prof.demo@nsi.app"];
+  function isDemoEmail(e) { return DEMO_EMAILS.indexOf((e || "").toLowerCase()) !== -1; }
+
   var LS = { classes: "nsi-classes", students: "nsi-students", session: "nsi-session", link: "nsi-student-link" };
 
   function loadLS(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
@@ -260,12 +265,13 @@
     // Prof (compte e-mail) — accès soumis à validation par l'admin
     var email = (user.email || "").toLowerCase();
     var isAdmin = email === ADMIN_EMAIL;
+    var isDemo = isDemoEmail(email);
     return db.collection("teachers").doc(user.uid).get().then(function (d) {
-      var name = (d.exists && d.data().name) || (email ? email.split("@")[0] : "Professeur");
-      var approved = isAdmin || (d.exists && d.data().status === "approved");
+      var name = (d.exists && d.data().name) || (isDemo ? "Prof démo" : (email ? email.split("@")[0] : "Professeur"));
+      var approved = isAdmin || isDemo || (d.exists && d.data().status === "approved");
       if (!d.exists) {
-        fbSet("teachers", user.uid, { email: email, name: name, status: isAdmin ? "approved" : "pending", requestedAt: Date.now() });
-      } else if (isAdmin && d.data().status !== "approved") {
+        fbSet("teachers", user.uid, { email: email, name: name, status: (isAdmin || isDemo) ? "approved" : "pending", requestedAt: Date.now() });
+      } else if ((isAdmin || isDemo) && d.data().status !== "approved") {
         fbSet("teachers", user.uid, { status: "approved" });
       }
       if (!approved) {
@@ -279,10 +285,10 @@
       persistLocal(); subscribeTeacher(user.uid); establishedUid = user.uid;
       return cache.session;
     }).catch(function () {
-      // Règles "teachers" pas encore publiées : l'admin entre via l'e-mail, les autres attendent.
-      if (isAdmin) {
+      // Règles "teachers" pas encore publiées : l'admin et les comptes démo entrent via l'e-mail, les autres attendent.
+      if (isAdmin || isDemo) {
         cache.pending = null;
-        cache.session = { role: "teacher", uid: "prof", name: email.split("@")[0] || "Professeur", classId: null, fbUid: user.uid, admin: true };
+        cache.session = { role: "teacher", uid: "prof", name: isDemo ? "Prof démo" : (email.split("@")[0] || "Professeur"), classId: null, fbUid: user.uid, admin: isAdmin };
         persistLocal(); subscribeTeacher(user.uid); establishedUid = user.uid;
         return cache.session;
       }

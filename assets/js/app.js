@@ -432,7 +432,10 @@
     viewHome.appendChild(rgrid);
 
     // --- Badges de progression (côté élève) ---
-    if (!P.isTeacher()) viewHome.appendChild(renderBadges());
+    if (!P.isTeacher()) {
+      viewHome.appendChild(renderStudentNote());
+      viewHome.appendChild(renderBadges());
+    }
 
     const note = el(
       "div",
@@ -1559,6 +1562,35 @@ except Exception:
         `<h2>🎯 Capacités attendues (BO)</h2><ul>${caps}</ul>` +
         `<h2>📋 À retenir</h2><ul>${items}</ul>`
     );
+  }
+
+  /* ---------------- Note / appréciation (côté élève) ---------------- */
+  // La note est saisie par le prof dans « Ma classe » ; l'élève la voit ici,
+  // mise à jour en temps réel (onSnapshot Firestore).
+  function studentNoteValue() {
+    if (!P.isStudent()) return "";
+    const s = P.getSession();
+    if (!s) return "";
+    return String((P.getProgress(s.uid).note || "")).trim();
+  }
+  function fillStudentNote(wrap) {
+    const note = studentNoteValue();
+    wrap.innerHTML = "";
+    if (!note) { wrap.classList.add("hidden"); return; }
+    wrap.classList.remove("hidden");
+    wrap.appendChild(el("h2", "home-h2", "📊 Ton évaluation"));
+    const card = el("div", "note-card");
+    card.appendChild(el("span", "note-card-label", "Note / appréciation du professeur"));
+    const val = el("span", "note-card-value");
+    val.textContent = note; // textContent : aucune injection HTML possible
+    card.appendChild(val);
+    wrap.appendChild(card);
+  }
+  function renderStudentNote() {
+    const wrap = el("div", "note-block");
+    wrap.id = "studentNoteCard";
+    fillStudentNote(wrap);
+    return wrap;
   }
 
   /* ---------------- Badges de progression ---------------- */
@@ -3205,6 +3237,8 @@ except Exception:
       const active = navList.querySelector(".nav-link.active");
       buildNav();
       if (active) setActiveNav(active.dataset.target);
+      const noteCard = document.getElementById("studentNoteCard");
+      if (noteCard) fillStudentNote(noteCard); // note mise à jour en direct
     }
     if (P.isTeacher() && location.hash.replace("#", "") === "classe" && !document.querySelector(".cap-theme")) {
       renderClasse();

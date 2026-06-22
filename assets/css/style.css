@@ -743,6 +743,12 @@ html[data-theme="dark"] .prof-note { background: #2a2410; border-color: #b45309;
 .fiche-body tr:nth-child(even) td { background: var(--bg-soft); }
 .fiche-body tr:last-child td { border-bottom: none; }
 
+/* ---------- Note / appréciation (élève) ---------- */
+.note-block { margin: 1rem 0 1.4rem; }
+.note-card { display: flex; flex-direction: column; gap: .25rem; background: var(--accent-soft); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 12px; padding: .9rem 1.1rem; }
+.note-card-label { font-size: .82rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: .04em; }
+.note-card-value { font-size: 1.4rem; font-weight: 700; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+
 /* ---------- Module « boîte noire » (.pyc) ---------- */
 .boite-noire { border: 1px solid var(--border); border-left: 4px solid var(--accent-2); border-radius: 10px; background: var(--bg-soft); padding: .8rem 1rem; margin: .9rem 0; }
 .bn-head { font-weight: 700; margin-bottom: .2rem; }

@@ -46,6 +46,83 @@ const QUIZZES = {
       answer: 2,
       explain: "Le bit de signe ôte une moitié : −128 à +127.",
     },
+    {
+      q: "Quelle est l'écriture binaire de l'entier 13 ?",
+      choices: ["1011", "1101", "1110", "1001"],
+      answer: 1,
+      explain: "8 + 4 + 0 + 1 = 13, soit 1101.",
+    },
+    {
+      q: "Quel est le plus grand entier que l'on peut coder sur un octet (non signé) ?",
+      choices: ["127", "128", "255", "256"],
+      answer: 2,
+      explain: "Un octet = 8 bits = 2⁸ = 256 valeurs, de 0 à 255.",
+    },
+    {
+      q: "Que vaut 0xFF (hexadécimal) en décimal ?",
+      choices: ["15", "16", "255", "256"],
+      answer: 2,
+      explain: "F = 15 ; 15×16 + 15 = 255. C'est un octet « plein ».",
+    },
+    {
+      q: "Comment s'écrit l'octet 1111 1010 en hexadécimal ?",
+      choices: ["FA", "AF", "F8", "EA"],
+      answer: 0,
+      explain: "On groupe par 4 bits : 1111 = F et 1010 = A, donc FA.",
+    },
+    {
+      q: "Sur un octet non signé (0 à 255), que donne 255 + 1 ?",
+      choices: ["256", "0", "255", "une erreur"],
+      answer: 1,
+      explain: "Débordement (overflow) : le compteur « tourne » et repasse à 0.",
+    },
+    {
+      q: "En complément à deux sur 8 bits, comment code-t-on −1 ?",
+      choices: ["1000 0001", "1111 1110", "1111 1111", "0000 0001"],
+      answer: 2,
+      explain: "On inverse 0000 0001 → 1111 1110, puis on ajoute 1 → 1111 1111.",
+    },
+    {
+      q: "1 kibioctet (Kio) vaut exactement :",
+      choices: ["1000 octets", "1024 octets", "1000 bits", "1024 bits"],
+      answer: 1,
+      explain: "Kio = 2¹⁰ = 1024 octets ; le kilooctet « officiel » (ko) vaut 1000 o.",
+    },
+    {
+      q: "Que vaut « Vrai ET Faux » en logique booléenne ?",
+      choices: ["Vrai", "Faux", "Indéterminé", "1"],
+      answer: 1,
+      explain: "ET (and) ne renvoie Vrai que si les DEUX opérandes sont Vrai.",
+    },
+    {
+      q: "Sur combien de bits l'ASCII d'origine code-t-il un caractère ?",
+      choices: ["7 bits", "8 bits", "16 bits", "32 bits"],
+      answer: 0,
+      explain: "ASCII = 128 caractères = 2⁷, donc 7 bits.",
+    },
+    {
+      q: "En UTF-8, combien d'octets occupe le caractère « é » ?",
+      choices: ["1", "2", "3", "4"],
+      answer: 1,
+      explain: "Au-delà de l'ASCII (code 233), UTF-8 code « é » sur 2 octets (0xC3 0xA9).",
+    },
+    {
+      q: "Avec quel codage UTF-8 est-il rétro-compatible ?",
+      choices: ["ISO-8859", "ASCII", "UTF-16", "aucun"],
+      answer: 1,
+      explain: "Les 128 premiers caractères UTF-8 sont codés à l'identique de l'ASCII, sur 1 octet.",
+    },
+    {
+      q: "Pourquoi a-t-on créé Unicode en plus de l'ASCII ?",
+      choices: [
+        "Pour aller plus vite",
+        "Pour coder les caractères de toutes les langues (accents, emoji…)",
+        "Pour économiser de la mémoire",
+        "Pour remplacer le binaire",
+      ],
+      answer: 1,
+      explain: "128 caractères ASCII ne suffisent pas : Unicode dépasse 140 000 caractères.",
+    },
   ],
 
   "types-construits": [
