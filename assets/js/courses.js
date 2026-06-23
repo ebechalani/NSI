@@ -813,6 +813,53 @@ for l in fusion:
 </html>`,
       },
       {
+        title: "Attributs et détails à connaître",
+        html: `
+        <p>Au-delà des balises, ce sont les <strong>attributs</strong> et quelques détails qui rendent une page vraiment utilisable. Les plus courants à maîtriser :</p>
+        <h3>Les liens (<code>&lt;a&gt;</code>)</h3>
+        <ul>
+          <li><code>href="https://…"</code> = lien <strong>absolu</strong> (autre site) ; <code>href="page2.html"</code> = lien <strong>relatif</strong> (page du même site).</li>
+          <li><code>target="_blank"</code> = ouvre le lien dans un <strong>nouvel onglet</strong> (ajouter <code>rel="noopener"</code> par sécurité).</li>
+          <li><code>href="mailto:prof@lycee.fr"</code> = écrire un e-mail ; <code>href="#bas"</code> = sauter à une <strong>ancre</strong> (<code>id="bas"</code>) de la page.</li>
+        </ul>
+        <h3>Les images (<code>&lt;img&gt;</code>)</h3>
+        <ul>
+          <li><code>src</code> = le fichier ; <code>alt</code> = <strong>texte de remplacement</strong> (à mettre toujours : lu par les lecteurs d'écran, et affiché si l'image ne charge pas) ; <code>width</code>/<code>height</code> = la taille en pixels.</li>
+        </ul>
+        <h3>Texte et listes</h3>
+        <ul>
+          <li><code>&lt;strong&gt;</code> (important / gras) et <code>&lt;em&gt;</code> (emphase / italique) ; <code>&lt;br&gt;</code> (saut de ligne) ; <code>&lt;hr&gt;</code> (trait de séparation).</li>
+          <li>Liste <strong>numérotée</strong> : <code>&lt;ol&gt;</code> à la place de <code>&lt;ul&gt;</code> (les <code>&lt;li&gt;</code> ne changent pas).</li>
+          <li><strong>Entités</strong> : pour afficher un caractère réservé, on l'écrit en code. Pour afficher <code>&lt;</code> on tape <code>&amp;lt;</code>, pour <code>&gt;</code> on tape <code>&amp;gt;</code>, pour <code>&amp;</code> on tape <code>&amp;amp;</code> ; <code>&amp;nbsp;</code> = espace insécable, <code>&amp;copy;</code> = ©.</li>
+        </ul>
+        <p class="note">🖥️ <strong>Essaie toi-même</strong> : l'image ci-dessous a un <code>src</code> volontairement cassé → tu vois le <code>alt</code> s'afficher. Change le <code>alt</code>, ajoute un <code>target="_blank"</code>, transforme la liste en <code>&lt;ol&gt;</code>…</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"></head>
+<body>
+  <h2>Liens, images, texte</h2>
+
+  <p>Un lien <a href="https://eduscol.education.fr" target="_blank" rel="noopener">vers Éduscol (nouvel onglet)</a>,
+     et un e-mail <a href="mailto:prof@lycee.fr">au professeur</a>.</p>
+
+  <p>Un mot <strong>important</strong> et un mot en <em>emphase</em>.<br>
+     Ceci est écrit après un saut de ligne.</p>
+  <hr>
+
+  <p>Une image au <code>src</code> cassé → c'est le <code>alt</code> qui s'affiche :</p>
+  <img src="image-inexistante.png" alt="Texte alternatif : le logo du lycée" width="240">
+
+  <p>Une liste numérotée :</p>
+  <ol>
+    <li>Première étape</li>
+    <li>Deuxième étape</li>
+  </ol>
+
+  <p>Caractères affichés grâce aux entités : 1 &lt; 2, et &copy; 2026.</p>
+</body>
+</html>`,
+      },
+      {
         title: "La mise en forme avec CSS",
         html: `
         <p>Le CSS décrit <strong>comment</strong> afficher les éléments. Une <strong>règle</strong> CSS = un <strong>sélecteur</strong> (quels éléments ?) suivi de <strong>propriétés</strong> entre accolades (quel style ?).</p>
