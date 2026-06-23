@@ -447,6 +447,16 @@ print(a)       # [1, 2, 3, 4] — surprise !</code></pre>
 /* ---------------- Ressources externes rattachées à un thème ----------------
    Supports d'autres formations DIU, LIÉS avec attribution (pas de copie). */
 const THEME_RESSOURCES_EXT = {
+  "ihm-web": {
+    titre: "HTML, CSS & client-serveur",
+    auteur: "Cours de J-M Barbier — DIU EIL 2026",
+    base: "https://diu-htmlcss-1858e2.forge.apps.education.fr/",
+    items: [
+      { t: "📕 Cours HTML (PDF)", url: "pdf/book-html.pprint.pdf" },
+      { t: "🎨 Cours CSS (PDF)", url: "pdf/book-css.pprint.pdf" },
+      { t: "🔁 Cours Client / serveur (PDF)", url: "pdf/book-clientserveur.pprint.pdf" },
+    ],
+  },
   "donnees-base": {
     titre: "Représentation des données en machine",
     auteur: "Cours de J-M Barbier — DIU EIL 2026",

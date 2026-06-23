@@ -818,6 +818,30 @@ p  { font-size: 16px; line-height: 1.5; }
         <p>Exemple : la validation JavaScript d'un formulaire améliore le <em>confort</em> (message d'erreur immédiat), mais le serveur doit re-vérifier avant d'enregistrer quoi que ce soit.</p>`,
       },
       {
+        title: "Créer un formulaire HTML",
+        html: `
+        <p>Jusqu'ici, l'utilisateur ne fait que <em>lire</em> la page. Pour qu'il <strong>envoie</strong> des informations (une recherche, un identifiant, un message), on utilise un <strong>formulaire</strong> : la balise <code>&lt;form&gt;</code>.</p>
+        <pre><code>&lt;form action="/recherche" method="get"&gt;
+  &lt;label for="ville"&gt;Ville :&lt;/label&gt;
+  &lt;input type="text" id="ville" name="ville"&gt;
+
+  &lt;label for="age"&gt;Âge :&lt;/label&gt;
+  &lt;input type="number" id="age" name="age"&gt;
+
+  &lt;button type="submit"&gt;Envoyer&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+        <p>Les éléments à connaître :</p>
+        <table>
+          <tr><th>Élément</th><th>Rôle</th></tr>
+          <tr><td><code>&lt;form action method&gt;</code></td><td>le formulaire : <em>où</em> envoyer (<code>action</code> = URL) et <em>comment</em> (<code>method</code> = get/post)</td></tr>
+          <tr><td><code>&lt;input type name&gt;</code></td><td>un champ de saisie ; <code>name</code> = le nom du paramètre envoyé</td></tr>
+          <tr><td><code>&lt;label for&gt;</code></td><td>l'étiquette d'un champ (utile à l'accessibilité) ; <code>for</code> = l'<code>id</code> du champ</td></tr>
+          <tr><td><code>&lt;button type="submit"&gt;</code></td><td>le bouton qui <strong>envoie</strong> le formulaire</td></tr>
+        </table>
+        <p>Quelques <code>type</code> d'<code>input</code> utiles : <code>text</code>, <code>number</code>, <code>password</code> (masqué), <code>email</code>, <code>checkbox</code>, <code>radio</code>. Pour choisir dans une liste, on utilise <code>&lt;select&gt;</code> avec des <code>&lt;option&gt;</code>.</p>
+        <p class="note">🔗 Au clic sur « Envoyer », le navigateur construit une requête avec la <strong>méthode</strong> du formulaire (<code>get</code> ou <code>post</code>) — c'est exactement le sujet de la section suivante. Le <code>name</code> de chaque champ devient une clé : <code>?ville=Beyrouth&amp;age=15</code>.</p>`,
+      },
+      {
         title: "Le protocole HTTP : GET et POST",
         html: `
         <p>Quand un <strong>formulaire</strong> envoie des données au serveur, il utilise une <strong>méthode</strong> HTTP. Les deux principales :</p>
