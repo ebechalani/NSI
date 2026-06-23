@@ -137,12 +137,12 @@ for n in [2, 8, 16, 256, 1000]:
     intro:
       "Une donnée seule, c'est peu de choses : ce qui compte, c'est la façon dont on organise un ensemble de données pour les utiliser efficacement. Piles, files, listes chaînées, arbres et graphes sont les « boîtes à outils » de la Terminale.",
     capacites: [
-      "Spécifier une structure de données par son interface (les opérations offertes), indépendamment de la façon dont elle est programmée (implémentation).",
-      "Connaître et implémenter les structures linéaires : listes, piles (LIFO) et files (FIFO).",
-      "Définir un arbre de façon récursive ; calculer sa taille et sa hauteur ; le parcourir (préfixe, infixe, suffixe, en largeur).",
-      "Connaître les arbres binaires de recherche (ABR) et l'intérêt pour rechercher rapidement.",
-      "Modéliser une situation à l'aide d'un graphe ; le représenter (matrice ou listes d'adjacence) et le parcourir (en profondeur, en largeur).",
-      "Choisir une structure adaptée à un problème en comparant le coût des opérations.",
+      "Écrire la définition d'une classe ; instancier un objet, accéder à ses attributs et appeler ses méthodes (vocabulaire de la programmation objet).",
+      "Distinguer des structures de données par le jeu de méthodes qui les caractérisent (interface), indépendamment de leur implémentation ; choisir une structure adaptée à la situation à modéliser.",
+      "Spécifier et implémenter les structures linéaires : listes, piles (LIFO) et files (FIFO).",
+      "Distinguer une recherche dans une liste d'une recherche dans un dictionnaire (par clé).",
+      "Identifier des situations nécessitant une structure arborescente ; évaluer quelques mesures d'un arbre binaire (taille, hauteur) ; le parcourir (préfixe, infixe, suffixe, en largeur).",
+      "Modéliser des situations à l'aide de graphes ; écrire les implémentations d'un graphe (matrice d'adjacence, listes d'adjacence) et passer de l'une à l'autre ; le parcourir (en profondeur, en largeur).",
     ],
     sections: [
       {
@@ -383,12 +383,14 @@ print(parcours_largeur(graphe, "Ava"))  # ['Ava', 'Bilal', 'Chloé', 'Dan']`,
         title: "Bien choisir : un récapitulatif",
         html: `
         <p>Le réflexe de Terminale : avant de coder, se demander « <strong>de quelle structure ai-je besoin ?</strong> » selon les opérations dominantes.</p>
+        <p>Un cas très fréquent : <strong>retrouver une information par une clé</strong>. Dans une <strong>liste</strong>, il faut parcourir les éléments un à un (coût proportionnel à la taille). Dans un <strong>dictionnaire</strong>, la recherche par clé est <strong>quasi immédiate</strong> (accès direct), quelle que soit la taille. D'où la règle : si l'on cherche souvent « l'élément associé à telle clé », on choisit un dictionnaire, pas une liste.</p>
         <table>
           <tr><th>Besoin</th><th>Structure</th><th>Pourquoi</th></tr>
           <tr><td>Revenir en arrière, annuler</td><td>Pile (LIFO)</td><td>Le dernier ajouté est le premier repris.</td></tr>
           <tr><td>Traiter dans l'ordre d'arrivée</td><td>File (FIFO)</td><td>Premier arrivé, premier servi.</td></tr>
           <tr><td>Insérer souvent en tête</td><td>Liste chaînée</td><td>On rebranche une flèche, sans décaler.</td></tr>
           <tr><td>Ranger pour rechercher vite</td><td>Arbre binaire de recherche</td><td>On élimine la moitié des nœuds à chaque étape.</td></tr>
+          <tr><td>Retrouver par une clé</td><td>Dictionnaire</td><td>Accès direct ≈ immédiat, sans parcourir.</td></tr>
           <tr><td>Représenter des relations</td><td>Graphe</td><td>Sommets + arêtes ; parcours BFS/DFS.</td></tr>
         </table>
         <p class="note">🎯 Activité débranchée (en îlot) : avec des gobelets empilables et une file d'élèves, faites « jouer » une pile puis une file, et notez à voix haute LIFO / FIFO à chaque opération. Puis modélisez les amitiés de l'îlot par un graphe au tableau et faites-en le parcours en largeur.</p>`,
@@ -405,11 +407,12 @@ print(parcours_largeur(graphe, "Ava"))  # ['Ava', 'Bilal', 'Chloé', 'Dan']`,
     intro:
       "Comment stocker, organiser et interroger de grandes quantités de données de façon fiable et partagée ? Le modèle relationnel et le langage SQL répondent à cette question depuis les années 1970.",
     capacites: [
-      "Identifier les concepts d'un système de gestion de bases de données relationnelles (SGBDR).",
-      "Décrire un schéma relationnel : relations (tables), attributs, domaines, clé primaire, clé étrangère.",
-      "Comprendre les contraintes d'intégrité (de domaine, de clé, référentielle).",
-      "Construire des requêtes SQL d'interrogation : SELECT, FROM, WHERE, ORDER BY, jointures, fonctions d'agrégat.",
-      "Construire des requêtes de mise à jour : INSERT, UPDATE, DELETE.",
+      "Identifier les concepts définissant le modèle relationnel : relation, attribut, domaine, clé primaire, clé étrangère, schéma relationnel.",
+      "Distinguer la structure d'une base de données de son contenu ; repérer des anomalies dans un schéma relationnel.",
+      "Identifier des contraintes d'intégrité (de domaine, de clé/d'entité, référentielle).",
+      "Construire des requêtes d'interrogation en SQL : SELECT, FROM, WHERE, jointures, ORDER BY, fonctions d'agrégat (COUNT, AVG…) et GROUP BY.",
+      "Construire des requêtes d'insertion et de mise à jour : INSERT, UPDATE, DELETE (avec les clauses VALUES, SET, WHERE).",
+      "Identifier le rôle d'un système de gestion de bases de données (SGBD) : persistance, cohérence, accès concurrents, sécurité.",
     ],
     sections: [
       {
@@ -602,10 +605,11 @@ VALUES (5, 'Margaret', 2, 17.0);</pre>
     intro:
       "Sous le code, il y a une machine et un réseau. On approfondit le rôle du système d'exploitation (processus, ordonnancement) et le fonctionnement d'Internet (paquets, routage, sécurisation des échanges).",
     capacites: [
-      "Décrire le rôle d'un système d'exploitation dans la gestion des processus (ordonnancement, notion d'interblocage).",
-      "Utiliser quelques commandes du système (gestion des processus et des fichiers).",
-      "Décrire le principe d'acheminement des données par paquets et le rôle des protocoles de routage (RIP, OSPF).",
-      "Mettre en évidence quelques notions de sécurité : chiffrement symétrique et asymétrique.",
+      "Décrire les principales caractéristiques d'un processus ; mettre en évidence le rôle de l'ordonnanceur et simuler son fonctionnement (ex. tourniquet / round-robin).",
+      "Identifier une situation d'interblocage (deadlock).",
+      "Utiliser quelques commandes du système d'exploitation pour gérer les processus et les fichiers.",
+      "Décrire l'acheminement des données par paquets et le rôle des protocoles de routage : RIP (nombre de sauts), OSPF (coût des liens, via l'algorithme de Dijkstra).",
+      "Décrire les principes du chiffrement symétrique et asymétrique, et l'intérêt des protocoles sécurisés (HTTPS).",
     ],
     sections: [
       {
@@ -748,11 +752,11 @@ print("Déchiffré :", vigenere(secret, "NSI", -1)) # déchiffrer (sens inverse)
     intro:
       "On élargit la façon de programmer : différents paradigmes (impératif, fonctionnel, objet), la récursivité, la mise au point rigoureuse, et quelques idées profondes (programmation dynamique, calculabilité).",
     capacites: [
-      "Identifier différents paradigmes de programmation (impératif, fonctionnel, orienté objet).",
-      "Écrire et comprendre des programmes récursifs.",
-      "Décomposer un problème en sous-problèmes (modularité) ; mettre au point un programme (jeux de tests, assertions).",
-      "Utiliser la programmation dynamique (mémoïsation) sur des exemples simples.",
-      "Aborder les notions de calculabilité et de décidabilité (problème de l'arrêt).",
+      "Identifier les principaux paradigmes de programmation (impératif, fonctionnel, orienté objet) et choisir celui adapté à un problème.",
+      "Écrire un programme récursif et analyser son fonctionnement (et l'optimiser par mémoïsation).",
+      "Décomposer un problème en sous-problèmes (modularité) ; mettre au point un programme : spécification, jeux de tests, assertions, mise au point.",
+      "Utiliser un système de gestion de versions (suivre les modifications d'un projet, travailler à plusieurs).",
+      "Distinguer, sur des exemples, les notions de calculabilité et de décidabilité ; présenter le problème de l'arrêt comme problème indécidable.",
     ],
     sections: [
       {
@@ -867,7 +871,8 @@ print(fib_memo(50))    # 12586269025 (instantané grâce à la mémoïsation)`,
         html: `
         <p>Un gros programme ne s'écrit pas d'un bloc. On le <strong>découpe</strong> en fonctions courtes, chacune avec une responsabilité claire — puis on regroupe les fonctions liées dans des <strong>modules</strong> (fichiers <code>.py</code>) que l'on <code>import</code>e.</p>
         <p>Avantages : on <em>lit</em> mieux, on <em>teste</em> chaque morceau séparément, on <em>réutilise</em>, et plusieurs personnes peuvent travailler en parallèle. C'est la compétence <strong>« décomposition »</strong> de la pensée informatique.</p>
-        <p>Chaque fonction mérite une <strong>docstring</strong> qui dit ce qu'elle fait (sa <em>spécification</em>), sans dire comment.</p>`,
+        <p>Chaque fonction mérite une <strong>docstring</strong> qui dit ce qu'elle fait (sa <em>spécification</em>), sans dire comment.</p>
+        <p class="note">🔁 <strong>Travailler à plusieurs : le gestionnaire de versions.</strong> Dès qu'un projet grossit ou qu'on est plusieurs, on utilise un <strong>système de gestion de versions</strong> comme <strong>git</strong>. Il <em>enregistre l'historique</em> de toutes les modifications (chaque <em>commit</em> = une photo du projet), permet de <em>revenir en arrière</em>, de <em>travailler en parallèle</em> (branches) puis de <em>fusionner</em> les contributions. Des plateformes comme <strong>GitHub</strong> ou <strong>la Forge des Communs Numériques Éducatifs</strong> hébergent ces dépôts. C'est l'outil de base du travail collaboratif sur du code.</p>`,
         code: `def est_premier(n):
     """Renvoie True si n est un nombre premier, False sinon."""
     if n < 2:
@@ -935,11 +940,12 @@ print(doctest.testmod())   # TestResults(failed=0, attempted=2)`,
     intro:
       "Le cœur de la Terminale : des stratégies générales pour résoudre des problèmes — diviser pour régner, programmation dynamique, algorithmes sur les graphes — et la mesure de leur coût.",
     capacites: [
-      "Mettre en œuvre la stratégie « diviser pour régner » (tri fusion, recherche dichotomique).",
+      "Évaluer et comparer le coût (en temps) de plusieurs algorithmes résolvant un même problème (notation en grand O).",
+      "Mettre en œuvre la stratégie « diviser pour régner » : recherche dichotomique, tri fusion.",
       "Mettre en œuvre la programmation dynamique sur des exemples (rendu de monnaie, etc.).",
       "Parcourir un graphe et y chercher un plus court chemin (algorithme de Dijkstra).",
-      "Connaître l'algorithme des k plus proches voisins (k-NN).",
-      "Évaluer le coût (complexité) d'un algorithme et comparer plusieurs solutions.",
+      "Mettre en œuvre l'algorithme des k plus proches voisins (k-NN).",
+      "Mettre en œuvre un algorithme de recherche textuelle (recherche d'un motif dans un texte).",
     ],
     sections: [
       {
