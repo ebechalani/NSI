@@ -1070,151 +1070,111 @@ print("Ville demandée :", parametres["ville"])`,
       {
         title: "🏆 Exercice guidé : un formulaire d'inscription (étape par étape)",
         html: `
-        <p>On construit ensemble, <strong>partie par partie</strong>, un formulaire d'inscription à un club. À chaque étape tu complètes l'éditeur et tu cliques <strong>▶ Voir le résultat</strong> ; à la dernière étape, ton formulaire est <strong>complet</strong>.</p>
-        <p><strong>Les règles d'un bon formulaire :</strong> il est envoyé par <code>&lt;form action="…" method="post"&gt;</code> ; <strong>chaque champ</strong> est dans son propre <code>&lt;div&gt;</code> ; chaque champ a une <strong>étiquette reliée</strong> — <code>&lt;label for="x"&gt;</code> avec <code>&lt;input id="x"&gt;</code> (même valeur). Astuce : si la liaison est bonne, cliquer sur le <em>texte</em> de l'étiquette active le champ.</p>`,
+        <p>On construit un formulaire d'inscription à un club <strong>morceau par morceau</strong>. À chaque étape, voici le <strong>petit bout de code</strong> à ajouter (bouton <strong>📋 Copier</strong>). À la <strong>dernière étape</strong>, tu retrouves <strong>tout assemblé dans un seul code</strong>, à exécuter et modifier.</p>
+        <p><strong>Les règles :</strong> le formulaire est envoyé par <code>&lt;form action="…" method="post"&gt;</code> ; <strong>un <code>&lt;div&gt;</code> par champ</strong> ; chaque champ a une étiquette <strong>reliée</strong> — <code>&lt;label for="x"&gt;</code> avec <code>&lt;input id="x"&gt;</code> (même valeur, pour que cliquer l'étiquette active le champ).</p>`,
         steps: [
           {
-            titre: "La structure (form + 1 champ bien relié)",
-            consigne: `<p>Un formulaire commence par <code>&lt;form&gt;</code> avec <code>action</code> (où envoyer) et <code>method="post"</code>. Premier champ : le <strong>nom</strong>, dans un <code>&lt;div&gt;</code>, avec <code>&lt;label for="nom"&gt;</code> relié à <code>&lt;input id="nom"&gt;</code>. Clique sur « Nom : » → le champ s'active.</p>`,
-            code: `<!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"></head>
-<body>
-<h2>Inscription au club</h2>
-<form action="/inscription" method="post">
-
-  <div>
-    <label for="nom">Nom :</label>
-    <input type="text" id="nom" name="nom" required>
-  </div>
-
-  <!-- Les autres champs viendront ici : un <div> par champ -->
-
-</form>
-</body></html>`,
+            titre: "ouvrir le formulaire",
+            consigne: `<p>Le squelette : <code>action</code> = où envoyer, <code>method="post"</code> = comment. Les champs viendront <strong>à l'intérieur</strong>.</p>`,
+            code: `<form action="/inscription" method="post">
+  <!-- les champs viennent ici, un <div> par champ -->
+</form>`,
           },
           {
-            titre: "Les champs texte (prénom, e-mail, mot de passe)",
-            consigne: `<p>Ajoute, sur le même modèle : <strong>prénom</strong> (texte), <strong>e-mail</strong> (<code>type="email"</code>) et <strong>mot de passe</strong> (<code>type="password"</code>). Mets <code>required</code> sur les champs obligatoires.</p>`,
-            code: `<!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"></head>
-<body>
-<h2>Inscription au club</h2>
-<form action="/inscription" method="post">
-
-  <div>
-    <label for="nom">Nom :</label>
-    <input type="text" id="nom" name="nom" required>
-  </div>
-  <div>
-    <label for="prenom">Prénom :</label>
-    <input type="text" id="prenom" name="prenom" required>
-  </div>
-  <div>
-    <label for="email">E-mail :</label>
-    <input type="email" id="email" name="email" required>
-  </div>
-  <div>
-    <label for="mdp">Mot de passe :</label>
-    <input type="password" id="mdp" name="mdp">
-  </div>
-
-</form>
-</body></html>`,
+            titre: "ajouter le nom",
+            consigne: `<p>Un <code>&lt;div&gt;</code> + un <code>&lt;label for="nom"&gt;</code> relié à <code>&lt;input id="nom"&gt;</code>. <code>required</code> = champ obligatoire.</p>`,
+            code: `<div>
+  <label for="nom">Nom :</label>
+  <input type="text" id="nom" name="nom" required>
+</div>`,
           },
           {
-            titre: "Date et nombre (avec des limites)",
-            consigne: `<p>Ajoute la <strong>date de naissance</strong> (<code>type="date"</code>) et l'<strong>âge</strong> (<code>type="number"</code> avec <code>min="7"</code> et <code>max="120"</code>).</p>`,
-            code: `<!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"></head>
-<body>
-<h2>Inscription au club</h2>
-<form action="/inscription" method="post">
-
-  <div>
-    <label for="nom">Nom :</label>
-    <input type="text" id="nom" name="nom" required>
-  </div>
-  <div>
-    <label for="prenom">Prénom :</label>
-    <input type="text" id="prenom" name="prenom" required>
-  </div>
-  <div>
-    <label for="email">E-mail :</label>
-    <input type="email" id="email" name="email" required>
-  </div>
-  <div>
-    <label for="mdp">Mot de passe :</label>
-    <input type="password" id="mdp" name="mdp">
-  </div>
-  <div>
-    <label for="naissance">Date de naissance :</label>
-    <input type="date" id="naissance" name="naissance">
-  </div>
-  <div>
-    <label for="age">Âge :</label>
-    <input type="number" id="age" name="age" min="7" max="120">
-  </div>
-
-</form>
-</body></html>`,
+            titre: "ajouter le prénom",
+            code: `<div>
+  <label for="prenom">Prénom :</label>
+  <input type="text" id="prenom" name="prenom" required>
+</div>`,
           },
           {
-            titre: "Les choix (radio, liste déroulante, case à cocher)",
-            consigne: `<p>Le <strong>niveau</strong> = 3 boutons <code>type="radio"</code> avec le <strong>même <code>name</code></strong> (un seul choix possible). L'<strong>activité</strong> = une liste <code>&lt;select&gt;</code> avec au moins 3 <code>&lt;option&gt;</code>. Enfin une <strong>case</strong> <code>type="checkbox"</code> « J'accepte le règlement » (<code>required</code>).</p>`,
-            code: `<!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"></head>
-<body>
-<h2>Inscription au club</h2>
-<form action="/inscription" method="post">
-
-  <div>
-    <label for="nom">Nom :</label>
-    <input type="text" id="nom" name="nom" required>
-  </div>
-  <div>
-    <label for="prenom">Prénom :</label>
-    <input type="text" id="prenom" name="prenom" required>
-  </div>
-  <div>
-    <label for="email">E-mail :</label>
-    <input type="email" id="email" name="email" required>
-  </div>
-  <div>
-    <label for="mdp">Mot de passe :</label>
-    <input type="password" id="mdp" name="mdp">
-  </div>
-  <div>
-    <label for="naissance">Date de naissance :</label>
-    <input type="date" id="naissance" name="naissance">
-  </div>
-  <div>
-    <label for="age">Âge :</label>
-    <input type="number" id="age" name="age" min="7" max="120">
-  </div>
-  <div>
-    <span>Niveau :</span>
-    <label><input type="radio" name="niveau" value="debutant"> Débutant</label>
-    <label><input type="radio" name="niveau" value="intermediaire"> Intermédiaire</label>
-    <label><input type="radio" name="niveau" value="expert"> Expert</label>
-  </div>
-  <div>
-    <label for="activite">Activité :</label>
-    <select id="activite" name="activite">
-      <option>Natation</option>
-      <option>Escalade</option>
-      <option>Échecs</option>
-    </select>
-  </div>
-  <div>
-    <label><input type="checkbox" name="reglement" required> J'accepte le règlement</label>
-  </div>
-
-</form>
-</body></html>`,
+            titre: "ajouter l'e-mail",
+            consigne: `<p><code>type="email"</code> vérifie que la saisie ressemble à une adresse.</p>`,
+            code: `<div>
+  <label for="email">E-mail :</label>
+  <input type="email" id="email" name="email" required>
+</div>`,
           },
           {
-            titre: "Message, envoi… et le formulaire complet ✅",
-            consigne: `<p>Termine avec une <strong>zone de texte</strong> <code>&lt;textarea&gt;</code> (message libre) et le <strong>bouton</strong> <code>&lt;button type="submit"&gt;</code>. Voici le <strong>formulaire complet</strong> — compare-le au tien !</p>`,
+            titre: "ajouter le mot de passe",
+            consigne: `<p><code>type="password"</code> masque la saisie à l'écran.</p>`,
+            code: `<div>
+  <label for="mdp">Mot de passe :</label>
+  <input type="password" id="mdp" name="mdp">
+</div>`,
+          },
+          {
+            titre: "ajouter la date de naissance",
+            consigne: `<p><code>type="date"</code> affiche un sélecteur de date.</p>`,
+            code: `<div>
+  <label for="naissance">Date de naissance :</label>
+  <input type="date" id="naissance" name="naissance">
+</div>`,
+          },
+          {
+            titre: "ajouter l'âge",
+            consigne: `<p><code>type="number"</code> avec <code>min</code> et <code>max</code> pour borner la valeur.</p>`,
+            code: `<div>
+  <label for="age">Âge :</label>
+  <input type="number" id="age" name="age" min="7" max="120">
+</div>`,
+          },
+          {
+            titre: "ajouter le niveau (boutons radio)",
+            consigne: `<p>3 boutons <code>type="radio"</code> avec le <strong>même <code>name</code></strong> → un seul choix possible.</p>`,
+            code: `<div>
+  <span>Niveau :</span>
+  <label><input type="radio" name="niveau" value="debutant"> Débutant</label>
+  <label><input type="radio" name="niveau" value="intermediaire"> Intermédiaire</label>
+  <label><input type="radio" name="niveau" value="expert"> Expert</label>
+</div>`,
+          },
+          {
+            titre: "ajouter l'activité (liste déroulante)",
+            consigne: `<p>Une liste <code>&lt;select&gt;</code> contenant des <code>&lt;option&gt;</code> (au moins 3).</p>`,
+            code: `<div>
+  <label for="activite">Activité :</label>
+  <select id="activite" name="activite">
+    <option>Natation</option>
+    <option>Escalade</option>
+    <option>Échecs</option>
+  </select>
+</div>`,
+          },
+          {
+            titre: "ajouter le règlement (case à cocher)",
+            consigne: `<p>Une case <code>type="checkbox"</code>, <code>required</code> pour forcer l'acceptation.</p>`,
+            code: `<div>
+  <label><input type="checkbox" name="reglement" required> J'accepte le règlement</label>
+</div>`,
+          },
+          {
+            titre: "ajouter le message",
+            consigne: `<p><code>&lt;textarea&gt;</code> = une zone de texte sur plusieurs lignes.</p>`,
+            code: `<div>
+  <label for="message">Message :</label>
+  <textarea id="message" name="message" rows="3"></textarea>
+</div>`,
+          },
+          {
+            titre: "ajouter le bouton d'envoi",
+            consigne: `<p><code>&lt;button type="submit"&gt;</code> déclenche l'envoi du formulaire.</p>`,
+            code: `<div>
+  <button type="submit">S'inscrire</button>
+</div>`,
+          },
+          {
+            titre: "✅ Tout relié dans un seul code",
+            preview: true,
+            consigne: `<p>Voici tous les morceaux <strong>assemblés</strong>. Édite-le et clique <strong>▶ Voir le résultat</strong> — c'est ton formulaire complet !</p>`,
             code: `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"></head>
 <body>

@@ -710,12 +710,34 @@
     return cell;
   }
 
-  // Une étape d'un exercice guidé : titre + consigne + cellule HTML éditable.
+  // Une étape d'un exercice guidé. Par défaut : un EXTRAIT de code (le bout à
+  // ajouter) avec un bouton Copier. Si st.preview = true : une cellule HTML
+  // éditable + aperçu (sert pour la dernière étape « le tout relié »).
   function makeExoStep(st, k) {
     const box = el("div", "exo-step");
     box.appendChild(el("div", "exo-step-head", `Étape ${k + 1} — ${st.titre}`));
     if (st.consigne) box.appendChild(el("div", "exo-step-consigne", st.consigne));
-    box.appendChild(makeHtmlCell(st.code));
+    if (st.preview) {
+      box.appendChild(makeHtmlCell(st.code));
+    } else {
+      const wrap = el("div", "exo-snippet");
+      const bar = el("div", "exo-snippet-bar");
+      bar.appendChild(el("span", "exo-snippet-lang", "HTML"));
+      const copyBtn = el("button", "exo-copy", "📋 Copier");
+      copyBtn.addEventListener("click", () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(st.code).then(() => toast("Extrait copié ✓")).catch(() => {});
+        }
+      });
+      bar.appendChild(copyBtn);
+      wrap.appendChild(bar);
+      const pre = el("pre", "exo-snippet-pre");
+      const code = el("code");
+      code.textContent = st.code; // textContent = échappé : affiche le HTML tel quel
+      pre.appendChild(code);
+      wrap.appendChild(pre);
+      box.appendChild(wrap);
+    }
     return box;
   }
 

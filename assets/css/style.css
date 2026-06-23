@@ -240,6 +240,14 @@ html[data-theme="dark"] .code-toolbar { background: #0c1424; }
 .exo-step { border-left: 3px solid var(--accent); padding-left: 1rem; margin: 1.2rem 0; }
 .exo-step-head { font-weight: 700; color: var(--accent); margin-bottom: .35rem; }
 .exo-step-consigne { font-size: .95rem; margin-bottom: .5rem; line-height: 1.6; }
+.exo-snippet { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--code-bg); }
+.exo-snippet-bar { display: flex; align-items: center; justify-content: space-between; padding: .35rem .7rem; background: #1e293b; border-bottom: 1px solid #334155; }
+html[data-theme="dark"] .exo-snippet-bar { background: #0c1424; }
+.exo-snippet-lang { color: #94a3b8; font-size: .72rem; font-family: var(--mono); }
+.exo-copy { font-family: var(--sans); font-size: .76rem; font-weight: 600; color: #94a3b8; background: transparent; border: 1px solid #334155; border-radius: 6px; padding: .2rem .6rem; cursor: pointer; }
+.exo-copy:hover { color: #fff; border-color: var(--accent); }
+.exo-snippet-pre { margin: 0; padding: .7rem 1rem; overflow-x: auto; }
+.exo-snippet-pre code { font-family: var(--mono); font-size: .85rem; line-height: 1.5; color: var(--code-text); background: none; border: none; padding: 0; white-space: pre; }
 
 /* Aperçu HTML/CSS en direct (thème Web) */
 .html-preview-wrap { border-top: 1px solid #334155; background: #0b1220; }
