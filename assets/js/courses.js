@@ -370,6 +370,7 @@ print("quotient", q, "reste", r)
           <li><code>notes[0]</code> → le premier (12) ; <code>notes[-1]</code> → le dernier (11) ;</li>
           <li><code>len(notes)</code> → le nombre d'éléments (5), donc le <em>dernier indice valide</em> est <code>len(notes) - 1</code> ;</li>
           <li><code>notes[1:3]</code> → une <strong>tranche</strong> (<em>slice</em>) : les indices 1 et 2, soit <code>[15, 9]</code> (la borne de droite est exclue).</li>
+          <li>La tranche complète est <code>liste[début:fin:pas]</code> : <code>notes[::2]</code> prend un élément <strong>sur deux</strong>, et <code>notes[::-1]</code> renvoie la liste <strong>à l'envers</strong>.</li>
         </ul>
         <p class="warnbox">⚠️ Erreur la plus fréquente du thème : <code>notes[5]</code> sur une liste de 5 éléments lève <code>IndexError</code>, car le dernier indice est 4.</p>`,
         code: `notes = [12, 15, 9, 18, 11]
@@ -377,6 +378,8 @@ print("premier :", notes[0])      # 12
 print("dernier :", notes[-1])     # 11
 print("combien :", len(notes))    # 5
 print("tranche :", notes[1:3])    # [15, 9]  (1 et 2, pas 3)
+print("un sur deux :", notes[::2])  # [12, 9, 11]
+print("à l'envers :", notes[::-1])  # [11, 18, 9, 15, 12]
 
 # notes[5] provoquerait IndexError : le dernier indice est 4 !`,
       },
@@ -499,7 +502,8 @@ print(grille)`,
         <ul>
           <li><code>d["nom"]</code> : lire la valeur (erreur si la clé n'existe pas) ;</li>
           <li><code>d.get("nom", défaut)</code> : lire sans risque, avec une valeur par défaut ;</li>
-          <li><code>d["classe"] = "1NSI"</code> : ajouter ou modifier une clé ;</li>
+          <li><code>d["classe"] = "1NSI"</code> : ajouter ou modifier une clé (même syntaxe) ;</li>
+          <li><code>del d["classe"]</code> ou <code>d.pop("classe")</code> : supprimer une clé ;</li>
           <li><code>"nom" in d</code> : tester la présence d'une <em>clé</em> ;</li>
           <li>parcours : <code>d.keys()</code> (clés), <code>d.values()</code> (valeurs), <code>d.items()</code> (les paires).</li>
         </ul>`,
@@ -514,6 +518,32 @@ print("âge :", eleve.get("age", "non renseigné"))
 # Parcourir les paires clé/valeur
 for cle, valeur in eleve.items():
     print(cle, "=>", valeur)`,
+      },
+      {
+        title: "Compter avec un dictionnaire",
+        html: `
+        <p>L'un des usages les plus utiles du dictionnaire : <strong>compter des occurrences</strong> — combien de fois chaque élément apparaît. C'est un <strong>motif à connaître par cœur</strong> :</p>
+        <ul>
+          <li>on part d'un dictionnaire vide <code>compte = {}</code> ;</li>
+          <li>pour chaque élément <code>x</code>, on fait <code>compte[x] = compte.get(x, 0) + 1</code> — le <code>.get(x, 0)</code> renvoie <code>0</code> si la clé n'existe pas <em>encore</em>, ce qui évite la <code>KeyError</code>.</li>
+        </ul>
+        <p>On peut aussi construire un dictionnaire <strong>en compréhension</strong>, exactement comme une liste : <code>{cle: valeur for …}</code>.</p>
+        <p class="note">⭐ Pour aller plus loin : Python a un raccourci tout fait pour compter, <code>collections.Counter</code> (<code>Counter(votes)</code>) — pratique, mais sachez d'abord écrire le motif à la main.</p>`,
+        code: `votes = ["Mario", "Zelda", "Mario", "Sonic", "Mario", "Zelda"]
+
+compte = {}
+for jeu in votes:
+    compte[jeu] = compte.get(jeu, 0) + 1
+print(compte)        # {'Mario': 3, 'Zelda': 2, 'Sonic': 1}
+
+# Le gagnant = la clé qui a la plus grande valeur
+gagnant = max(compte, key=compte.get)
+print("Gagnant :", gagnant, "(", compte[gagnant], "voix )")
+
+# Dictionnaire en compréhension : la longueur de chaque mot
+mots = ["python", "nsi", "lycee"]
+longueurs = {m: len(m) for m in mots}
+print(longueurs)     # {'python': 6, 'nsi': 3, 'lycee': 5}`,
       },
       {
         title: "Choisir la bonne structure (synthèse)",

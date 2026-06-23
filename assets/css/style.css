@@ -76,6 +76,8 @@ body {
 }
 .menu-toggle { display: none; }
 .icon-btn:hover, .menu-toggle:hover { border-color: var(--accent); }
+/* Bouton de bascule de niveau : porte un libellé (Première / Terminale), pas seulement une icône. */
+.level-toggle { width: auto; padding: 0 .65rem; gap: .25rem; font-size: .85rem; font-weight: 600; display: inline-flex; align-items: center; white-space: nowrap; }
 
 .progress-wrap { display: flex; align-items: center; gap: .5rem; }
 .progress-bar {
@@ -192,6 +194,14 @@ body {
 .section code:not(pre code) {
   font-family: var(--mono); background: var(--bg-soft); border: 1px solid var(--border);
   padding: .08rem .35rem; border-radius: 5px; font-size: .88em;
+}
+/* Blocs de requêtes SQL (thème Bases de données) */
+.section pre.sql {
+  font-family: var(--mono); font-size: .85rem; line-height: 1.5;
+  background: var(--code-bg); color: var(--code-text);
+  border: 1px solid var(--border); border-left: 4px solid var(--accent);
+  padding: .8rem 1rem; border-radius: 10px; overflow-x: auto;
+  white-space: pre; tab-size: 4; margin: .8rem 0;
 }
 .keyword { color: var(--accent); font-weight: 600; }
 .note {

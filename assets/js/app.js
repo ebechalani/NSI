@@ -5,6 +5,24 @@
 (function () {
   "use strict";
 
+  /* ---------------- Niveau affiché (Première / Terminale) ----------------
+     Le contenu (COURSES, QUIZZES…) est chargé selon le niveau mémorisé dans
+     le navigateur (voir le bootstrap de chargement dans index.html). Ici on
+     adapte simplement les quelques libellés « Première / Terminale » de l'UI. */
+  const NIVEAUX = {
+    premiere: { id: "premiere", label: "Première", bo: "Bulletin officiel spécial n°1 du 22 janvier 2019" },
+    terminale: { id: "terminale", label: "Terminale", bo: "Bulletin officiel spécial n°8 du 25 juillet 2019" },
+  };
+  const NIV = NIVEAUX[window.NSI_NIVEAU === "terminale" ? "terminale" : "premiere"];
+  const NIV_AUTRE = NIV.id === "premiere" ? NIVEAUX.terminale : NIVEAUX.premiere;
+  document.title = `NSI ${NIV.label} — Cours interactif`;
+  (function reflectNiveau() {
+    const small = document.querySelector(".brand-title small");
+    if (small) small.textContent = NIV.label;
+    const foot = document.querySelector(".sidebar-foot p");
+    if (foot) foot.textContent = `Conforme au programme officiel de ${NIV.label} NSI (Bulletin officiel).`;
+  })();
+
   // Ordre d'affichage = progression pédagogique (champ num de chaque thème)
   COURSES.sort((a, b) => a.num - b.num);
 
@@ -50,6 +68,20 @@
     localStorage.setItem(TEACHER_KEY, on ? "1" : "0");
     applyTeacher(on);
   });
+
+  /* ---------------- Sélecteur de niveau (Première ↔ Terminale) ---------------- */
+  const NIV_KEY = "nsi-niveau";
+  (function setupLevelToggle() {
+    const btn = $("#levelToggle");
+    if (!btn) return;
+    const lbl = $("#levelLabel");
+    if (lbl) lbl.textContent = NIV.label;
+    btn.title = `Niveau : ${NIV.label} — cliquer pour passer à ${NIV_AUTRE.label}`;
+    btn.addEventListener("click", () => {
+      localStorage.setItem(NIV_KEY, NIV_AUTRE.id);
+      location.reload();
+    });
+  })();
 
   /* ---------------- Menu mobile ---------------- */
   const sidebar = $("#sidebar");
@@ -295,17 +327,18 @@
 
   function renderHome() {
     viewHome.innerHTML = "";
+    const nbOfficiels = COURSES.filter((c) => !c.anticipation).length;
     const hero = el("div", "hero");
     hero.innerHTML = `
       <div class="hero-badges">
-        <span class="badge">🎓 Première NSI</span>
+        <span class="badge">🎓 ${NIV.label} NSI</span>
         <span class="badge">📘 Programme officiel (BO)</span>
         <span class="badge">🐍 Python exécutable</span>
         <span class="badge">✅ ${COURSES.length} thèmes • QCM</span>
       </div>
       <h1>Apprendre la NSI, en pratiquant</h1>
       <p class="lead">Cours interactif de spécialité <strong>Numérique et Sciences Informatiques</strong>
-      pour la classe de Première. Lis le cours, exécute du vrai code Python directement
+      pour la classe de ${NIV.label}. Lis le cours, exécute du vrai code Python directement
       dans ton navigateur, puis valide tes connaissances avec les QCM.</p>
     `;
     viewHome.appendChild(hero);
@@ -351,9 +384,9 @@
       },
       {
         emoji: "✅",
-        tag: "8 thèmes BO",
+        tag: `${nbOfficiels} thèmes BO`,
         title: "Conformité au BO",
-        desc: "Les 8 thèmes officiels de Première et les capacités attendues, avec où chacune est traitée.",
+        desc: `Les ${nbOfficiels} thèmes officiels de ${NIV.label} et les capacités attendues, avec où chacune est traitée.`,
         target: "bo",
         prof: true,
       },
@@ -394,7 +427,7 @@
       },
       {
         emoji: "🗓️",
-        tag: "4 h / sem.",
+        tag: NIV.id === "terminale" ? "6 h / sem." : "4 h / sem.",
         title: "Progression annuelle",
         desc: "Planning indicatif des séquences sur l'année + l'encart « coder pour de vrai ».",
         target: "progression",
@@ -440,7 +473,7 @@
     const note = el(
       "div",
       "sidebar-foot",
-      `<p style="margin-top:2rem">Contenu rédigé d'après le <strong>programme officiel de Première NSI</strong>
+      `<p style="margin-top:2rem">Contenu rédigé d'après le <strong>programme officiel de ${NIV.label} NSI</strong>
        (Bulletin officiel). Ce site est un support pédagogique indépendant et ne reproduit aucun manuel.</p>`
     );
     viewHome.appendChild(note);
@@ -2045,7 +2078,7 @@ except Exception:
       el(
         "p",
         "theme-intro",
-        "Les <strong>8 thèmes officiels</strong> de la spécialité NSI en Première (Bulletin officiel) et, pour chacun, les <strong>capacités attendues</strong> avec l'endroit où elles sont travaillées sur le site."
+        `Les <strong>${COURSES.filter((c) => !c.anticipation).length} thèmes officiels</strong> de la spécialité NSI en ${NIV.label} (Bulletin officiel) et, pour chacun, les <strong>capacités attendues</strong> avec l'endroit où elles sont travaillées sur le site.`
       )
     );
     viewTheme.appendChild(header);
@@ -2060,7 +2093,7 @@ except Exception:
     const bonus = COURSES.filter((c) => c.anticipation);
 
     viewTheme.appendChild(
-      el("div", "info-callout", `📘 <strong>${officiels.length} thèmes au programme de Première</strong> couverts. Les thèmes marqués « bonus » sont des ouvertures qui anticipent la Terminale.`)
+      el("div", "info-callout", `📘 <strong>${officiels.length} thèmes au programme de ${NIV.label}</strong> couverts.${bonus.length ? " Les thèmes marqués « bonus » sont des ouvertures qui anticipent la Terminale." : ""}`)
     );
 
     function carte(c) {
@@ -2099,8 +2132,8 @@ except Exception:
     const officiels = COURSES.filter((c) => !c.anticipation).map(bloc).join("");
     const bonus = COURSES.filter((c) => c.anticipation).map(bloc).join("");
     openPrint(
-      "Conformité au BO — Première NSI",
-      `<h1>✅ Conformité au programme — Première NSI</h1>` +
+      `Conformité au BO — ${NIV.label} NSI`,
+      `<h1>✅ Conformité au programme — ${NIV.label} NSI</h1>` +
         `<p class="intro">Capacités attendues du Bulletin officiel et leur traitement sur le site.</p>` +
         officiels +
         (bonus ? `<h1 style="page-break-before:always">⭐ Bonus (anticipation Terminale)</h1>${bonus}` : "")
@@ -2157,8 +2190,8 @@ except Exception:
         `<td>${p.activites}</td><td>${p.evaluation}</td></tr>`
     ).join("");
     openPrint(
-      "Progression annuelle — Première NSI",
-      `<h1>🗓️ Progression annuelle — Première NSI</h1><p class="intro">${PROGRESSION_INTRO}</p>` +
+      `Progression annuelle — ${NIV.label} NSI`,
+      `<h1>🗓️ Progression annuelle — ${NIV.label} NSI</h1><p class="intro">${PROGRESSION_INTRO}</p>` +
         `<table><tr><th>Période</th><th>Thème & objectifs</th><th>Activités</th><th>Évaluation</th></tr>${rows}</table>`
     );
   }
@@ -2186,8 +2219,8 @@ except Exception:
     const bPrint = el("button", "btn secondary", "🖨️ Imprimer les fiches méthode");
     bPrint.addEventListener("click", () =>
       openPrint(
-        "Fiches méthode — NSI Première",
-        "<h1>🧭 Fiches méthode — NSI Première</h1>" +
+        `Fiches méthode — NSI ${NIV.label}`,
+        `<h1>🧭 Fiches méthode — NSI ${NIV.label}</h1>` +
           METHODES.map((m) => `<h2>${m.titre}</h2>${m.html}`).join("")
       )
     );
@@ -2552,6 +2585,7 @@ except Exception:
     const wrap = el("div", "extra-block du-block");
     wrap.appendChild(el("h2", null, "🔗 Pour aller plus loin — " + R.titre));
     wrap.appendChild(el("p", "extra-hint", "Support d'une autre formation (" + R.auteur + "), accessible en ligne."));
+    if (R.note) wrap.appendChild(el("p", "note", R.note));
     const grid = el("div", "didac-grid");
     R.items.forEach((it) => {
       const a = el("a", "didac-card");
@@ -2674,7 +2708,7 @@ except Exception:
     gate.classList.remove("hidden");
     gate.innerHTML = `
       <div class="auth-card">
-        <div class="auth-brand"><span class="brand-logo">&lt;/&gt;</span> NSI Première</div>
+        <div class="auth-brand"><span class="brand-logo">&lt;/&gt;</span> NSI ${NIV.label}</div>
         <p class="auth-lead">Plateforme de la classe — choisis ton espace.</p>
         <div class="auth-tabs">
           <button class="auth-tab active" data-tab="eleve">🎓 Espace élève</button>
@@ -3001,7 +3035,7 @@ except Exception:
     const crumb = el("span", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
-    header.appendChild(el("h1", null, "📚 Enseigner la NSI en Première"));
+    header.appendChild(el("h1", null, `📚 Enseigner la NSI en ${NIV.label}`));
     header.appendChild(
       el("p", "theme-intro", "Repères pour préparer et donner le cours : programme & organisation, didactique, culture à transmettre, mise en œuvre. Clique un thème pour ouvrir sa <strong>fiche</strong> ; le lien « source ↗ » mène à la page d'origine.")
     );
