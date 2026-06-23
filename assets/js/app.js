@@ -494,6 +494,7 @@
       if (s.schema) sec.appendChild(el("div", "schema", s.schema));
       if (s.code) sec.appendChild(makeCodeCell(s.code));
       if (s.htmldemo) sec.appendChild(makeHtmlCell(s.htmldemo));
+      if (s.steps) s.steps.forEach((st, k) => sec.appendChild(makeExoStep(st, k)));
       if (s.game) sec.appendChild(makeGame(s.game));
       if (s.prof) sec.appendChild(makeProfNote(s.prof));
       viewTheme.appendChild(sec);
@@ -707,6 +708,15 @@
     });
     setTimeout(render, 0); // aperçu initial
     return cell;
+  }
+
+  // Une étape d'un exercice guidé : titre + consigne + cellule HTML éditable.
+  function makeExoStep(st, k) {
+    const box = el("div", "exo-step");
+    box.appendChild(el("div", "exo-step-head", `Étape ${k + 1} — ${st.titre}`));
+    if (st.consigne) box.appendChild(el("div", "exo-step-consigne", st.consigne));
+    box.appendChild(makeHtmlCell(st.code));
+    return box;
   }
 
   // Visualiseur pas à pas (Python Tutor) — variables, mémoire, appels de fonctions.

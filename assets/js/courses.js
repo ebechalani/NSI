@@ -745,9 +745,20 @@ for l in fusion:
           <li>ton <strong>navigateur</strong> (le <em>client</em> : Chrome, Firefox…) envoie une <strong>requête</strong> ;</li>
           <li>un <strong>serveur</strong> (un ordinateur distant qui héberge le site) reçoit la requête et renvoie une <strong>réponse</strong> : le plus souvent une page HTML.</li>
         </ol>
-        <p>Cet échange suit un <strong>protocole</strong> commun, <strong>HTTP</strong>, et l'adresse demandée est une <strong>URL</strong>. Décortiquons une URL :</p>
-        <pre><code>https://  www.exemple.fr  /recherche  ?ville=Beyrouth
-└─protocole┘ └──domaine──┘ └─chemin─┘ └──paramètres──┘</code></pre>
+        <p>Cet échange suit un <strong>protocole</strong> commun, <strong>HTTP</strong> (ou <strong>HTTPS</strong>, sa version sécurisée), et l'adresse demandée est une <strong>URL</strong>. Mais comment le navigateur trouve-t-il le serveur ? Grâce au <strong>DNS</strong> (l'annuaire du Web), qui traduit le nom de domaine <code>www.exemple.fr</code> en <strong>adresse IP</strong> de la machine.</p>
+        <p>Décortiquons une URL complète :</p>
+        <pre><code>https://  www.exemple.fr  :443  /recherche  ?ville=Beyrouth  #resultats
+└protocole┘ └──domaine──┘ └port┘ └─chemin─┘ └──paramètres──┘ └fragment┘</code></pre>
+        <table>
+          <tr><th>Partie</th><th>Rôle</th></tr>
+          <tr><td>protocole</td><td><code>http</code>, <code>https</code> (sécurisé), <code>file</code>…</td></tr>
+          <tr><td>domaine</td><td>se lit de <strong>droite à gauche</strong> : TLD (<code>.fr</code>) → domaine → sous-domaine</td></tr>
+          <tr><td>port</td><td>80 pour HTTP, 443 pour HTTPS (inutile de l'écrire si c'est le port par défaut)</td></tr>
+          <tr><td>chemin</td><td>la ressource demandée sur le serveur</td></tr>
+          <tr><td><code>?</code> paramètres</td><td>paires <code>clé=valeur</code> séparées par <code>&amp;</code></td></tr>
+          <tr><td><code>#</code> fragment</td><td>saute à une <strong>ancre</strong> (un <code>id</code>) de la page</td></tr>
+        </table>
+        <p class="note">📜 Un peu d'histoire : le Web a été inventé par <strong>Tim Berners-Lee en 1989 au CERN</strong>. HTML descend des langages SGML/GML des années 1960-70. Depuis <strong>HTML5</strong>, c'est un « <strong>standard vivant</strong> » qui évolue en continu, sans numéro de version.</p>
         <p>Retiens dès maintenant cette idée : <strong>une page reçue est juste du texte</strong> (du HTML) que le navigateur sait afficher. C'est ce texte qu'on apprend à écrire.</p>`,
       },
       {
@@ -793,7 +804,9 @@ for l in fusion:
           <tr><td><code>&lt;!-- … --&gt;</code></td><td>commentaire (non affiché)</td></tr>
         </table>
         <p>Le <code>href</code> d'un lien et le <code>src</code> d'une image sont des <strong>attributs</strong> : des informations ajoutées dans la balise ouvrante sous la forme <code>nom="valeur"</code>. L'attribut <code>alt</code> d'une image est important pour l'<strong>accessibilité</strong> (lecteurs d'écran) et s'affiche si l'image ne charge pas.</p>
-        <p>Pour <strong>organiser</strong> une page, on utilise aussi des balises <strong>sémantiques</strong> qui décrivent le <em>rôle</em> des zones : <code>&lt;header&gt;</code> (en-tête), <code>&lt;nav&gt;</code> (menu), <code>&lt;main&gt;</code> (contenu principal), <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;footer&gt;</code> (pied de page). Elles aident le navigateur, le référencement et l'accessibilité.</p>
+        <p>Pour <strong>organiser</strong> une page, on utilise aussi des balises <strong>sémantiques</strong> qui décrivent le <em>rôle</em> des zones : <code>&lt;header&gt;</code> (en-tête), <code>&lt;nav&gt;</code> (menu), <code>&lt;main&gt;</code> (contenu principal), <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code> (contenu secondaire), <code>&lt;footer&gt;</code> (pied de page). Elles aident le navigateur, le référencement et l'accessibilité.</p>
+        <p class="warnbox">⚠️ Les titres <code>&lt;h1&gt;</code> à <code>&lt;h6&gt;</code> forment une <strong>hiérarchie, pas une taille</strong> : on n'utilise pas un <code>&lt;h4&gt;</code> « pour faire plus petit », et on ne saute pas de niveau (pas de <code>&lt;h3&gt;</code> sans <code>&lt;h2&gt;</code> avant). Pour la taille, c'est le rôle du CSS.</p>
+        <p class="note">🧩 Les balises s'<strong>imbriquent comme des poupées russes</strong> : pas de chevauchement. Si <code>&lt;article&gt;</code> est ouvert avant <code>&lt;h1&gt;</code>, il doit être fermé <em>après</em>. Et le balisage dit le <strong>sens</strong> du contenu (« ceci est un titre »), pas son apparence.</p>
         <p class="note">🖥️ <strong>Essaie toi-même</strong> : modifie le HTML ci-dessous (change le titre, ajoute un <code>&lt;li&gt;</code>…) puis clique <strong>▶ Voir le résultat</strong>.</p>`,
         htmldemo: `<!DOCTYPE html>
 <html lang="fr">
@@ -829,6 +842,7 @@ for l in fusion:
         <h3>Texte et listes</h3>
         <ul>
           <li><code>&lt;strong&gt;</code> (important / gras) et <code>&lt;em&gt;</code> (emphase / italique) ; <code>&lt;br&gt;</code> (saut de ligne) ; <code>&lt;hr&gt;</code> (trait de séparation).</li>
+          <li>⚠️ Préfère <code>&lt;strong&gt;</code> et <code>&lt;em&gt;</code> (qui ont un <strong>sens</strong>) aux anciennes <code>&lt;b&gt;</code> / <code>&lt;i&gt;</code> (qui ne disent que « gras » / « italique » — de la présentation, le travail du CSS).</li>
           <li>Liste <strong>numérotée</strong> : <code>&lt;ol&gt;</code> à la place de <code>&lt;ul&gt;</code> (les <code>&lt;li&gt;</code> ne changent pas).</li>
           <li><strong>Entités</strong> : pour afficher un caractère réservé, on l'écrit en code. Pour afficher <code>&lt;</code> on tape <code>&amp;lt;</code>, pour <code>&gt;</code> on tape <code>&amp;gt;</code>, pour <code>&amp;</code> on tape <code>&amp;amp;</code> ; <code>&amp;nbsp;</code> = espace insécable, <code>&amp;copy;</code> = ©.</li>
         </ul>
@@ -935,6 +949,38 @@ p  { font-size: 16px; line-height: 1.5; }
 </html>`,
       },
       {
+        title: "Bloc ou en ligne ? (block vs inline)",
+        html: `
+        <p>Chaque élément HTML s'affiche de l'une de <strong>deux façons</strong> — c'est essentiel pour comprendre la mise en page :</p>
+        <ul>
+          <li>les <strong>blocs</strong> (<code>&lt;p&gt;</code>, <code>&lt;div&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;article&gt;</code>…) prennent <strong>toute la largeur</strong> disponible et s'<strong>empilent</strong> les uns sous les autres ;</li>
+          <li>les éléments <strong>en ligne</strong> (<em>inline</em> : <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;span&gt;</code>, <code>&lt;img&gt;</code>) s'<strong>intègrent dans le texte</strong>, côte à côte, sans provoquer de saut de ligne.</li>
+        </ul>
+        <p class="warnbox">⚠️ Règle à retenir : on ne place <strong>jamais un bloc à l'intérieur d'un élément en ligne</strong> (par exemple, pas de <code>&lt;p&gt;</code> dans un <code>&lt;a&gt;</code>).</p>
+        <p class="note">🖥️ Observe : les 3 <code>&lt;div&gt;</code> (blocs) s'empilent ; les 3 <code>&lt;span&gt;</code> (en ligne) restent sur la même ligne.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8">
+<style>
+  body { font-family: sans-serif; }
+  div  { background: #c7d2fe; margin: 4px 0; padding: 6px; }
+  span { background: #fde68a; padding: 6px; }
+</style>
+</head>
+<body>
+  <h3>Blocs (s'empilent) :</h3>
+  <div>bloc 1</div>
+  <div>bloc 2</div>
+  <div>bloc 3</div>
+
+  <h3>En ligne (côte à côte) :</h3>
+  <span>en ligne 1</span>
+  <span>en ligne 2</span>
+  <span>en ligne 3</span>
+</body>
+</html>`,
+      },
+      {
         title: "Client et serveur : qui exécute quoi ?",
         html: `
         <p>Reprenons le modèle client-serveur, mais côté <strong>exécution</strong> : où tourne le code ?</p>
@@ -1022,6 +1068,216 @@ print("Paramètres :", parametres)
 print("Ville demandée :", parametres["ville"])`,
       },
       {
+        title: "🏆 Exercice guidé : un formulaire d'inscription (étape par étape)",
+        html: `
+        <p>On construit ensemble, <strong>partie par partie</strong>, un formulaire d'inscription à un club. À chaque étape tu complètes l'éditeur et tu cliques <strong>▶ Voir le résultat</strong> ; à la dernière étape, ton formulaire est <strong>complet</strong>.</p>
+        <p><strong>Les règles d'un bon formulaire :</strong> il est envoyé par <code>&lt;form action="…" method="post"&gt;</code> ; <strong>chaque champ</strong> est dans son propre <code>&lt;div&gt;</code> ; chaque champ a une <strong>étiquette reliée</strong> — <code>&lt;label for="x"&gt;</code> avec <code>&lt;input id="x"&gt;</code> (même valeur). Astuce : si la liaison est bonne, cliquer sur le <em>texte</em> de l'étiquette active le champ.</p>`,
+        steps: [
+          {
+            titre: "La structure (form + 1 champ bien relié)",
+            consigne: `<p>Un formulaire commence par <code>&lt;form&gt;</code> avec <code>action</code> (où envoyer) et <code>method="post"</code>. Premier champ : le <strong>nom</strong>, dans un <code>&lt;div&gt;</code>, avec <code>&lt;label for="nom"&gt;</code> relié à <code>&lt;input id="nom"&gt;</code>. Clique sur « Nom : » → le champ s'active.</p>`,
+            code: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"></head>
+<body>
+<h2>Inscription au club</h2>
+<form action="/inscription" method="post">
+
+  <div>
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required>
+  </div>
+
+  <!-- Les autres champs viendront ici : un <div> par champ -->
+
+</form>
+</body></html>`,
+          },
+          {
+            titre: "Les champs texte (prénom, e-mail, mot de passe)",
+            consigne: `<p>Ajoute, sur le même modèle : <strong>prénom</strong> (texte), <strong>e-mail</strong> (<code>type="email"</code>) et <strong>mot de passe</strong> (<code>type="password"</code>). Mets <code>required</code> sur les champs obligatoires.</p>`,
+            code: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"></head>
+<body>
+<h2>Inscription au club</h2>
+<form action="/inscription" method="post">
+
+  <div>
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required>
+  </div>
+  <div>
+    <label for="prenom">Prénom :</label>
+    <input type="text" id="prenom" name="prenom" required>
+  </div>
+  <div>
+    <label for="email">E-mail :</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div>
+    <label for="mdp">Mot de passe :</label>
+    <input type="password" id="mdp" name="mdp">
+  </div>
+
+</form>
+</body></html>`,
+          },
+          {
+            titre: "Date et nombre (avec des limites)",
+            consigne: `<p>Ajoute la <strong>date de naissance</strong> (<code>type="date"</code>) et l'<strong>âge</strong> (<code>type="number"</code> avec <code>min="7"</code> et <code>max="120"</code>).</p>`,
+            code: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"></head>
+<body>
+<h2>Inscription au club</h2>
+<form action="/inscription" method="post">
+
+  <div>
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required>
+  </div>
+  <div>
+    <label for="prenom">Prénom :</label>
+    <input type="text" id="prenom" name="prenom" required>
+  </div>
+  <div>
+    <label for="email">E-mail :</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div>
+    <label for="mdp">Mot de passe :</label>
+    <input type="password" id="mdp" name="mdp">
+  </div>
+  <div>
+    <label for="naissance">Date de naissance :</label>
+    <input type="date" id="naissance" name="naissance">
+  </div>
+  <div>
+    <label for="age">Âge :</label>
+    <input type="number" id="age" name="age" min="7" max="120">
+  </div>
+
+</form>
+</body></html>`,
+          },
+          {
+            titre: "Les choix (radio, liste déroulante, case à cocher)",
+            consigne: `<p>Le <strong>niveau</strong> = 3 boutons <code>type="radio"</code> avec le <strong>même <code>name</code></strong> (un seul choix possible). L'<strong>activité</strong> = une liste <code>&lt;select&gt;</code> avec au moins 3 <code>&lt;option&gt;</code>. Enfin une <strong>case</strong> <code>type="checkbox"</code> « J'accepte le règlement » (<code>required</code>).</p>`,
+            code: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"></head>
+<body>
+<h2>Inscription au club</h2>
+<form action="/inscription" method="post">
+
+  <div>
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required>
+  </div>
+  <div>
+    <label for="prenom">Prénom :</label>
+    <input type="text" id="prenom" name="prenom" required>
+  </div>
+  <div>
+    <label for="email">E-mail :</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div>
+    <label for="mdp">Mot de passe :</label>
+    <input type="password" id="mdp" name="mdp">
+  </div>
+  <div>
+    <label for="naissance">Date de naissance :</label>
+    <input type="date" id="naissance" name="naissance">
+  </div>
+  <div>
+    <label for="age">Âge :</label>
+    <input type="number" id="age" name="age" min="7" max="120">
+  </div>
+  <div>
+    <span>Niveau :</span>
+    <label><input type="radio" name="niveau" value="debutant"> Débutant</label>
+    <label><input type="radio" name="niveau" value="intermediaire"> Intermédiaire</label>
+    <label><input type="radio" name="niveau" value="expert"> Expert</label>
+  </div>
+  <div>
+    <label for="activite">Activité :</label>
+    <select id="activite" name="activite">
+      <option>Natation</option>
+      <option>Escalade</option>
+      <option>Échecs</option>
+    </select>
+  </div>
+  <div>
+    <label><input type="checkbox" name="reglement" required> J'accepte le règlement</label>
+  </div>
+
+</form>
+</body></html>`,
+          },
+          {
+            titre: "Message, envoi… et le formulaire complet ✅",
+            consigne: `<p>Termine avec une <strong>zone de texte</strong> <code>&lt;textarea&gt;</code> (message libre) et le <strong>bouton</strong> <code>&lt;button type="submit"&gt;</code>. Voici le <strong>formulaire complet</strong> — compare-le au tien !</p>`,
+            code: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"></head>
+<body>
+<h2>Inscription au club</h2>
+<form action="/inscription" method="post">
+
+  <div>
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required>
+  </div>
+  <div>
+    <label for="prenom">Prénom :</label>
+    <input type="text" id="prenom" name="prenom" required>
+  </div>
+  <div>
+    <label for="email">E-mail :</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div>
+    <label for="mdp">Mot de passe :</label>
+    <input type="password" id="mdp" name="mdp">
+  </div>
+  <div>
+    <label for="naissance">Date de naissance :</label>
+    <input type="date" id="naissance" name="naissance">
+  </div>
+  <div>
+    <label for="age">Âge :</label>
+    <input type="number" id="age" name="age" min="7" max="120">
+  </div>
+  <div>
+    <span>Niveau :</span>
+    <label><input type="radio" name="niveau" value="debutant"> Débutant</label>
+    <label><input type="radio" name="niveau" value="intermediaire"> Intermédiaire</label>
+    <label><input type="radio" name="niveau" value="expert"> Expert</label>
+  </div>
+  <div>
+    <label for="activite">Activité :</label>
+    <select id="activite" name="activite">
+      <option>Natation</option>
+      <option>Escalade</option>
+      <option>Échecs</option>
+    </select>
+  </div>
+  <div>
+    <label><input type="checkbox" name="reglement" required> J'accepte le règlement</label>
+  </div>
+  <div>
+    <label for="message">Message :</label>
+    <textarea id="message" name="message" rows="3"></textarea>
+  </div>
+  <div>
+    <button type="submit">S'inscrire</button>
+  </div>
+
+</form>
+</body></html>`,
+          },
+        ],
+        prof: `<p><strong>Critères de réussite</strong> : <code>&lt;form method="post"&gt;</code> ; chaque <code>&lt;label for&gt;</code> relié à un <code>&lt;input id&gt;</code> (clic sur l'étiquette = champ activé) ; <strong>un <code>&lt;div&gt;</code> par champ</strong> ; tous les types (texte ×2, email, password, date, number <code>min/max</code>, radio de même <code>name</code>, select ≥ 3 options, checkbox <code>required</code>, textarea, submit) ; <code>required</code> sur nom/prénom/e-mail/règlement.</p>
+        <p><strong>Barème /20 indicatif</strong> : structure form + div (4) · labels reliés (4) · types corrects (8) · contraintes required/min/max (4). Variante : faire styler le formulaire avec une feuille CSS externe.</p>`,
+      },
+      {
         title: "Réagir à un événement (JavaScript)",
         html: `
         <p>JavaScript rend la page <strong>interactive</strong> en réagissant à des <strong>événements</strong> : un clic (<code>click</code>), un survol, une frappe au clavier, l'envoi d'un formulaire (<code>submit</code>)… Le mécanisme : on attache un <strong>écouteur</strong> (<em>listener</em>) à un élément avec <code>addEventListener</code>, et on lui donne la fonction à exécuter quand l'événement survient.</p>
@@ -1065,6 +1321,52 @@ print("Ville demandée :", parametres["ville"])`,
         <p>À chaque visite tu laisses aussi des <strong>traces</strong> : adresse IP, type de navigateur, pages vues, heure… Recoupées, ces données permettent de te <strong>profiler</strong>.</p>
         <p class="note">⚖️ En Europe, le <strong>RGPD</strong> impose le <strong>consentement</strong> (les bandeaux « Accepter les cookies »), l'information, et un droit d'accès et de suppression. Bons réflexes : refuser les cookies non essentiels, la navigation privée, un bloqueur de pisteurs.</p>
         <p class="warnbox">🔒 Rappel (vu plus haut) : un cookie peut être lu ou volé → on ne stocke <strong>jamais</strong> de donnée sensible (mot de passe en clair…) côté client.</p>`,
+      },
+      {
+        title: "🏆 Exercice bilan : écris une page complète",
+        html: `
+        <p>Tu as maintenant tous les outils. <strong>Objectif</strong> : écrire (dans l'éditeur ci-dessous) une page web complète — <code>&lt;head&gt;</code> + <code>&lt;body&gt;</code> — contenant :</p>
+        <ul>
+          <li>un <strong>grand titre</strong> (<code>&lt;h1&gt;</code>) et un <strong>paragraphe</strong> d'introduction ;</li>
+          <li>un <strong>article</strong> (<code>&lt;article&gt;</code>) avec un <strong>sous-titre</strong> (<code>&lt;h2&gt;</code>) ;</li>
+          <li>une <strong>liste numérotée</strong> (<code>&lt;ol&gt;</code>) de <strong>3 liens</strong> vers des articles Wikipédia de ton choix, qui s'ouvrent dans un <strong>nouvel onglet</strong> (<code>target="_blank"</code>) ;</li>
+          <li>un <strong>tableau</strong> de <strong>2 colonnes × 3 lignes</strong> : en-tête « Photo » et « Présentation », puis deux lignes contenant chacune une <strong>image</strong> (avec son <code>alt</code>) et un court texte.</li>
+        </ul>
+        <p class="note">🖥️ Complète le squelette ci-dessous (suis les <code>&lt;!-- TODO --&gt;</code>), puis clique <strong>▶ Voir le résultat</strong>. À toi de choisir tes sujets et tes textes !</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ma page</title>
+</head>
+<body>
+  <h1>Bienvenue sur mon site</h1>
+  <p>Écris ici un court paragraphe d'introduction…</p>
+
+  <article>
+    <h2>Mon sujet préféré</h2>
+
+    <!-- TODO : complète la liste avec 2 AUTRES liens Wikipédia (target="_blank") -->
+    <ol>
+      <li><a href="https://fr.wikipedia.org/wiki/Logiciel_libre" target="_blank" rel="noopener">Logiciel libre</a></li>
+    </ol>
+
+    <!-- TODO : ajoute une 3e ligne au tableau (une autre image + sa présentation) -->
+    <table border="1" cellpadding="6" cellspacing="0">
+      <tr>
+        <th>Photo</th>
+        <th>Présentation</th>
+      </tr>
+      <tr>
+        <td><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png" alt="Tux, la mascotte de Linux" width="80"></td>
+        <td>Tux est la mascotte du noyau Linux.</td>
+      </tr>
+    </table>
+  </article>
+</body>
+</html>`,
+        prof: `<p><strong>Critères de réussite</strong> : page valide (<code>&lt;!DOCTYPE&gt;</code>, <code>&lt;head&gt;</code> avec <code>&lt;title&gt;</code> + <code>charset</code>, <code>&lt;body&gt;</code>) ; un <code>&lt;h1&gt;</code> + un <code>&lt;p&gt;</code> ; un <code>&lt;article&gt;</code> avec <code>&lt;h2&gt;</code> ; une <code>&lt;ol&gt;</code> de 3 <code>&lt;a target="_blank"&gt;</code> ; un <code>&lt;table&gt;</code> 2 colonnes × 3 lignes avec <code>&lt;th&gt;</code> « Photo »/« Présentation » et des <code>&lt;img&gt;</code> munies d'un <code>alt</code>.</p>
+        <p><strong>Variantes</strong> : imposer un thème (jeux vidéo, sciences, sport…) ; demander de styler le tableau avec une feuille <strong>CSS externe</strong> ; barème /10 (structure 3, liens 3, tableau 3, soin 1).</p>`,
       },
       {
         title: "Synthèse et mise en pratique",
