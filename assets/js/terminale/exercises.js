@@ -2,7 +2,7 @@
    COMPLÉMENTS PÉDAGOGIQUES PAR THÈME — Terminale NSI
    THEME_EXTRAS[themeId] = { resume[], erreurs[], exercices[], defi{} }
    exercice = { niveau, enonce, code?, gapcode?+gaps?, solution? }
-   Seul « Structures de données » est renseigné (démonstration).
+   Renseigné pour les 6 thèmes du programme de Terminale.
    ===================================================================== */
 
 const THEME_EXTRAS = {
@@ -175,6 +175,51 @@ print(escalier(5))    # 8
 print(escalier(30))   # 1346269 (instantané grâce à la mémoïsation)`,
         solution: "Pour atteindre la marche n, on vient de n-1 (pas de 1) ou de n-2 (pas de 2) : escalier(n) = escalier(n-1) + escalier(n-2). La mémoïsation évite de recalculer.",
       },
+      {
+        niveau: "facile",
+        enonce: "Définis une classe Compteur (attribut valeur initialisé à 0, méthode incrementer). Crée un compteur, incrémente-le deux fois, affiche valeur.",
+        code: `class Compteur:
+    def __init__(self):
+        self.valeur = 0
+    def incrementer(self):
+        self.valeur += 1
+
+c = Compteur()
+c.incrementer()
+c.incrementer()
+print(c.valeur)   # 2`,
+        solution: "__init__ crée l'attribut self.valeur ; chaque appel à incrementer() ajoute 1. Après deux appels : 2.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Écris une fonction RÉCURSIVE puissance(x, n) qui calcule x**n (cas de base : n == 0 renvoie 1).",
+        code: `def puissance(x, n):
+    if n == 0:
+        return 1
+    return x * puissance(x, n - 1)
+
+print(puissance(2, 10))   # 1024`,
+        solution: "Cas de base n = 0 → 1. Sinon x * puissance(x, n-1) : on multiplie par x à chaque appel, n fois au total.",
+      },
+      {
+        niveau: "défi",
+        enonce: "Objet + structure : écris une classe Pile (méthodes empiler, depiler, est_vide) en encapsulant une liste interne.",
+        code: `class Pile:
+    def __init__(self):
+        self.contenu = []
+    def est_vide(self):
+        return self.contenu == []
+    def empiler(self, x):
+        self.contenu.append(x)
+    def depiler(self):
+        return self.contenu.pop()
+
+p = Pile()
+p.empiler(1)
+p.empiler(2)
+print(p.depiler(), p.est_vide())   # 2 False`,
+        solution: "La classe encapsule une liste : empiler = append, depiler = pop (les deux en fin → LIFO), est_vide teste la liste. C'est l'implémentation d'une interface (la pile) par une classe.",
+      },
     ],
     defi: {
       titre: "Mission : un test qui débusque le bug",
@@ -268,6 +313,64 @@ print(fusionner([1, 4, 7], [2, 3, 8]))   # [1, 2, 3, 4, 7, 8]`,
 
 print(rendu([1, 2, 5], 11))   # 3`,
         solution: "On calcule le minimum pour toutes les sommes de 1 à 11 en réutilisant mini[s-p]. Pour 11 : 5+5+1 → 3 pièces.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Complète le tri fusion : tri_fusion(t) coupe la liste en deux, trie chaque moitié récursivement, puis fusionne (réutilise fusionner).",
+        code: `def fusionner(a, b):
+    res, i, j = [], 0, 0
+    while i < len(a) and j < len(b):
+        if a[i] <= b[j]:
+            res.append(a[i]); i += 1
+        else:
+            res.append(b[j]); j += 1
+    return res + a[i:] + b[j:]
+
+def tri_fusion(t):
+    if len(t) <= 1:
+        return t
+    m = len(t) // 2
+    return fusionner(tri_fusion(t[:m]), tri_fusion(t[m:]))
+
+print(tri_fusion([5, 2, 9, 1, 7, 3]))   # [1, 2, 3, 5, 7, 9]`,
+        solution: "Diviser pour régner : on coupe en deux, on trie chaque moitié récursivement, on fusionne les deux moitiés triées. Coût O(n log n).",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Exponentiation rapide (diviser pour régner) : puissance_rapide(x, n) en O(log n) en élevant au carré la moitié.",
+        code: `def puissance_rapide(x, n):
+    if n == 0:
+        return 1
+    demi = puissance_rapide(x, n // 2)
+    if n % 2 == 0:
+        return demi * demi
+    return demi * demi * x
+
+print(puissance_rapide(2, 10))   # 1024`,
+        solution: "x**n = (x**(n//2))² (× x de plus si n est impair). On divise n par 2 à chaque étape → O(log n) multiplications au lieu de n.",
+      },
+      {
+        niveau: "défi",
+        enonce: "Parcours en largeur (BFS) d'un graphe donné par un dictionnaire d'adjacence : renvoie l'ordre de visite depuis un sommet de départ.",
+        code: `from collections import deque
+
+graphe = {"A": ["B", "C"], "B": ["D"], "C": ["D", "E"], "D": [], "E": []}
+
+def bfs(g, depart):
+    vus = {depart}
+    file = deque([depart])
+    ordre = []
+    while file:
+        s = file.popleft()
+        ordre.append(s)
+        for voisin in g[s]:
+            if voisin not in vus:
+                vus.add(voisin)
+                file.append(voisin)
+    return ordre
+
+print(bfs(graphe, "A"))   # ['A', 'B', 'C', 'D', 'E']`,
+        solution: "Le BFS s'appuie sur une FILE : on visite un sommet, on enfile ses voisins non vus (l'ensemble 'vus' évite de repasser). On explore le graphe niveau par niveau.",
       },
     ],
     defi: {
@@ -380,6 +483,21 @@ print(math.___(1024))    # 10.0 bits`,
         gaps: ["log2", "log2"],
         solution: "log₂(N) donne le nombre de bits pour N choix équiprobables : log2(256)=8, log2(1024)=10.",
       },
+      {
+        niveau: "facile",
+        enonce: "Pourquoi dit-on que la machine de Turing (1936) est fondamentale, alors qu'elle n'a jamais vraiment été construite ?",
+        solution: "C'est un MODÈLE THÉORIQUE : il définit ce qu'est un calcul et ce qui est « calculable ». Il établit les limites du calcul (problèmes indécidables) et sert de référence à tous les ordinateurs (équivalence de puissance de calcul).",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Quelle est l'idée clé de l'architecture de von Neumann (1945), encore présente dans nos ordinateurs ?",
+        solution: "Le PROGRAMME EST ENREGISTRÉ EN MÉMOIRE, au même endroit que les données : la machine peut charger et modifier ses instructions. C'est l'ordinateur universel programmable (unité de calcul + mémoire + entrées/sorties).",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Internet et le Web, est-ce la même chose ? Explique la différence.",
+        solution: "Non. Internet (années 1970, TCP/IP) est le RÉSEAU physique qui relie les machines. Le Web (Tim Berners-Lee, 1989) est UNE APPLICATION qui tourne dessus : des pages liées par hypertexte (HTTP, URL, HTML). Le courriel, par exemple, utilise Internet mais n'est pas le Web.",
+      },
     ],
     defi: {
       titre: "Mission : la frise des idées",
@@ -446,6 +564,26 @@ def tourniquet(procs, q):
 
 tourniquet({"P1": 4, "P2": 2}, 2)   # P2 finit avant P1`,
         solution: "P1(2), P2(2→fini à t=4), P1(2→fini à t=6). P2 termine avant P1 car plus court.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Chiffrement symétrique par XOR : écris chiffrer(texte, cle) qui applique un OU exclusif (^) entre chaque caractère et la clé. Vérifie que re-chiffrer redonne le texte.",
+        code: `def chiffrer(texte, cle):
+    return "".join(chr(ord(c) ^ cle) for c in texte)
+
+secret = chiffrer("NSI", 42)
+print(chiffrer(secret, 42))   # NSI (le XOR est sa propre réciproque)`,
+        solution: "Le XOR est involutif : (x ^ k) ^ k = x. Chiffrer et déchiffrer utilisent donc la MÊME clé et la même opération — c'est l'idée du chiffrement symétrique.",
+      },
+      {
+        niveau: "facile",
+        enonce: "Qu'est-ce qu'un interblocage (deadlock) ? Donne un exemple de la vie courante.",
+        solution: "Deux processus attendent chacun une ressource détenue par l'autre → aucun n'avance. Exemple : deux voitures bloquées dans une rue étroite, chacune attendant que l'autre recule. On l'évite par un ordre d'acquisition des ressources, des délais d'attente, etc.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Pourquoi le chiffrement asymétrique (clé publique) résout-il le problème d'échange de clé du chiffrement symétrique ?",
+        solution: "En symétrique, il faut transmettre la clé secrète sans canal sûr (problème de l'œuf et la poule). En asymétrique, chacun a une clé PUBLIQUE (pour chiffrer, diffusable) et une clé PRIVÉE (pour déchiffrer, gardée secrète) : on n'échange jamais de secret. C'est la base de HTTPS.",
       },
     ],
     defi: {

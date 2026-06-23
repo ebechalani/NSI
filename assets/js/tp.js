@@ -477,6 +477,162 @@ print(admis); print(moy_info); print(moyennes)` },
       },
     ],
   },
+  {
+    id: "py-sequences",
+    theme: "types-construits",
+    lang: "python",
+    titre: "TP Python — Séquences : listes, slicing, complexité",
+    intro: "Manipuler des listes (ajouter/insérer/supprimer), le slicing et sorted, les compréhensions, les tuples (déballage, échange), et mesurer le coût d'une recherche. Chaque étape : exécute la démo (▶ ou ⚡ Basthon), traite les questions, puis ouvre la correction. (Pile/file = avant-goût Terminale.)",
+    steps: [
+      {
+        num: "1", titre: "Listes : ajouter, insérer, supprimer",
+        code: `villes = ["Paris", "Beyrouth", "Tokyo", "Dakar"]
+villes.append("Montréal")     # ajoute EN FIN
+villes.insert(0, "Oslo")      # insère EN TÊTE (indice 0)
+villes.remove("Tokyo")        # supprime PAR VALEUR
+print("nombre :", len(villes))
+print("première :", villes[0])
+print("dernière :", villes[-1])`,
+        run: true,
+        questions: [
+          "Insère une ville en 2ᵉ position (indice 1).",
+          "Retire la dernière ville SANS la nommer (méthode pop).",
+        ],
+        correction: [
+          "append ajoute en fin, insert(i, x) insère à l'indice i, remove(x) supprime la première occurrence de la valeur x.",
+          { text: "Solution :" },
+          { code: `villes = ["Oslo", "Paris", "Beyrouth", "Dakar", "Montréal"]
+villes.insert(1, "Genève")   # 2e position
+derniere = villes.pop()      # retire et renvoie le dernier
+print(villes)
+print("retirée :", derniere)` },
+        ],
+      },
+      {
+        num: "2", titre: "Slicing et sorted",
+        code: `creneaux = [9, 10, 11, 13, 14, 15, 16]
+print(creneaux[:3])        # 3 premiers
+print(creneaux[-2:])       # 2 derniers
+print(creneaux[::-1])      # à l'envers
+print(creneaux[::2])       # un sur deux
+print(sorted(creneaux)[-3:])  # les 3 plus grands`,
+        run: true,
+        questions: [
+          "Affiche les créneaux de l'après-midi (à partir de 13 h).",
+          "Affiche le 2ᵉ créneau et l'avant-dernier.",
+        ],
+        correction: [
+          "Le slice liste[début:fin:pas] : la fin est exclue ; pas négatif inverse ; sorted() trie sans modifier la liste.",
+          { text: "Solution :" },
+          { code: `creneaux = [9, 10, 11, 13, 14, 15, 16]
+print(creneaux[3:])     # après-midi : [13, 14, 15, 16]
+print(creneaux[1])      # 2e : 10
+print(creneaux[-2])     # avant-dernier : 15` },
+        ],
+      },
+      {
+        num: "3", titre: "Compréhensions",
+        code: `durees = [150, 45, 150, 30, 90]   # minutes
+print([d / 60 for d in durees])           # en heures
+print([d for d in durees if d >= 90])     # filtre : >= 90 min`,
+        run: true,
+        questions: [
+          "Construis (en compréhension) la liste des durées en SECONDES.",
+          "À partir de villes = ['Paris', 'Dakar', 'Tokyo'], construis la liste de leurs INITIALES.",
+        ],
+        correction: [
+          "Compréhension : [expression for élément in itérable if condition]. On transforme (d*60) ou on filtre (if).",
+          { text: "Solution :" },
+          { code: `durees = [150, 45, 150, 30, 90]
+print([d * 60 for d in durees])
+villes = ["Paris", "Dakar", "Tokyo"]
+print([v[0] for v in villes])   # ['P', 'D', 'T']` },
+        ],
+      },
+      {
+        num: "4", titre: "Tuples et déballage (unpacking)",
+        code: `session = ("2026-06-23", 14, "Listes et tuples")
+date, heure, sujet = session       # déballage
+print(date, heure, sujet)
+
+def min_max(valeurs):
+    return min(valeurs), max(valeurs)   # renvoie un tuple
+
+print(min_max([150, 45, 90, 30]))
+
+a, b = 10, 20
+a, b = b, a                         # échange SANS variable temporaire
+print(a, b)`,
+        run: true,
+        questions: [
+          "Écris somme_produit(a, b) qui renvoie le couple (a+b, a*b).",
+          "Fais une rotation de 3 variables : a, b, c = c, a, b. Vérifie.",
+        ],
+        correction: [
+          "Un tuple regroupe des valeurs ; le déballage les distribue dans plusieurs variables. Python construit d'abord le tuple de droite, d'où l'échange a, b = b, a.",
+          { text: "Solution :" },
+          { code: `def somme_produit(a, b):
+    return a + b, a * b
+
+print(somme_produit(3, 4))   # (7, 12)
+
+a, b, c = 1, 2, 3
+a, b, c = c, a, b
+print(a, b, c)               # 3 1 2` },
+        ],
+      },
+      {
+        num: "5", titre: "Défi — mesurer un coût (complexité)",
+        code: `# Recherche séquentielle : on COMPTE les comparaisons
+def cherche(lst, cible):
+    comparaisons = 0
+    for x in lst:
+        comparaisons += 1
+        if x == cible:
+            return comparaisons
+    return comparaisons
+
+petite = list(range(100))
+grande = list(range(1000))
+print("absent dans 100  :", cherche(petite, -1), "comparaisons")
+print("absent dans 1000 :", cherche(grande, -1), "comparaisons")`,
+        run: true,
+        questions: [
+          "Quand la liste est 10× plus grande, le nombre de comparaisons est-il 10× plus grand ?",
+          "Pourquoi dit-on que x in liste a un coût « linéaire » O(n) ? Et la recherche dichotomique (liste triée) ?",
+        ],
+        correction: [
+          "Oui : 100 → 1000 comparaisons (×10). Le coût grandit PROPORTIONNELLEMENT à la taille n : c'est O(n) (linéaire).",
+          "Dans le pire cas (élément absent), on parcourt TOUTE la liste → n comparaisons. La recherche dichotomique, elle, divise par 2 à chaque étape → O(log n), bien plus rapide, mais exige une liste TRIÉE.",
+        ],
+      },
+      {
+        num: "6", titre: "⭐ Bonus (Terminale) — pile et file",
+        code: `from collections import deque
+
+# PILE (LIFO) : historique d'un diaporama, avec une list
+historique = []
+for slide in ["slide 1", "slide 2", "slide 3"]:
+    historique.append(slide)        # empiler
+print("retour :", historique.pop()) # dépiler (le dernier)
+print("retour :", historique.pop())
+
+# FILE (FIFO) : questions, avec une deque
+questions = deque()
+for q in ["Q1", "Q2", "Q3"]:
+    questions.append(q)             # enfiler
+print("on traite :", questions.popleft())  # défiler (le premier)`,
+        run: true,
+        questions: [
+          "Pourquoi une deque plutôt qu'une list pour une file ?",
+        ],
+        correction: [
+          "Pile = LIFO (dernier entré, premier sorti) ; file = FIFO (premier entré, premier sorti).",
+          "Sur une list, retirer en tête (pop(0)) décale tous les éléments → coût O(n). deque.popleft() le fait en O(1). C'est une notion de Terminale (structures de données).",
+        ],
+      },
+    ],
+  },
 ];
 
 /* ---------------- Fiches « pour aller plus loin » ---------------- */

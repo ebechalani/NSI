@@ -123,6 +123,16 @@ const THEME_RESSOURCES_EXT = {
       { t: "⭐ Fiches élève — Piles, files & ensembles (Terminale)", url: "tree/main/eleves" },
     ],
   },
+  "term-archi-reseaux": {
+    titre: "Systèmes & réseaux (supports DIU)",
+    auteur: "Mes supports du DIU NSI — Le Havre",
+    base: "",
+    note: "📎 Supports issus de ma formation DIU, hébergés sur le site : le PDF s'ouvre dans le navigateur, la fiche réseaux est une page web (repères TCP/IP, DNS, adressage, routage).",
+    items: [
+      { t: "📕 Cours — Introduction aux systèmes d'exploitation (PDF)", url: "assets/ressources/systeme/DIU_cours_systeme_intro.pdf" },
+      { t: "🌐 Fiche — Repères réseaux (TCP/IP, DNS, masques, RIP, routage)", url: "assets/ressources/reseaux/Reseaux_reperes.html" },
+    ],
+  },
 };
 
 /* ---------------- Progression annuelle ---------------- */
