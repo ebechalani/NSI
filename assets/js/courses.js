@@ -1271,6 +1271,45 @@ print("Ville demandée :", parametres["ville"])`,
 </html>`,
       },
       {
+        title: "Explorer le DOM en JavaScript",
+        html: `
+        <p>Quand le navigateur lit ton HTML, il en construit un <strong>arbre</strong> d'objets : le <strong>DOM</strong> (<em>Document Object Model</em>). C'est cet arbre que JavaScript lit et modifie pour rendre la page vivante.</p>
+        <ul>
+          <li><code>document</code> = la racine ; <code>document.body</code> = le corps de la page ;</li>
+          <li><code>.children</code> = la liste des éléments enfants (indices 0, 1, 2…) ;</li>
+          <li><code>.textContent</code> = le texte contenu dans un élément.</li>
+        </ul>
+        <p>Exemple : <code>document.body.children[0]</code> est le 1ᵉʳ enfant du corps, et <code>.textContent</code> donne son texte.</p>
+        <p><strong>À toi de jouer</strong> : dans l'éditeur ci-dessous, en <strong>parcourant l'arbre</strong> (avec <code>.children</code> et des indices, <em>sans</em> méthode de recherche type <code>getElementById</code>), affiche avec <code>console.log(...)</code> :</p>
+        <ol>
+          <li>le titre <code>&lt;h1&gt;</code> (déjà donné en exemple) ;</li>
+          <li>le paragraphe d'introduction ;</li>
+          <li>la <strong>2ᵉ</strong> activité de la liste (le 2ᵉ <code>&lt;li&gt;</code>) ;</li>
+          <li>le nom de l'animateur (le <code>&lt;span&gt;</code> du dernier paragraphe).</li>
+        </ol>`,
+        domexo: {
+          html: `<h1>Mon club de sciences</h1>
+<p>Bienvenue sur la page de notre club.</p>
+<ul>
+  <li>On se réunit le mardi</li>
+  <li>On code en Python</li>
+  <li>On fabrique des robots</li>
+</ul>
+<p>Animé par : <span>Mme Curie</span></p>`,
+          js: `// Exemple fourni : le titre
+console.log("Titre :", document.body.children[0].textContent);
+
+// À toi : le paragraphe d'intro, la 2e activité, l'animateur…
+`,
+        },
+        prof: `<p><strong>Solution :</strong></p>
+        <pre><code>console.log("Titre :", document.body.children[0].textContent);
+console.log("Intro :", document.body.children[1].textContent);
+console.log("2e activité :", document.body.children[2].children[1].textContent);
+console.log("Animateur :", document.body.children[3].children[0].textContent);</code></pre>
+        <p>Points clés : <code>body.children</code> = [h1, p, ul, p] ; la liste est <code>children[2]</code>, ses <code>&lt;li&gt;</code> sont ses propres <code>children</code> ; le <code>&lt;span&gt;</code> est l'enfant du dernier <code>&lt;p&gt;</code>. Les indices commencent à 0.</p>`,
+      },
+      {
         title: "Cookies, traces et vie privée",
         html: `
         <p>HTTP est <strong>« sans mémoire »</strong> : chaque requête est indépendante, le serveur ne se « souvient » pas de toi d'une page à l'autre. Pour rester reconnu (rester connecté, garder un panier), on utilise un <strong>cookie</strong> : un petit fichier texte que le serveur demande au navigateur de <strong>stocker</strong>, et que celui-ci <strong>renvoie</strong> à chaque requête suivante.</p>

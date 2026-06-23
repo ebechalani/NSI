@@ -495,6 +495,7 @@
       if (s.code) sec.appendChild(makeCodeCell(s.code));
       if (s.htmldemo) sec.appendChild(makeHtmlCell(s.htmldemo));
       if (s.steps) s.steps.forEach((st, k) => sec.appendChild(makeExoStep(st, k)));
+      if (s.domexo) sec.appendChild(makeDomCell(s.domexo.html, s.domexo.js));
       if (s.game) sec.appendChild(makeGame(s.game));
       if (s.prof) sec.appendChild(makeProfNote(s.prof));
       viewTheme.appendChild(sec);
@@ -739,6 +740,86 @@
       box.appendChild(wrap);
     }
     return box;
+  }
+
+  // « DOM playground » (façon Slate) : un HTML FOURNI (lecture seule) + son aperçu,
+  // un éditeur JavaScript, et une console qui capture les console.log de l'élève.
+  // Le JS s'exécute dans une iframe ISOLÉE (sandbox) ; la sortie remonte par postMessage.
+  function makeDomCell(htmlBody, starterJs) {
+    const token = "dom" + Math.random().toString(36).slice(2);
+    htmlBody = (htmlBody || "").trim();
+    const cell = el("div", "code-cell dom-cell");
+
+    const bar = el("div", "code-toolbar");
+    bar.innerHTML =
+      `<span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span>` +
+      `<span class="code-title">JavaScript — explore la page</span><span class="spacer"></span>`;
+    const runBtn = el("button", "btn-run", "▶ Exécuter");
+    bar.appendChild(runBtn);
+    cell.appendChild(bar);
+
+    // HTML fourni (lecture seule)
+    cell.appendChild(el("div", "dom-sublabel", "🔒 HTML fourni (tu ne le modifies pas)"));
+    const pre = el("pre", "dom-html");
+    const codeEl = el("code");
+    codeEl.textContent = htmlBody;
+    pre.appendChild(codeEl);
+    cell.appendChild(pre);
+
+    // Aperçu de la page
+    cell.appendChild(el("div", "dom-sublabel", "Aperçu de la page"));
+    const frame = el("iframe", "dom-frame");
+    frame.setAttribute("sandbox", "allow-scripts");
+    frame.setAttribute("title", "Aperçu de la page à explorer");
+    cell.appendChild(frame);
+
+    // Éditeur JavaScript
+    cell.appendChild(el("div", "dom-sublabel", "✏️ Ton JavaScript"));
+    const ta = el("textarea", "code-editor");
+    ta.value = starterJs || "";
+    ta.spellcheck = false;
+    ta.rows = Math.max(4, (starterJs || "").split("\n").length + 2);
+    cell.appendChild(ta);
+
+    // Console
+    cell.appendChild(el("div", "dom-sublabel", "Console"));
+    const out = el("div", "code-output dom-console");
+    out.textContent = "(clique « Exécuter » pour voir la sortie)";
+    cell.appendChild(out);
+
+    const buildDoc = (withJs) => {
+      let script = "";
+      if (withJs) {
+        // Le code élève est passé en CHAÎNE puis évalué : une faute de syntaxe
+        // devient une erreur attrapable (affichée), au lieu de tout casser en silence.
+        const codeStr = JSON.stringify(String(ta.value || "")).replace(/<\/script>/gi, "<\\/script>");
+        script =
+          `<script>(function(){` +
+          `function send(t,e){try{parent.postMessage({t:'${token}',m:t,e:!!e},'*');}catch(_){}}` +
+          `console.log=function(){send(Array.prototype.map.call(arguments,function(x){try{return typeof x==='object'?JSON.stringify(x):String(x);}catch(_){return String(x);}}).join(' '));};` +
+          `try{eval(${codeStr});}catch(err){send('\\u26d4 '+err.message,true);}` +
+          `})();<\/script>`;
+      }
+      return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"></head><body>${htmlBody}${script}</body></html>`;
+    };
+
+    const run = () => {
+      out.innerHTML = "";
+      frame.srcdoc = buildDoc(true);
+      if (P.isStudent() && currentThemeId) noteActivity(currentThemeId);
+    };
+    runBtn.addEventListener("click", run);
+    setTimeout(() => { frame.srcdoc = buildDoc(false); }, 0); // aperçu initial (HTML seul)
+
+    window.addEventListener("message", (ev) => {
+      if (!ev.data || ev.data.t !== token) return;
+      if (out.firstChild && out.textContent.indexOf("Exécuter") >= 0) out.innerHTML = "";
+      const line = el("div", ev.data.e ? "err" : null);
+      line.textContent = ev.data.m;
+      out.appendChild(line);
+    });
+
+    return cell;
   }
 
   // Visualiseur pas à pas (Python Tutor) — variables, mémoire, appels de fonctions.
