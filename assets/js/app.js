@@ -493,6 +493,7 @@
       if (s.html) sec.appendChild(el("div", null, s.html));
       if (s.schema) sec.appendChild(el("div", "schema", s.schema));
       if (s.code) sec.appendChild(makeCodeCell(s.code));
+      if (s.htmldemo) sec.appendChild(makeHtmlCell(s.htmldemo));
       if (s.game) sec.appendChild(makeGame(s.game));
       if (s.prof) sec.appendChild(makeProfNote(s.prof));
       viewTheme.appendChild(sec);
@@ -671,6 +672,41 @@
     }
     if (!win) toast("Autorise les pop-ups pour ouvrir Basthon.");
     else toast("⚡ Notebook Basthon ouvert (code aussi copié, au cas où).");
+  }
+
+  // Cellule HTML/CSS éditable + aperçu en direct (iframe isolée).
+  // Sert à rendre les exemples du thème Web interactifs (on édite, on voit le rendu).
+  function makeHtmlCell(htmlCode) {
+    const cell = el("div", "code-cell html-cell");
+    const bar = el("div", "code-toolbar");
+    bar.innerHTML =
+      `<span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span>` +
+      `<span class="code-title">HTML / CSS — éditable</span><span class="spacer"></span>`;
+    const runBtn = el("button", "btn-run", "▶ Voir le résultat");
+    bar.appendChild(runBtn);
+    cell.appendChild(bar);
+
+    const ta = el("textarea", "code-editor");
+    ta.value = htmlCode;
+    ta.spellcheck = false;
+    ta.rows = Math.min(20, htmlCode.split("\n").length + 1);
+    cell.appendChild(ta);
+
+    const out = el("div", "html-preview-wrap");
+    out.appendChild(el("div", "html-preview-label", "Aperçu (rendu par le navigateur)"));
+    const frame = el("iframe", "html-preview");
+    frame.setAttribute("sandbox", "allow-scripts"); // isolée : pas d'accès à la page
+    frame.setAttribute("title", "Aperçu du rendu HTML");
+    out.appendChild(frame);
+    cell.appendChild(out);
+
+    const render = () => { frame.srcdoc = ta.value; };
+    runBtn.addEventListener("click", () => {
+      render();
+      if (P.isStudent() && currentThemeId) noteActivity(currentThemeId);
+    });
+    setTimeout(render, 0); // aperçu initial
+    return cell;
   }
 
   // Visualiseur pas à pas (Python Tutor) — variables, mémoire, appels de fonctions.

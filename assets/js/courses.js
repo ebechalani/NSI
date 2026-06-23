@@ -733,6 +733,8 @@ for l in fusion:
       "Réagir à un événement (clic, saisie) avec JavaScript.",
       "Distinguer les requêtes HTTP GET et POST.",
       "Comprendre comment un formulaire transmet des paramètres.",
+      "Relier une feuille de style externe et comprendre le modèle de boîte.",
+      "Aborder la protection de la vie privée (cookies, traces, RGPD).",
     ],
     sections: [
       {
@@ -784,10 +786,31 @@ for l in fusion:
           <tr><td><code>&lt;h1&gt;</code> à <code>&lt;h6&gt;</code></td><td>titres (du plus grand au plus petit)</td></tr>
           <tr><td><code>&lt;p&gt;</code></td><td>paragraphe</td></tr>
           <tr><td><code>&lt;a href="..."&gt;</code></td><td>lien hypertexte</td></tr>
-          <tr><td><code>&lt;img src="..."&gt;</code></td><td>image (balise seule, sans fermeture)</td></tr>
+          <tr><td><code>&lt;img src="..." alt="..."&gt;</code></td><td>image (balise seule) ; <code>alt</code> = texte de remplacement</td></tr>
           <tr><td><code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code></td><td>liste à puces et ses éléments</td></tr>
+          <tr><td><code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;td&gt;</code></td><td>tableau : ligne, cellule</td></tr>
+          <tr><td><code>&lt;div&gt;</code> / <code>&lt;span&gt;</code></td><td>conteneurs « neutres » (bloc / en ligne) pour grouper et styler</td></tr>
+          <tr><td><code>&lt;!-- … --&gt;</code></td><td>commentaire (non affiché)</td></tr>
         </table>
-        <p>Le <code>href</code> d'un lien et le <code>src</code> d'une image sont des <strong>attributs</strong> : des informations ajoutées dans la balise ouvrante sous la forme <code>nom="valeur"</code>.</p>`,
+        <p>Le <code>href</code> d'un lien et le <code>src</code> d'une image sont des <strong>attributs</strong> : des informations ajoutées dans la balise ouvrante sous la forme <code>nom="valeur"</code>. L'attribut <code>alt</code> d'une image est important pour l'<strong>accessibilité</strong> (lecteurs d'écran) et s'affiche si l'image ne charge pas.</p>
+        <p>Pour <strong>organiser</strong> une page, on utilise aussi des balises <strong>sémantiques</strong> qui décrivent le <em>rôle</em> des zones : <code>&lt;header&gt;</code> (en-tête), <code>&lt;nav&gt;</code> (menu), <code>&lt;main&gt;</code> (contenu principal), <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;footer&gt;</code> (pied de page). Elles aident le navigateur, le référencement et l'accessibilité.</p>
+        <p class="note">🖥️ <strong>Essaie toi-même</strong> : modifie le HTML ci-dessous (change le titre, ajoute un <code>&lt;li&gt;</code>…) puis clique <strong>▶ Voir le résultat</strong>.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <title>Ma page</title>
+  </head>
+  <body>
+    <h1>Bonjour la NSI</h1>
+    <p>Mon premier <strong>paragraphe</strong>.</p>
+    <ul>
+      <li>HTML = le contenu</li>
+      <li>CSS = la présentation</li>
+    </ul>
+    <a href="https://eduscol.education.fr">Un lien</a>
+  </body>
+</html>`,
       },
       {
         title: "La mise en forme avec CSS",
@@ -804,7 +827,65 @@ p  { font-size: 16px; line-height: 1.5; }
           <tr><td><code>.important</code> (point)</td><td>tous les éléments d'une <strong>classe</strong> (réutilisable)</td><td><code>&lt;p class="important"&gt;</code></td></tr>
           <tr><td><code>#menu</code> (dièse)</td><td>l'élément d'un <strong>identifiant</strong> (unique)</td><td><code>&lt;div id="menu"&gt;</code></td></tr>
         </table>
-        <p class="warnbox">⚠️ Confusion classique : le <strong>point</strong> (<code>.</code>) cible une <em>classe</em> (plusieurs éléments) ; le <strong>dièse</strong> (<code>#</code>) cible un <em>identifiant</em> (un seul élément). À ne pas inverser.</p>`,
+        <p class="warnbox">⚠️ Confusion classique : le <strong>point</strong> (<code>.</code>) cible une <em>classe</em> (plusieurs éléments) ; le <strong>dièse</strong> (<code>#</code>) cible un <em>identifiant</em> (un seul élément). À ne pas inverser.</p>
+        <p class="note">🖥️ <strong>Essaie toi-même</strong> : change <code>indigo</code> en <code>crimson</code>, la couleur de fond, l'épaisseur de la bordure… puis <strong>▶ Voir le résultat</strong>.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    h1 { color: indigo; text-align: center; }
+    p  { font-size: 16px; line-height: 1.5; }
+    .important { background: yellow; }        /* une classe */
+    #encadre   { border: 2px solid gray; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Titre centré en indigo</h1>
+  <p class="important">Ce paragraphe a la classe « important ».</p>
+  <p id="encadre">Ce paragraphe a l'identifiant « encadre ».</p>
+</body>
+</html>`,
+      },
+      {
+        title: "Où placer le CSS, et le modèle de boîte",
+        html: `
+        <p>On a écrit des règles CSS — mais <strong>où</strong> les mettre ? Trois façons, de la moins à la plus recommandée :</p>
+        <table>
+          <tr><th>Méthode</th><th>Comment</th><th>Quand</th></tr>
+          <tr><td><strong>En ligne</strong></td><td><code>&lt;p style="color:red"&gt;</code></td><td>à éviter (mélange contenu et style)</td></tr>
+          <tr><td><strong>Interne</strong></td><td>dans <code>&lt;style&gt;…&lt;/style&gt;</code> du <code>&lt;head&gt;</code></td><td>petite page d'exemple</td></tr>
+          <tr><td><strong>Externe ✅</strong></td><td>un fichier <code>style.css</code> relié par <code>&lt;link rel="stylesheet" href="style.css"&gt;</code></td><td><strong>la bonne pratique</strong> : un seul fichier pour tout le site</td></tr>
+        </table>
+        <p>Séparer le HTML (contenu) du CSS (présentation) dans des fichiers distincts, c'est toute la philosophie des « trois langages » : on peut <strong>redécorer un site entier</strong> en changeant un seul fichier.</p>
+        <h3>Le modèle de boîte (box model)</h3>
+        <p>En CSS, <strong>chaque élément est une boîte rectangulaire</strong> faite de 4 couches, de l'intérieur vers l'extérieur :</p>
+        <ul>
+          <li><strong>contenu</strong> : le texte ou l'image ;</li>
+          <li><strong>padding</strong> : l'espace <em>intérieur</em>, entre le contenu et la bordure ;</li>
+          <li><strong>border</strong> : la bordure ;</li>
+          <li><strong>margin</strong> : l'espace <em>extérieur</em>, qui éloigne la boîte des autres.</li>
+        </ul>
+        <p class="warnbox">⚠️ Ne pas confondre <strong>padding</strong> (dedans) et <strong>margin</strong> (dehors) : c'est la confusion CSS n°1.</p>
+        <p class="note">🖥️ <strong>Essaie toi-même</strong> : change <code>padding</code>, <code>border</code> et <code>margin</code> et regarde la boîte se transformer.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8">
+<style>
+  body { font-family: sans-serif; }
+  .boite {
+    width: 220px;
+    background: #c7d2fe;
+    padding: 20px;             /* espace INTÉRIEUR */
+    border: 4px solid indigo;  /* la bordure */
+    margin: 30px;              /* espace EXTÉRIEUR */
+  }
+</style>
+</head>
+<body>
+  <div class="boite">Contenu de la boîte. Change padding / border / margin et observe !</div>
+</body>
+</html>`,
       },
       {
         title: "Client et serveur : qui exécute quoi ?",
@@ -839,7 +920,32 @@ p  { font-size: 16px; line-height: 1.5; }
           <tr><td><code>&lt;button type="submit"&gt;</code></td><td>le bouton qui <strong>envoie</strong> le formulaire</td></tr>
         </table>
         <p>Quelques <code>type</code> d'<code>input</code> utiles : <code>text</code>, <code>number</code>, <code>password</code> (masqué), <code>email</code>, <code>checkbox</code>, <code>radio</code>. Pour choisir dans une liste, on utilise <code>&lt;select&gt;</code> avec des <code>&lt;option&gt;</code>.</p>
-        <p class="note">🔗 Au clic sur « Envoyer », le navigateur construit une requête avec la <strong>méthode</strong> du formulaire (<code>get</code> ou <code>post</code>) — c'est exactement le sujet de la section suivante. Le <code>name</code> de chaque champ devient une clé : <code>?ville=Beyrouth&amp;age=15</code>.</p>`,
+        <p class="note">🔗 Au clic sur « Envoyer », le navigateur construit une requête avec la <strong>méthode</strong> du formulaire (<code>get</code> ou <code>post</code>) — c'est exactement le sujet de la section suivante. Le <code>name</code> de chaque champ devient une clé : <code>?ville=Beyrouth&amp;age=15</code>.</p>
+        <p class="note">🖥️ <strong>Essaie toi-même</strong> : voici un vrai formulaire. Ajoute un champ <code>password</code> ou une liste <code>&lt;select&gt;</code>, puis <strong>▶ Voir le résultat</strong>.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"></head>
+<body>
+  <form action="/recherche" method="get">
+    <p>
+      <label for="ville">Ville :</label>
+      <input type="text" id="ville" name="ville">
+    </p>
+    <p>
+      <label for="age">Âge :</label>
+      <input type="number" id="age" name="age">
+    </p>
+    <p>
+      <label for="niveau">Niveau :</label>
+      <select id="niveau" name="niveau">
+        <option>Débutant</option>
+        <option>Confirmé</option>
+      </select>
+    </p>
+    <p><button type="submit">Envoyer</button></p>
+  </form>
+</body>
+</html>`,
       },
       {
         title: "Le protocole HTTP : GET et POST",
@@ -881,7 +987,37 @@ print("Ville demandée :", parametres["ville"])`,
   });
 &lt;/script&gt;</code></pre>
         <p>À chaque clic sur le bouton, la fonction s'exécute et change le texte du paragraphe. Étapes clés : (1) <strong>récupérer</strong> un élément (<code>getElementById</code>), (2) <strong>écouter</strong> un événement, (3) <strong>modifier</strong> la page en réponse.</p>
-        <p class="note">▶️ Pour tester : recopie ce code dans un fichier <code>page.html</code> et ouvre-le dans un navigateur (l'éditeur Python du site n'exécute pas le JavaScript).</p>`,
+        <p class="note">🖥️ <strong>Essaie toi-même</strong> : clique le bouton ci-dessous — le JavaScript <strong>s'exécute vraiment</strong>. Modifie le message, ou ajoute un autre événement (ex. <code>"mouseover"</code>), puis <strong>▶ Voir le résultat</strong>.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"></head>
+<body>
+  <button id="b">Cliquez-moi</button>
+  <p id="msg">(rien pour l'instant)</p>
+
+  <script>
+    let n = 0;
+    const bouton = document.getElementById("b");
+    bouton.addEventListener("click", function () {
+      n = n + 1;
+      document.getElementById("msg").textContent =
+        "Bravo, événement reçu ! (clics : " + n + ")";
+    });
+  </script>
+</body>
+</html>`,
+      },
+      {
+        title: "Cookies, traces et vie privée",
+        html: `
+        <p>HTTP est <strong>« sans mémoire »</strong> : chaque requête est indépendante, le serveur ne se « souvient » pas de toi d'une page à l'autre. Pour rester reconnu (rester connecté, garder un panier), on utilise un <strong>cookie</strong> : un petit fichier texte que le serveur demande au navigateur de <strong>stocker</strong>, et que celui-ci <strong>renvoie</strong> à chaque requête suivante.</p>
+        <ul>
+          <li><strong>Cookies utiles</strong> : rester connecté, mémoriser la langue ou le panier.</li>
+          <li><strong>Cookies de pistage</strong> (tiers) : suivre ta navigation d'un site à l'autre pour la <em>publicité ciblée</em> — une atteinte à la vie privée.</li>
+        </ul>
+        <p>À chaque visite tu laisses aussi des <strong>traces</strong> : adresse IP, type de navigateur, pages vues, heure… Recoupées, ces données permettent de te <strong>profiler</strong>.</p>
+        <p class="note">⚖️ En Europe, le <strong>RGPD</strong> impose le <strong>consentement</strong> (les bandeaux « Accepter les cookies »), l'information, et un droit d'accès et de suppression. Bons réflexes : refuser les cookies non essentiels, la navigation privée, un bloqueur de pisteurs.</p>
+        <p class="warnbox">🔒 Rappel (vu plus haut) : un cookie peut être lu ou volé → on ne stocke <strong>jamais</strong> de donnée sensible (mot de passe en clair…) côté client.</p>`,
       },
       {
         title: "Synthèse et mise en pratique",
@@ -889,11 +1025,12 @@ print("Ville demandée :", parametres["ville"])`,
         <p>Récapitulons la répartition des rôles, qui est le cœur du thème :</p>
         <table>
           <tr><th>Je veux…</th><th>J'utilise…</th></tr>
-          <tr><td>ajouter un titre, un champ, un bouton</td><td>HTML</td></tr>
-          <tr><td>changer une couleur, centrer, espacer</td><td>CSS</td></tr>
+          <tr><td>ajouter un titre, un champ, un bouton</td><td>HTML (dont balises sémantiques)</td></tr>
+          <tr><td>changer une couleur, centrer, espacer</td><td>CSS (fichier externe, modèle de boîte)</td></tr>
           <tr><td>réagir à un clic, valider une saisie</td><td>JavaScript</td></tr>
           <tr><td>envoyer des données au serveur</td><td>un formulaire (GET ou POST)</td></tr>
           <tr><td>sécuriser un traitement</td><td>le serveur (jamais le client seul)</td></tr>
+          <tr><td>respecter la vie privée</td><td>cookies, traces, RGPD</td></tr>
         </table>
         <p>Pour tout assembler sur un cas concret — maquette, formulaire, validation JavaScript, choix GET/POST — enchaîne sur le <strong>projet « Mini-site d'inscription »</strong>.</p>`,
       },

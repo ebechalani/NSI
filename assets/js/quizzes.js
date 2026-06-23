@@ -252,6 +252,45 @@ const QUIZZES = {
       answer: 2,
       explain: "Le point désigne une classe ; le dièse (#) un identifiant.",
     },
+    {
+      q: "Quelle est la bonne pratique pour appliquer du CSS à tout un site ?",
+      choices: [
+        "un attribut style sur chaque balise",
+        "un fichier externe relié par <link rel=\"stylesheet\">",
+        "réécrire le CSS sur chaque page",
+        "le mettre dans le <body>",
+      ],
+      answer: 1,
+      explain: "Un fichier .css externe relié par <link> : on style tout le site depuis un seul endroit.",
+    },
+    {
+      q: "Dans le modèle de boîte, quel espace est INTÉRIEUR (entre le contenu et la bordure) ?",
+      choices: ["le margin", "le padding", "le border", "le contenu"],
+      answer: 1,
+      explain: "padding = espace intérieur ; margin = espace extérieur (autour de la boîte).",
+    },
+    {
+      q: "À quoi sert principalement un cookie ?",
+      choices: [
+        "accélérer le processeur",
+        "permettre au site de te « reconnaître » d'une requête à l'autre",
+        "compiler le JavaScript",
+        "chiffrer le mot de passe",
+      ],
+      answer: 1,
+      explain: "HTTP est sans mémoire : le cookie, stocké par le navigateur et renvoyé, maintient l'état (session, panier).",
+    },
+    {
+      q: "Que garantit le RGPD concernant les cookies de pistage ?",
+      choices: [
+        "ils sont interdits",
+        "ton consentement est requis, avec un droit d'accès et de suppression",
+        "ils sont obligatoires",
+        "ils sont invisibles",
+      ],
+      answer: 1,
+      explain: "Le RGPD impose le consentement (bandeaux cookies), l'information et des droits sur tes données.",
+    },
   ],
 
   "architecture-os": [
