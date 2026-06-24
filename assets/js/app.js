@@ -2351,6 +2351,38 @@ except Exception:
     return box;
   }
 
+  // Construit la feuille imprimable d'un TP : énoncé (avec cases réponses) ou corrigé.
+  function buildTPPrintHtml(tp, withCorrige) {
+    const esc = escapeHtml;
+    const codeBlock = (c) =>
+      `<pre style="background:#f4f4f4;border:1px solid #ccc;border-radius:4px;padding:.2cm .3cm;font-size:9.5pt;white-space:pre-wrap;font-family:Consolas,monospace">${esc(c)}</pre>`;
+    let html = `<h1>${esc(tp.titre)}${withCorrige ? " — corrigé" : ""}</h1>`;
+    if (tp.intro) html += `<p class="intro">${esc(tp.intro)}</p>`;
+    if (!withCorrige)
+      html += `<p style="font-size:9.5pt;color:#555">Nom : __________________________   Classe : ____________   Date : ____________</p>`;
+    (tp.steps || []).forEach((s, i) => {
+      html += `<h2>Étape ${esc(String(s.num || i + 1))} — ${esc(s.titre)}</h2>`;
+      if (s.code) html += codeBlock(s.code);
+      if (s.questions && s.questions.length) {
+        html += `<ol>` +
+          s.questions.map((q) => `<li>${esc(q)}${withCorrige ? "" : `<div class="field"></div>`}</li>`).join("") +
+          `</ol>`;
+      }
+      if (withCorrige && s.correction && s.correction.length) {
+        html += `<div style="border-left:3px solid #16a34a;padding-left:.3cm;margin:.2cm 0"><strong style="color:#15803d">Correction</strong>`;
+        s.correction.forEach((c) => {
+          if (typeof c === "string") html += `<p style="font-size:10pt">${esc(c)}</p>`;
+          else if (c && c.text) html += `<p style="font-size:10pt">${esc(c.text)}</p>`;
+          else if (c && c.code) html += codeBlock(c.code);
+        });
+        html += `</div>`;
+      }
+    });
+    if (typeof TP_SOURCE !== "undefined")
+      html += `<p style="font-size:8.5pt;color:#888;margin-top:.6cm">📎 ${esc(TP_SOURCE)}</p>`;
+    return html;
+  }
+
   function makeTPCard(tp) {
     const card = el("div", "tp-card");
     const head = el("div", "exo-head");
@@ -2362,6 +2394,18 @@ except Exception:
     link.addEventListener("click", () => navigate(tp.theme));
     card.appendChild(link);
     if (tp.intro) card.appendChild(el("p", "tp-intro", tp.intro));
+
+    // Impression (feuille à distribuer)
+    if (tp.steps && tp.steps.length) {
+      const tools = el("div", "tp-print-group");
+      const bEnonce = el("button", "btn secondary", "🖨️ Énoncé (élève)");
+      bEnonce.addEventListener("click", () => openPrint(tp.titre + " — énoncé", buildTPPrintHtml(tp, false)));
+      tools.appendChild(bEnonce);
+      const bCorr = el("button", "btn secondary teacher-block", "🖨️ Corrigé (prof)");
+      bCorr.addEventListener("click", () => openPrint(tp.titre + " — corrigé", buildTPPrintHtml(tp, true)));
+      tools.appendChild(bCorr);
+      card.appendChild(tools);
+    }
 
     if (tp.type === "memo" && tp.table) {
       const rows = tp.table

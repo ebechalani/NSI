@@ -246,6 +246,9 @@ html[data-theme="dark"] .code-toolbar { background: #0c1424; }
 .code-output .err { color: #fda4af; }
 .code-output .ok { color: #86efac; }
 
+/* Boutons d'impression d'un TP (énoncé / corrigé) */
+.tp-print-group { display: flex; gap: .5rem; flex-wrap: wrap; margin: .2rem 0 .6rem; }
+
 /* Exercice guidé en étapes */
 .exo-step { border-left: 3px solid var(--accent); padding-left: 1rem; margin: 1.2rem 0; }
 .exo-step-head { font-weight: 700; color: var(--accent); margin-bottom: .35rem; }

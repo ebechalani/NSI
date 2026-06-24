@@ -551,6 +551,30 @@ longueurs = {m: len(m) for m in mots}
 print(longueurs)     # {'python': 6, 'nsi': 3, 'lycee': 5}`,
       },
       {
+        title: "Les ensembles (set) : une collection sans doublon",
+        html: `
+        <p>Un <strong>ensemble</strong> (<code>set</code>) s'écrit entre accolades comme un dictionnaire, mais <strong>sans les « : »</strong>. C'est une collection <strong>non ordonnée</strong> et <strong>sans doublon</strong>, très pratique pour <strong>dédoublonner</strong> une liste ou <strong>comparer</strong> deux groupes.</p>
+        <ul>
+          <li><code>set([1, 2, 2, 3])</code> → <code>{1, 2, 3}</code> : les doublons disparaissent automatiquement ;</li>
+          <li><code>x in s</code> : test d'appartenance <strong>très rapide</strong> (comme pour un dictionnaire) ;</li>
+          <li><strong>opérations</strong> entre ensembles : <code>&amp;</code> (intersection « ET »), <code>|</code> (union « OU »), <code>-</code> (différence).</li>
+        </ul>
+        <p class="warnbox">⚠️ À ne pas confondre : <code>{ }</code> seul crée un <strong>dictionnaire vide</strong> ; pour un ensemble vide, on écrit <code>set()</code>. Un ensemble ne se range pas (pas d'indice <code>s[0]</code>) : pour le trier, on fait <code>sorted(s)</code>.</p>`,
+        code: `# Dédoublonner une liste
+notes = [12, 15, 12, 8, 15, 19, 8]
+distinctes = set(notes)
+print(distinctes, "->", len(distinctes), "notes différentes")
+print("triées :", sorted(distinctes))
+
+# Comparer deux groupes
+foot = {"Léa", "Tom", "Hugo", "Inès"}
+theatre = {"Tom", "Inès", "Maya"}
+print("les deux   :", foot & theatre)   # intersection (ET)
+print("l'un/l'autre:", foot | theatre)  # union (OU)
+print("foot seul  :", foot - theatre)   # différence
+print("Tom au foot ?", "Tom" in foot)`,
+      },
+      {
         title: "Choisir la bonne structure (synthèse)",
         html: `
         <p>La compétence visée n'est pas de connaître la syntaxe par cœur, mais de <strong>choisir</strong> la structure adaptée. Petit guide de décision :</p>
@@ -559,6 +583,7 @@ print(longueurs)     # {'python': 6, 'nsi': 3, 'lycee': 5}`,
           <tr><td>Données fixes qui vont ensemble</td><td><strong>tuple</strong></td><td>une coordonnée <code>(x, y)</code></td></tr>
           <tr><td>Collection ordonnée et modifiable</td><td><strong>liste</strong></td><td>les notes d'un élève</td></tr>
           <tr><td>Association nom → valeur</td><td><strong>dictionnaire</strong></td><td>une fiche élève</td></tr>
+          <tr><td>Éliminer les doublons / comparer des groupes</td><td><strong>ensemble (set)</strong></td><td>les notes distinctes, les options communes</td></tr>
           <tr><td>Tableau à 2 dimensions</td><td><strong>liste de listes</strong></td><td>une grille, une image</td></tr>
           <tr><td>Liste de fiches</td><td><strong>liste de dictionnaires</strong></td><td>une classe entière (→ thème 4)</td></tr>
         </table>
