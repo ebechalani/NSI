@@ -633,6 +633,153 @@ print("on traite :", questions.popleft())  # défiler (le premier)`,
       },
     ],
   },
+  {
+    id: "py-dictionnaires",
+    theme: "types-construits",
+    lang: "python",
+    titre: "TP Python — Dictionnaires",
+    intro: "Le dictionnaire associe une clé à une valeur. Créer/accéder (get), modifier/supprimer, parcourir (items), compter des occurrences, et la compréhension de dictionnaire. Chaque étape : exécute la démo (▶ ou ⚡ Basthon), traite les questions, puis ouvre la correction.",
+    steps: [
+      {
+        num: "1", titre: "Créer et accéder (get, KeyError)",
+        code: `stock = {"pomme": 12, "banane": 5, "kiwi": 8}
+
+print(stock["pomme"])            # accès par la CLÉ -> 12
+print(stock.get("mangue", 0))    # clé absente -> 0 (pas d'erreur)
+
+# accès direct d'une clé absente :
+try:
+    print(stock["mangue"])
+except KeyError as e:
+    print("KeyError :", e)`,
+        run: true,
+        questions: [
+          "Affiche le nombre de bananes, puis la quantité de 'cerise' SANS erreur (0 par défaut).",
+        ],
+        correction: [
+          "On accède par la clé : stock['banane']. Pour éviter la KeyError sur une clé absente, on utilise .get(cle, defaut).",
+          { text: "Solution :" },
+          { code: `stock = {"pomme": 12, "banane": 5, "kiwi": 8}
+print(stock["banane"])          # 5
+print(stock.get("cerise", 0))   # 0` },
+        ],
+      },
+      {
+        num: "2", titre: "Ajouter, modifier, supprimer",
+        code: `stock = {"pomme": 12, "banane": 5}
+
+stock["cerise"] = 20        # ajouter une clé
+stock["pomme"] += 3         # modifier (incrémenter) une clé existante
+del stock["banane"]         # supprimer
+retire = stock.pop("cerise")  # retirer ET récupérer la valeur
+
+print(stock)
+print("retiré :", retire)`,
+        run: true,
+        questions: [
+          "On reçoit 10 kiwis : ajoute la clé 'kiwi'. Puis vends 2 pommes (-= 2).",
+        ],
+        correction: [
+          "stock['classe'] = v ajoute OU modifie ; del stock[c] et stock.pop(c) suppriment (pop renvoie la valeur retirée).",
+          { text: "Solution :" },
+          { code: `stock = {"pomme": 12}
+stock["kiwi"] = 10
+stock["pomme"] -= 2
+print(stock)   # {'pomme': 10, 'kiwi': 10}` },
+        ],
+      },
+      {
+        num: "3", titre: "Parcourir : items, keys, values",
+        code: `stock = {"pomme": 12, "kiwi": 8, "cerise": 20}
+
+# par couple (clé, valeur) -- le plus utile
+for fruit, quantite in stock.items():
+    print(fruit, "->", quantite)
+
+print(list(stock.keys()))     # les clés
+print(list(stock.values()))   # les valeurs`,
+        run: true,
+        questions: [
+          "Calcule le nombre TOTAL de fruits (somme des valeurs).",
+          "Affiche les fruits dont la quantité est < 10.",
+        ],
+        correction: [
+          ".items() donne les couples (clé, valeur) ; .keys() les clés ; .values() les valeurs.",
+          { text: "Solution :" },
+          { code: `stock = {"pomme": 12, "kiwi": 8, "cerise": 20}
+print("total :", sum(stock.values()))               # 40
+print([f for f, q in stock.items() if q < 10])      # ['kiwi']` },
+        ],
+      },
+      {
+        num: "4", titre: "Compter avec un dictionnaire",
+        code: `votes = ["chat", "chien", "chat", "oiseau", "chat", "chien"]
+
+compte = {}
+for animal in votes:
+    compte[animal] = compte.get(animal, 0) + 1   # le motif à connaître
+
+print(compte)
+print("gagnant :", max(compte, key=compte.get))`,
+        run: true,
+        questions: [
+          "Compte le nombre d'occurrences de chaque lettre du mot 'mississippi'.",
+        ],
+        correction: [
+          "Motif de comptage : compte[x] = compte.get(x, 0) + 1 ; le get(x, 0) renvoie 0 la première fois. max(d, key=d.get) donne la clé de plus grande valeur.",
+          { text: "Solution :" },
+          { code: `mot = "mississippi"
+occ = {}
+for c in mot:
+    occ[c] = occ.get(c, 0) + 1
+print(occ)   # {'m': 1, 'i': 4, 's': 4, 'p': 2}` },
+        ],
+      },
+      {
+        num: "5", titre: "Compréhension de dictionnaire",
+        code: `mots = ["python", "nsi", "lycee"]
+longueurs = {m: len(m) for m in mots}
+print(longueurs)               # {'python': 6, 'nsi': 3, 'lycee': 5}
+
+# transformer les valeurs : prix + 10 %
+prix = {"pomme": 2, "kiwi": 3}
+nouveaux = {f: round(p * 1.1, 2) for f, p in prix.items()}
+print(nouveaux)`,
+        run: true,
+        questions: [
+          "À partir de noms = ['Ada', 'Alan', 'Grace'], construis {nom: longueur du nom}.",
+        ],
+        correction: [
+          "Compréhension de dict : {cle: valeur for élément in itérable}. On peut partir d'une liste, ou de .items() pour transformer un dict existant.",
+          { text: "Solution :" },
+          { code: `noms = ["Ada", "Alan", "Grace"]
+print({n: len(n) for n in noms})   # {'Ada': 3, 'Alan': 4, 'Grace': 5}` },
+        ],
+      },
+      {
+        num: "6", titre: "Défi — l'inventaire d'un jeu",
+        code: `# Inventaire d'un héros : objet -> quantité
+inventaire = {"potion": 3, "or": 150}
+
+inventaire["potion"] += 2          # ramasse 2 potions
+inventaire["bouclier"] = 1         # gagne un bouclier
+print(inventaire)
+print("flèches :", inventaire.get("fleche", 0))   # 0 sans erreur`,
+        run: true,
+        questions: [
+          "Le héros dépense 50 or et perd son bouclier (supprime la clé). Affiche l'inventaire final et l'or restant.",
+        ],
+        correction: [
+          { text: "Solution — += modifie une clé existante, del supprime, .get évite l'erreur :" },
+          { code: `inventaire = {"potion": 5, "or": 150, "bouclier": 1}
+inventaire["or"] -= 50
+del inventaire["bouclier"]
+print(inventaire)
+print("or :", inventaire["or"])   # 100` },
+        ],
+      },
+    ],
+  },
 ];
 
 /* ---------------- Fiches « pour aller plus loin » ---------------- */
