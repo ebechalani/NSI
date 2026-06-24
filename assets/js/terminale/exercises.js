@@ -88,6 +88,53 @@ print(prefixe(arbre))   # [7, 3, 1, 5, 9]`,
 print(inverser("NSI"))   # ISN`,
         solution: "Empiler les lettres dans l'ordre puis les dépiler renverse l'ordre : c'est l'effet LIFO de la pile.",
       },
+      {
+        niveau: "moyen",
+        enonce: "Écris hauteur(a) d'un arbre binaire (valeur, gauche, droite) : le plus long chemin racine → feuille. Convention (comme dans le cours) : arbre vide → 0.",
+        code: `arbre = (7, (3, (1, None, None), (5, None, None)), (9, None, None))
+
+def hauteur(a):
+    if a is None:
+        return 0
+    _, gauche, droite = a
+    return 1 + max(hauteur(gauche), hauteur(droite))
+
+print(hauteur(arbre))   # 3`,
+        solution: "Récursion : un arbre vide a une hauteur 0 ; sinon 1 + la plus grande des hauteurs des deux sous-arbres. Ici le plus long chemin 7 → 3 → 1 compte 3 nœuds, donc hauteur 3 (même convention que le cours).",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Écris le parcours infixe (gauche, racine, droite) d'un arbre binaire. Que remarques-tu sur l'ordre, sachant que c'est un ABR ?",
+        code: `arbre = (7, (3, (1, None, None), (5, None, None)), (9, None, None))
+
+def infixe(a):
+    if a is None:
+        return []
+    valeur, gauche, droite = a
+    return infixe(gauche) + [valeur] + infixe(droite)
+
+print(infixe(arbre))   # [1, 3, 5, 7, 9]`,
+        solution: "Infixe = on visite la racine ENTRE les deux sous-arbres : infixe(gauche) + [valeur] + infixe(droite). Sur un arbre binaire de recherche (ABR), le parcours infixe donne les valeurs TRIÉES.",
+      },
+      {
+        niveau: "défi",
+        enonce: "Écris recherche(a, cible) qui dit si une valeur est dans un ABR, en exploitant l'ordre (aller à gauche si plus petit, à droite sinon).",
+        code: `arbre = (7, (3, (1, None, None), (5, None, None)), (9, None, None))
+
+def recherche(a, cible):
+    if a is None:
+        return False
+    valeur, gauche, droite = a
+    if cible == valeur:
+        return True
+    if cible < valeur:
+        return recherche(gauche, cible)
+    return recherche(droite, cible)
+
+print(recherche(arbre, 5))   # True
+print(recherche(arbre, 6))   # False`,
+        solution: "Dans un ABR, à chaque nœud on élimine la moitié de l'arbre : si la cible est plus petite que la racine, elle ne peut être qu'à gauche, sinon à droite. Coût O(hauteur), bien plus rapide qu'un parcours complet.",
+      },
     ],
     defi: {
       titre: "Mission : un correcteur de parenthèses",
@@ -437,6 +484,21 @@ print(dijkstra(reseau, "A"))   # {'A': 0, 'C': 1, 'B': 3, 'D': 4}`,
         niveau: "défi",
         enonce: "Margaret a eu une nouvelle moyenne de 18. Écris la requête qui met à jour SA moyenne (et seulement la sienne).",
         solution: "UPDATE eleve SET moyenne = 18 WHERE nom = 'Margaret';  -- le WHERE évite de modifier tout le monde",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Écris la requête qui affiche la liste des classes SANS doublon (un id_classe peut apparaître plusieurs fois dans la table eleve).",
+        solution: "SELECT DISTINCT id_classe FROM eleve; — le mot-clé DISTINCT élimine les lignes en double.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Écris la requête qui affiche la moyenne générale de TOUTE la table eleve (une seule valeur).",
+        solution: "SELECT AVG(moyenne) FROM eleve; — la fonction d'agrégation AVG calcule la moyenne sur toutes les lignes (sans GROUP BY, le résultat est une seule valeur).",
+      },
+      {
+        niveau: "défi",
+        enonce: "Inscris un nouvel élève : 'Lovelace', moyenne 19, classe 2 (attributs nom, moyenne, id_classe).",
+        solution: "INSERT INTO eleve (nom, moyenne, id_classe) VALUES ('Lovelace', 19, 2); — INSERT INTO précise la table et les attributs, VALUES donne les valeurs dans le même ordre.",
       },
     ],
     defi: {
