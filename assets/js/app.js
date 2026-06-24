@@ -2100,7 +2100,7 @@ except Exception:
       const card = el("div", "bo-card");
       const badge = c.anticipation
         ? `<span class="lv-tag lv-defi">bonus · Terminale</span>`
-        : `<span class="lv-tag lv-facile">Première · BO</span>`;
+        : `<span class="lv-tag lv-facile">${NIV.label} · BO</span>`;
       let html =
         `<div class="bo-head"><h3>${c.emoji} ${c.title}</h3>${badge}</div>` +
         `<ul class="bo-caps">` +

@@ -419,6 +419,7 @@ print("retiré :", dernier, "->", notes)
         <ul>
           <li><strong>par élément</strong> : <code>for x in liste</code> — simple, quand on n'a pas besoin de la position ;</li>
           <li><strong>par indice</strong> : <code>for i in range(len(liste))</code> — quand on a besoin de la position (pour modifier, comparer des voisins…).</li>
+          <li><strong>par indice ET valeur</strong> : <code>for i, x in enumerate(liste)</code> — donne d'un coup la position <code>i</code> et l'élément <code>x</code> (plus lisible que <code>range(len(...))</code>).</li>
         </ul>
         <p>Le schéma d'<strong>accumulation</strong> est à connaître par cœur : on prépare une variable « accumulateur » avant la boucle, on la met à jour à chaque tour.</p>`,
         code: `temperatures = [18, 21, 17, 25, 20, 23]
@@ -441,7 +442,11 @@ chaudes = 0
 for t in temperatures:
     if t > 20:
         chaudes += 1
-print("journées > 20° :", chaudes)`,
+print("journées > 20° :", chaudes)
+
+# 4) Avec enumerate : la position ET la valeur en même temps
+for i, t in enumerate(temperatures):
+    print("jour", i, ":", t, "°C")`,
       },
       {
         title: "La construction par compréhension",

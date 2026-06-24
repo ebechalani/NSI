@@ -10,7 +10,7 @@
   <title>NSI Première — Cours interactif</title>
   <meta name="description" content="Site interactif pour apprendre la NSI en Première : cours, code Python exécutable et QCM. Conforme au programme officiel (BO)." />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-  <link rel="stylesheet" href="assets/css/style.css?v=53" />
+  <link rel="stylesheet" href="assets/css/style.css?v=55" />
 </head>
 <body>
   <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -61,13 +61,24 @@
   <!-- ?v=N : pense à incrémenter N après une mise à jour pour forcer le rechargement chez les élèves -->
   <!-- Le NIVEAU choisi (Première / Terminale) décide quel jeu de contenu charger.
        Première : assets/js/*.js  —  Terminale : assets/js/terminale/*.js
-       Le niveau est mémorisé dans le navigateur ; le bouton 🎓 de la barre le change. -->
+       Choix du niveau, par ordre de priorité :
+         1. le paramètre d'URL ?niveau=terminale (ou ?niveau=premiere) → lien direct partageable ;
+         2. sinon, le dernier niveau mémorisé dans le navigateur ;
+         3. sinon, Première par défaut.
+       Le bouton 🎓 de la barre permet aussi de basculer à tout moment. -->
   <script>
     (function () {
-      var niveau = localStorage.getItem("nsi-niveau") === "terminale" ? "terminale" : "premiere";
+      var param = (new URLSearchParams(location.search).get("niveau") || "").toLowerCase();
+      var niveau;
+      if (param === "terminale" || param === "premiere") {
+        niveau = param;
+        localStorage.setItem("nsi-niveau", niveau); // un lien direct mémorise le niveau
+      } else {
+        niveau = localStorage.getItem("nsi-niveau") === "terminale" ? "terminale" : "premiere";
+      }
       window.NSI_NIVEAU = niveau;
       var base = niveau === "terminale" ? "assets/js/terminale/" : "assets/js/";
-      var v = "53";
+      var v = "55";
       ["courses", "quizzes", "exercises", "projects", "glossary", "resources", "tp"].forEach(function (f) {
         document.write('<script src="' + base + f + ".js?v=" + v + '"><\/script>');
       });
@@ -77,10 +88,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="assets/js/firebase-config.js?v=53"></script>
+  <script src="assets/js/firebase-config.js?v=55"></script>
   <!-- Plateforme (comptes, rôles, classes) -->
-  <script src="assets/js/platform.js?v=53"></script>
+  <script src="assets/js/platform.js?v=55"></script>
   <!-- Logique applicative -->
-  <script src="assets/js/app.js?v=53"></script>
+  <script src="assets/js/app.js?v=55"></script>
 </body>
 </html>
