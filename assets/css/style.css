@@ -514,6 +514,14 @@ details.corrige > summary { cursor: pointer; font-weight: 600; font-size: .88rem
 details.corrige[open] > summary { margin-bottom: .5rem; }
 .corrige-body { font-size: .9rem; }
 
+/* Corrigé d'exercice : poussé par exercice par le prof */
+.exo-corrige { margin-top: .7rem; border: 1px solid var(--ok); border-left: 4px solid var(--ok); border-radius: 9px; background: var(--ok-soft); padding: .5rem .8rem; }
+.exo-corrige-head { font-weight: 700; color: var(--ok); font-size: .9rem; margin-bottom: .3rem; }
+body.role-student .exo-corrige { display: none; }              /* élève : corrigé caché… */
+body.role-student .exo-corrige.pushed { display: block; }       /* …sauf si le prof l'a poussé */
+.exo-push-btn { margin-top: .5rem; font-size: .82rem; }
+.exo-push-btn.on { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+
 .defi-card {
   background: linear-gradient(180deg, var(--accent-soft), var(--bg-elev));
   border: 1px solid var(--accent); border-radius: var(--radius); padding: 1rem 1.2rem;

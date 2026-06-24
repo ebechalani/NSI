@@ -1659,8 +1659,12 @@ except Exception:
   function makeExercices(liste, themeId) {
     const wrap = el("div", "extra-block exos");
     wrap.appendChild(el("h2", null, "🏋️ Exercices progressifs"));
+    const teacher = P.isTeacher();
     wrap.appendChild(
-      el("p", "extra-hint", "Entraîne-toi du plus simple au plus difficile. Le corrigé est masqué (clique pour le révéler).")
+      el("p", "extra-hint",
+        teacher
+          ? "Le corrigé de chaque exercice est masqué aux élèves. Clique <strong>« Pousser le corrigé »</strong> sur un exercice pour le révéler à ta classe (et « Retirer » pour le cacher de nouveau)."
+          : "Écris ta réponse dans la cellule, puis exécute. <strong>Le corrigé apparaîtra quand le professeur le poussera.</strong>")
     );
     liste.forEach((exo, i) => {
       const lv = NIVEAU_BADGE[exo.niveau] || NIVEAU_BADGE.facile;
@@ -1675,14 +1679,37 @@ except Exception:
       box.appendChild(el("div", "exo-enonce", exo.enonce));
       const exoKey = themeId + ":exo:" + i;
       const done = () => markExoDone(exoKey);
-      if (exo.gapcode && exo.gaps) box.appendChild(makeGapFill(exo.gapcode, exo.gaps, done));
-      if (exo.code) box.appendChild(makeCodeCell(exo.code, done));
-      if (exo.solution) {
-        const det = el("details", "corrige");
-        det.appendChild(el("summary", null, "✅ Voir le corrigé"));
-        det.appendChild(el("div", "corrige-body", exo.solution));
-        box.appendChild(det);
+
+      // Espace de travail : texte à trou (à compléter) OU cellule VIDE (l'élève écrit).
+      if (exo.gapcode && exo.gaps) {
+        box.appendChild(makeGapFill(exo.gapcode, exo.gaps, done));
+      } else if (exo.code) {
+        box.appendChild(makeCodeCell("# Écris ta réponse ici, puis clique ▶ Exécuter\n", done));
       }
+
+      // Corrigé : caché par défaut aux élèves, révélé exercice par exercice par le prof.
+      if ((exo.code && !(exo.gapcode && exo.gaps)) || exo.solution) {
+        const corr = el("div", "exo-corrige");
+        corr.dataset.exoKey = exoKey;
+        corr.appendChild(el("div", "exo-corrige-head", "✅ Corrigé"));
+        if (exo.code && !(exo.gapcode && exo.gaps)) corr.appendChild(makeCodeCell(exo.code));
+        if (exo.solution) corr.appendChild(el("div", "corrige-body", exo.solution));
+        box.appendChild(corr);
+      }
+
+      // Prof : pousser / retirer ce corrigé pour la classe.
+      if (teacher) {
+        const pushBtn = el("button", "btn secondary exo-push-btn");
+        const sync = () => {
+          const on = P.isCorrPushed(exoKey);
+          pushBtn.textContent = on ? "📥 Retirer le corrigé des élèves" : "📤 Pousser le corrigé aux élèves";
+          pushBtn.classList.toggle("on", on);
+        };
+        sync();
+        pushBtn.addEventListener("click", () => { P.setCorrPushed(exoKey, !P.isCorrPushed(exoKey)); sync(); });
+        box.appendChild(pushBtn);
+      }
+
       // Case explicite « fait » (fait monter la barre du thème) — côté élève.
       if (P.isStudent()) {
         const doneRow = el("label", "exo-done");
@@ -1697,7 +1724,15 @@ except Exception:
       }
       wrap.appendChild(box);
     });
+    refreshExoCorrections(wrap);
     return wrap;
+  }
+
+  // Affiche/masque les corrigés d'exercices selon ce que le prof a poussé (par exercice).
+  function refreshExoCorrections(root) {
+    (root || document).querySelectorAll(".exo-corrige").forEach((c) => {
+      c.classList.toggle("pushed", P.isCorrPushed(c.dataset.exoKey));
+    });
   }
 
   function makeDefi(defi) {
@@ -3491,6 +3526,7 @@ except Exception:
   function handlePlatformData() {
     if (!P.getSession()) return;
     applyRole(); // pour l'élève : révèle/masque les corrigés poussés en direct
+    refreshExoCorrections(); // corrigés d'exercices poussés/retirés en temps réel
     if (P.isStudent()) {
       syncStudentProgress();
       updateGlobalProgress();

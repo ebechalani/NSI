@@ -242,6 +242,35 @@
     fbSet("classes", classId, { pushed: !!val });
   }
 
+  // ---- Corrigés poussés PAR EXERCICE (clé = "themeId:exo:i") ----
+  // Stockés sur le doc classe : pushedCorr = { cle: true }.
+  function isCorrPushed(key) {
+    if (cache.session && cache.session.role === "student") {
+      var c = getClass(cache.session.classId);
+      return !!(c && c.pushedCorr && c.pushedCorr[key]);
+    }
+    // prof : poussé si AU MOINS une de ses classes l'a
+    var uid = cache.session && cache.session.fbUid;
+    return cache.classes.some(function (c) {
+      return c.teacherUid === uid && c.pushedCorr && c.pushedCorr[key];
+    });
+  }
+  // Le prof pousse / retire le corrigé d'un exercice pour TOUTES ses classes.
+  function setCorrPushed(key, val) {
+    var uid = cache.session && cache.session.fbUid;
+    cache.classes.filter(function (c) { return c.teacherUid === uid; }).forEach(function (c) {
+      c.pushedCorr = c.pushedCorr || {};
+      if (val) c.pushedCorr[key] = true; else delete c.pushedCorr[key];
+      if (FB && db) {
+        try {
+          var fv = val ? true : firebase.firestore.FieldValue.delete();
+          db.collection("classes").doc(c.id).update(new firebase.firestore.FieldPath("pushedCorr", key), fv).catch(fbErr);
+        } catch (e) {}
+      }
+    });
+    persistLocal(); notify();
+  }
+
   // ---- Écoutes temps réel (Firebase) ----
   var unsub = [];
   function clearSubs() { unsub.forEach(function (u) { try { u(); } catch (e) {} }); unsub = []; }
@@ -417,6 +446,7 @@
     getProgress: getProgress, recordQcm: recordQcm, recordExo: recordExo, setExo: setExo, recordActivity: recordActivity,
     setCapacite: setCapacite, setNote: setNote, studentSummary: studentSummary,
     isCorrectionsPushed: isCorrectionsPushed, setCorrectionsPushed: setCorrectionsPushed,
+    isCorrPushed: isCorrPushed, setCorrPushed: setCorrPushed,
   };
 
   function isAdmin() { return !!(cache.session && cache.session.admin); }
