@@ -529,6 +529,8 @@
       if (s.htmldemo) sec.appendChild(makeHtmlCell(s.htmldemo));
       if (s.steps) s.steps.forEach((st, k) => sec.appendChild(makeExoStep(st, k)));
       if (s.domexo) sec.appendChild(makeDomCell(s.domexo.html, s.domexo.js));
+      if (s.cssexo) sec.appendChild(makeCssCell(s.cssexo.html, s.cssexo.css, s.cssexo.solution));
+      if (s.cascadeexo) sec.appendChild(makeCascadeCell(s.cascadeexo.html, s.cascadeexo.css, s.cascadeexo.reveal));
       if (s.game) sec.appendChild(makeGame(s.game));
       if (s.prof) sec.appendChild(makeProfNote(s.prof));
       viewTheme.appendChild(sec);
@@ -856,6 +858,134 @@
       out.appendChild(line);
     });
 
+    return cell;
+  }
+
+  // Exercice CSS interactif : un HTML FOURNI (lecture seule) + un éditeur CSS
+  // + un aperçu live qui combine le HTML et le CSS de l'élève. Le CSS est injecté
+  // dans le <head> du document fourni. Correction optionnelle (gated comme .corrige).
+  function makeCssCell(htmlCode, starterCss, solutionCss) {
+    htmlCode = (htmlCode || "").trim();
+    const cell = el("div", "code-cell css-cell");
+
+    const bar = el("div", "code-toolbar");
+    bar.innerHTML =
+      `<span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span>` +
+      `<span class="code-title">CSS — mets en forme la page</span><span class="spacer"></span>`;
+    const runBtn = el("button", "btn-run", "▶ Voir le résultat");
+    bar.appendChild(runBtn);
+    cell.appendChild(bar);
+
+    // HTML fourni (lecture seule)
+    cell.appendChild(el("div", "dom-sublabel", "🔒 HTML fourni (tu ne le modifies pas)"));
+    const pre = el("pre", "dom-html");
+    const codeEl = el("code");
+    codeEl.textContent = htmlCode;
+    pre.appendChild(codeEl);
+    cell.appendChild(pre);
+
+    // Éditeur CSS
+    cell.appendChild(el("div", "dom-sublabel", "✏️ Ton CSS"));
+    const ta = el("textarea", "code-editor");
+    ta.value = starterCss || "";
+    ta.spellcheck = false;
+    ta.rows = Math.max(6, (starterCss || "").split("\n").length + 1);
+    cell.appendChild(ta);
+
+    // Aperçu (HTML fourni + CSS de l'élève)
+    cell.appendChild(el("div", "dom-sublabel", "Aperçu (rendu par le navigateur)"));
+    const frame = el("iframe", "html-preview");
+    frame.setAttribute("sandbox", "allow-scripts");
+    frame.setAttribute("title", "Aperçu du rendu CSS");
+    cell.appendChild(frame);
+
+    const buildDoc = (cssText) => {
+      const css = String(cssText != null ? cssText : ta.value || "");
+      // remplacement par fonction : évite l'interprétation des $ dans le CSS
+      if (/<\/head>/i.test(htmlCode)) {
+        return htmlCode.replace(/<\/head>/i, () => "<style>\n" + css + "\n</style></head>");
+      }
+      return (
+        '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><style>\n' +
+        css +
+        "\n</style></head><body>" + htmlCode + "</body></html>"
+      );
+    };
+    const render = (cssText) => {
+      frame.srcdoc = buildDoc(cssText);
+      if (P.isStudent() && currentThemeId) noteActivity(currentThemeId);
+    };
+    runBtn.addEventListener("click", () => render());
+    setTimeout(() => render(), 0); // aperçu initial
+
+    // Correction (masquée aux élèves tant qu'elle n'est pas poussée)
+    if (solutionCss) {
+      const det = el("details", "corrige");
+      det.appendChild(el("summary", null, "✅ Voir la correction CSS"));
+      const solPre = el("pre", "corrige-body");
+      const solCode = el("code");
+      solCode.textContent = solutionCss;
+      solPre.appendChild(solCode);
+      det.appendChild(solPre);
+      const tryBtn = el("button", "btn secondary", "▶ Tester la correction dans l'aperçu");
+      tryBtn.addEventListener("click", () => { ta.value = solutionCss; render(); });
+      det.appendChild(tryBtn);
+      cell.appendChild(det);
+    }
+    return cell;
+  }
+
+  // Exercice « cascade » : HTML + CSS FOURNIS (lecture seule) ; l'aperçu est
+  // d'abord rendu SANS style. L'élève prédit, puis « Révèle » : le CSS s'applique
+  // et l'explication s'affiche. (Auto-correction : pas de gating par rôle.)
+  function makeCascadeCell(bodyHtml, css, explanationHtml) {
+    bodyHtml = (bodyHtml || "").trim();
+    css = (css || "").trim();
+    const cell = el("div", "code-cell css-cell");
+
+    const bar = el("div", "code-toolbar");
+    bar.innerHTML =
+      `<span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span>` +
+      `<span class="code-title">Cascade — prédis, puis révèle</span><span class="spacer"></span>`;
+    const revealBtn = el("button", "btn-run", "🔍 Révéler la solution");
+    bar.appendChild(revealBtn);
+    cell.appendChild(bar);
+
+    cell.appendChild(el("div", "dom-sublabel", "🔒 HTML fourni"));
+    const preH = el("pre", "dom-html");
+    const cH = el("code"); cH.textContent = bodyHtml; preH.appendChild(cH);
+    cell.appendChild(preH);
+
+    cell.appendChild(el("div", "dom-sublabel", "🔒 CSS fourni"));
+    const preC = el("pre", "dom-html");
+    const cC = el("code"); cC.textContent = css; preC.appendChild(cC);
+    cell.appendChild(preC);
+
+    cell.appendChild(el("div", "dom-sublabel", "Aperçu (d'abord SANS style — clique « Révéler »)"));
+    const frame = el("iframe", "html-preview");
+    frame.setAttribute("sandbox", "allow-scripts");
+    frame.setAttribute("title", "Aperçu de la cascade");
+    cell.appendChild(frame);
+
+    const explain = el("div", "cascade-explain");
+    explain.style.display = "none";
+    explain.innerHTML = explanationHtml || "";
+    cell.appendChild(explain);
+
+    const buildDoc = (withCss) =>
+      '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">' +
+      (withCss ? "<style>\n" + css + "\n</style>" : "") +
+      "</head><body>" + bodyHtml + "</body></html>";
+    let revealed = false;
+    const render = () => { frame.srcdoc = buildDoc(revealed); };
+    revealBtn.addEventListener("click", () => {
+      revealed = !revealed;
+      render();
+      explain.style.display = revealed ? "block" : "none";
+      revealBtn.textContent = revealed ? "🙈 Masquer la solution" : "🔍 Révéler la solution";
+      if (revealed && P.isStudent() && currentThemeId) noteActivity(currentThemeId);
+    });
+    setTimeout(render, 0); // aperçu initial SANS style
     return cell;
   }
 

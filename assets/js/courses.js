@@ -1041,6 +1041,219 @@ p  { font-size: 16px; line-height: 1.5; }
 </html>`,
       },
       {
+        title: "🏆 Exercice interactif : mets en forme une page avec du CSS",
+        html: `
+        <p>La page HTML ci-dessous t'est <strong>fournie</strong> (tu ne la modifies pas). En écrivant <strong>uniquement du CSS</strong> dans l'éditeur, obtiens la mise en forme suivante :</p>
+        <ul>
+          <li>le titre <code>&lt;h1&gt;</code> en <strong>bleu</strong> et <strong>centré</strong> ;</li>
+          <li>tous les paragraphes en taille de police <strong>18px</strong> ;</li>
+          <li>les éléments de liste (<code>&lt;li&gt;</code>) avec une <strong>couleur de fond jaune clair</strong> ;</li>
+          <li>l'élément ayant la classe <code>important</code> en <strong>gras</strong> et en <strong>rouge</strong> ;</li>
+          <li>le lien (<code>&lt;a&gt;</code>) <strong>sans soulignement</strong>, mais souligné <strong>uniquement au survol</strong> (pseudo-classe <code>:hover</code>).</li>
+        </ul>
+        <p class="note">💡 Rappel : une règle CSS s'écrit <code>selecteur { propriete: valeur; }</code>. Sélecteurs utiles : par balise (<code>h1</code>, <code>p</code>, <code>li</code>, <code>a</code>), par classe (<code>.important</code>), pseudo-classe (<code>a:hover</code>). Modifie le CSS, puis clique <strong>▶ Voir le résultat</strong>.</p>`,
+        cssexo: {
+          html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Tux</title>
+</head>
+<body>
+  <h1>Tux, la mascotte de Linux</h1>
+  <p>Tux est un manchot, emblème du noyau Linux.</p>
+  <p class="important">À retenir : Tux est un manchot, pas un pingouin !</p>
+  <ul>
+    <li>Créé en 1996</li>
+    <li>Dessiné par Larry Ewing</li>
+    <li>Nom proposé par James Hughes</li>
+  </ul>
+  <p><a href="https://fr.wikipedia.org/wiki/Tux">Article Wikipédia</a></p>
+</body>
+</html>`,
+          css: `/* Écris tes règles CSS ici, puis clique ▶ Voir le résultat.
+   Forme d'une règle :  selecteur { propriete: valeur; }
+
+   À faire :
+   - h1        : bleu (color) et centré (text-align)
+   - p         : taille de police 18px (font-size)
+   - li        : fond jaune clair (background-color: lightyellow)
+   - .important : gras (font-weight) et rouge (color)
+   - a         : sans soulignement (text-decoration: none)
+   - a:hover   : souligné au survol (text-decoration: underline)
+*/
+
+h1 {
+
+}
+`,
+          solution: `h1 {
+  color: blue;
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+}
+
+li {
+  background-color: lightyellow;
+}
+
+.important {
+  font-weight: bold;
+  color: red;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}`,
+        },
+        prof: `<p><strong>Critères de réussite</strong> : <code>h1 { color: blue; text-align: center; }</code> · <code>p { font-size: 18px; }</code> · <code>li { background-color: lightyellow; }</code> · <code>.important { font-weight: bold; color: red; }</code> · <code>a { text-decoration: none; }</code> et <code>a:hover { text-decoration: underline; }</code>.</p>
+        <p>Notions mobilisées : sélecteur de <strong>balise</strong> (<code>h1</code>, <code>p</code>, <code>li</code>, <code>a</code>), de <strong>classe</strong> (<code>.important</code>), <strong>pseudo-classe d'état</strong> (<code>:hover</code>) ; propriétés <code>color</code>, <code>text-align</code>, <code>font-size</code>, <code>background-color</code>, <code>font-weight</code>, <code>text-decoration</code>. Variantes : ajouter une bordure aux <code>&lt;li&gt;</code>, changer la police (<code>font-family</code>), styler le lien au survol avec une couleur.</p>`,
+      },
+      {
+        title: "🏆 Exercice interactif : s'entraîner aux sélecteurs CSS",
+        html: `
+        <p>La page ci-dessous contient des liens <strong>à deux endroits</strong> (le menu et l'article) et une <strong>liste imbriquée</strong> (des genres, et leurs espèces). En écrivant <strong>uniquement du CSS</strong> — et en réfléchissant au <strong>bon sélecteur</strong> pour chaque cible, <em>sans ajouter de classe dans le HTML</em> — obtiens :</p>
+        <ul>
+          <li>les liens <strong>du menu uniquement</strong> (les <code>&lt;a&gt;</code> situés dans <code>.menu</code>) : <strong>sans soulignement</strong> et en <strong>vert</strong> — attention à ne pas styler aussi les liens de l'article ;</li>
+          <li>les liens <strong>de l'article uniquement</strong> : en <strong>orange</strong> ;</li>
+          <li>le paragraphe qui suit <strong>immédiatement</strong> le <code>&lt;h1&gt;</code> (sélecteur frère adjacent <code>xx + yy</code>) : en <strong>italique</strong> ;</li>
+          <li><strong>uniquement les genres</strong> (les <code>&lt;li&gt;</code> de <strong>premier niveau</strong> de la liste de l'article), <strong>sans toucher</strong> aux espèces imbriquées : en <strong>gras</strong>. Indice : le combinateur <strong>enfant direct</strong> <code>xx &gt; yy</code> cible sans descendre dans la sous-liste ;</li>
+          <li>les liens du menu <strong>au survol</strong> (<code>:hover</code>) : en <strong>rouge</strong>.</li>
+        </ul>
+        <p class="note">🎯 Cet exercice fait travailler les <strong>combinateurs</strong> de sélecteurs : descendant (<code>.menu a</code> = un <code>a</code> <em>quelque part</em> dans <code>.menu</code>), frère adjacent (<code>h1 + p</code> = le <code>p</code> juste après le <code>h1</code>), enfant direct (<code>article &gt; ul &gt; li</code> = un <code>li</code> <em>directement</em> dans le <code>ul</code>). Modifie le CSS, puis clique <strong>▶ Voir le résultat</strong>.</p>`,
+        cssexo: {
+          html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Sélecteurs</title>
+</head>
+<body>
+  <nav class="menu">
+    <ul>
+      <li><a href="#">Accueil</a></li>
+      <li><a href="#">Articles</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+  <article>
+    <h1>Les manchots</h1>
+    <p>Les manchots vivent dans l'<a href="#">hémisphère sud</a>.</p>
+    <p>On les classe en plusieurs <a href="#">genres</a> et espèces :</p>
+    <ul>
+      <li>Aptenodytes
+        <ul>
+          <li>Empereur</li>
+          <li>Royal</li>
+        </ul>
+      </li>
+      <li>Pygoscelis
+        <ul>
+          <li>Adélie</li>
+          <li>Gentoo</li>
+        </ul>
+      </li>
+    </ul>
+    <p>Source : <a href="#">Wikipédia</a></p>
+  </article>
+</body>
+</html>`,
+          css: `/* Choisis le BON sélecteur pour chaque cible (sans ajouter de classe).
+   Clique ▶ Voir le résultat à chaque essai.
+
+   1. les liens du MENU uniquement (les <a> dans .menu) :
+      sans soulignement et en vert (sans styler les liens de l'article)
+   2. les liens de l'ARTICLE uniquement : en orange
+   3. le paragraphe qui suit IMMÉDIATEMENT le <h1>  (sélecteur  xx + yy ) : en italique
+   4. uniquement les GENRES = les <li> de premier niveau de la liste de l'article,
+      sans toucher aux espèces  (indice : combinateur enfant direct  xx > yy ) : en gras
+   5. les liens du menu AU SURVOL ( :hover ) : en rouge
+*/
+
+`,
+          solution: `/* 1. Liens du MENU uniquement : sans soulignement, en vert */
+.menu a {
+  text-decoration: none;
+  color: green;
+}
+
+/* 2. Liens de l'ARTICLE uniquement : en orange */
+article a {
+  color: orange;
+}
+
+/* 3. Le paragraphe qui suit IMMÉDIATEMENT le h1 : en italique */
+h1 + p {
+  font-style: italic;
+}
+
+/* 4. Les GENRES = li de PREMIER NIVEAU de la liste de l'article : en gras
+   ( > = enfant direct : ne descend pas dans la sous-liste des espèces ) */
+article > ul > li {
+  font-weight: bold;
+}
+/* font-weight s'hérite : on remet les espèces imbriquées en normal */
+article > ul > li ul {
+  font-weight: normal;
+}
+
+/* 5. Liens du menu AU SURVOL : en rouge */
+.menu a:hover {
+  color: red;
+}`,
+        },
+        prof: `<p><strong>Correction (sélecteurs clés)</strong> : <code>.menu a</code> (descendant) pour le menu ; <code>article a</code> pour l'article ; <code>h1 + p</code> (frère adjacent) pour le 1ᵉʳ paragraphe ; <code>article &gt; ul &gt; li</code> (enfant direct) pour les genres sans les espèces ; <code>.menu a:hover</code> pour le survol.</p>
+        <p><strong>Pièges visés</strong> : (a) <code>a</code> seul styllerait <em>tous</em> les liens → il faut <strong>contextualiser</strong> (<code>.menu a</code> vs <code>article a</code>) ; (b) <code>article li</code> (descendant) toucherait <strong>aussi</strong> les espèces → il faut l'<strong>enfant direct</strong> <code>&gt;</code> ; (c) <code>font-weight</code> s'<strong>hérite</strong> : même avec le bon sélecteur, les espèces imbriquées deviennent grasses par héritage → on les remet en <code>normal</code> (lien avec la notion de <strong>cascade/héritage</strong>). Distinguer <code>+</code> (frère adjacent) de <code>~</code> (frères suivants) et de l'espace (descendant).</p>`,
+      },
+      {
+        title: "🏆 Exercice interactif : la cascade — quelle couleur l'emporte ?",
+        html: `
+        <p>Quand <strong>plusieurs règles CSS</strong> visent le même élément et se contredisent, laquelle gagne ? C'est la <strong>cascade</strong> : on garde la règle la plus <strong>spécifique</strong>. Du plus fort au plus faible :</p>
+        <ol>
+          <li><strong>style en ligne</strong> (<code>style="…"</code> dans la balise) ;</li>
+          <li><strong>identifiant</strong> (<code>#id</code>) ;</li>
+          <li><strong>classe</strong> (<code>.classe</code>) et pseudo-classe (<code>:hover</code>) ;</li>
+          <li><strong>balise</strong> (<code>p</code>, <code>div p</code>…).</li>
+        </ol>
+        <p>Deux règles à retenir : une <strong>classe l'emporte sur n'importe quel nombre de balises</strong> (<code>.c1</code> bat <code>div p</code>) ; à spécificité <strong>égale</strong>, c'est la <strong>dernière</strong> règle écrite qui gagne. Et un <code>style="color: …"</code> en ligne ne change que la <em>couleur du texte</em>, pas le fond.</p>
+        <p>👉 À partir du HTML et du CSS fournis ci-dessous, <strong>prédis</strong> la couleur de fond des 5 paragraphes. Puis clique <strong>🔍 Révéler la solution</strong> : le CSS s'applique et l'explication s'affiche.</p>`,
+        cascadeexo: {
+          html: `<p id="p1" class="c1">Texte 1</p>
+<div>
+  <p class="c1">Texte 2</p>
+  <p class="c2" id="p3">Texte 3</p>
+  <p class="c3" style="color: yellow;">Texte 4</p>
+  <p>Texte 5</p>
+</div>`,
+          css: `p { background-color: green; padding: 5px; color: white; }
+#p1 { background-color: red; }
+.c1 { background-color: blue; }
+.c2 { background-color: purple; }
+#p3 { background-color: orange; }
+div p { background-color: pink; }
+.c3 { background-color: black; }`,
+          reveal: `<p><strong>Couleur de fond retenue, et pourquoi :</strong></p>
+<table>
+  <tr><th>Paragraphe</th><th>Fond</th><th>Règle gagnante</th><th>Pourquoi</th></tr>
+  <tr><td>Texte 1</td><td>🔴 rouge</td><td><code>#p1</code></td><td>l'<strong>id</strong> (1-0-0) bat la classe <code>.c1</code> et la balise <code>p</code>. <code>div p</code> ne s'applique pas : Texte 1 n'est <em>pas</em> dans le <code>div</code>.</td></tr>
+  <tr><td>Texte 2</td><td>🔵 bleu</td><td><code>.c1</code></td><td>une <strong>classe</strong> (0-1-0) l'emporte sur <code>div p</code> (0-0-2) et <code>p</code> : une classe bat n'importe quel nombre de balises.</td></tr>
+  <tr><td>Texte 3</td><td>🟠 orange</td><td><code>#p3</code></td><td>l'<strong>id</strong> bat la classe <code>.c2</code> et <code>div p</code>.</td></tr>
+  <tr><td>Texte 4</td><td>⚫ noir</td><td><code>.c3</code></td><td>la <strong>classe</strong> bat <code>div p</code> et <code>p</code>. Le <code>style="color: yellow"</code> en ligne ne change que la <strong>couleur du texte</strong> (d'où le texte jaune), <em>pas</em> le fond.</td></tr>
+  <tr><td>Texte 5</td><td>🩷 rose</td><td><code>div p</code></td><td>aucune classe ni id ; entre <code>p</code> (0-0-1) et <code>div p</code> (0-0-2), c'est le plus de <strong>balises</strong> qui gagne.</td></tr>
+</table>
+<p class="note">🔑 Règle d'or : <strong>en ligne &gt; id &gt; classe &gt; balise</strong>, puis l'ordre d'écriture départage à spécificité égale. (Notation de spécificité : id-classe-balise.)</p>`,
+        },
+        prof: `<p><strong>Objectif</strong> : faire manipuler la <strong>spécificité</strong> et la <strong>cascade</strong>. Réponses : Texte 1 = rouge (<code>#p1</code>), Texte 2 = bleu (<code>.c1</code>), Texte 3 = orange (<code>#p3</code>), Texte 4 = noir (<code>.c3</code> ; l'inline ne touche que le texte), Texte 5 = rose (<code>div p</code>).</p>
+        <p>Bien insister : (a) <code>div p</code> ne s'applique pas à Texte 1 (hors du <code>div</code>) ; (b) une classe bat <code>div p</code> malgré ses 2 balises ; (c) un <code>style=</code> en ligne sur <code>color</code> n'affecte que le texte, pas <code>background-color</code>. Prolongement : <code>!important</code> (à éviter) et la notation de spécificité (a-b-c).</p>`,
+      },
+      {
         title: "Client et serveur : qui exécute quoi ?",
         html: `
         <p>Reprenons le modèle client-serveur, mais côté <strong>exécution</strong> : où tourne le code ?</p>
@@ -1298,6 +1511,151 @@ print("Ville demandée :", parametres["ville"])`,
         <p><strong>Barème /20 indicatif</strong> : structure form + div (4) · labels reliés (4) · types corrects (8) · contraintes required/min/max (4). Variante : faire styler le formulaire avec une feuille CSS externe.</p>`,
       },
       {
+        title: "JavaScript : le 3ᵉ pilier (le langage de l'interactivité)",
+        html: `
+        <p>Après le <strong>HTML</strong> (le contenu) et le <strong>CSS</strong> (l'apparence), <strong>JavaScript</strong> est le 3ᵉ pilier du Web — et le seul <strong>langage de programmation</strong> des trois. C'est lui qui rend la page <strong>vivante</strong> : réagir à un clic, modifier le contenu sans recharger la page, valider un formulaire, charger des données depuis un serveur.</p>
+        <table>
+          <tr><th>Langage</th><th>Répond à…</th><th>Rôle</th></tr>
+          <tr><td><strong>HTML</strong></td><td><em>quoi ?</em></td><td>le contenu et sa structure</td></tr>
+          <tr><td><strong>CSS</strong></td><td><em>à quoi ça ressemble ?</em></td><td>la présentation</td></tr>
+          <tr><td><strong>JavaScript</strong></td><td><em>ce qui se passe ?</em></td><td>le comportement, les interactions</td></tr>
+        </table>
+        <p><strong>Où écrire le JavaScript ?</strong> Comme pour le CSS, on privilégie un <strong>fichier externe</strong> <code>.js</code> relié à la page (code séparé, réutilisable, plus facile à maintenir) :</p>
+        <pre><code>&lt;script src="script.js" defer&gt;&lt;/script&gt;</code></pre>
+        <p>L'attribut <code>defer</code> attend que <strong>toute la page soit chargée</strong> avant d'exécuter le script — sinon il risquerait de chercher des éléments qui n'existent pas encore. On <strong>évite</strong> le JavaScript « en ligne » dans un attribut HTML (<code>onclick="…"</code>) : cela mélange structure et comportement, exactement comme le <code>style=</code> en ligne en CSS.</p>
+        <p><strong>La console</strong> est l'outil n°1 pour apprendre et déboguer (touche <strong>F12</strong> → onglet <em>Console</em>). On y affiche des messages avec <code>console.log(...)</code> — l'équivalent direct du <code>print(...)</code> de Python :</p>
+        <pre><code>console.log("Bonjour");         // affiche une chaîne
+console.log(2 + 3);             // affiche 5
+console.log("Total :", 2 * 21); // un message suivi d'une valeur</code></pre>
+        <p class="note">🖥️ <strong>Essaie</strong> : exécute l'exemple ci-dessous (▶), lis la console, puis modifie-le.</p>`,
+        domexo: {
+          html: `<p>Ouvre la console (les résultats s'affichent ci-dessous).</p>`,
+          js: `// console.log = le print(...) de JavaScript
+console.log("Bonjour depuis JavaScript !");
+console.log(2 + 3);
+console.log("Total :", 2 * 21);
+// Modifie ces lignes, puis clique ▶
+`,
+        },
+      },
+      {
+        title: "Les bases du langage : variables, types, opérateurs",
+        html: `
+        <p>Une <strong>variable</strong> associe un nom à une valeur. On la déclare avec <code>let</code> (valeur qui pourra changer) ou <code>const</code> (constante). On préfère aujourd'hui <strong><code>const</code> par défaut</strong>, et <code>let</code> seulement quand la valeur doit changer. (L'ancien mot-clé <code>var</code> existe encore mais est piégeux : on l'évite.)</p>
+        <pre><code>let age = 17;       // modifiable
+age = 18;           // OK, on peut la réaffecter
+const pi = 3.14159; // constante : la réaffecter est une erreur</code></pre>
+        <p>JavaScript manipule plusieurs <strong>types</strong> de valeurs. On connaît le type d'une valeur avec <code>typeof</code> :</p>
+        <table>
+          <tr><th>Type</th><th>Exemples</th></tr>
+          <tr><td><strong>number</strong></td><td><code>42</code>, <code>3.14</code>, <code>-7</code> — un <em>seul</em> type pour entiers et décimaux</td></tr>
+          <tr><td><strong>string</strong> (chaîne)</td><td><code>"bonjour"</code>, <code>'Tux'</code></td></tr>
+          <tr><td><strong>boolean</strong></td><td><code>true</code>, <code>false</code> (en minuscules !)</td></tr>
+          <tr><td><strong>null</strong> / <strong>undefined</strong></td><td>valeur vide <em>volontaire</em> / variable sans valeur</td></tr>
+          <tr><td><strong>array</strong> (tableau)</td><td><code>[1, 2, 3]</code></td></tr>
+          <tr><td><strong>object</strong></td><td><code>{ nom: "Tux" }</code></td></tr>
+        </table>
+        <p>Pour assembler des chaînes : l'opérateur <code>+</code>, ou les <strong>gabarits</strong> (entre accents graves), proches des <em>f-strings</em> de Python : <code>\`Bonjour \${nom}\`</code> ≈ <code>f"Bonjour {nom}"</code>.</p>
+        <p><strong>Opérateurs</strong> : arithmétiques <code>+ - * / %</code> et <code>**</code> (puissance) ; comparaison <code>&lt; &gt; &lt;= &gt;=</code> ; logiques <code>&amp;&amp;</code> (et), <code>||</code> (ou), <code>!</code> (non).</p>
+        <p class="warnbox">⚠️ <strong>Toujours utiliser <code>===</code> (et non <code>==</code>)</strong>. <code>===</code> compare la valeur <strong>et</strong> le type ; <code>==</code> tente de convertir avant de comparer, ce qui donne des surprises : <code>"5" == 5</code> vaut <code>true</code> ! Utilise <code>===</code> et <code>!==</code> pour éviter ces pièges.</p>
+        <p class="note">🐍 <strong>Côté Python</strong> : <code>typeof</code> joue le rôle de <code>type(...)</code>. JavaScript n'a <strong>qu'un seul type numérique</strong> (là où Python distingue <code>int</code> et <code>float</code>). Là où Python a un seul <code>None</code>, JS en a deux : <code>null</code> et <code>undefined</code>. Les booléens s'écrivent <code>true</code>/<code>false</code> (minuscules), contre <code>True</code>/<code>False</code>.</p>`,
+        domexo: {
+          html: `<p>Résultats dans la console ci-dessous.</p>`,
+          js: `const pi = 3.14159;   // constante
+let age = 17;         // variable modifiable
+age = age + 1;        // réaffectation
+console.log("age =", age, "| type :", typeof age);
+console.log("typeof 'Tux' :", typeof "Tux");
+console.log("3 === 3 ?", 3 === 3);       // true
+console.log('"5" == 5 ?', "5" == 5);     // true (piège !)
+console.log('"5" === 5 ?', "5" === 5);   // false (strict, correct)
+`,
+        },
+      },
+      {
+        title: "Conditions, boucles et fonctions",
+        html: `
+        <p>L'instruction <code>if</code> exécute un bloc selon qu'une condition est vraie ou fausse. Pour un choix court, l'<strong>opérateur ternaire</strong> <code>condition ? siVrai : siFaux</code> est pratique.</p>
+        <pre><code>if (note &gt;= 10) {
+  console.log("Reçu");
+} else {
+  console.log("Ajourné");
+}
+let mention = note &gt;= 16 ? "Très bien" : "Sans mention";</code></pre>
+        <p>Pour <strong>répéter</strong> des instructions, les formes les plus courantes :</p>
+        <ul>
+          <li><code>for (let i = 0; i &lt; 5; i++)</code> — la boucle « classique » (remplace <code>for i in range(5)</code>) ;</li>
+          <li><code>for (const x of tableau)</code> — parcourt les <strong>valeurs</strong> (l'équivalent de <code>for x in iterable</code>) ;</li>
+          <li><code>while (condition)</code> — tant que la condition est vraie.</li>
+        </ul>
+        <p class="warnbox">⚠️ Piège : <code>for...of</code> parcourt les <strong>valeurs</strong>, mais <code>for...in</code> parcourt les <strong>indices/clés</strong> — l'inverse de l'intuition (et de Python). On privilégie <code>for...of</code> pour les tableaux.</p>
+        <p>Une <strong>fonction</strong> regroupe des instructions réutilisables, avec d'éventuels paramètres et une valeur de retour. Deux écritures :</p>
+        <pre><code>// fonction classique
+function carre(x) {
+  return x * x;
+}
+// fonction fléchée (arrow function), plus courte
+const cube = (x) =&gt; x * x * x;</code></pre>
+        <p class="note">💡 En JavaScript, une <strong>fonction est une valeur</strong> comme une autre : on peut la stocker dans une variable et la <strong>passer en argument</strong> à une autre fonction. C'est exactement ce qu'on fera avec <code>addEventListener(type, fonction)</code> : on lui <em>donne</em> une fonction à exécuter plus tard.</p>
+        <p class="note">🐍 <strong>Côté Python</strong> : les blocs sont délimités par des <strong>accolades <code>{ }</code></strong>, pas par l'indentation (qui n'est ici qu'une convention de lisibilité). <code>for...of</code> ≈ <code>for x in iterable</code> ; le <code>for</code> classique remplace <code>for i in range(n)</code>.</p>`,
+        domexo: {
+          html: `<p>Résultats dans la console ci-dessous.</p>`,
+          js: `let note = 14;
+if (note >= 10) {
+  console.log("Reçu");
+} else {
+  console.log("Ajourné");
+}
+
+// for...of : parcourt les valeurs (comme for x in liste)
+const animaux = ["chat", "chien", "manchot"];
+for (const a of animaux) {
+  console.log("animal :", a);
+}
+
+function carre(x) { return x * x; }
+const cube = (x) => x * x * x;
+console.log("carre(5) =", carre(5), "| cube(3) =", cube(3));
+`,
+        },
+      },
+      {
+        title: "Tableaux, objets et JSON",
+        html: `
+        <p>Deux structures essentielles pour organiser des données.</p>
+        <p>Un <strong>tableau</strong> (<em>array</em>) est une liste ordonnée de valeurs, indexée à partir de <strong>0</strong> :</p>
+        <pre><code>const fruits = ["pomme", "kiwi", "fraise"];
+fruits[0];            // "pomme"
+fruits.length;        // 3
+fruits.push("poire"); // ajoute en fin</code></pre>
+        <p>Un <strong>objet</strong> regroupe des paires <strong>clé : valeur</strong>, pour décrire une « chose » :</p>
+        <pre><code>const manchot = { nom: "Tux", annee: 1996, mascotte: true };
+manchot.nom;        // "Tux"   (accès par point)
+manchot["annee"];   // 1996    (accès par clé)
+manchot.couleur = "noir et blanc"; // on ajoute une propriété</code></pre>
+        <p>Pour parcourir un objet proprement, on récupère ses paires avec <code>Object.entries(obj)</code> (≈ <code>dict.items()</code>), ses clés avec <code>Object.keys</code>, ses valeurs avec <code>Object.values</code>.</p>
+        <p class="note">📦 <strong>JSON</strong> (<em>JavaScript Object Notation</em>) est exactement cette combinaison d'objets et de tableaux : c'est le <strong>format d'échange de données le plus répandu sur le Web</strong>. On le retrouvera quand le navigateur ira chercher des données sur un serveur (<code>fetch</code>).</p>
+        <p class="note">🐍 <strong>Côté Python</strong> : le tableau JS (<code>[1, 2, 3]</code>) correspond à la <strong>liste</strong>, et l'objet (<code>{cle: valeur}</code>) au <strong>dictionnaire</strong>.</p>`,
+        domexo: {
+          html: `<p>Résultats dans la console ci-dessous.</p>`,
+          js: `// Tableau (≈ liste Python)
+const fruits = ["pomme", "kiwi", "fraise"];
+fruits.push("poire");
+console.log("fruits :", fruits, "| nombre :", fruits.length);
+
+// Objet (≈ dictionnaire Python)
+const manchot = { nom: "Tux", annee: 1996, mascotte: true };
+manchot.couleur = "noir et blanc";
+console.log("nom :", manchot.nom, "| annee :", manchot["annee"]);
+
+// Parcourir les paires clé/valeur
+for (const [cle, valeur] of Object.entries(manchot)) {
+  console.log(cle, ":", valeur);
+}
+`,
+        },
+      },
+      {
         title: "Réagir à un événement (JavaScript)",
         html: `
         <p>JavaScript rend la page <strong>interactive</strong> en réagissant à des <strong>événements</strong> : un clic (<code>click</code>), un survol, une frappe au clavier, l'envoi d'un formulaire (<code>submit</code>)… Le mécanisme : on attache un <strong>écouteur</strong> (<em>listener</em>) à un élément avec <code>addEventListener</code>, et on lui donne la fonction à exécuter quand l'événement survient.</p>
@@ -1325,6 +1683,67 @@ print("Ville demandée :", parametres["ville"])`,
       n = n + 1;
       document.getElementById("msg").textContent =
         "Bravo, événement reçu ! (clics : " + n + ")";
+    });
+  </script>
+</body>
+</html>`,
+      },
+      {
+        title: "Les événements en détail : types, objet event, plusieurs éléments",
+        html: `
+        <p>Le code ne s'exécute pas seulement de haut en bas, une fois. On <strong>enregistre</strong> des fonctions (« quand <em>ceci</em> se produit, fais <em>cela</em> »), que le navigateur <strong>appelle au moment voulu</strong> — c'est la <strong>programmation événementielle</strong>.</p>
+        <p>On attache un gestionnaire avec <code>element.addEventListener(type, fonction)</code>. Point important : on <strong>passe</strong> la fonction, on ne l'<strong>appelle pas</strong> — donc <strong>sans les parenthèses</strong> (<code>maFonction</code>, pas <code>maFonction()</code>).</p>
+        <p>Les <strong>types</strong> d'événements les plus utiles :</p>
+        <table>
+          <tr><th>Type</th><th>Déclenché quand…</th></tr>
+          <tr><td><code>click</code></td><td>on clique sur l'élément</td></tr>
+          <tr><td><code>input</code></td><td>le contenu d'un champ change (à chaque frappe)</td></tr>
+          <tr><td><code>change</code></td><td>un champ perd le focus après modification (case/liste)</td></tr>
+          <tr><td><code>submit</code></td><td>un formulaire est envoyé</td></tr>
+          <tr><td><code>mouseover</code> / <code>mouseout</code></td><td>la souris entre / sort d'un élément</td></tr>
+          <tr><td><code>keydown</code> / <code>keyup</code></td><td>une touche est enfoncée / relâchée</td></tr>
+        </table>
+        <p>Quand l'événement survient, le navigateur passe à notre fonction un <strong>objet événement</strong> (souvent nommé <code>event</code> ou <code>e</code>) qui <strong>décrit</strong> ce qui s'est passé. Deux usages reviennent sans cesse :</p>
+        <ul>
+          <li><code>event.target</code> : l'<strong>élément</strong> sur lequel l'événement s'est produit ;</li>
+          <li><code>event.preventDefault()</code> : <strong>annule</strong> le comportement par défaut du navigateur (par ex. un <code>submit</code> qui recharge la page, ou un lien qui navigue). <strong>Indispensable pour traiter un formulaire en JavaScript.</strong></li>
+        </ul>
+        <p>Pour réagir au clic sur <strong>plusieurs</strong> éléments, on parcourt une sélection et on attache un gestionnaire à chacun ; <code>event.target</code> dit alors lequel a déclenché :</p>
+        <pre><code>const boutons = document.querySelectorAll("button");
+for (const b of boutons) {
+  b.addEventListener("click", (event) =&gt; {
+    console.log("Cliqué :", event.target.textContent);
+  });
+}</code></pre>
+        <p class="note">🔗 Le schéma de base de presque toute interactivité : <strong>réagir</strong> à une action (événement) → <strong>modifier la page</strong> (DOM) en conséquence.</p>
+        <p class="note">🖥️ <strong>Essaie</strong> ci-dessous : le compteur réagit au <code>click</code>, et le champ au <code>input</code> (à chaque frappe). Clique 10 fois… puis modifie le code.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8">
+<style>
+  button { font-size: 1em; padding: .4em .8em; }
+  #compte { font-size: 1.5em; font-weight: bold; }
+  .gagne { color: green; }
+</style></head>
+<body>
+  <button id="plus">Cliquez-moi (+1)</button>
+  <p>Clics : <span id="compte">0</span></p>
+
+  <input id="champ" type="text" placeholder="Tape ici…">
+  <p>Tu as tapé : <span id="echo"></span></p>
+
+  <script>
+    let n = 0;
+    const compte = document.querySelector("#compte");
+    document.querySelector("#plus").addEventListener("click", function () {
+      n = n + 1;
+      compte.textContent = n;
+      if (n >= 10) compte.classList.add("gagne");
+    });
+
+    const champ = document.querySelector("#champ");
+    champ.addEventListener("input", function (event) {
+      document.querySelector("#echo").textContent = event.target.value;
     });
   </script>
 </body>
@@ -1368,6 +1787,164 @@ console.log("Intro :", document.body.children[1].textContent);
 console.log("2e activité :", document.body.children[2].children[1].textContent);
 console.log("Animateur :", document.body.children[3].children[0].textContent);</code></pre>
         <p>Points clés : <code>body.children</code> = [h1, p, ul, p] ; la liste est <code>children[2]</code>, ses <code>&lt;li&gt;</code> sont ses propres <code>children</code> ; le <code>&lt;span&gt;</code> est l'enfant du dernier <code>&lt;p&gt;</code>. Les indices commencent à 0.</p>`,
+      },
+      {
+        title: "Manipuler le DOM : sélectionner, lire, modifier",
+        html: `
+        <p>On passe de l'<strong>exploration</strong> (parcourir l'arbre à la main) à la <strong>manipulation</strong> : retrouver un élément efficacement, puis <strong>lire</strong> et <strong>modifier</strong> son contenu, son style et ses attributs. Les deux méthodes modernes s'appuient sur les <strong>sélecteurs CSS</strong> que tu connais déjà :</p>
+        <ul>
+          <li><code>document.querySelector("sélecteur")</code> : le <strong>premier</strong> élément qui correspond (ou <code>null</code>) ;</li>
+          <li><code>document.querySelectorAll("sélecteur")</code> : <strong>tous</strong> les éléments, sous forme de liste parcourable.</li>
+        </ul>
+        <pre><code>document.querySelector("h1");        // le premier &lt;h1&gt;
+document.querySelector(".important"); // le premier de classe "important"
+document.querySelector("#menu");      // l'élément d'id "menu"</code></pre>
+        <p>(La méthode historique <code>document.getElementById("menu")</code> reste très courante.) Une fois l'élément tenu, on <strong>lit ou modifie</strong> :</p>
+        <table>
+          <tr><th>Propriété</th><th>Rôle</th></tr>
+          <tr><td><code>.textContent</code></td><td>le <strong>texte</strong> de l'élément (lecture et écriture)</td></tr>
+          <tr><td><code>.innerHTML</code></td><td>le <strong>contenu HTML</strong> (permet d'insérer des balises) — à manier avec prudence</td></tr>
+          <tr><td><code>.value</code></td><td>la <strong>valeur</strong> d'un champ de formulaire (<code>input</code>, <code>select</code>…)</td></tr>
+        </table>
+        <p class="warnbox">⚠️ <code>innerHTML</code> interprète le texte comme du <strong>HTML</strong> : pratique, mais <strong>risqué</strong> si le texte vient de l'utilisateur (injection de code). En règle générale, préfère <code>textContent</code> pour du simple texte.</p>
+        <p>Pour l'<strong>apparence</strong>, deux approches. <code>element.style.couleur</code> agit propriété par propriété (en <em>camelCase</em> : <code>background-color</code> devient <code>backgroundColor</code>). Mais la <strong>bonne pratique</strong> est de définir les styles en <strong>CSS</strong> (sous forme de classes) et de se contenter d'<strong>ajouter ou retirer une classe</strong> :</p>
+        <ul>
+          <li><code>element.classList.add("active")</code> / <code>.remove("active")</code> ;</li>
+          <li><code>element.classList.toggle("active")</code> — l'ajoute si absente, la retire sinon ;</li>
+          <li><code>element.classList.contains("active")</code> — teste sa présence.</li>
+        </ul>
+        <p>Enfin, les <strong>attributs</strong> (<code>href</code>, <code>src</code>, <code>alt</code>…) se lisent et s'écrivent avec <code>getAttribute</code> / <code>setAttribute</code> / <code>removeAttribute</code>, ou directement comme propriétés (<code>lien.href</code>, <code>image.src</code>).</p>
+        <p class="note">🎯 On retrouve la <strong>même philosophie qu'en CSS</strong> : le CSS décrit l'apparence, le JavaScript décide <strong>quand</strong> l'appliquer (en ajoutant/retirant des classes). C'est plus lisible que de fixer <code>style</code> propriété par propriété.</p>
+        <p class="note">🖥️ <strong>Essaie</strong> : les boutons ci-dessous modifient le paragraphe via <code>textContent</code> et <code>classList</code>.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<style>
+  .surligne { background: gold; }
+  .encadre { border: 2px solid teal; padding: 4px; }
+  p { font-size: 1.1em; }
+</style></head>
+<body>
+  <p id="cible">Un paragraphe à transformer.</p>
+  <button id="b1">Changer le texte</button>
+  <button id="b2">Surligner (toggle)</button>
+  <button id="b3">Encadrer</button>
+  <script>
+    const p = document.querySelector("#cible");
+    document.querySelector("#b1").addEventListener("click", function () {
+      p.textContent = "Texte changé en JavaScript !";
+    });
+    document.querySelector("#b2").addEventListener("click", function () {
+      p.classList.toggle("surligne");
+    });
+    document.querySelector("#b3").addEventListener("click", function () {
+      p.classList.add("encadre");
+    });
+  </script>
+</body></html>`,
+      },
+      {
+        title: "Créer, insérer et supprimer des éléments",
+        html: `
+        <p>Le DOM étant <strong>vivant</strong>, on peut <strong>fabriquer</strong> de nouveaux éléments et les <strong>greffer</strong> dans l'arbre. Le motif de base, omniprésent (ajouter une ligne dans une liste, une carte dans une galerie, un message dans un chat) :</p>
+        <pre><code>const li = document.createElement("li"); // 1. créer
+li.textContent = "Nouvel élément";        // 2. remplir
+const liste = document.querySelector("ul");
+liste.append(li);                         // 3. insérer (en dernier)
+// liste.prepend(li);                     //    ou en premier
+
+const aSupprimer = document.querySelector(".obsolete");
+aSupprimer.remove();                      // supprimer</code></pre>
+        <p>On combine très souvent ce motif avec une <strong>boucle</strong> pour afficher tout un tableau de données. C'est exactement ce que fait une « todo-list » : à chaque clic sur <em>Ajouter</em>, on lit la saisie, on crée un <code>&lt;li&gt;</code>, on l'insère, et on vide le champ.</p>
+        <p class="note">🖥️ <strong>Essaie</strong> la mini liste de tâches ci-dessous : tape une tâche, clique <em>Ajouter</em> ; clique une tâche pour la supprimer. Regarde le code : c'est le motif <strong>créer → remplir → insérer</strong>.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<style>
+  li { cursor: pointer; }
+  li:hover { text-decoration: line-through; color: #b00; }
+</style></head>
+<body>
+  <h3>Mes tâches</h3>
+  <input id="saisie" type="text" placeholder="Nouvelle tâche">
+  <button id="ajouter">Ajouter</button>
+  <ul id="liste"></ul>
+  <p><small>Clique sur une tâche pour la supprimer.</small></p>
+  <script>
+    const champ = document.querySelector("#saisie");
+    const liste = document.querySelector("#liste");
+    document.querySelector("#ajouter").addEventListener("click", function () {
+      const texte = champ.value;
+      if (texte === "") return;
+      const li = document.createElement("li"); // créer
+      li.textContent = texte;                   // remplir
+      li.addEventListener("click", function () { li.remove(); });
+      liste.append(li);                         // insérer
+      champ.value = "";                         // vider
+    });
+  </script>
+</body></html>`,
+      },
+      {
+        title: "Valider un formulaire en JavaScript",
+        html: `
+        <p>Par défaut, envoyer un formulaire <strong>recharge la page</strong>. On peut <strong>intercepter</strong> cet envoi en JavaScript pour le <strong>valider</strong> (ou le traiter entièrement côté client). On écoute l'événement <code>submit</code> et on appelle <code>event.preventDefault()</code> pour bloquer le comportement par défaut :</p>
+        <pre><code>const formulaire = document.querySelector("form");
+formulaire.addEventListener("submit", (event) =&gt; {
+  event.preventDefault();              // on bloque le rechargement
+  const nom = document.querySelector("#nom").value;
+  if (nom.trim() === "") {
+    console.log("Le nom est obligatoire !");
+    return;                            // on arrête là
+  }
+  console.log("Formulaire valide, nom =", nom);
+});</code></pre>
+        <p class="warnbox">🔒 <strong>Validation côté client ≠ sécurité.</strong> La validation en JavaScript améliore le <strong>confort</strong> (retour immédiat, sans aller-retour serveur). Mais elle s'exécute <strong>sur la machine du client</strong>, qui peut la contourner : le <strong>serveur doit toujours revalider</strong> les données qu'il reçoit. Côté client = confort ; côté serveur = sécurité.</p>
+        <p class="note">🖥️ <strong>Essaie</strong> : ce formulaire ne recharge pas la page. Laisse le pseudo vide ou mets un âge &lt; 15 → message d'erreur ; sinon → message de bienvenue.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<style>
+  .ok { color: green; font-weight: bold; }
+  .erreur { color: red; font-weight: bold; }
+  div { margin: .4em 0; }
+</style></head>
+<body>
+  <h3>Inscription</h3>
+  <form id="formulaire">
+    <div><label>Pseudo : <input type="text" id="pseudo"></label></div>
+    <div><label>Âge : <input type="number" id="age"></label></div>
+    <button type="submit">S'inscrire</button>
+  </form>
+  <p id="message"></p>
+  <script>
+    const formulaire = document.querySelector("#formulaire");
+    const message = document.querySelector("#message");
+    formulaire.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const pseudo = document.querySelector("#pseudo").value;
+      const age = Number(document.querySelector("#age").value);
+      if (pseudo.trim() === "" || age < 15) {
+        message.textContent = "Pseudo obligatoire et age au moins 15.";
+        message.className = "erreur";
+      } else {
+        message.textContent = "Bienvenue, " + pseudo + " !";
+        message.className = "ok";
+      }
+    });
+  </script>
+</body></html>`,
+      },
+      {
+        title: "Aller chercher des données : fetch (pour aller plus loin)",
+        html: `
+        <p>Recharger toute la page pour un petit changement, c'est lourd. On veut souvent <strong>mettre à jour une partie de l'écran</strong> sans tout recharger : afficher des résultats de recherche, charger les messages suivants… Pour cela, le JavaScript envoie <strong>lui-même</strong> une requête HTTP au serveur grâce à <code>fetch</code>, puis utilise la réponse pour <strong>modifier le DOM</strong>.</p>
+        <p>Les données échangées sont le plus souvent au format <strong>JSON</strong> (la notation des objets et tableaux JavaScript, vue plus haut) :</p>
+        <pre><code>fetch("https://exemple.fr/pingouins.json")
+  .then((reponse) =&gt; reponse.json()) // convertir la réponse en objet JS
+  .then((donnees) =&gt; {
+    console.log(donnees);             // utiliser les données (ici : les afficher)
+  });</code></pre>
+        <p class="note">⏳ <strong>Asynchrone</strong> : une requête réseau prend du temps. <code>fetch</code> ne <strong>bloque pas</strong> la page en attendant ; il <strong>promet</strong> (<em>Promise</em>) de fournir le résultat plus tard. Le <code>.then(...)</code> décrit <em>ce qu'on fera quand la réponse arrivera</em> — on retrouve l'idée événementielle. (La syntaxe moderne <code>async</code>/<code>await</code> simplifie cette écriture.)</p>
+        <p class="warnbox">🌐 <strong>CORS</strong> : par sécurité, un script ne peut pas, par défaut, lire la réponse d'un serveur d'un <strong>autre domaine</strong> (politique <em>Cross-Origin Resource Sharing</em>). Le serveur doit <strong>autoriser</strong> explicitement ces requêtes.</p>
+        <p class="note">🎓 Hors programme strict de Première, mais incontournable pour comprendre une <strong>application web moderne</strong> : c'est ainsi qu'une page se met à jour « toute seule » après ton clic. (À tester dans un vrai navigateur en local : l'aperçu en bac à sable bloque les requêtes réseau.)</p>`,
       },
       {
         title: "Cookies, traces et vie privée",
@@ -1426,6 +2003,24 @@ console.log("Animateur :", document.body.children[3].children[0].textContent);</
 </html>`,
         prof: `<p><strong>Critères de réussite</strong> : page valide (<code>&lt;!DOCTYPE&gt;</code>, <code>&lt;head&gt;</code> avec <code>&lt;title&gt;</code> + <code>charset</code>, <code>&lt;body&gt;</code>) ; un <code>&lt;h1&gt;</code> + un <code>&lt;p&gt;</code> ; un <code>&lt;article&gt;</code> avec <code>&lt;h2&gt;</code> ; une <code>&lt;ol&gt;</code> de 3 <code>&lt;a target="_blank"&gt;</code> ; un <code>&lt;table&gt;</code> 2 colonnes × 3 lignes avec <code>&lt;th&gt;</code> « Photo »/« Présentation » et des <code>&lt;img&gt;</code> munies d'un <code>alt</code>.</p>
         <p><strong>Variantes</strong> : imposer un thème (jeux vidéo, sciences, sport…) ; demander de styler le tableau avec une feuille <strong>CSS externe</strong> ; barème /10 (structure 3, liens 3, tableau 3, soin 1).</p>`,
+      },
+      {
+        title: "Aller plus loin : composants, état réactif et frameworks (culture)",
+        html: `
+        <p>Manipuler le DOM directement (<code>querySelector</code>, <code>createElement</code>, <code>textContent</code>…) fonctionne bien pour de <strong>petites</strong> interactions. Mais dès qu'une application devient grosse, des difficultés apparaissent :</p>
+        <ul>
+          <li>l'<strong>état</strong> (les données) et l'<strong>affichage</strong> (le DOM) doivent être <strong>synchronisés à la main</strong> : à chaque changement, penser à mettre à jour tous les éléments concernés — source de bugs ;</li>
+          <li>le code se <strong>disperse</strong> en multiples <code>addEventListener</code> et mises à jour du DOM, difficiles à organiser ;</li>
+          <li>réutiliser un morceau d'interface (un bouton, une carte, un menu) n'est pas naturel.</li>
+        </ul>
+        <p>Les <strong>frameworks</strong> et bibliothèques modernes sont nés pour répondre à ces problèmes. Ils partagent deux idées :</p>
+        <ul>
+          <li><strong>Composants</strong> : on découpe l'interface en <strong>briques réutilisables</strong> (un <code>Bouton</code>, une <code>Carte</code>, une <code>ListeDeTaches</code>), chacune regroupant sa structure, son style et son comportement ;</li>
+          <li><strong>État réactif</strong> : on décrit <em>ce que l'interface doit afficher en fonction des données</em>, et l'outil <strong>met à jour le DOM automatiquement</strong> quand les données changent. On ne manipule plus le DOM à la main : on change une variable, l'affichage suit.</li>
+        </ul>
+        <p>À titre de <strong>culture</strong>, les outils les plus répandus aujourd'hui : <strong>React</strong> (Meta, le plus utilisé, souvent avec <strong>Next.js</strong>), <strong>Vue</strong> (réputé progressif et accessible), <strong>Svelte</strong> (compile les composants en JavaScript minimal), <strong>Angular</strong> (Google, complet et structuré).</p>
+        <p class="note">🧱 Tous reposent sur le <strong>même socle</strong> que nous avons étudié : HTML, CSS, DOM, événements, requêtes HTTP. Les apprendre, c'est <strong>ajouter une couche d'organisation par-dessus</strong> ces fondations — pas les remplacer. La meilleure progression reste donc : <strong>bien maîtriser les bases</strong> (« vanilla JavaScript »), puis choisir <em>un</em> framework et le pratiquer sur un petit projet.</p>
+        <p>Quelques notions de l'<strong>écosystème</strong> qu'on croise vite : les <strong>modules ES</strong> (<code>import</code>/<code>export</code>) pour découper le code ; <strong>npm</strong>, le gestionnaire de paquets ; <strong>Node.js</strong>, pour exécuter JavaScript hors du navigateur (côté serveur, outils) ; <strong>TypeScript</strong>, qui ajoute un <strong>typage statique</strong> et détecte des erreurs avant l'exécution.</p>`,
       },
       {
         title: "Synthèse et mise en pratique",
