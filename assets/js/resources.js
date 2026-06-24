@@ -447,24 +447,9 @@ print(a)       # [1, 2, 3, 4] — surprise !</code></pre>
 /* ---------------- Ressources externes rattachées à un thème ----------------
    Supports d'autres formations DIU, LIÉS avec attribution (pas de copie). */
 const THEME_RESSOURCES_EXT = {
-  "types-construits": {
-    titre: "Listes, n-uplets & dictionnaires (notebooks)",
-    auteur: "Module DIU EIL 2026 — Y. Pigné (LITIS, Univ. Le Havre)",
-    base: "https://git.litislab.fr/ypigne/2026-EIL-listes-tuples-dictionnaires/-/",
-    note: "📒 Ce sont des <strong>notebooks</strong> (.ipynb) : le dépôt les affiche dans le navigateur. Pour les <strong>exécuter</strong>, ouvre-les dans <a href=\"https://notebook.basthon.fr\" target=\"_blank\" rel=\"noopener\">Basthon</a> (Fichier → Ouvrir, après téléchargement) ou Capytale.",
-    items: [
-      { t: "📁 Le dépôt complet (toujours à jour)", url: "tree/main" },
-      { t: "📘 Cours 1 — Listes & tuples", url: "blob/main/session-1-listes-tuples/cours.ipynb" },
-      { t: "🧪 TP 1 — Listes & tuples", url: "blob/main/session-1-listes-tuples/tp.ipynb" },
-      { t: "📗 Cours 2 — Dictionnaires", url: "blob/main/session-2-dictionnaires/cours.ipynb" },
-      { t: "🧪 TP 2 — Dictionnaires", url: "blob/main/session-2-dictionnaires/tp.ipynb" },
-      { t: "👩‍🎓 Fiche élève — Listes (énoncé + corrigé)", url: "tree/main/eleves/1-listes" },
-      { t: "👩‍🎓 Fiche élève — Compréhensions", url: "tree/main/eleves/2-comprehensions" },
-      { t: "👩‍🎓 Fiche élève — Tuples", url: "tree/main/eleves/3-tuples" },
-      { t: "👩‍🎓 Fiche élève — Dictionnaires", url: "tree/main/eleves/5-dictionnaires" },
-      { t: "⭐ Bonus (Terminale) — Piles & files, Ensembles", url: "tree/main/eleves" },
-    ],
-  },
+  // « types-construits » : le contenu du module (cours, TP, fiches) est désormais
+  // intégré DIRECTEMENT dans le thème (sections, TP dépliables, exercices) — plus
+  // de pavé de liens externes. Source créditée sur les TP du thème (TP_SOURCE).
   "ihm-web": {
     titre: "HTML, CSS & client-serveur",
     auteur: "Cours de J-M Barbier — DIU EIL 2026",

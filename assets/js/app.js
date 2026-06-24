@@ -539,6 +539,10 @@
     if (ex && ex.exercices) viewTheme.appendChild(makeExercices(ex.exercices, c.id));
     if (ex && ex.defi) viewTheme.appendChild(makeDefi(ex.defi));
 
+    // TP guidés du thème, faisables directement ici (dépliables)
+    const themeTPs = makeThemeTPs(c.id);
+    if (themeTPs) viewTheme.appendChild(themeTPs);
+
     // Quiz
     if (QUIZZES[c.id]) viewTheme.appendChild(makeQuiz(c.id));
 
@@ -2618,27 +2622,54 @@ except Exception:
   }
 
   // Bloc « Ressources du DIU » injecté en bas d'une page de thème.
+  // TP guidés du thème, rendus DIRECTEMENT dans le thème (dépliables, faisables sur place).
+  function makeThemeTPs(themeId) {
+    const tps = (typeof GUIDED_TP !== "undefined" ? GUIDED_TP : []).filter(
+      (t) => t.theme === themeId && t.steps && t.steps.length
+    );
+    if (!tps.length) return null;
+    const wrap = el("div", "extra-block exos");
+    wrap.appendChild(el("h2", null, "🧪 TP guidés de ce thème"));
+    wrap.appendChild(
+      el("p", "extra-hint", "Des TP pas-à-pas, <strong>à faire ici</strong> : clique pour ouvrir, exécute le code, réponds aux questions. Imprimables (énoncé élève / corrigé prof).")
+    );
+    tps.forEach((t) => {
+      const det = el("details", "tp-inline");
+      det.appendChild(el("summary", null, (t.lang === "python" ? "🐍 " : "🖥️ ") + t.titre));
+      const body = el("div", "tp-inline-body");
+      if (t.intro) body.appendChild(el("p", "tp-intro", t.intro));
+      const tools = el("div", "tp-print-group");
+      const bE = el("button", "btn secondary", "🖨️ Énoncé (élève)");
+      bE.addEventListener("click", () => openPrint(t.titre + " — énoncé", buildTPPrintHtml(t, false)));
+      tools.appendChild(bE);
+      const bC = el("button", "btn secondary teacher-block", "🖨️ Corrigé (prof)");
+      bC.addEventListener("click", () => openPrint(t.titre + " — corrigé", buildTPPrintHtml(t, true)));
+      tools.appendChild(bC);
+      body.appendChild(tools);
+      t.steps.forEach((s) => body.appendChild(makeTPStep(s, t.lang)));
+      det.appendChild(body);
+      wrap.appendChild(det);
+    });
+    return wrap;
+  }
+
   function makeThemeDUResources(themeId) {
-    const tps = (typeof GUIDED_TP !== "undefined" ? GUIDED_TP : []).filter((t) => t.theme === themeId);
+    // Les TP guidés sont désormais rendus inline (makeThemeTPs) ; ici on garde
+    // mini-projets, activités débranchées, fiches et Logisim.
     const fiches = (typeof FICHES_PLUS !== "undefined" ? FICHES_PLUS : []).filter((f) => f.theme === themeId);
     const mps = (typeof MINI_PROJETS !== "undefined" ? MINI_PROJETS : []).filter((p) => p.theme === themeId);
     const dbs = (typeof DEBRANCHE !== "undefined" ? DEBRANCHE : []).filter((a) => a.theme === themeId);
     const hasLogisim = themeId === "architecture-os" && typeof LOGISIM_CIRCUITS !== "undefined";
-    if (!tps.length && !fiches.length && !mps.length && !dbs.length && !hasLogisim) return null;
+    if (!fiches.length && !mps.length && !dbs.length && !hasLogisim) return null;
 
     const wrap = el("div", "extra-block du-block");
     wrap.appendChild(el("h2", null, "📦 Ressources du DIU"));
     wrap.appendChild(el("p", "extra-hint", "Du matériel issu de ma formation DIU NSI, rattaché à ce thème."));
-    if (tps.length || fiches.length || mps.length || dbs.length) {
+    if (fiches.length || mps.length || dbs.length) {
       const ul = el("div", "du-links");
       dbs.forEach((a) => {
         const b = el("button", "btn secondary", "🎲 " + a.titre);
         b.addEventListener("click", () => navigate("debranche"));
-        ul.appendChild(b);
-      });
-      tps.forEach((t) => {
-        const b = el("button", "btn secondary", (t.lang === "python" ? "🐍 " : "🖥️ ") + t.titre);
-        b.addEventListener("click", () => navigate("tp"));
         ul.appendChild(b);
       });
       mps.forEach((p) => {

@@ -249,6 +249,15 @@ html[data-theme="dark"] .code-toolbar { background: #0c1424; }
 /* Boutons d'impression d'un TP (énoncé / corrigé) */
 .tp-print-group { display: flex; gap: .5rem; flex-wrap: wrap; margin: .2rem 0 .6rem; }
 
+/* TP guidés dépliables, rendus dans le thème */
+details.tp-inline { border: 1px solid var(--border); border-radius: 10px; background: var(--bg-elev); margin: .7rem 0; overflow: hidden; }
+details.tp-inline > summary { cursor: pointer; font-weight: 700; padding: .7rem .9rem; color: var(--accent); user-select: none; list-style: none; }
+details.tp-inline > summary::-webkit-details-marker { display: none; }
+details.tp-inline > summary::before { content: "▸ "; color: var(--text-soft); }
+details.tp-inline[open] > summary::before { content: "▾ "; }
+details.tp-inline[open] > summary { border-bottom: 1px solid var(--border); }
+.tp-inline-body { padding: .2rem .9rem .8rem; }
+
 /* Exercice guidé en étapes */
 .exo-step { border-left: 3px solid var(--accent); padding-left: 1rem; margin: 1.2rem 0; }
 .exo-step-head { font-weight: 700; color: var(--accent); margin-bottom: .35rem; }
