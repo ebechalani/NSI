@@ -2460,14 +2460,16 @@ except Exception:
     return card;
   }
 
-  function makeFichePlus(f) {
+  function makeFichePlus(f, inline) {
     const card = el("div", "tp-card fiche-plus");
-    const head = el("div", "exo-head");
-    head.innerHTML = `<span class="lv-tag lv-moyen">📘 Fiche +</span><span class="exo-n">${f.titre}</span>`;
-    card.appendChild(head);
-    const link = el("button", "tp-theme-link", "→ " + themeTitle(f.theme));
-    link.addEventListener("click", () => navigate(f.theme));
-    card.appendChild(link);
+    if (!inline) {
+      const head = el("div", "exo-head");
+      head.innerHTML = `<span class="lv-tag lv-moyen">📘 Fiche +</span><span class="exo-n">${f.titre}</span>`;
+      card.appendChild(head);
+      const link = el("button", "tp-theme-link", "→ " + themeTitle(f.theme));
+      link.addEventListener("click", () => navigate(f.theme));
+      card.appendChild(link);
+    }
     if (f.summary) card.appendChild(el("p", "tp-intro", f.summary));
     if (f.contenu) card.appendChild(el("div", null, f.contenu));
     if (f.code) card.appendChild(makeCodeCell(f.code));
@@ -2542,17 +2544,21 @@ except Exception:
     return wrap;
   }
 
-  function makeMiniProjet(p) {
+  function makeMiniProjet(p, inline) {
     const card = el("div", "tp-card mini-projet");
-    const head = el("div", "exo-head");
-    head.innerHTML =
-      `<span class="lv-tag ${p.bonus ? "lv-defi" : "lv-facile"}">${p.bonus ? "⭐ bonus" : "🐍 Projet"}</span>` +
-      `<span class="exo-n">${p.titre}</span>`;
-    card.appendChild(head);
+    if (!inline) {
+      const head = el("div", "exo-head");
+      head.innerHTML =
+        `<span class="lv-tag ${p.bonus ? "lv-defi" : "lv-facile"}">${p.bonus ? "⭐ bonus" : "🐍 Projet"}</span>` +
+        `<span class="exo-n">${p.titre}</span>`;
+      card.appendChild(head);
+    }
     card.appendChild(el("div", "proj-meta", `<span class="chip">${p.cat}</span>`));
-    const link = el("button", "tp-theme-link", "→ " + themeTitle(p.theme));
-    link.addEventListener("click", () => navigate(p.theme));
-    card.appendChild(link);
+    if (!inline) {
+      const link = el("button", "tp-theme-link", "→ " + themeTitle(p.theme));
+      link.addEventListener("click", () => navigate(p.theme));
+      card.appendChild(link);
+    }
     if (p.summary) card.appendChild(el("p", "tp-intro", p.summary));
     if (p.objectifs) {
       const ul = el("ul", "tp-questions");
@@ -2654,59 +2660,77 @@ except Exception:
   }
 
   function makeThemeDUResources(themeId) {
-    // Les TP guidés sont désormais rendus inline (makeThemeTPs) ; ici on garde
-    // mini-projets, activités débranchées, fiches et Logisim.
+    // Tout est rendu DANS le thème : TP (makeThemeTPs) ailleurs ; ici les
+    // mini-projets et fiches en dépliables, et débranché/Logisim en compléments.
     const fiches = (typeof FICHES_PLUS !== "undefined" ? FICHES_PLUS : []).filter((f) => f.theme === themeId);
     const mps = (typeof MINI_PROJETS !== "undefined" ? MINI_PROJETS : []).filter((p) => p.theme === themeId);
     const dbs = (typeof DEBRANCHE !== "undefined" ? DEBRANCHE : []).filter((a) => a.theme === themeId);
     const hasLogisim = themeId === "architecture-os" && typeof LOGISIM_CIRCUITS !== "undefined";
     if (!fiches.length && !mps.length && !dbs.length && !hasLogisim) return null;
 
-    const wrap = el("div", "extra-block du-block");
-    wrap.appendChild(el("h2", null, "📦 Ressources du DIU"));
-    wrap.appendChild(el("p", "extra-hint", "Du matériel issu de ma formation DIU NSI, rattaché à ce thème."));
-    if (fiches.length || mps.length || dbs.length) {
-      const ul = el("div", "du-links");
-      dbs.forEach((a) => {
-        const b = el("button", "btn secondary", "🎲 " + a.titre);
-        b.addEventListener("click", () => navigate("debranche"));
-        ul.appendChild(b);
-      });
-      mps.forEach((p) => {
-        const b = el("button", "btn secondary", "🐍 Projet — " + p.titre);
-        b.addEventListener("click", () => navigate("tp"));
-        ul.appendChild(b);
-      });
-      fiches.forEach((f) => {
-        const b = el("button", "btn secondary", "📘 " + f.titre);
-        b.addEventListener("click", () => navigate("tp"));
-        ul.appendChild(b);
-      });
-      wrap.appendChild(ul);
+    const frag = document.createDocumentFragment();
+    const inlineDetails = (summaryText, contentEl) => {
+      const det = el("details", "tp-inline");
+      det.appendChild(el("summary", null, summaryText));
+      const body = el("div", "tp-inline-body");
+      body.appendChild(contentEl);
+      det.appendChild(body);
+      return det;
+    };
+
+    // Mini-projets : à coder ici (dépliables)
+    if (mps.length) {
+      const wrap = el("div", "extra-block exos");
+      wrap.appendChild(el("h2", null, "🐍 Mini-projets de ce thème"));
+      wrap.appendChild(el("p", "extra-hint", "Des petits projets à coder. Clique pour ouvrir l'énoncé."));
+      mps.forEach((p) => wrap.appendChild(inlineDetails((p.bonus ? "⭐ " : "🐍 ") + p.titre + " · " + p.cat, makeMiniProjet(p, true))));
+      frag.appendChild(wrap);
     }
-    if (hasLogisim) wrap.appendChild(makeLogisimBlock());
-    return wrap;
+    // Fiches & mémo : à lire ici (dépliables)
+    if (fiches.length) {
+      const wrap = el("div", "extra-block exos");
+      wrap.appendChild(el("h2", null, "📘 Fiches & mémo"));
+      fiches.forEach((f) => wrap.appendChild(inlineDetails("📘 " + f.titre, makeFichePlus(f, true))));
+      frag.appendChild(wrap);
+    }
+    // Compléments : activités débranchées (autre rubrique) + Logisim
+    if (dbs.length || hasLogisim) {
+      const wrap = el("div", "extra-block du-block");
+      wrap.appendChild(el("h2", null, "🧰 Compléments"));
+      if (dbs.length) {
+        const ul = el("div", "du-links");
+        dbs.forEach((a) => {
+          const b = el("button", "btn secondary", "🎲 " + a.titre + " — activité débranchée ↗");
+          b.addEventListener("click", () => navigate("debranche"));
+          ul.appendChild(b);
+        });
+        wrap.appendChild(ul);
+      }
+      if (hasLogisim) wrap.appendChild(makeLogisimBlock());
+      frag.appendChild(wrap);
+    }
+    return frag.childNodes.length ? frag : null;
   }
 
-  // Ressources d'une autre formation, LIÉES avec attribution (jamais recopiées).
+  // Compléments externes (facultatifs), liés avec attribution — discret, en pied de thème.
   function makeThemeExtResources(themeId) {
     const R = (typeof THEME_RESSOURCES_EXT !== "undefined" ? THEME_RESSOURCES_EXT : {})[themeId];
     if (!R) return null;
-    const wrap = el("div", "extra-block du-block");
-    wrap.appendChild(el("h2", null, "🔗 Pour aller plus loin — " + R.titre));
-    wrap.appendChild(el("p", "extra-hint", "Support d'une autre formation (" + R.auteur + "), accessible en ligne."));
-    if (R.note) wrap.appendChild(el("p", "note", R.note));
-    const grid = el("div", "didac-grid");
+    const wrap = el("div", "extra-block ext-block");
+    wrap.appendChild(el("h2", null, "📎 Pour aller plus loin (facultatif)"));
+    wrap.appendChild(
+      el("p", "extra-hint", "Le cours complet de <strong>" + R.auteur + "</strong>, en complément :")
+    );
+    const row = el("div", "ext-links");
     R.items.forEach((it) => {
-      const a = el("a", "didac-card");
+      const a = el("a", "ext-link");
       a.href = /^https?:/i.test(it.url) ? it.url : R.base + it.url;
       a.target = "_blank";
       a.rel = "noopener";
-      a.innerHTML = `<strong>${it.t} ↗</strong>`;
-      grid.appendChild(a);
+      a.innerHTML = `${it.t} <span class="ext-arrow">↗</span>`;
+      row.appendChild(a);
     });
-    wrap.appendChild(grid);
-    wrap.appendChild(el("p", "tp-source", "📎 Ces supports restent la propriété de leur auteur ; le site se contente de pointer vers eux."));
+    wrap.appendChild(row);
     return wrap;
   }
 
