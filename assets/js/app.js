@@ -528,7 +528,7 @@
       if (s.code) sec.appendChild(makeCodeCell(s.code));
       if (s.htmldemo) sec.appendChild(makeHtmlCell(s.htmldemo));
       if (s.steps) s.steps.forEach((st, k) => sec.appendChild(makeExoStep(st, k)));
-      if (s.domexo) sec.appendChild(makeDomCell(s.domexo.html, s.domexo.js));
+      if (s.domexo) sec.appendChild(makeDomCell(s.domexo.html, s.domexo.js, s.domexo.solution));
       if (s.cssexo) sec.appendChild(makeCssCell(s.cssexo.html, s.cssexo.css, s.cssexo.solution));
       if (s.cascadeexo) sec.appendChild(makeCascadeCell(s.cascadeexo.html, s.cascadeexo.css, s.cascadeexo.reveal));
       if (s.game) sec.appendChild(makeGame(s.game));
@@ -792,7 +792,7 @@
   // « DOM playground » (façon Slate) : un HTML FOURNI (lecture seule) + son aperçu,
   // un éditeur JavaScript, et une console qui capture les console.log de l'élève.
   // Le JS s'exécute dans une iframe ISOLÉE (sandbox) ; la sortie remonte par postMessage.
-  function makeDomCell(htmlBody, starterJs) {
+  function makeDomCell(htmlBody, starterJs, solutionJs) {
     const token = "dom" + Math.random().toString(36).slice(2);
     htmlBody = (htmlBody || "").trim();
     const cell = el("div", "code-cell dom-cell");
@@ -865,6 +865,21 @@
       line.textContent = ev.data.m;
       out.appendChild(line);
     });
+
+    // Correction optionnelle (masquée aux élèves tant qu'elle n'est pas poussée)
+    if (solutionJs) {
+      const det = el("details", "corrige");
+      det.appendChild(el("summary", null, "✅ Voir la correction"));
+      const solPre = el("pre", "corrige-body");
+      const solCode = el("code");
+      solCode.textContent = solutionJs;
+      solPre.appendChild(solCode);
+      det.appendChild(solPre);
+      const tryBtn = el("button", "btn secondary", "▶ Tester la correction");
+      tryBtn.addEventListener("click", () => { ta.value = solutionJs; run(); });
+      det.appendChild(tryBtn);
+      cell.appendChild(det);
+    }
 
     return cell;
   }

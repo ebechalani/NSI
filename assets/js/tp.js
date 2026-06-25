@@ -482,153 +482,197 @@ print(admis); print(moy_info); print(moyennes)` },
     theme: "types-construits",
     lang: "python",
     titre: "TP Python — Séquences : listes, slicing, complexité",
-    intro: "Manipuler des listes (ajouter/insérer/supprimer), le slicing et sorted, les compréhensions, les tuples (déballage, échange), et mesurer le coût d'une recherche. Chaque étape : exécute la démo (▶ ou ⚡ Basthon), traite les questions, puis ouvre la correction. (Pile/file = avant-goût Terminale.)",
+    intro: "Sept exercices, à faire toi-même : écris ton code dans la cellule (▶ Exécuter, ou ⚡ Basthon), puis ouvre le corrigé pour comparer. Au programme : les participants (listes), le planning (slicing), les durées (compréhensions), une session (tuples), un défi sur le coût d'une recherche (complexité), pile & file (avant-goût Terminale), et un bonus numpy (optionnel, hors module).",
     steps: [
       {
-        num: "1", titre: "Listes : ajouter, insérer, supprimer",
-        code: `villes = ["Paris", "Beyrouth", "Tokyo", "Dakar"]
-villes.append("Montréal")     # ajoute EN FIN
-villes.insert(0, "Oslo")      # insère EN TÊTE (indice 0)
-villes.remove("Tokyo")        # supprime PAR VALEUR
+        num: "1", titre: "Exercice 1 — Les participants (listes : bases)",
+        code: `# tâche 1 : une liste de 4 villes (déjà amorcée)
+villes = ["Paris", "Montréal", "Tokyo", "Dakar"]
+
+# À toi de jouer (tâches 2 à 5, consignes ci-dessous)
+`,
+        run: true,
+        questions: [
+          "Ajoute une ville EN FIN de liste (méthode append).",
+          "Insère une ville EN PREMIÈRE position (méthode insert).",
+          "Supprime l'une des villes par son nom (méthode remove).",
+          "Affiche le NOMBRE de villes (len), la PREMIÈRE ([0]) et la DERNIÈRE ([-1]).",
+        ],
+        correction: [
+          "append ajoute en fin ; insert(0, x) insère en tête ; remove(x) supprime la première occurrence de la valeur ; villes[-1] = le dernier élément.",
+          { text: "Corrigé :" },
+          { code: `villes = ["Paris", "Montréal", "Tokyo", "Dakar"]
+villes.append("Nouméa")        # en fin
+villes.insert(0, "Beyrouth")   # en tête
+villes.remove("Tokyo")         # par son nom
 print("nombre :", len(villes))
 print("première :", villes[0])
-print("dernière :", villes[-1])`,
-        run: true,
-        questions: [
-          "Insère une ville en 2ᵉ position (indice 1).",
-          "Retire la dernière ville SANS la nommer (méthode pop).",
-        ],
-        correction: [
-          "append ajoute en fin, insert(i, x) insère à l'indice i, remove(x) supprime la première occurrence de la valeur x.",
-          { text: "Solution :" },
-          { code: `villes = ["Oslo", "Paris", "Beyrouth", "Dakar", "Montréal"]
-villes.insert(1, "Genève")   # 2e position
-derniere = villes.pop()      # retire et renvoie le dernier
-print(villes)
-print("retirée :", derniere)` },
+print("dernière :", villes[-1])` },
         ],
       },
       {
-        num: "2", titre: "Slicing et sorted",
-        code: `creneaux = [9, 10, 11, 13, 14, 15, 16]
-print(creneaux[:3])        # 3 premiers
-print(creneaux[-2:])       # 2 derniers
-print(creneaux[::-1])      # à l'envers
-print(creneaux[::2])       # un sur deux
-print(sorted(creneaux)[-3:])  # les 3 plus grands`,
+        num: "2", titre: "Exercice 2 — Le planning (slicing)",
+        code: `creneaux = [9, 10, 11, 13, 14, 15, 16]   # heures UTC
+
+# À toi de jouer
+`,
         run: true,
         questions: [
-          "Affiche les créneaux de l'après-midi (à partir de 13 h).",
-          "Affiche le 2ᵉ créneau et l'avant-dernier.",
+          "Affiche les 3 PREMIERS créneaux, puis les 2 DERNIERS.",
+          "Affiche la journée À L'ENVERS.",
+          "Affiche un créneau SUR DEUX.",
+          "À l'aide de sorted, affiche les 3 DERNIERS créneaux de la journée.",
         ],
         correction: [
-          "Le slice liste[début:fin:pas] : la fin est exclue ; pas négatif inverse ; sorted() trie sans modifier la liste.",
-          { text: "Solution :" },
+          "Le slice liste[début:fin:pas] : la fin est exclue ; un pas de -1 inverse ; un pas de 2 prend un élément sur deux ; sorted()[-3:] = les 3 plus grands.",
+          { text: "Corrigé :" },
           { code: `creneaux = [9, 10, 11, 13, 14, 15, 16]
-print(creneaux[3:])     # après-midi : [13, 14, 15, 16]
-print(creneaux[1])      # 2e : 10
-print(creneaux[-2])     # avant-dernier : 15` },
+print(creneaux[:3])         # 3 premiers
+print(creneaux[-2:])        # 2 derniers
+print(creneaux[::-1])       # à l'envers
+print(creneaux[::2])        # un sur deux
+print(sorted(creneaux)[-3:])  # les 3 derniers (plus grands)` },
         ],
       },
       {
-        num: "3", titre: "Compréhensions",
-        code: `durees = [150, 45, 150, 30, 90]   # minutes
-print([d / 60 for d in durees])           # en heures
-print([d for d in durees if d >= 90])     # filtre : >= 90 min`,
+        num: "3", titre: "Exercice 3 — Durées des sessions (compréhensions)",
+        code: `durees = [150, 45, 150, 30, 90, 150]   # minutes
+
+# À toi de jouer
+`,
         run: true,
         questions: [
-          "Construis (en compréhension) la liste des durées en SECONDES.",
-          "À partir de villes = ['Paris', 'Dakar', 'Tokyo'], construis la liste de leurs INITIALES.",
+          "En compréhension, construis la liste des durées EN HEURES (nombre décimal).",
+          "Construis la liste des durées SUPÉRIEURES OU ÉGALES à 90 minutes.",
+          "Bonus : à partir de villes = ['Paris', 'Dakar', 'Tokyo'], construis la liste de leurs INITIALES.",
         ],
         correction: [
-          "Compréhension : [expression for élément in itérable if condition]. On transforme (d*60) ou on filtre (if).",
-          { text: "Solution :" },
-          { code: `durees = [150, 45, 150, 30, 90]
-print([d * 60 for d in durees])
-villes = ["Paris", "Dakar", "Tokyo"]
-print([v[0] for v in villes])   # ['P', 'D', 'T']` },
+          "Compréhension : [expression for élément in itérable if condition]. On transforme (d / 60) ou on filtre (if d >= 90).",
+          { text: "Corrigé :" },
+          { code: `durees = [150, 45, 150, 30, 90, 150]
+heures = [d / 60 for d in durees]
+print(heures)
+longues = [d for d in durees if d >= 90]
+print(longues)
+initiales = [v[0] for v in ["Paris", "Dakar", "Tokyo"]]
+print(initiales)   # ['P', 'D', 'T']` },
         ],
       },
       {
-        num: "4", titre: "Tuples et déballage (unpacking)",
-        code: `session = ("2026-06-23", 14, "Listes et tuples")
-date, heure, sujet = session       # déballage
-print(date, heure, sujet)
+        num: "4", titre: "Exercice 4 — Une session (tuples & unpacking)",
+        code: `# À toi de jouer (consignes ci-dessous)
+`,
+        run: true,
+        questions: [
+          "Représente une session par un TUPLE (date, heure_utc, sujet).",
+          "DÉPAQUETTE-le dans trois variables et affiche-les.",
+          "Écris une fonction min_max(valeurs) qui renvoie le MIN et le MAX sous forme de tuple ; teste-la sur durees = [150, 45, 150, 30, 90, 150].",
+          "Échange deux variables a et b SANS variable temporaire.",
+        ],
+        correction: [
+          "Un tuple regroupe des valeurs ; le déballage les distribue dans plusieurs variables. Une fonction peut renvoyer un tuple (min, max). L'échange a, b = b, a marche car Python construit d'abord le tuple de droite.",
+          { text: "Corrigé :" },
+          { code: `session = ("2026-06-22", 14, "Listes et tuples")
+date, heure_utc, sujet = session
+print(date, heure_utc, sujet)
 
 def min_max(valeurs):
-    return min(valeurs), max(valeurs)   # renvoie un tuple
+    return min(valeurs), max(valeurs)
 
-print(min_max([150, 45, 90, 30]))
+durees = [150, 45, 150, 30, 90, 150]
+print(min_max(durees))   # (30, 150)
 
 a, b = 10, 20
-a, b = b, a                         # échange SANS variable temporaire
-print(a, b)`,
-        run: true,
-        questions: [
-          "Écris somme_produit(a, b) qui renvoie le couple (a+b, a*b).",
-          "Fais une rotation de 3 variables : a, b, c = c, a, b. Vérifie.",
-        ],
-        correction: [
-          "Un tuple regroupe des valeurs ; le déballage les distribue dans plusieurs variables. Python construit d'abord le tuple de droite, d'où l'échange a, b = b, a.",
-          { text: "Solution :" },
-          { code: `def somme_produit(a, b):
-    return a + b, a * b
-
-print(somme_produit(3, 4))   # (7, 12)
-
-a, b, c = 1, 2, 3
-a, b, c = c, a, b
-print(a, b, c)               # 3 1 2` },
+a, b = b, a
+print(a, b)              # 20 10` },
         ],
       },
       {
-        num: "5", titre: "Défi — mesurer un coût (complexité)",
-        code: `# Recherche séquentielle : on COMPTE les comparaisons
-def cherche(lst, cible):
-    comparaisons = 0
-    for x in lst:
-        comparaisons += 1
-        if x == cible:
-            return comparaisons
-    return comparaisons
+        num: "5", titre: "Exercice 5 — Défi : mesurer un coût (complexité)",
+        code: `import timeit
 
-petite = list(range(100))
-grande = list(range(1000))
-print("absent dans 100  :", cherche(petite, -1), "comparaisons")
-print("absent dans 1000 :", cherche(grande, -1), "comparaisons")`,
+# À toi de jouer (consignes ci-dessous)
+`,
         run: true,
         questions: [
-          "Quand la liste est 10× plus grande, le nombre de comparaisons est-il 10× plus grand ?",
-          "Pourquoi dit-on que x in liste a un coût « linéaire » O(n) ? Et la recherche dichotomique (liste triée) ?",
+          "Construis une grande liste : grande = list(range(1_000_000)).",
+          "Avec le module timeit, mesure le temps pour tester si un élément ABSENT (-1) est dans la liste (-1 in grande).",
+          "Recommence avec une liste DIX FOIS plus petite. Que constates-tu ?",
+          "Réflexion : pourquoi cette recherche est-elle « lente » ? (la réponse est dans le chapitre dictionnaires : O(1) vs O(n)).",
         ],
         correction: [
-          "Oui : 100 → 1000 comparaisons (×10). Le coût grandit PROPORTIONNELLEMENT à la taille n : c'est O(n) (linéaire).",
-          "Dans le pire cas (élément absent), on parcourt TOUTE la liste → n comparaisons. La recherche dichotomique, elle, divise par 2 à chaque étape → O(log n), bien plus rapide, mais exige une liste TRIÉE.",
+          "Tester « x in liste » parcourt la liste jusqu'à trouver (ou la fin). Pour un élément ABSENT, on parcourt TOUT → coût linéaire O(n). Dix fois plus d'éléments ⇒ environ dix fois plus lent.",
+          { text: "Corrigé :" },
+          { code: `import timeit
+
+grande = list(range(1_000_000))
+petite = list(range(100_000))
+
+t_grande = timeit.timeit(lambda: -1 in grande, number=10)
+t_petite = timeit.timeit(lambda: -1 in petite, number=10)
+print(f"grande (1 000 000) : {t_grande:.3f} s")
+print(f"petite (100 000)   : {t_petite:.3f} s")
+# La grande liste est ~10x plus lente : coût linéaire O(n).` },
         ],
       },
       {
-        num: "6", titre: "⭐ Bonus (Terminale) — pile et file",
+        num: "6", titre: "Exercice 6 — Pile & file (⭐ avant-goût Terminale)",
         code: `from collections import deque
 
-# PILE (LIFO) : historique d'un diaporama, avec une list
-historique = []
-for slide in ["slide 1", "slide 2", "slide 3"]:
-    historique.append(slide)        # empiler
-print("retour :", historique.pop()) # dépiler (le dernier)
-print("retour :", historique.pop())
-
-# FILE (FIFO) : questions, avec une deque
-questions = deque()
-for q in ["Q1", "Q2", "Q3"]:
-    questions.append(q)             # enfiler
-print("on traite :", questions.popleft())  # défiler (le premier)`,
+# À toi de jouer (consignes ci-dessous)
+`,
         run: true,
+        note: "📌 Ces structures (pile, file) sont approfondies en <strong>Terminale</strong> (structures de données linéaires). Ici, simple avant-goût.",
         questions: [
-          "Pourquoi une deque plutôt qu'une list pour une file ?",
+          "Pile (annuler) : avec une list, empile 'slide 1', 'slide 2', 'slide 3', puis reviens DEUX fois en arrière (dépile) en affichant la slide quittée.",
+          "File (questions Discord) : avec une collections.deque, fais entrer 'Q1', 'Q2', 'Q3', puis traite-les dans l'ordre d'arrivée (FIFO) en affichant celle qu'on traite.",
+          "Question : pour la file, pourquoi deque plutôt qu'une list ?",
         ],
         correction: [
-          "Pile = LIFO (dernier entré, premier sorti) ; file = FIFO (premier entré, premier sorti).",
-          "Sur une list, retirer en tête (pop(0)) décale tous les éléments → coût O(n). deque.popleft() le fait en O(1). C'est une notion de Terminale (structures de données).",
+          "Pile = LIFO (dernier entré, premier sorti) → list.append / list.pop. File = FIFO (premier entré, premier sorti) → deque.append / deque.popleft. Sur une list, retirer en tête (pop(0)) décale tout → O(n) ; deque.popleft() est O(1).",
+          { text: "Corrigé :" },
+          { code: `from collections import deque
+
+# pile (LIFO) : historique du diaporama
+historique = []
+for slide in ["slide 1", "slide 2", "slide 3"]:
+    historique.append(slide)
+for _ in range(2):
+    print("retour, on quitte :", historique.pop())
+
+# file (FIFO) : questions Discord
+questions = deque()
+for q in ["Q1", "Q2", "Q3"]:
+    questions.append(q)
+while questions:
+    print("on traite :", questions.popleft())` },
+        ],
+      },
+      {
+        num: "7", titre: "Exercice 7 — Tableaux numpy (optionnel · hors module · ⚡ Basthon)",
+        code: `import numpy as np
+connectes = [42, 38, 51, 29, 47, 33]   # connectés par session
+
+# À toi de jouer
+`,
+        run: true,
+        note: "🔧 <strong>Optionnel et hors module.</strong> numpy n'est pas chargé dans l'aperçu rapide (▶) — exécute cet exercice avec <strong>⚡ Basthon</strong> (ou en local).",
+        questions: [
+          "Convertis cette liste en tableau numpy.",
+          "Affiche la MOYENNE, le MINI et le MAXI.",
+          "On attend +5 connexions à chaque session : ajoute 5 partout SANS boucle.",
+          "Combien de sessions ont ≥ 40 connectés ? (indice : (tableau >= 40).sum())",
+        ],
+        correction: [
+          "numpy permet le calcul VECTORISÉ : on opère sur tout le tableau sans boucle (connectes + 5), et les comparaisons donnent un tableau de booléens dont .sum() compte les True.",
+          { text: "Corrigé (⚡ Basthon) :" },
+          { code: `import numpy as np
+
+connectes = np.array([42, 38, 51, 29, 47, 33])
+print("moyenne :", connectes.mean())
+print("min/max :", connectes.min(), connectes.max())
+print(connectes + 5)                       # +5 partout, sans boucle
+print("sessions >= 40 :", (connectes >= 40).sum())` },
         ],
       },
     ],

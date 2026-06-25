@@ -328,6 +328,7 @@ for c in "Aé€😀":
           <tr><td><strong>dictionnaire</strong></td><td><code>{"nom": "Ada"}</code></td><td>✅ oui</td><td>clé (nom)</td></tr>
         </table>
         <p>Tout le thème consiste à savoir <strong>laquelle choisir</strong> selon le besoin, et à savoir la <strong>parcourir</strong> pour en extraire de l'information.</p>
+        <p class="note">📖 <strong>Vocabulaire du programme (BO)</strong> : ce qu'il appelle « <strong>p-uplet</strong> » est le <code>tuple</code> Python ; « <strong>tableau</strong> » (indexé, ou donné en compréhension) est la <code>list</code> ; le « <strong>dictionnaire</strong> » est le <code>dict</code>. Attention : en informatique, « tableau » désigne parfois une zone de taille <em>fixe</em> — la <code>list</code> de Python, elle, est <strong>dynamique</strong> (elle grandit).</p>
         <p class="note">🎯 Activité d'ouverture (en îlot) : sur papier, modélisez votre groupe. Quelle structure pour « les prénoms du groupe » ? Pour « le prénom ET l'âge de chacun » ? Justifiez.</p>`,
       },
       {
@@ -339,7 +340,8 @@ for c in "Aé€😀":
         <ul>
           <li>le <strong>déballage</strong> (<em>unpacking</em>) : <code>x, y = point</code> distribue les éléments dans plusieurs variables d'un coup ;</li>
           <li>le <strong>retour multiple</strong> : une fonction peut renvoyer plusieurs valeurs… qui forment en réalité un tuple.</li>
-        </ul>`,
+        </ul>
+        <p class="warnbox">⚠️ <strong>Tuple à un seul élément</strong> : la <strong>virgule est obligatoire</strong> ! <code>(42,)</code> est un tuple ; <code>(42)</code> est juste l'entier 42 (les parenthèses ne servent qu'au calcul).</p>`,
         code: `point = (3, 5)          # un couple (x, y)
 print("abscisse :", point[0])   # accès par position
 print("ordonnée :", point[1])
@@ -353,8 +355,16 @@ def division(a, b):
 q, r = division(17, 5)
 print("quotient", q, "reste", r)
 
-# Immuable : la ligne suivante provoquerait une ERREUR
-# point[0] = 9   ->  TypeError`,
+# Immuable : modifier un tuple lève une erreur
+try:
+    point[0] = 9
+except TypeError as e:
+    print("Erreur :", e)
+
+# Singleton : la VIRGULE est obligatoire
+solo = (42,)            # un tuple d'UN élément
+pas_tuple = (42)        # juste l'entier 42 !
+print(type(solo), type(pas_tuple))`,
       },
       {
         title: "Les listes : créer et accéder aux éléments",
@@ -395,8 +405,12 @@ print("à l'envers :", notes[::-1])  # [11, 18, 9, 15, 12]
           <tr><td><code>t.remove(x)</code></td><td>supprime la première occurrence de x</td></tr>
           <tr><td><code>t.pop()</code></td><td>retire et renvoie le dernier élément</td></tr>
           <tr><td><code>x in t</code></td><td>teste si x est présent (renvoie un booléen)</td></tr>
+          <tr><td><code>t.sort()</code></td><td>trie la liste <strong>en place</strong> (modifie <code>t</code>)</td></tr>
+          <tr><td><code>sorted(t)</code></td><td>renvoie une <strong>nouvelle</strong> liste triée (<code>t</code> inchangée)</td></tr>
+          <tr><td><code>t.count(x)</code></td><td>compte les occurrences de x</td></tr>
         </table>
-        <p class="note">🔎 À savoir pour plus tard : deux variables peuvent désigner <em>la même</em> liste (« alias »). Si <code>b = a</code> et qu'on modifie <code>b</code>, alors <code>a</code> change aussi ! Pour une vraie copie indépendante, on écrit <code>b = a.copy()</code> (ou <code>b = a[:]</code>).</p>`,
+        <p class="note">🔎 À savoir pour plus tard : deux variables peuvent désigner <em>la même</em> liste (« alias »). Si <code>b = a</code> et qu'on modifie <code>b</code>, alors <code>a</code> change aussi ! Pour une vraie copie indépendante, on écrit <code>b = a.copy()</code> (ou <code>b = a[:]</code>).</p>
+        <p class="note">⚡ <strong>Intuition des coûts</strong> (le formalisme viendra en Terminale) : l'accès <code>t[i]</code> et l'ajout en fin <code>append</code> sont <strong>rapides</strong> ; en revanche <code>insert(0, x)</code> et <code>x in t</code> doivent <strong>décaler</strong> ou <strong>parcourir</strong> toute la liste — donc d'autant plus lents qu'elle est grande. (Une liste Python est un « <strong>tableau dynamique</strong> » : elle se réagrandit toute seule quand on ajoute.)</p>`,
         code: `notes = [12, 15, 9, 18, 11]
 
 notes[2] = 10            # corrige la 3e note (indice 2)
@@ -408,6 +422,14 @@ print("18 présent ?", 18 in notes)   # True
 notes.remove(8)          # enlève le 8
 dernier = notes.pop()    # retire et récupère le dernier
 print("retiré :", dernier, "->", notes)
+
+# Trier : sorted (nouvelle liste) vs sort (en place)
+scores = [42, 7, 99, 13, 99]
+print("triée (copie) :", sorted(scores))   # nouvelle liste triée
+print("originale     :", scores)           # inchangée
+scores.sort(reverse=True)                   # tri EN PLACE, décroissant
+print("en place      :", scores)
+print("99 apparaît", scores.count(99), "fois")
 
 # Piège de l'alias : décommente pour observer
 # a = [1, 2, 3]; b = a; b.append(99); print(a)   # a vaut [1,2,3,99] !`,
@@ -2027,6 +2049,96 @@ for (const [cle, valeur] of Object.entries(manchot)) {
         },
       },
       {
+        title: "🏆 Exercice interactif : un petit programme (moyenne)",
+        html: `
+        <p>À toi d'écrire du <strong>JavaScript</strong> dans l'éditeur, puis ▶ Exécuter (résultats dans la console). À partir du tableau <code>notes</code> fourni :</p>
+        <ol>
+          <li>complète la fonction <code>moyenne(tableau)</code> : additionne les valeurs (boucle <code>for…of</code>), puis <strong>retourne</strong> la somme divisée par <code>tableau.length</code> ;</li>
+          <li>affiche la moyenne dans la console ;</li>
+          <li>pour <strong>chaque</strong> note, affiche <code>"Reçu"</code> ou <code>"Ajourné"</code> selon qu'elle est <code>&gt;= 10</code> (un <code>if</code> ou l'opérateur ternaire).</li>
+        </ol>`,
+        domexo: {
+          html: `<p>Ouvre la console (résultats ci-dessous).</p>`,
+          js: `let notes = [12, 8, 17, 15, 6];
+
+function moyenne(tableau) {
+  // À compléter : additionne (for…of), puis return somme / tableau.length
+}
+
+console.log("Moyenne :", moyenne(notes));
+
+// À toi : "Reçu" / "Ajourné" pour chaque note (>= 10)
+`,
+          solution: `let notes = [12, 8, 17, 15, 6];
+
+function moyenne(tableau) {
+  let total = 0;
+  for (const n of tableau) {
+    total += n;
+  }
+  return total / tableau.length;
+}
+
+console.log("Moyenne :", moyenne(notes));   // 11.6
+
+for (const n of notes) {
+  console.log(n, ":", n >= 10 ? "Reçu" : "Ajourné");
+}`,
+        },
+      },
+      {
+        title: "🏆 Exercice interactif : tableaux & chaînes (sans raccourcis)",
+        html: `
+        <p>Trois petites fonctions d'<strong>algorithmique</strong> (à écrire à la main, en parcourant). Complète l'éditeur, puis ▶ Exécuter :</p>
+        <ol>
+          <li><code>maximum(tableau)</code> : la plus grande valeur, <strong>sans</strong> utiliser <code>Math.max</code> (parcours) ;</li>
+          <li><code>compteVoyelles(texte)</code> : le nombre de voyelles (parcours des caractères ; <code>"aeiouy".includes(c)</code> teste l'appartenance) ;</li>
+          <li><code>inverse(texte)</code> : la chaîne à l'envers.</li>
+        </ol>`,
+        domexo: {
+          html: `<p>Ouvre la console (résultats ci-dessous).</p>`,
+          js: `function maximum(tableau) {
+  // À compléter (parcours, sans Math.max)
+}
+function compteVoyelles(texte) {
+  // À compléter ("aeiouy".includes(c))
+}
+function inverse(texte) {
+  // À compléter
+}
+
+console.log(maximum([3, 9, 2, 7]));      // 9
+console.log(compteVoyelles("manchot"));  // 2
+console.log(inverse("Tux"));             // xuT
+`,
+          solution: `function maximum(tableau) {
+  let m = tableau[0];
+  for (const x of tableau) {
+    if (x > m) m = x;
+  }
+  return m;
+}
+function compteVoyelles(texte) {
+  let n = 0;
+  for (const c of texte) {
+    if ("aeiouy".includes(c)) n += 1;
+  }
+  return n;
+}
+function inverse(texte) {
+  let r = "";
+  for (const c of texte) {
+    r = c + r;   // on empile chaque caractère devant
+  }
+  return r;
+}
+
+console.log(maximum([3, 9, 2, 7]));
+console.log(compteVoyelles("manchot"));
+console.log(inverse("Tux"));`,
+        },
+      },
+      {
         title: "Réagir à un événement (JavaScript)",
         html: `
         <p>JavaScript rend la page <strong>interactive</strong> en réagissant à des <strong>événements</strong> : un clic (<code>click</code>), un survol, une frappe au clavier, l'envoi d'un formulaire (<code>submit</code>)… Le mécanisme : on attache un <strong>écouteur</strong> (<em>listener</em>) à un élément avec <code>addEventListener</code>, et on lui donne la fonction à exécuter quand l'événement survient.</p>
@@ -2255,6 +2367,51 @@ aSupprimer.remove();                      // supprimer</code></pre>
 </body></html>`,
       },
       {
+        title: "🏆 Exercice interactif : transformer une page avec le DOM",
+        html: `
+        <p>La page ci-dessous (HTML <strong>fourni</strong>, non modifiable) contient un titre, un paragraphe et une liste. En écrivant <strong>uniquement du JavaScript</strong>, transforme-la pour obtenir :</p>
+        <ol>
+          <li>le <code>&lt;h1&gt;</code> dont le texte devient <code>"Tux, la mascotte de Linux"</code> (<code>textContent</code>) ;</li>
+          <li>ce <code>&lt;h1&gt;</code> en <strong>bleu</strong> et <strong>centré</strong> (<code>element.style.color</code> / <code>textAlign</code>) ;</li>
+          <li>la classe <code>surligne</code> ajoutée à <strong>tous</strong> les <code>&lt;li&gt;</code> (<code>querySelectorAll</code> + boucle, <code>classList.add</code>) — la classe est déjà définie dans le CSS de la page ;</li>
+          <li>un 4ᵉ <code>&lt;li&gt;</code> contenant <code>"Logiciel libre"</code> (<code>createElement</code> + <code>append</code>) ;</li>
+          <li>le <strong>nombre</strong> de <code>&lt;li&gt;</code> affiché dans la console.</li>
+        </ol>`,
+        domexo: {
+          html: `<style>
+  .surligne { background-color: gold; }
+</style>
+<h1>Titre à remplacer</h1>
+<p>Quelques faits à propos de la mascotte de Linux.</p>
+<ul>
+  <li>Créé en 1996</li>
+  <li>Dessiné par Larry Ewing</li>
+  <li>C'est un manchot</li>
+</ul>`,
+          js: `// 1. Remplace le texte du <h1> par "Tux, la mascotte de Linux"
+// 2. Mets le <h1> en bleu et centré (style.color / style.textAlign)
+// 3. Donne la classe "surligne" à TOUS les <li> (querySelectorAll + boucle)
+// 4. Ajoute un 4e <li> contenant "Logiciel libre" (createElement + append)
+// 5. Affiche dans la console le NOMBRE de <li>
+`,
+          solution: `const titre = document.querySelector("h1");
+titre.textContent = "Tux, la mascotte de Linux";
+titre.style.color = "blue";
+titre.style.textAlign = "center";
+
+const liste = document.querySelector("ul");
+for (const li of document.querySelectorAll("li")) {
+  li.classList.add("surligne");
+}
+
+const nouveau = document.createElement("li");
+nouveau.textContent = "Logiciel libre";
+liste.append(nouveau);
+
+console.log("nombre de li :", document.querySelectorAll("li").length);`,
+        },
+      },
+      {
         title: "Valider un formulaire en JavaScript",
         html: `
         <p>Par défaut, envoyer un formulaire <strong>recharge la page</strong>. On peut <strong>intercepter</strong> cet envoi en JavaScript pour le <strong>valider</strong> (ou le traiter entièrement côté client). On écoute l'événement <code>submit</code> et on appelle <code>event.preventDefault()</code> pour bloquer le comportement par défaut :</p>
@@ -2374,6 +2531,58 @@ formulaire.addEventListener("submit", (event) =&gt; {
 </html>`,
         prof: `<p><strong>Critères de réussite</strong> : page valide (<code>&lt;!DOCTYPE&gt;</code>, <code>&lt;head&gt;</code> avec <code>&lt;title&gt;</code> + <code>charset</code>, <code>&lt;body&gt;</code>) ; un <code>&lt;h1&gt;</code> + un <code>&lt;p&gt;</code> ; un <code>&lt;article&gt;</code> avec <code>&lt;h2&gt;</code> ; une <code>&lt;ol&gt;</code> de 3 <code>&lt;a target="_blank"&gt;</code> ; un <code>&lt;table&gt;</code> 2 colonnes × 3 lignes avec <code>&lt;th&gt;</code> « Photo »/« Présentation » et des <code>&lt;img&gt;</code> munies d'un <code>alt</code>.</p>
         <p><strong>Variantes</strong> : imposer un thème (jeux vidéo, sciences, sport…) ; demander de styler le tableau avec une feuille <strong>CSS externe</strong> ; barème /10 (structure 3, liens 3, tableau 3, soin 1).</p>`,
+      },
+      {
+        title: "Aller plus loin : objets, this et classes (POO)",
+        html: `
+        <p class="warnbox">🎓 <strong>Hors programme de Première.</strong> La <strong>programmation orientée objet</strong> (classes, objets) est étudiée en <strong>Terminale</strong>. On la présente ici juste pour <em>comprendre</em> du code JavaScript moderne, pas comme une notion à maîtriser.</p>
+        <p>Un objet peut contenir des <strong>fonctions</strong> : on parle alors de <strong>méthodes</strong>. À l'intérieur d'une méthode, le mot-clé <code>this</code> désigne <strong>l'objet courant</strong>.</p>
+        <p class="warnbox">⚠️ <code>this</code> est l'un des points les plus déroutants de JavaScript. Contrairement au <code>self</code> de Python — un paramètre <strong>explicite</strong>, toujours le même —, <code>this</code> est <strong>implicite</strong> et sa valeur dépend de la <strong>manière dont la fonction est appelée</strong>, pas de l'endroit où elle est définie. (Astuce : une <strong>fonction fléchée</strong> n'a pas son propre <code>this</code> : elle hérite de celui du contexte.)</p>
+        <p>Depuis ES2015, JavaScript a une vraie syntaxe de <strong>classes</strong>, très proche de Python : un <code>constructor</code>, des méthodes, et l'héritage avec <code>extends</code> / <code>super(...)</code>.</p>
+        <table>
+          <tr><th></th><th>Python</th><th>JavaScript</th></tr>
+          <tr><td>constructeur</td><td><code>def __init__(self, …)</code></td><td><code>constructor(…)</code></td></tr>
+          <tr><td>référence à l'instance</td><td><code>self</code> (explicite)</td><td><code>this</code> (implicite)</td></tr>
+          <tr><td>instanciation</td><td><code>Compte("Tux")</code></td><td><code>new Compte("Tux")</code></td></tr>
+          <tr><td>héritage</td><td><code>class B(A)</code></td><td><code>class B extends A</code></td></tr>
+          <tr><td>appel au parent</td><td><code>super().__init__(…)</code></td><td><code>super(…)</code></td></tr>
+        </table>
+        <p class="note">🖥️ Exécute l'exemple (▶) : une classe <code>CompteBancaire</code>, une instance avec <code>new</code>, puis une classe <code>CompteEpargne</code> qui en <strong>hérite</strong>.</p>`,
+        domexo: {
+          html: `<p>Résultats dans la console ci-dessous.</p>`,
+          js: `class CompteBancaire {
+  constructor(titulaire, solde = 0) {
+    this.titulaire = titulaire;   // attributs (this = l'objet courant)
+    this.solde = solde;
+  }
+  deposer(montant) {
+    this.solde += montant;
+  }
+  afficher() {
+    console.log(this.titulaire + " : " + this.solde + " euros");
+  }
+}
+
+const c = new CompteBancaire("Tux", 100);   // new = créer une instance
+c.deposer(50);
+c.afficher();                                 // Tux : 150 euros
+
+// Héritage : extends + super
+class CompteEpargne extends CompteBancaire {
+  constructor(titulaire, solde, taux) {
+    super(titulaire, solde);   // appelle le constructeur parent
+    this.taux = taux;
+  }
+  ajouterInterets() {
+    this.solde += this.solde * this.taux;
+  }
+}
+
+const e = new CompteEpargne("Ada", 1000, 0.05);
+e.ajouterInterets();
+e.afficher();                                 // Ada : 1050 euros
+`,
+        },
       },
       {
         title: "Aller plus loin : composants, état réactif et frameworks (culture)",
