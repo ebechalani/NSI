@@ -10,7 +10,7 @@
   <title>NSI Première — Cours interactif</title>
   <meta name="description" content="Site interactif pour apprendre la NSI en Première : cours, code Python exécutable et QCM. Conforme au programme officiel (BO)." />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-  <link rel="stylesheet" href="assets/css/style.css?v=72" />
+  <link rel="stylesheet" href="assets/css/style.css?v=73" />
 </head>
 <body>
   <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -78,7 +78,7 @@
       }
       window.NSI_NIVEAU = niveau;
       var base = niveau === "terminale" ? "assets/js/terminale/" : "assets/js/";
-      var v = "72";
+      var v = "73";
       ["courses", "quizzes", "exercises", "projects", "glossary", "resources", "tp"].forEach(function (f) {
         document.write('<script src="' + base + f + ".js?v=" + v + '"><\/script>');
       });
@@ -88,10 +88,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="assets/js/firebase-config.js?v=72"></script>
+  <script src="assets/js/firebase-config.js?v=73"></script>
   <!-- Plateforme (comptes, rôles, classes) -->
-  <script src="assets/js/platform.js?v=72"></script>
+  <script src="assets/js/platform.js?v=73"></script>
   <!-- Logique applicative -->
-  <script src="assets/js/app.js?v=72"></script>
+  <script src="assets/js/app.js?v=73"></script>
 </body>
 </html>

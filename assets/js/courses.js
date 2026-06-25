@@ -597,6 +597,30 @@ longueurs = {m: len(m) for m in mots}
 print(longueurs)     # {'python': 6, 'nsi': 3, 'lycee': 5}`,
       },
       {
+        title: "Compter et regrouper plus vite : Counter et defaultdict (pour aller plus loin)",
+        html: `
+        <p>Une fois compris le motif de comptage « à la main », Python offre des <strong>raccourcis</strong> dans le module <code>collections</code> — de l'<strong>enrichissement</strong>, hors socle de base.</p>
+        <ul>
+          <li><code>Counter(liste)</code> compte les occurrences <strong>en une ligne</strong> ; <code>.most_common(n)</code> renvoie les <em>n</em> plus fréquents ;</li>
+          <li><code>defaultdict(list)</code> est un dictionnaire à <strong>valeur par défaut automatique</strong> : plus besoin d'initialiser la liste avant d'ajouter — idéal pour <strong>regrouper</strong> des éléments par clé.</li>
+        </ul>
+        <p class="note">🎓 À réserver aux élèves à l'aise ou à un projet. L'idée centrale, elle, est pour tous : <strong>choisir la bonne structure rend le programme plus simple et plus rapide</strong>.</p>`,
+        code: `from collections import Counter, defaultdict
+
+# Counter : compter PUIS classer, en une ligne
+votes = ["Mario", "Zelda", "Mario", "Sonic", "Mario", "Zelda"]
+compte = Counter(votes)
+print(compte.most_common(2))      # [('Mario', 3), ('Zelda', 2)]
+
+# defaultdict : regrouper par clé sans rien initialiser
+inscriptions = [("France", "Alice"), ("Japon", "Bob"),
+                ("France", "Chen"), ("Japon", "Diego")]
+par_pays = defaultdict(list)
+for pays, nom in inscriptions:
+    par_pays[pays].append(nom)    # la liste est créée toute seule
+print(dict(par_pays))`,
+      },
+      {
         title: "Les ensembles (set) : une collection sans doublon",
         html: `
         <p>Un <strong>ensemble</strong> (<code>set</code>) s'écrit entre accolades comme un dictionnaire, mais <strong>sans les « : »</strong>. C'est une collection <strong>non ordonnée</strong> et <strong>sans doublon</strong>, très pratique pour <strong>dédoublonner</strong> une liste ou <strong>comparer</strong> deux groupes.</p>
@@ -621,10 +645,40 @@ print("foot seul  :", foot - theatre)   # différence
 print("Tom au foot ?", "Tom" in foot)`,
       },
       {
+        title: "Pièges fréquents avec les dictionnaires",
+        html: `
+        <p>Quelques erreurs reviennent souvent — autant les connaître pour les éviter (et les repérer chez les élèves) :</p>
+        <ul>
+          <li><strong>Clé non « hachable »</strong> : une clé doit être <strong>immuable</strong> (str, int, tuple). Une <em>liste</em> comme clé lève une <code>TypeError</code> ;</li>
+          <li><strong>Modifier un dictionnaire pendant qu'on le parcourt</strong> (ajouter/supprimer des clés dans la boucle) → erreur ou résultat faux. Si tu dois modifier, itère sur une <strong>copie</strong> des clés : <code>for k in list(d):</code> ;</li>
+          <li><strong>Alias ≠ copie</strong> : <code>b = a</code> ne copie <em>pas</em> le dictionnaire — les deux noms désignent le <strong>même</strong> objet. Pour une vraie copie : <code>a.copy()</code> ;</li>
+          <li><strong>Confondre clé et valeur</strong>, ou <strong>attendre un ordre</strong> dans un <code>set</code> (qui est non ordonné).</li>
+        </ul>`,
+        code: `# 1) Une liste ne peut PAS être une clé (mutable -> non hachable)
+try:
+    mauvais = {[1, 2]: "oups"}
+except TypeError as e:
+    print("TypeError :", e)
+
+# ... mais un tuple, oui (immuable) -- pratique pour des coordonnées
+tresor = {(3, 5): "or", (0, 0): "départ"}
+print(tresor[(3, 5)])           # or
+
+# 2) Alias vs copie
+a = {"x": 1}
+b = a                # ALIAS : même objet
+b["x"] = 99
+print("a vaut", a)              # {'x': 99}  -> a a changé aussi !
+
+c = a.copy()         # vraie COPIE
+c["x"] = 0
+print("a inchangé :", a)        # {'x': 99}`,
+      },
+      {
         title: "Choisir la bonne structure (synthèse)",
         html: `
         <p>La compétence visée n'est pas de connaître la syntaxe par cœur, mais de <strong>choisir</strong> la structure adaptée — au bon <strong>coût</strong>.</p>
-        <p class="note">⚡ <strong>Atout majeur du dictionnaire (et de l'ensemble)</strong> : chercher une clé est <strong>quasi immédiat</strong> — un coût <strong>O(1)</strong>, presque indépendant de la taille — grâce à une <em>table de hachage</em> interne. À l'inverse, <code>x in liste</code> doit <strong>parcourir</strong> la liste : un coût <strong>O(n)</strong>. Réflexe : si on cherche ou associe <em>souvent</em>, un <code>dict</code>/<code>set</code> est bien plus rapide qu'une liste.</p>
+        <p class="note">⚡ <strong>Atout majeur du dictionnaire (et de l'ensemble)</strong> : retrouver une clé est <strong>quasi immédiat</strong>, presque sans dépendre du nombre d'éléments (grâce à une <em>table de hachage</em> interne) — alors que <code>x in liste</code> doit <strong>parcourir</strong> toute la liste. Réflexe : si l'on cherche ou associe <em>souvent</em>, un <code>dict</code>/<code>set</code> est bien plus rapide qu'une liste. <em>(En <strong>Terminale</strong>, on formalisera cette intuition avec la notion de <strong>coût</strong> et la notation O(1) / O(n).)</em></p>
         <p>Petit guide de décision :</p>
         <table>
           <tr><th>Le besoin</th><th>La structure</th><th>Exemple</th></tr>
@@ -635,7 +689,8 @@ print("Tom au foot ?", "Tom" in foot)`,
           <tr><td>Tableau à 2 dimensions</td><td><strong>liste de listes</strong></td><td>une grille, une image</td></tr>
           <tr><td>Liste de fiches</td><td><strong>liste de dictionnaires</strong></td><td>une classe entière (→ thème 4)</td></tr>
         </table>
-        <p>Cette dernière ligne est essentielle : une <strong>liste de dictionnaires</strong> est exactement ce qu'on appellera une <em>table de données</em> au thème suivant. Tout se tient !</p>`,
+        <p>Cette dernière ligne est essentielle : une <strong>liste de dictionnaires</strong> est exactement ce qu'on appellera une <em>table de données</em> au thème suivant. Tout se tient !</p>
+        <p class="note">🔭 <strong>De la Première à la Terminale</strong> : ici, on <em>utilise</em> listes, tuples et dictionnaires comme des <strong>outils</strong>. En <strong>Terminale</strong>, on étudiera les <strong>structures de données</strong> pour elles-mêmes (piles, files, listes chaînées, arbres, <strong>graphes</strong>) — souvent <strong>implémentées</strong> à partir des listes et dictionnaires vus ici (un graphe se range dans un dict de listes d'adjacence ; un dict sert aussi à <em>mémoïser</em> des résultats). Le fil rouge « <strong>quelle structure, à quel coût</strong> » relie toute la discipline.</p>`,
       },
     ],
   },
