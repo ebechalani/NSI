@@ -638,7 +638,7 @@ print("on traite :", questions.popleft())  # défiler (le premier)`,
     theme: "types-construits",
     lang: "python",
     titre: "TP Python — Dictionnaires",
-    intro: "Le dictionnaire associe une clé à une valeur. Créer/accéder (get), modifier/supprimer, parcourir (items), compter des occurrences, et la compréhension de dictionnaire. Chaque étape : exécute la démo (▶ ou ⚡ Basthon), traite les questions, puis ouvre la correction.",
+    intro: "Le dictionnaire associe une clé à une valeur. Créer/accéder (get), modifier/supprimer, parcourir (items), compter des occurrences, compréhension de dictionnaire, les ensembles (set) pour comparer des groupes, et le raccourci Counter. Chaque étape : exécute la démo (▶ ou ⚡ Basthon), traite les questions, puis ouvre la correction.",
     steps: [
       {
         num: "1", titre: "Créer et accéder (get, KeyError)",
@@ -757,7 +757,60 @@ print({n: len(n) for n in noms})   # {'Ada': 3, 'Alan': 4, 'Grace': 5}` },
         ],
       },
       {
-        num: "6", titre: "Défi — l'inventaire d'un jeu",
+        num: "6", titre: "Les ensembles (set) : comparer des groupes",
+        code: `# Un ensemble : sans doublon, non ordonné
+foot = {"Léa", "Tom", "Hugo", "Inès"}
+theatre = {"Tom", "Inès", "Maya"}
+
+print("les deux    :", sorted(foot & theatre))   # intersection (ET)
+print("au moins 1  :", sorted(foot | theatre))   # union (OU)
+print("foot seul   :", sorted(foot - theatre))   # différence
+
+# Dédoublonner une liste
+inscriptions = ["Léa", "Tom", "Léa", "Maya", "Tom"]
+print(len(set(inscriptions)), "personnes distinctes")`,
+        run: true,
+        questions: [
+          "Deux options : latin = {'Léa','Tom','Maya'} et grec = {'Tom','Inès'}. Affiche qui fait LES DEUX, puis qui fait L'UNE OU L'AUTRE.",
+          "À partir de notes = [12, 15, 12, 8, 15], affiche le nombre de notes DISTINCTES.",
+        ],
+        correction: [
+          "& = intersection (présent dans les deux), | = union (dans l'un ou l'autre), - = différence. set(liste) dédoublonne ; len(set(...)) compte les éléments distincts.",
+          { text: "Solution :" },
+          { code: `latin = {"Léa", "Tom", "Maya"}
+grec = {"Tom", "Inès"}
+print(sorted(latin & grec))   # ['Tom']
+print(sorted(latin | grec))   # ['Inès', 'Léa', 'Maya', 'Tom']
+
+notes = [12, 15, 12, 8, 15]
+print(len(set(notes)), "distinctes")   # 3` },
+        ],
+      },
+      {
+        num: "7", titre: "Pour aller plus loin — Counter & rapidité (O(1))",
+        code: `from collections import Counter
+
+votes = ["France", "Japon", "France", "Liban", "France", "Japon"]
+compte = Counter(votes)            # comptage en UNE ligne
+print(compte)
+print("podium :", compte.most_common(2))   # les 2 plus fréquents
+
+# Pourquoi dict et set sont rapides : chercher une clé est O(1)
+pays = {"France", "Japon", "Liban", "Canada"}
+print("Japon connu ?", "Japon" in pays)   # quasi immédiat, quelle que soit la taille`,
+        run: true,
+        questions: [
+          "Avec Counter, affiche la lettre la plus fréquente de 'mississippi' (most_common(1)).",
+        ],
+        correction: [
+          "Counter(liste) compte tout seul ; .most_common(n) renvoie les n plus fréquents. Chercher « x in dict/set » est O(1) (table de hachage) — bien plus rapide que « x in liste » (O(n)) sur de grandes données.",
+          { text: "Solution :" },
+          { code: `from collections import Counter
+print(Counter("mississippi").most_common(1))   # [('i', 4)]  (ou 's')` },
+        ],
+      },
+      {
+        num: "8", titre: "Défi — l'inventaire d'un jeu",
         code: `# Inventaire d'un héros : objet -> quantité
 inventaire = {"potion": 3, "or": 150}
 
