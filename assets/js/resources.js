@@ -455,6 +455,7 @@ const THEME_RESSOURCES_EXT = {
     auteur: "Cours de J-M Barbier — DIU EIL 2026",
     base: "https://diu-htmlcss-1858e2.forge.apps.education.fr/",
     items: [
+      { t: "🌐 Le cours complet en ligne (site)", url: "" },
       { t: "📕 Cours HTML (PDF)", url: "pdf/book-html.pprint.pdf" },
       { t: "🎨 Cours CSS (PDF)", url: "pdf/book-css.pprint.pdf" },
       { t: "🔁 Cours Client / serveur (PDF)", url: "pdf/book-clientserveur.pprint.pdf" },
