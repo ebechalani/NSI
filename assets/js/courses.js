@@ -500,29 +500,75 @@ grille = [[0 for _ in range(4)] for _ in range(3)]
 print(grille)`,
       },
       {
-        title: "Les dictionnaires",
+        title: "Le dictionnaire : associer une clé à une valeur",
         html: `
-        <p>Un <strong>dictionnaire</strong> associe à chaque <strong>clé</strong> une <strong>valeur</strong> (des paires <em>clé → valeur</em>), écrit entre accolades <code>{ }</code>. Différence fondamentale avec la liste : on n'accède pas par une position (0, 1, 2…) mais par un <strong>nom</strong> de clé, ce qui est bien plus parlant.</p>
-        <p>Comparez : <code>eleve[2]</code> (qu'est-ce que l'indice 2 ?) contre <code>eleve["moyenne"]</code> (limpide). Le dictionnaire est idéal pour modéliser un <strong>objet à attributs nommés</strong> — c'est la brique des « tables de données » du thème suivant.</p>
+        <p>Un <strong>dictionnaire</strong> (<code>dict</code>) associe à chaque <strong>clé</strong> une <strong>valeur</strong> — des paires <em>clé : valeur</em> écrites entre accolades <code>{ }</code>. Changement de logique par rapport à la liste : on n'accède plus par une <strong>position</strong> (0, 1, 2…) mais par un <strong>nom</strong> de clé.</p>
+        <p>Compare : <code>eleve[2]</code> (qu'est-ce que l'indice 2 ?) contre <code>eleve["moyenne"]</code> (limpide !). Le dictionnaire est parfait pour décrire un <strong>objet à champs nommés</strong> — une fiche, un répertoire (nom → téléphone), un dictionnaire de langue (mot → définition).</p>
+        <p><strong>Étape 1 — créer et lire.</strong> On lit une valeur avec <code>d["clé"]</code>. Mais attention : si la clé <strong>n'existe pas</strong>, Python lève une <code>KeyError</code>. Pour lire sans risque, on utilise <code>d.get("clé", défaut)</code>, et on teste une clé avec <code>"clé" in d</code>.</p>
+        <p class="warnbox">⚠️ Une <strong>clé doit être unique et immuable</strong> : on peut utiliser une chaîne, un entier ou un <em>tuple</em> comme clé, mais <strong>pas une liste</strong> (cela lève une <code>TypeError</code>). La <em>valeur</em>, elle, peut être n'importe quoi.</p>`,
+        code: `# Créer : des paires clé: valeur
+eleve = {"nom": "Lovelace", "prenom": "Ada", "moyenne": 17.5}
+
+print(eleve["nom"])            # accès par la CLÉ -> Lovelace
+print("moyenne :", eleve["moyenne"])
+
+# Clé absente : eleve["age"] lèverait une KeyError.
+print("age présent ?", "age" in eleve)         # False
+print(eleve.get("age", "non renseigné"))       # défaut, sans erreur`,
+      },
+      {
+        title: "Dictionnaire : ajouter, modifier, supprimer",
+        html: `
+        <p><strong>Étape 2 — faire évoluer le dictionnaire.</strong> Le <code>dict</code> est <strong>mutable</strong> : on peut le modifier après création.</p>
         <ul>
-          <li><code>d["nom"]</code> : lire la valeur (erreur si la clé n'existe pas) ;</li>
-          <li><code>d.get("nom", défaut)</code> : lire sans risque, avec une valeur par défaut ;</li>
-          <li><code>d["classe"] = "1NSI"</code> : ajouter ou modifier une clé (même syntaxe) ;</li>
-          <li><code>del d["classe"]</code> ou <code>d.pop("classe")</code> : supprimer une clé ;</li>
-          <li><code>"nom" in d</code> : tester la présence d'une <em>clé</em> ;</li>
-          <li>parcours : <code>d.keys()</code> (clés), <code>d.values()</code> (valeurs), <code>d.items()</code> (les paires).</li>
+          <li><code>d["classe"] = "1NSI"</code> : <strong>ajoute</strong> la clé si elle est nouvelle, sinon <strong>modifie</strong> sa valeur — <em>même syntaxe</em> dans les deux cas ;</li>
+          <li><code>del d["classe"]</code> : <strong>supprime</strong> une clé ;</li>
+          <li><code>d.pop("classe")</code> : supprime <strong>et renvoie</strong> la valeur retirée ;</li>
+          <li><code>len(d)</code> : le nombre de clés.</li>
         </ul>`,
-        code: `eleve = {"nom": "Lovelace", "prenom": "Ada", "moyenne": 17.5}
+        code: `fiche = {"nom": "Tux", "annee": 1996}
 
-print(eleve["nom"])             # accès par la clé -> Lovelace
-eleve["moyenne"] = 18           # modification
-eleve["classe"] = "1NSI"        # ajout d'une nouvelle clé
-print("clé 'age' présente ?", "age" in eleve)   # False
-print("âge :", eleve.get("age", "non renseigné"))
+fiche["mascotte"] = True       # AJOUT (la clé est nouvelle)
+fiche["annee"] = 1991          # MODIFICATION (la clé existe déjà)
+del fiche["mascotte"]          # SUPPRESSION
+print(fiche, "->", len(fiche), "clés")`,
+      },
+      {
+        title: "Parcourir un dictionnaire",
+        html: `
+        <p><strong>Étape 3 — parcourir.</strong> Une boucle <code>for</code> sur un dictionnaire parcourt ses <strong>clés</strong> par défaut. Le plus souvent on veut les <strong>paires</strong> (clé, valeur) : c'est le rôle de <code>.items()</code>.</p>
+        <ul>
+          <li><code>for cle in d:</code> → les clés (comportement par défaut) ;</li>
+          <li><code>for cle, valeur in d.items():</code> → les paires (le plus utile) ;</li>
+          <li><code>d.keys()</code>, <code>d.values()</code> → les clés / les valeurs seules.</li>
+        </ul>`,
+        code: `notes = {"Ada": 17.5, "Alan": 14, "Grace": 19}
 
-# Parcourir les paires clé/valeur
-for cle, valeur in eleve.items():
-    print(cle, "=>", valeur)`,
+# Par défaut, une boucle for parcourt les CLÉS
+for nom in notes:
+    print(nom)
+
+# Le plus utile : les paires (clé, valeur)
+for nom, note in notes.items():
+    print(nom, "a", note)
+
+print("clés    :", list(notes.keys()))
+print("valeurs :", list(notes.values()))`,
+      },
+      {
+        title: "Construire un dictionnaire par compréhension",
+        html: `
+        <p><strong>Étape 4 — la compréhension.</strong> Comme pour les listes, on peut construire un dictionnaire <strong>en une seule expression</strong> : <code>{cle: valeur for … in …}</code>, avec un <strong>filtre</strong> optionnel (<code>if …</code>).</p>
+        <p>C'est concis et lisible pour <em>transformer</em> ou <em>filtrer</em> des données.</p>`,
+        code: `mots = ["python", "nsi", "lycee"]
+# clé = le mot, valeur = sa longueur
+longueurs = {m: len(m) for m in mots}
+print(longueurs)               # {'python': 6, 'nsi': 3, 'lycee': 5}
+
+# avec un filtre : ne garder que les notes >= 10
+notes = {"Ada": 17, "Alan": 8, "Grace": 19}
+recus = {nom: n for nom, n in notes.items() if n >= 10}
+print("reçus :", recus)`,
       },
       {
         title: "Compter avec un dictionnaire",
@@ -577,7 +623,9 @@ print("Tom au foot ?", "Tom" in foot)`,
       {
         title: "Choisir la bonne structure (synthèse)",
         html: `
-        <p>La compétence visée n'est pas de connaître la syntaxe par cœur, mais de <strong>choisir</strong> la structure adaptée. Petit guide de décision :</p>
+        <p>La compétence visée n'est pas de connaître la syntaxe par cœur, mais de <strong>choisir</strong> la structure adaptée — au bon <strong>coût</strong>.</p>
+        <p class="note">⚡ <strong>Atout majeur du dictionnaire (et de l'ensemble)</strong> : chercher une clé est <strong>quasi immédiat</strong> — un coût <strong>O(1)</strong>, presque indépendant de la taille — grâce à une <em>table de hachage</em> interne. À l'inverse, <code>x in liste</code> doit <strong>parcourir</strong> la liste : un coût <strong>O(n)</strong>. Réflexe : si on cherche ou associe <em>souvent</em>, un <code>dict</code>/<code>set</code> est bien plus rapide qu'une liste.</p>
+        <p>Petit guide de décision :</p>
         <table>
           <tr><th>Le besoin</th><th>La structure</th><th>Exemple</th></tr>
           <tr><td>Données fixes qui vont ensemble</td><td><strong>tuple</strong></td><td>une coordonnée <code>(x, y)</code></td></tr>
