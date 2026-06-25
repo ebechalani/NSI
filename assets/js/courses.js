@@ -969,6 +969,76 @@ p  { font-size: 16px; line-height: 1.5; }
 </html>`,
       },
       {
+        title: "Les sélecteurs CSS en profondeur",
+        html: `
+        <p>Au-delà de la balise, de la classe (<code>.</code>) et de l'id (<code>#</code>), CSS sait viser des éléments selon leur <strong>place dans l'arbre</strong>, grâce aux <strong>combinateurs</strong>. Règle d'or : <strong>l'élément réellement stylé est celui le plus à droite</strong> du sélecteur ; ce qui est à gauche sert à le <em>contextualiser</em>.</p>
+        <table>
+          <tr><th>Sélecteur</th><th>Cible</th></tr>
+          <tr><td><code>article p</code> (espace)</td><td><strong>descendant</strong> : un <code>p</code> n'importe où dans un <code>article</code></td></tr>
+          <tr><td><code>article &gt; p</code></td><td><strong>enfant direct</strong> : un <code>p</code> <em>directement</em> dans <code>article</code> (pas les petits-enfants)</td></tr>
+          <tr><td><code>h1 + p</code></td><td><strong>frère adjacent</strong> : le <code>p</code> placé <em>juste après</em> un <code>h1</code></td></tr>
+          <tr><td><code>h1 ~ p</code></td><td><strong>frères suivants</strong> : tous les <code>p</code> frères situés après un <code>h1</code></td></tr>
+          <tr><td><code>h1.titre</code></td><td>un <code>h1</code> qui porte la classe <code>titre</code></td></tr>
+          <tr><td><code>.rouge.bleu</code></td><td>un élément ayant <strong>les deux classes</strong> à la fois</td></tr>
+          <tr><td><code>[alt="Tux"]</code></td><td>par <strong>attribut</strong> (variantes : <code>^=</code> commence par, <code>$=</code> finit par, <code>*=</code> contient)</td></tr>
+        </table>
+        <p>Les <strong>pseudo-classes</strong> ciblent un <em>état</em> ou une <em>position</em> :</p>
+        <ul>
+          <li><code>:hover</code> (survol de la souris), <code>:focus</code> (champ actif), <code>:active</code> (pendant le clic) ;</li>
+          <li><code>:first-child</code>, <code>:last-child</code>, <code>:nth-child(2)</code> (position parmi les frères).</li>
+        </ul>
+        <p class="note">🏷️ Bonne pratique : nommer les classes par leur <strong>sens</strong> (<code>.ingredients</code>, <code>.danger</code>) plutôt que par leur apparence (<code>.rouge</code>, <code>.gras</code>) — si on change le style, le nom reste juste. Référence complète des sélecteurs : <strong>MDN</strong>.</p>
+        <p class="note">🖥️ <strong>Essaie</strong> : survole le lien et les éléments, clique dans le champ — observe <code>:hover</code>, <code>:focus</code>, <code>:first-child</code> et <code>h2 + p</code>.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<style>
+  a { color: teal; }
+  a:hover { color: crimson; }              /* au survol */
+  li:first-child { font-weight: bold; }    /* le 1er de la liste */
+  li + li { color: gray; }                 /* chaque li sauf le 1er */
+  h2 + p { font-style: italic; }           /* le p juste après le h2 */
+  input:focus { background: #fff3bf; }     /* le champ actif */
+</style></head>
+<body>
+  <h2>Survole et clique</h2>
+  <p>Ce paragraphe suit le titre (h2 + p) : il est en italique.</p>
+  <ul>
+    <li>Premier (en gras)</li>
+    <li>Deuxième (gris)</li>
+    <li>Troisième (gris)</li>
+  </ul>
+  <p><a href="#">Survole ce lien</a></p>
+  <p><input placeholder="Clique ici (focus)"></p>
+</body></html>`,
+      },
+      {
+        title: "Couleurs, valeurs et unités",
+        html: `
+        <p>Quelques familles de valeurs reviennent partout en CSS — autant les connaître.</p>
+        <h3>Les couleurs</h3>
+        <ul>
+          <li><strong>noms</strong> anglais : <code>red</code>, <code>lightyellow</code>, <code>teal</code>… ;</li>
+          <li><strong>hexadécimal</strong> : <code>#RRGGBB</code> (ou la forme courte <code>#RGB</code>), ex. <code>#3498db</code> ;</li>
+          <li><strong>rgb / rgba</strong> : <code>rgb(52, 152, 219)</code> ou <code>rgba(52, 152, 219, 0.5)</code> — le 4ᵉ canal, <em>alpha</em> (de 0 à 1), gère la <strong>transparence</strong>.</li>
+        </ul>
+        <h3>Quelques propriétés utiles</h3>
+        <ul>
+          <li><code>border</code> : raccourci <em>largeur · style · couleur</em> (<code>2px solid red</code>) ; styles : <code>solid</code>, <code>dashed</code>, <code>dotted</code>, <code>double</code>… ;</li>
+          <li><code>background-color</code>, et <code>background-image: url("image.png")</code> pour un fond ;</li>
+          <li><code>font-weight</code> : <code>normal</code>, <code>bold</code>, ou une valeur de 100 à 900.</li>
+        </ul>
+        <h3>Les unités de longueur</h3>
+        <table>
+          <tr><th>Unité</th><th>Sens</th></tr>
+          <tr><td><code>px</code></td><td>pixel écran (unité <strong>absolue</strong>)</td></tr>
+          <tr><td><code>%</code></td><td>relatif à l'élément <strong>parent</strong></td></tr>
+          <tr><td><code>em</code></td><td>relatif à la police de l'élément (<code>1.2em</code> = 120 % du texte courant)</td></tr>
+          <tr><td><code>rem</code></td><td>relatif à la police de la racine <code>&lt;html&gt;</code> : changer <strong>un seul</strong> endroit redimensionne tout le site</td></tr>
+          <tr><td><code>vw</code> / <code>vh</code></td><td>1 % de la <strong>largeur</strong> / <strong>hauteur</strong> de la fenêtre (<em>viewport</em>)</td></tr>
+        </table>
+        <p class="note">🎯 Pour un site qui s'adapte, on préfère les unités <strong>relatives</strong> (<code>rem</code>, <code>%</code>, <code>vw</code>) aux <code>px</code> fixes — on le verra avec le responsive.</p>`,
+      },
+      {
         title: "Où placer le CSS, et le modèle de boîte",
         html: `
         <p>On a écrit des règles CSS — mais <strong>où</strong> les mettre ? Trois façons, de la moins à la plus recommandée :</p>
@@ -1039,6 +1109,99 @@ p  { font-size: 16px; line-height: 1.5; }
   <span>en ligne 3</span>
 </body>
 </html>`,
+      },
+      {
+        title: "La cascade, la spécificité et l'héritage",
+        html: `
+        <p>Quand <strong>plusieurs règles</strong> visent le même élément et se contredisent, la <strong>cascade</strong> tranche par <strong>spécificité</strong>, du plus fort au plus faible :</p>
+        <ol>
+          <li><code>!important</code> (à éviter — écrase tout) ;</li>
+          <li>style <strong>en ligne</strong> (<code>style="…"</code> dans la balise) ;</li>
+          <li><strong>identifiant</strong> (<code>#id</code>) ;</li>
+          <li><strong>classe</strong>, attribut, pseudo-classe ;</li>
+          <li><strong>balise</strong> (<code>p</code>, <code>div p</code>…).</li>
+        </ol>
+        <p><strong>Calculer la spécificité</strong> : on compte un <strong>triplet</strong> <em>(nb d'id, nb de classes, nb de balises)</em> et on le compare comme un nombre. Ex. <code>article li</code> → (0,0,2) ; <code>.menu.actif p</code> → (0,2,1) ; <code>#entete</code> → (1,0,0). Un id (1,0,0) <strong>bat</strong> n'importe quel nombre de classes (0,5,3). À spécificité <strong>égale</strong>, c'est la <strong>dernière</strong> règle écrite qui gagne. Le calcul se fait <strong>propriété par propriété</strong>, pas pour la règle entière.</p>
+        <h3>L'héritage</h3>
+        <p>Certaines propriétés — surtout <strong>typographiques</strong> (<code>color</code>, <code>font-size</code>, <code>font-weight</code>) — sont <strong>héritées</strong> par les éléments enfants ; les propriétés de <strong>boîte</strong> (<code>margin</code>, <code>border</code>, <code>padding</code>) ne le sont <em>pas</em> et ne s'appliquent qu'à l'élément ciblé.</p>
+        <p class="warnbox">⚠️ Piège classique : <code>font-weight: bold</code> sur <code>article li</code> met aussi en gras les sous-listes imbriquées <em>par héritage</em>. Solution : cibler précisément (enfant direct <code>&gt;</code>), puis remettre <code>font-weight: normal</code> sur les enfants. L'<strong>inspecteur</strong> du navigateur affiche les styles hérités et aide à déboguer ces conflits.</p>
+        <p class="note">👉 L'exercice interactif « la cascade — quelle couleur l'emporte ? » (plus bas) te fait pratiquer exactement ce calcul.</p>`,
+      },
+      {
+        title: "Responsive : un seul site pour tous les écrans (media queries)",
+        html: `
+        <p>Un même site doit rester lisible sur <strong>mobile, tablette et grand écran</strong>. C'est le <strong>responsive design</strong> : un seul code HTML/CSS qui s'<strong>adapte</strong> à la taille de l'écran (plutôt que de faire un site mobile séparé).</p>
+        <p>Deux ingrédients de base :</p>
+        <ol>
+          <li>une <strong>balise indispensable</strong> dans le <code>&lt;head&gt;</code> — sans elle, le site apparaît minuscule sur mobile :
+            <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></pre></li>
+          <li>des unités <strong>relatives</strong> (<code>%</code>, <code>rem</code>, <code>vw</code>) plutôt que des <code>px</code> fixes.</li>
+        </ol>
+        <p>Pour changer le style <strong>selon la largeur</strong> de l'écran, on utilise les <strong>media queries</strong> : des blocs conditionnels.</p>
+        <pre><code>/* règle appliquée seulement sous 600px de large */
+@media (max-width: 600px) {
+  body { font-size: 14px; }
+  .menu { display: none; }
+}</code></pre>
+        <p>Les largeurs charnières où la mise en page bascule s'appellent des <strong>breakpoints</strong> (mobile, tablette, écran large…). L'<strong>inspecteur</strong> du navigateur propose un mode « <strong>vue adaptative</strong> » pour simuler différents appareils.</p>
+        <p class="note">🖥️ <strong>Essaie</strong> : rétrécis la largeur de l'aperçu (poignée en bas à droite de l'éditeur, ou réduis ta fenêtre). Sous 500px, le fond et le message changent grâce à une media query.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: sans-serif; background: #dbeafe; padding: 14px; }
+  .etat::after { content: "🖥️ grand écran (≥ 500px)"; font-weight: bold; }
+  @media (max-width: 500px) {
+    body { background: #fde68a; }
+    .etat::after { content: "📱 petit écran (< 500px)"; }
+  }
+</style></head>
+<body>
+  <h3>Redimensionne-moi !</h3>
+  <p class="etat">État détecté : </p>
+  <p>Rétrécis la largeur : sous 500px, le fond devient jaune.</p>
+</body></html>`,
+      },
+      {
+        title: "Flexbox et Grid (pour aller plus loin)",
+        html: `
+        <p>Aligner des éléments « à la main » (<code>inline-block</code>, <code>float</code>) devient vite pénible pour de vraies mises en page. Deux outils modernes résolvent cela — <strong>hors programme strict de Première, mais incontournables</strong> sur le Web d'aujourd'hui :</p>
+        <ul>
+          <li><strong>Flexbox</strong> (<code>display: flex</code>) : aligne des éléments sur <strong>une dimension</strong> (une ligne <em>ou</em> une colonne), avec répartition, centrage et compression/étirement automatiques. Idéal pour une barre de navigation ou une rangée de cartes ;</li>
+          <li><strong>Grid</strong> (<code>display: grid</code>) : organise sur <strong>deux dimensions</strong> à la fois (lignes <em>et</em> colonnes) — parfait pour une mise en page complète (en-tête, menu, contenu, pied).</li>
+        </ul>
+        <pre><code>/* répartir et centrer une rangée avec Flexbox */
+.barre {
+  display: flex;
+  justify-content: space-between; /* répartit horizontalement */
+  align-items: center;            /* centre verticalement */
+  gap: 1rem;
+}</code></pre>
+        <p class="note">🧭 Bonne progression : bien maîtriser le <strong>modèle de boîte</strong> et <code>display</code>, puis apprendre <strong>Flexbox</strong> (le plus utile au quotidien), puis <strong>Grid</strong>. La référence <strong>MDN</strong> est incontournable.</p>
+        <p class="note">🖥️ <strong>Observe</strong> : la barre de navigation et les cartes ci-dessous sont alignées avec Flexbox. Change <code>justify-content</code> (<code>center</code>, <code>space-around</code>…) et regarde.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<style>
+  body { font-family: sans-serif; }
+  .barre { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #1e293b; padding: 10px; border-radius: 8px; }
+  .barre a { color: white; text-decoration: none; padding: 6px 10px; background: #334155; border-radius: 6px; }
+  .marque { color: white; font-weight: bold; }
+  .cartes { display: flex; gap: 10px; margin-top: 12px; }
+  .carte { flex: 1; background: #c7d2fe; padding: 16px; border-radius: 8px; text-align: center; }
+</style></head>
+<body>
+  <nav class="barre">
+    <span class="marque">MonSite</span>
+    <a href="#">Accueil</a>
+    <a href="#">Articles</a>
+    <a href="#">Contact</a>
+  </nav>
+  <div class="cartes">
+    <div class="carte">Carte 1</div>
+    <div class="carte">Carte 2</div>
+    <div class="carte">Carte 3</div>
+  </div>
+</body></html>`,
       },
       {
         title: "🏆 Exercice interactif : mets en forme une page avec du CSS",
@@ -1252,6 +1415,111 @@ div p { background-color: pink; }
         },
         prof: `<p><strong>Objectif</strong> : faire manipuler la <strong>spécificité</strong> et la <strong>cascade</strong>. Réponses : Texte 1 = rouge (<code>#p1</code>), Texte 2 = bleu (<code>.c1</code>), Texte 3 = orange (<code>#p3</code>), Texte 4 = noir (<code>.c3</code> ; l'inline ne touche que le texte), Texte 5 = rose (<code>div p</code>).</p>
         <p>Bien insister : (a) <code>div p</code> ne s'applique pas à Texte 1 (hors du <code>div</code>) ; (b) une classe bat <code>div p</code> malgré ses 2 balises ; (c) un <code>style=</code> en ligne sur <code>color</code> n'affecte que le texte, pas <code>background-color</code>. Prolongement : <code>!important</code> (à éviter) et la notation de spécificité (a-b-c).</p>`,
+      },
+      {
+        title: "🏆 Exercice interactif : styliser une carte (modèle de boîte)",
+        html: `
+        <p>La page contient une « carte » (<code>&lt;div class="carte"&gt;</code>). En écrivant <strong>uniquement du CSS</strong> sur le sélecteur <code>.carte</code>, obtiens :</p>
+        <ul>
+          <li>une <strong>largeur</strong> de <code>300px</code> ;</li>
+          <li>un <strong>padding</strong> (marge intérieure) de <code>20px</code> ;</li>
+          <li>une <strong>bordure</strong> de <code>2px</code>, en trait plein (<code>solid</code>), de couleur <strong>gris foncé</strong> ;</li>
+          <li>des <strong>coins arrondis</strong> (<code>border-radius</code>) de <code>8px</code> ;</li>
+          <li>une <strong>couleur de fond</strong> gris très clair ;</li>
+          <li>une <strong>marge</strong> de <code>20px</code> en haut et en bas, et la carte <strong>centrée horizontalement</strong> dans la page (pense à <code>margin: … auto</code>).</li>
+        </ul>
+        <p class="note">📦 Rappel du <strong>modèle de boîte</strong> : autour du contenu, on a le <code>padding</code> (intérieur), puis la <code>border</code>, puis la <code>margin</code> (extérieur). <code>margin: 20px auto</code> = 20px en haut/bas, et <code>auto</code> à gauche/droite répartit l'espace restant ⇒ centrage horizontal (l'élément doit avoir une largeur).</p>`,
+        cssexo: {
+          html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Carte</title>
+</head>
+<body>
+  <div class="carte">
+    <h2>Tux</h2>
+    <p>La mascotte du noyau Linux.</p>
+  </div>
+</body>
+</html>`,
+          css: `/* Mets en forme .carte, puis clique ▶ Voir le résultat.
+   - largeur 300px            (width)
+   - padding 20px
+   - bordure 2px solid gris foncé   (border)
+   - coins arrondis 8px       (border-radius)
+   - fond gris très clair     (background-color)
+   - marge 20px haut/bas + carte centrée   (margin: ... auto)
+*/
+
+.carte {
+
+}
+`,
+          solution: `.carte {
+  width: 300px;
+  padding: 20px;
+  border: 2px solid #555;        /* gris foncé */
+  border-radius: 8px;
+  background-color: whitesmoke;  /* gris très clair */
+  margin: 20px auto;             /* 20px haut/bas, centré horizontalement */
+}`,
+        },
+        prof: `<p><strong>Correction</strong> : <code>width: 300px; padding: 20px; border: 2px solid #555; border-radius: 8px; background-color: whitesmoke; margin: 20px auto;</code>.</p>
+        <p>Points clés : le <strong>centrage horizontal</strong> d'un bloc se fait avec <code>margin: … auto</code> (et l'élément doit avoir une <code>width</code>, sinon il prend toute la largeur et <code>auto</code> n'a rien à répartir). Distinguer <code>padding</code> (dans la bordure) de <code>margin</code> (hors de la bordure). Variante : faire varier le <code>border-radius</code> (50% = cercle) ou ajouter une ombre (<code>box-shadow</code>).</p>`,
+      },
+      {
+        title: "🏆 Exercice interactif : des boîtes côte à côte (display & box-sizing)",
+        html: `
+        <p>La page contient trois <code>&lt;div class="boite …"&gt;</code>. <strong>Sans utiliser <code>flex</code> ni <code>grid</code></strong>, et en écrivant <strong>uniquement du CSS</strong> :</p>
+        <ul>
+          <li>fais en sorte que les trois <code>.boite</code> s'affichent <strong>côte à côte</strong> (propriété <code>display: inline-block</code>) ;</li>
+          <li>donne à chaque <code>.boite</code> une <strong>largeur</strong> et une <strong>hauteur</strong> de <code>100px</code>, un <code>padding</code> de <code>10px</code>, une <code>margin</code> de <code>5px</code>, et un texte <strong>centré</strong> ;</li>
+          <li>colore le fond : <code>.rouge</code> en rouge, <code>.verte</code> en vert, <code>.bleue</code> en bleu ;</li>
+          <li>ajoute <code>box-sizing: border-box</code> aux boîtes et <strong>observe</strong> : la largeur totale reste <code>100px</code> alors que le padding est compté <em>à l'intérieur</em>. Enlève-le pour voir la différence (la boîte ferait alors 100 + 2×10 = 120px).</li>
+        </ul>
+        <p class="note">🧊 Par défaut (<code>box-sizing: content-box</code>), <code>width</code> ne compte que le <strong>contenu</strong> : padding et bordure s'<em>ajoutent</em>. Avec <code>box-sizing: border-box</code>, <code>width</code> inclut padding + bordure — bien plus simple à raisonner, c'est pourquoi on le met souvent par défaut.</p>`,
+        cssexo: {
+          html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Boîtes</title>
+</head>
+<body>
+  <div class="boite rouge">1</div>
+  <div class="boite verte">2</div>
+  <div class="boite bleue">3</div>
+</body>
+</html>`,
+          css: `/* Sans flex ni grid. Clique ▶ Voir le résultat.
+   - .boite côte à côte        (display: inline-block)
+   - chaque .boite : 100px de large ET de haut, padding 10px, margin 5px, texte centré
+   - fond : .rouge rouge, .verte vert, .bleue bleu
+   - ajoute box-sizing: border-box et observe la largeur totale
+*/
+
+.boite {
+
+}
+`,
+          solution: `.boite {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  margin: 5px;
+  text-align: center;
+  box-sizing: border-box;   /* largeur totale = 100px (padding compté dedans) */
+  color: white;
+}
+
+.rouge { background-color: red; }
+.verte { background-color: green; }
+.bleue { background-color: blue; }`,
+        },
+        prof: `<p><strong>Correction</strong> : <code>.boite { display: inline-block; width: 100px; height: 100px; padding: 10px; margin: 5px; text-align: center; box-sizing: border-box; }</code> + <code>.rouge/.verte/.bleue { background-color: … }</code>.</p>
+        <p>Points clés : <code>inline-block</code> aligne les boîtes <strong>côte à côte</strong> tout en gardant largeur/hauteur (contrairement à <code>inline</code>). <code>box-sizing: border-box</code> = la <code>width</code> inclut padding + bordure (boîte « stable » à 100px) ; sans lui, la boîte ferait 100 + 2×10 (+ bordures) px. Manipuler la valeur pour faire constater la différence. (Anticipation : <code>flex</code>/<code>grid</code> font cela plus proprement — vu plus tard.)</p>`,
       },
       {
         title: "Client et serveur : qui exécute quoi ?",

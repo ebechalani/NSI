@@ -718,7 +718,7 @@
   // Cellule HTML/CSS éditable + aperçu en direct (iframe isolée).
   // Sert à rendre les exemples du thème Web interactifs (on édite, on voit le rendu).
   function makeHtmlCell(htmlCode) {
-    const cell = el("div", "code-cell html-cell");
+    const cell = el("div", "code-cell html-cell slate-cell");
     const bar = el("div", "code-toolbar");
     bar.innerHTML =
       `<span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span>` +
@@ -727,19 +727,27 @@
     bar.appendChild(runBtn);
     cell.appendChild(bar);
 
+    // Disposition « Slate » : éditeur à gauche, aperçu à droite
+    const main = el("div", "slate-main");
+
+    const left = el("div", "slate-col");
+    left.appendChild(el("div", "slate-label", "✏️ HTML / CSS — éditable"));
     const ta = el("textarea", "code-editor");
     ta.value = htmlCode;
     ta.spellcheck = false;
-    ta.rows = Math.min(20, htmlCode.split("\n").length + 1);
-    cell.appendChild(ta);
+    ta.rows = Math.min(22, htmlCode.split("\n").length + 1);
+    left.appendChild(ta);
+    main.appendChild(left);
 
-    const out = el("div", "html-preview-wrap");
-    out.appendChild(el("div", "html-preview-label", "Aperçu (rendu par le navigateur)"));
+    const right = el("div", "slate-col");
+    right.appendChild(el("div", "slate-label", "👁️ Aperçu (rendu par le navigateur)"));
     const frame = el("iframe", "html-preview");
     frame.setAttribute("sandbox", "allow-scripts"); // isolée : pas d'accès à la page
     frame.setAttribute("title", "Aperçu du rendu HTML");
-    out.appendChild(frame);
-    cell.appendChild(out);
+    right.appendChild(frame);
+    main.appendChild(right);
+
+    cell.appendChild(main);
 
     const render = () => { frame.srcdoc = ta.value; };
     runBtn.addEventListener("click", () => {
@@ -866,7 +874,7 @@
   // dans le <head> du document fourni. Correction optionnelle (gated comme .corrige).
   function makeCssCell(htmlCode, starterCss, solutionCss) {
     htmlCode = (htmlCode || "").trim();
-    const cell = el("div", "code-cell css-cell");
+    const cell = el("div", "code-cell css-cell slate-cell");
 
     const bar = el("div", "code-toolbar");
     bar.innerHTML =
@@ -876,28 +884,33 @@
     bar.appendChild(runBtn);
     cell.appendChild(bar);
 
-    // HTML fourni (lecture seule)
-    cell.appendChild(el("div", "dom-sublabel", "🔒 HTML fourni (tu ne le modifies pas)"));
+    // Disposition « Slate » : éditeurs à gauche, aperçu à droite
+    const main = el("div", "slate-main");
+
+    const left = el("div", "slate-col");
+    left.appendChild(el("div", "slate-label", "🔒 HTML — fourni (lecture seule)"));
     const pre = el("pre", "dom-html");
     const codeEl = el("code");
     codeEl.textContent = htmlCode;
     pre.appendChild(codeEl);
-    cell.appendChild(pre);
-
-    // Éditeur CSS
-    cell.appendChild(el("div", "dom-sublabel", "✏️ Ton CSS"));
+    left.appendChild(pre);
+    left.appendChild(el("div", "slate-label", "✏️ CSS — à toi d'écrire"));
     const ta = el("textarea", "code-editor");
     ta.value = starterCss || "";
     ta.spellcheck = false;
-    ta.rows = Math.max(6, (starterCss || "").split("\n").length + 1);
-    cell.appendChild(ta);
+    ta.rows = Math.max(8, (starterCss || "").split("\n").length + 1);
+    left.appendChild(ta);
+    main.appendChild(left);
 
-    // Aperçu (HTML fourni + CSS de l'élève)
-    cell.appendChild(el("div", "dom-sublabel", "Aperçu (rendu par le navigateur)"));
+    const right = el("div", "slate-col");
+    right.appendChild(el("div", "slate-label", "👁️ Aperçu (rendu par le navigateur)"));
     const frame = el("iframe", "html-preview");
     frame.setAttribute("sandbox", "allow-scripts");
     frame.setAttribute("title", "Aperçu du rendu CSS");
-    cell.appendChild(frame);
+    right.appendChild(frame);
+    main.appendChild(right);
+
+    cell.appendChild(main);
 
     const buildDoc = (cssText) => {
       const css = String(cssText != null ? cssText : ta.value || "");
@@ -941,7 +954,7 @@
   function makeCascadeCell(bodyHtml, css, explanationHtml) {
     bodyHtml = (bodyHtml || "").trim();
     css = (css || "").trim();
-    const cell = el("div", "code-cell css-cell");
+    const cell = el("div", "code-cell css-cell slate-cell");
 
     const bar = el("div", "code-toolbar");
     bar.innerHTML =
@@ -951,21 +964,29 @@
     bar.appendChild(revealBtn);
     cell.appendChild(bar);
 
-    cell.appendChild(el("div", "dom-sublabel", "🔒 HTML fourni"));
+    // Disposition « Slate » : code fourni à gauche, aperçu à droite
+    const main = el("div", "slate-main");
+
+    const left = el("div", "slate-col");
+    left.appendChild(el("div", "slate-label", "🔒 HTML — fourni"));
     const preH = el("pre", "dom-html");
     const cH = el("code"); cH.textContent = bodyHtml; preH.appendChild(cH);
-    cell.appendChild(preH);
-
-    cell.appendChild(el("div", "dom-sublabel", "🔒 CSS fourni"));
+    left.appendChild(preH);
+    left.appendChild(el("div", "slate-label", "🔒 CSS — fourni"));
     const preC = el("pre", "dom-html");
     const cC = el("code"); cC.textContent = css; preC.appendChild(cC);
-    cell.appendChild(preC);
+    left.appendChild(preC);
+    main.appendChild(left);
 
-    cell.appendChild(el("div", "dom-sublabel", "Aperçu (d'abord SANS style — clique « Révéler »)"));
+    const right = el("div", "slate-col");
+    right.appendChild(el("div", "slate-label", "👁️ Aperçu (d'abord SANS style — clique « Révéler »)"));
     const frame = el("iframe", "html-preview");
     frame.setAttribute("sandbox", "allow-scripts");
     frame.setAttribute("title", "Aperçu de la cascade");
-    cell.appendChild(frame);
+    right.appendChild(frame);
+    main.appendChild(right);
+
+    cell.appendChild(main);
 
     const explain = el("div", "cascade-explain");
     explain.style.display = "none";

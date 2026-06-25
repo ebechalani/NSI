@@ -294,6 +294,15 @@ html[data-theme="dark"] .exo-snippet-bar { background: #0c1424; }
 .html-preview-wrap { border-top: 1px solid #334155; background: #0b1220; }
 .html-preview-label { font-size: .72rem; color: #94a3b8; font-family: var(--mono); padding: .4rem .8rem; }
 .html-preview { width: 100%; min-height: 160px; border: none; background: #fff; display: block; }
+
+/* Disposition « Slate » : éditeur(s) à gauche, aperçu à droite (côte à côte) */
+.slate-main { display: flex; flex-wrap: wrap; gap: 1px; align-items: stretch; background: #334155; }
+.slate-col { flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; background: var(--code-bg); }
+.slate-label { font-size: .72rem; color: #94a3b8; font-family: var(--mono); padding: .45rem .8rem .25rem; background: #0b1220; }
+.slate-col .dom-html { flex: 0 0 auto; max-height: 190px; overflow: auto; }
+.slate-col .code-editor { flex: 1 1 auto; min-height: 150px; }
+.slate-col .html-preview, .slate-col .dom-frame { flex: 1 1 auto; min-height: 280px; height: 100%; }
+@media (max-width: 760px) { .slate-col { flex-basis: 100%; } }
 .code-output .muted { color: #64748b; }
 
 /* ---------- Quiz ---------- */
