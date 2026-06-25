@@ -2055,11 +2055,11 @@ for (const [cle, valeur] of Object.entries(manchot)) {
         <ol>
           <li>complète la fonction <code>moyenne(tableau)</code> : additionne les valeurs (boucle <code>for…of</code>), puis <strong>retourne</strong> la somme divisée par <code>tableau.length</code> ;</li>
           <li>affiche la moyenne dans la console ;</li>
-          <li>pour <strong>chaque</strong> note, affiche <code>"Reçu"</code> ou <code>"Ajourné"</code> selon qu'elle est <code>&gt;= 10</code> (un <code>if</code> ou l'opérateur ternaire).</li>
+          <li>pour <strong>chaque</strong> note, affiche <code>"Reçu"</code> ou <code>"Raté"</code> selon qu'elle est <code>&gt;= 10</code> (un <code>if</code> ou l'opérateur ternaire).</li>
         </ol>`,
         domexo: {
           html: `<p>Ouvre la console (résultats ci-dessous).</p>`,
-          js: `let notes = [12, 8, 17, 15, 6];
+          js: `let notes = [12, 8, 12, 15, 6];
 
 function moyenne(tableau) {
   // À compléter : additionne (for…of), puis return somme / tableau.length
@@ -2067,9 +2067,9 @@ function moyenne(tableau) {
 
 console.log("Moyenne :", moyenne(notes));
 
-// À toi : "Reçu" / "Ajourné" pour chaque note (>= 10)
+// À toi : "Reçu" / "Raté" pour chaque note (>= 10)
 `,
-          solution: `let notes = [12, 8, 17, 15, 6];
+          solution: `let notes = [12, 8, 12, 15, 6];
 
 function moyenne(tableau) {
   let total = 0;
@@ -2079,10 +2079,10 @@ function moyenne(tableau) {
   return total / tableau.length;
 }
 
-console.log("Moyenne :", moyenne(notes));   // 11.6
+console.log("Moyenne :", moyenne(notes));   // 10.6
 
 for (const n of notes) {
-  console.log(n, ":", n >= 10 ? "Reçu" : "Ajourné");
+  console.log(n, ":", n >= 10 ? "Reçu" : "Raté");
 }`,
         },
       },
@@ -2326,6 +2326,99 @@ document.querySelector("#menu");      // l'élément d'id "menu"</code></pre>
 </body></html>`,
       },
       {
+        title: "🏆 Exercice interactif : lire et modifier le contenu",
+        html: `
+        <p>La page ci-dessous (HTML <strong>fourni</strong>) contient un titre, un champ de saisie et un paragraphe vide. En écrivant <strong>uniquement du JavaScript</strong> :</p>
+        <ol>
+          <li>affiche dans la console le <strong>texte actuel</strong> du <code>&lt;h1&gt;</code> (<code>textContent</code>) ;</li>
+          <li><strong>remplace</strong> le texte du <code>&lt;h1&gt;</code> par <code>"Bienvenue"</code> ;</li>
+          <li>affiche dans la console la <strong>valeur saisie</strong> dans le champ <code>#pseudo</code> (propriété <code>.value</code>) ;</li>
+          <li>remplis le paragraphe <code>#sortie</code>, avec <code>innerHTML</code>, par le texte <code>Bonjour &lt;strong&gt;…&lt;/strong&gt; !</code> où <code>…</code> est la valeur du champ (les balises <code>&lt;strong&gt;</code> doivent être <strong>interprétées</strong>).</li>
+        </ol>
+        <p class="warnbox">⚠️ Ici <code>innerHTML</code> est justifié (on insère vraiment des balises). Pour du simple texte, on préfère <code>textContent</code> (plus sûr).</p>`,
+        domexo: {
+          html: `<h1>Titre de départ</h1>
+<input type="text" id="pseudo" value="Tux">
+<p id="sortie"></p>`,
+          js: `// 1. Affiche le texte actuel du <h1> (textContent)
+// 2. Remplace le texte du <h1> par "Bienvenue"
+// 3. Affiche la valeur du champ #pseudo (.value)
+// 4. Remplis #sortie avec innerHTML : Bonjour <strong>…</strong> !
+`,
+          solution: `const titre = document.querySelector("h1");
+console.log("titre actuel :", titre.textContent);
+titre.textContent = "Bienvenue";
+
+const pseudo = document.querySelector("#pseudo").value;
+console.log("pseudo :", pseudo);
+
+document.querySelector("#sortie").innerHTML =
+  "Bonjour <strong>" + pseudo + "</strong> !";`,
+        },
+      },
+      {
+        title: "🏆 Exercice interactif : style et classes",
+        html: `
+        <p>La page contient trois paragraphes ; le CSS définit déjà deux classes, <code>.encadre</code> et <code>.gros</code>. En <strong>JavaScript uniquement</strong> :</p>
+        <ol>
+          <li>sur le <strong>premier</strong> paragraphe (<code>#p1</code>), fixe directement le style : texte <strong>rouge</strong> et <strong>gras</strong> (<code>element.style.color</code>, <code>element.style.fontWeight</code>) ;</li>
+          <li>sur le <strong>deuxième</strong> (<code>#p2</code>), ajoute la classe <code>encadre</code> (<code>classList.add</code>) ;</li>
+          <li>sur le <strong>troisième</strong> (<code>#p3</code>), <strong>bascule</strong> la classe <code>gros</code> <strong>deux fois</strong> de suite (<code>classList.toggle</code>), puis affiche dans la console si la classe est présente (<code>classList.contains</code>).</li>
+        </ol>
+        <p class="note">🔎 Observe la différence d'approche : <code>style</code> (au cas par cas, en JS) vs <code>classList</code> (le style est défini en CSS, le JS l'active/désactive — la bonne pratique).</p>`,
+        domexo: {
+          html: `<style>
+  .encadre { border: 2px solid teal; padding: 4px; }
+  .gros { font-size: 1.8em; }
+</style>
+<p id="p1">Premier paragraphe</p>
+<p id="p2">Deuxième paragraphe</p>
+<p id="p3">Troisième paragraphe</p>`,
+          js: `// 1. #p1 : style DIRECT -> rouge et gras (style.color, style.fontWeight)
+// 2. #p2 : ajoute la classe "encadre" (classList.add)
+// 3. #p3 : bascule la classe "gros" DEUX fois (classList.toggle),
+//    puis affiche si elle est présente (classList.contains)
+`,
+          solution: `const p1 = document.querySelector("#p1");
+p1.style.color = "red";
+p1.style.fontWeight = "bold";
+
+document.querySelector("#p2").classList.add("encadre");
+
+const p3 = document.querySelector("#p3");
+p3.classList.toggle("gros");
+p3.classList.toggle("gros");   // 2e bascule : on revient à l'état initial
+console.log("p3 a la classe gros ?", p3.classList.contains("gros"));`,
+        },
+      },
+      {
+        title: "🏆 Exercice interactif : lire et modifier les attributs",
+        html: `
+        <p>La page contient un lien et une image. En <strong>JavaScript uniquement</strong> :</p>
+        <ol>
+          <li>affiche dans la console la valeur actuelle de l'attribut <code>href</code> du lien (<code>getAttribute("href")</code> ou la propriété <code>.href</code>) ;</li>
+          <li>change la destination du lien vers <code>https://www.gnu.org</code> et fais-le s'ouvrir dans un nouvel onglet (<code>target="_blank"</code>, via <code>setAttribute</code>) ;</li>
+          <li>sur l'image (<code>#logo</code>), renseigne <code>alt</code> avec <code>"Le manchot Tux"</code> et remplace son <code>src</code> par <code>"tux.png"</code>.</li>
+        </ol>`,
+        domexo: {
+          html: `<p><a id="lien" href="https://example.com">Un lien</a></p>
+<img id="logo" src="" alt="">`,
+          js: `// 1. Affiche le href actuel du lien (#lien)
+// 2. Change href vers "https://www.gnu.org" + ajoute target="_blank"
+// 3. Image #logo : alt = "Le manchot Tux", src = "tux.png"
+`,
+          solution: `const lien = document.querySelector("#lien");
+console.log("href actuel :", lien.getAttribute("href"));
+lien.href = "https://www.gnu.org";       // équivalent en propriété
+lien.setAttribute("target", "_blank");
+
+const logo = document.querySelector("#logo");
+logo.alt = "Le manchot Tux";
+logo.src = "tux.png";
+console.log("alt :", logo.alt, "| src :", logo.getAttribute("src"));`,
+        },
+      },
+      {
         title: "Créer, insérer et supprimer des éléments",
         html: `
         <p>Le DOM étant <strong>vivant</strong>, on peut <strong>fabriquer</strong> de nouveaux éléments et les <strong>greffer</strong> dans l'arbre. Le motif de base, omniprésent (ajouter une ligne dans une liste, une carte dans une galerie, un message dans un chat) :</p>
@@ -2365,6 +2458,46 @@ aSupprimer.remove();                      // supprimer</code></pre>
     });
   </script>
 </body></html>`,
+      },
+      {
+        title: "🏆 Exercice interactif : créer, insérer et supprimer (liste de courses)",
+        html: `
+        <p>La page contient une liste <code>#courses</code> qui ne contient qu'un élément de départ. En <strong>JavaScript uniquement</strong>, à partir du tableau <code>articles</code> déjà fourni :</p>
+        <ol>
+          <li><strong>parcours</strong> le tableau <code>articles</code> et, pour chaque nom, crée un <code>&lt;li&gt;</code> (<code>createElement</code>), donne-lui ce texte (<code>textContent</code>), puis <strong>ajoute-le</strong> à la liste (<code>append</code>) ;</li>
+          <li>insère un <code>&lt;li&gt;</code> <code>"Pain"</code> en <strong>tête</strong> de liste (<code>prepend</code>) ;</li>
+          <li>supprime l'élément de départ <code>#vide</code> avec <code>.remove()</code>.</li>
+        </ol>
+        <p>Vérifie dans l'aperçu que la liste contient bien <code>Pain</code>, puis les articles, <em>sans</em> le texte de départ.</p>`,
+        domexo: {
+          html: `<h3>Liste de courses</h3>
+<ul id="courses">
+  <li id="vide">(liste vide)</li>
+</ul>`,
+          js: `let articles = ["Lait", "Œufs", "Café"];
+let liste = document.querySelector("#courses");
+
+// 1. un <li> par article (boucle + createElement + append)
+// 2. insère "Pain" en tête (prepend)
+// 3. supprime le <li> de départ (#vide)
+`,
+          solution: `let articles = ["Lait", "Œufs", "Café"];
+let liste = document.querySelector("#courses");
+
+for (const nom of articles) {
+  const li = document.createElement("li");
+  li.textContent = nom;
+  liste.append(li);            // ajoute en fin
+}
+
+const pain = document.createElement("li");
+pain.textContent = "Pain";
+liste.prepend(pain);           // ajoute en tête
+
+document.querySelector("#vide").remove();
+
+console.log("nombre d'articles :", document.querySelectorAll("#courses li").length);`,
+        },
       },
       {
         title: "🏆 Exercice interactif : transformer une page avec le DOM",

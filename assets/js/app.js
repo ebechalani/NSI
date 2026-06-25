@@ -715,6 +715,14 @@
     else toast("⚡ Notebook Basthon ouvert (code aussi copié, au cas où).");
   }
 
+  // Un « cadre » Slate : un en-tête + un contenu, bordé et distinct.
+  function slatePane(headText, contentEl, extraCls) {
+    const pane = el("div", "slate-pane" + (extraCls ? " " + extraCls : ""));
+    pane.appendChild(el("div", "slate-pane-head", headText));
+    pane.appendChild(contentEl);
+    return pane;
+  }
+
   // Cellule HTML/CSS éditable + aperçu en direct (iframe isolée).
   // Sert à rendre les exemples du thème Web interactifs (on édite, on voit le rendu).
   function makeHtmlCell(htmlCode) {
@@ -727,25 +735,19 @@
     bar.appendChild(runBtn);
     cell.appendChild(bar);
 
-    // Disposition « Slate » : éditeur à gauche, aperçu à droite
+    // Deux cadres distincts : éditeur à gauche, aperçu à droite
     const main = el("div", "slate-main");
 
-    const left = el("div", "slate-col");
-    left.appendChild(el("div", "slate-label", "✏️ HTML / CSS — éditable"));
     const ta = el("textarea", "code-editor");
     ta.value = htmlCode;
     ta.spellcheck = false;
-    ta.rows = Math.min(22, htmlCode.split("\n").length + 1);
-    left.appendChild(ta);
-    main.appendChild(left);
+    ta.rows = Math.min(24, htmlCode.split("\n").length + 1);
+    main.appendChild(slatePane("✏️ HTML / CSS — éditable", ta));
 
-    const right = el("div", "slate-col");
-    right.appendChild(el("div", "slate-label", "👁️ Aperçu (rendu par le navigateur)"));
     const frame = el("iframe", "html-preview");
     frame.setAttribute("sandbox", "allow-scripts"); // isolée : pas d'accès à la page
     frame.setAttribute("title", "Aperçu du rendu HTML");
-    right.appendChild(frame);
-    main.appendChild(right);
+    main.appendChild(slatePane("👁️ Aperçu (rendu par le navigateur)", frame, "slate-preview"));
 
     cell.appendChild(main);
 
@@ -795,7 +797,7 @@
   function makeDomCell(htmlBody, starterJs, solutionJs) {
     const token = "dom" + Math.random().toString(36).slice(2);
     htmlBody = (htmlBody || "").trim();
-    const cell = el("div", "code-cell dom-cell");
+    const cell = el("div", "code-cell dom-cell slate-cell");
 
     const bar = el("div", "code-toolbar");
     bar.innerHTML =
@@ -805,34 +807,35 @@
     bar.appendChild(runBtn);
     cell.appendChild(bar);
 
-    // HTML fourni (lecture seule)
-    cell.appendChild(el("div", "dom-sublabel", "🔒 HTML fourni (tu ne le modifies pas)"));
+    // Deux colonnes : HTML fourni + éditeur JS (gauche) · aperçu + console (droite)
+    const main = el("div", "slate-main");
+    const leftStack = el("div", "slate-stack");
+
     const pre = el("pre", "dom-html");
     const codeEl = el("code");
     codeEl.textContent = htmlBody;
     pre.appendChild(codeEl);
-    cell.appendChild(pre);
+    leftStack.appendChild(slatePane("🔒 HTML fourni (tu ne le modifies pas)", pre));
 
-    // Aperçu de la page
-    cell.appendChild(el("div", "dom-sublabel", "Aperçu de la page"));
-    const frame = el("iframe", "dom-frame");
-    frame.setAttribute("sandbox", "allow-scripts");
-    frame.setAttribute("title", "Aperçu de la page à explorer");
-    cell.appendChild(frame);
-
-    // Éditeur JavaScript
-    cell.appendChild(el("div", "dom-sublabel", "✏️ Ton JavaScript"));
     const ta = el("textarea", "code-editor");
     ta.value = starterJs || "";
     ta.spellcheck = false;
-    ta.rows = Math.max(4, (starterJs || "").split("\n").length + 2);
-    cell.appendChild(ta);
+    ta.rows = Math.max(6, (starterJs || "").split("\n").length + 2);
+    leftStack.appendChild(slatePane("✏️ Ton JavaScript", ta));
+    main.appendChild(leftStack);
 
-    // Console
-    cell.appendChild(el("div", "dom-sublabel", "Console"));
+    const rightStack = el("div", "slate-stack");
+    const frame = el("iframe", "dom-frame");
+    frame.setAttribute("sandbox", "allow-scripts");
+    frame.setAttribute("title", "Aperçu de la page à explorer");
+    rightStack.appendChild(slatePane("👁️ Aperçu de la page", frame));
+
     const out = el("div", "code-output dom-console");
     out.textContent = "(clique « Exécuter » pour voir la sortie)";
-    cell.appendChild(out);
+    rightStack.appendChild(slatePane("🖥️ Console", out));
+    main.appendChild(rightStack);
+
+    cell.appendChild(main);
 
     const buildDoc = (withJs) => {
       let script = "";
@@ -899,31 +902,27 @@
     bar.appendChild(runBtn);
     cell.appendChild(bar);
 
-    // Disposition « Slate » : éditeurs à gauche, aperçu à droite
+    // Trois cadres distincts : HTML (haut-gauche) · CSS (bas-gauche) · Aperçu (droite)
     const main = el("div", "slate-main");
+    const stack = el("div", "slate-stack");
 
-    const left = el("div", "slate-col");
-    left.appendChild(el("div", "slate-label", "🔒 HTML — fourni (lecture seule)"));
     const pre = el("pre", "dom-html");
     const codeEl = el("code");
     codeEl.textContent = htmlCode;
     pre.appendChild(codeEl);
-    left.appendChild(pre);
-    left.appendChild(el("div", "slate-label", "✏️ CSS — à toi d'écrire"));
+    stack.appendChild(slatePane("🔒 HTML — fourni (lecture seule)", pre));
+
     const ta = el("textarea", "code-editor");
     ta.value = starterCss || "";
     ta.spellcheck = false;
     ta.rows = Math.max(8, (starterCss || "").split("\n").length + 1);
-    left.appendChild(ta);
-    main.appendChild(left);
+    stack.appendChild(slatePane("✏️ CSS — à toi d'écrire", ta));
+    main.appendChild(stack);
 
-    const right = el("div", "slate-col");
-    right.appendChild(el("div", "slate-label", "👁️ Aperçu (rendu par le navigateur)"));
     const frame = el("iframe", "html-preview");
     frame.setAttribute("sandbox", "allow-scripts");
     frame.setAttribute("title", "Aperçu du rendu CSS");
-    right.appendChild(frame);
-    main.appendChild(right);
+    main.appendChild(slatePane("👁️ Aperçu (rendu par le navigateur)", frame, "slate-preview"));
 
     cell.appendChild(main);
 
@@ -979,27 +978,23 @@
     bar.appendChild(revealBtn);
     cell.appendChild(bar);
 
-    // Disposition « Slate » : code fourni à gauche, aperçu à droite
+    // Trois cadres distincts : HTML · CSS fournis (gauche) · Aperçu (droite)
     const main = el("div", "slate-main");
+    const stack = el("div", "slate-stack");
 
-    const left = el("div", "slate-col");
-    left.appendChild(el("div", "slate-label", "🔒 HTML — fourni"));
     const preH = el("pre", "dom-html");
     const cH = el("code"); cH.textContent = bodyHtml; preH.appendChild(cH);
-    left.appendChild(preH);
-    left.appendChild(el("div", "slate-label", "🔒 CSS — fourni"));
+    stack.appendChild(slatePane("🔒 HTML — fourni", preH));
+
     const preC = el("pre", "dom-html");
     const cC = el("code"); cC.textContent = css; preC.appendChild(cC);
-    left.appendChild(preC);
-    main.appendChild(left);
+    stack.appendChild(slatePane("🔒 CSS — fourni", preC));
+    main.appendChild(stack);
 
-    const right = el("div", "slate-col");
-    right.appendChild(el("div", "slate-label", "👁️ Aperçu (d'abord SANS style — clique « Révéler »)"));
     const frame = el("iframe", "html-preview");
     frame.setAttribute("sandbox", "allow-scripts");
     frame.setAttribute("title", "Aperçu de la cascade");
-    right.appendChild(frame);
-    main.appendChild(right);
+    main.appendChild(slatePane("👁️ Aperçu (d'abord SANS style — clique « Révéler »)", frame, "slate-preview"));
 
     cell.appendChild(main);
 
