@@ -638,197 +638,143 @@ print("on traite :", questions.popleft())  # défiler (le premier)`,
     theme: "types-construits",
     lang: "python",
     titre: "TP Python — Dictionnaires",
-    intro: "Le dictionnaire associe une clé à une valeur. Créer/accéder (get), modifier/supprimer, parcourir (items), compter des occurrences, compréhension de dictionnaire, les ensembles (set) pour comparer des groupes, et le raccourci Counter. Chaque étape : exécute la démo (▶ ou ⚡ Basthon), traite les questions, puis ouvre la correction.",
+    intro: "Cinq exercices, à faire toi-même : écris ton code dans la cellule (▶ Exécuter, ou ⚡ Basthon), puis ouvre le corrigé pour comparer. Au programme : annuaire (bases du dict), comptage avec Counter, compréhension de dictionnaire, ensembles (set), et un défi agenda multi-fuseaux.",
     steps: [
       {
-        num: "1", titre: "Créer et accéder (get, KeyError)",
-        code: `stock = {"pomme": 12, "banane": 5, "kiwi": 8}
+        num: "1", titre: "Exercice 1 — Annuaire de la formation (dictionnaire : bases)",
+        code: `annuaire = {"Awa": "Dakar", "Lin": "Tokyo", "Marc": "Montréal"}
 
-print(stock["pomme"])            # accès par la CLÉ -> 12
-print(stock.get("mangue", 0))    # clé absente -> 0 (pas d'erreur)
-
-# accès direct d'une clé absente :
-try:
-    print(stock["mangue"])
-except KeyError as e:
-    print("KeyError :", e)`,
+# À toi de jouer (consignes ci-dessous), puis ▶ Exécuter
+`,
         run: true,
         questions: [
-          "Affiche le nombre de bananes, puis la quantité de 'cerise' SANS erreur (0 par défaut).",
+          "Un intervenant déménage : change la ville de 'Marc' en 'Québec'.",
+          "Ajoute une nouvelle intervenante 'Sofia' à 'Beyrouth'.",
+          "Affiche la ville de 'Inconnu' SANS provoquer d'erreur (valeur par défaut '?').",
+          "Parcours l'annuaire et affiche « nom : ville » pour chaque ligne.",
         ],
         correction: [
-          "On accède par la clé : stock['banane']. Pour éviter la KeyError sur une clé absente, on utilise .get(cle, defaut).",
-          { text: "Solution :" },
-          { code: `stock = {"pomme": 12, "banane": 5, "kiwi": 8}
-print(stock["banane"])          # 5
-print(stock.get("cerise", 0))   # 0` },
+          "On modifie/ajoute avec annuaire[cle] = valeur ; .get(cle, '?') évite la KeyError ; .items() donne les couples (nom, ville).",
+          { text: "Corrigé :" },
+          { code: `annuaire = {"Awa": "Dakar", "Lin": "Tokyo", "Marc": "Montréal"}
+annuaire["Marc"] = "Québec"          # modifier
+annuaire["Sofia"] = "Beyrouth"       # ajouter
+print("inconnu :", annuaire.get("Inconnu", "?"))
+for nom, ville in annuaire.items():
+    print(f"{nom} : {ville}")` },
         ],
       },
       {
-        num: "2", titre: "Ajouter, modifier, supprimer",
-        code: `stock = {"pomme": 12, "banane": 5}
-
-stock["cerise"] = 20        # ajouter une clé
-stock["pomme"] += 3         # modifier (incrémenter) une clé existante
-del stock["banane"]         # supprimer
-retire = stock.pop("cerise")  # retirer ET récupérer la valeur
-
-print(stock)
-print("retiré :", retire)`,
-        run: true,
-        questions: [
-          "On reçoit 10 kiwis : ajoute la clé 'kiwi'. Puis vends 2 pommes (-= 2).",
-        ],
-        correction: [
-          "stock['classe'] = v ajoute OU modifie ; del stock[c] et stock.pop(c) suppriment (pop renvoie la valeur retirée).",
-          { text: "Solution :" },
-          { code: `stock = {"pomme": 12}
-stock["kiwi"] = 10
-stock["pomme"] -= 2
-print(stock)   # {'pomme': 10, 'kiwi': 10}` },
-        ],
-      },
-      {
-        num: "3", titre: "Parcourir : items, keys, values",
-        code: `stock = {"pomme": 12, "kiwi": 8, "cerise": 20}
-
-# par couple (clé, valeur) -- le plus utile
-for fruit, quantite in stock.items():
-    print(fruit, "->", quantite)
-
-print(list(stock.keys()))     # les clés
-print(list(stock.values()))   # les valeurs`,
-        run: true,
-        questions: [
-          "Calcule le nombre TOTAL de fruits (somme des valeurs).",
-          "Affiche les fruits dont la quantité est < 10.",
-        ],
-        correction: [
-          ".items() donne les couples (clé, valeur) ; .keys() les clés ; .values() les valeurs.",
-          { text: "Solution :" },
-          { code: `stock = {"pomme": 12, "kiwi": 8, "cerise": 20}
-print("total :", sum(stock.values()))               # 40
-print([f for f, q in stock.items() if q < 10])      # ['kiwi']` },
-        ],
-      },
-      {
-        num: "4", titre: "Compter avec un dictionnaire",
-        code: `votes = ["chat", "chien", "chat", "oiseau", "chat", "chien"]
-
-compte = {}
-for animal in votes:
-    compte[animal] = compte.get(animal, 0) + 1   # le motif à connaître
-
-print(compte)
-print("gagnant :", max(compte, key=compte.get))`,
-        run: true,
-        questions: [
-          "Compte le nombre d'occurrences de chaque lettre du mot 'mississippi'.",
-        ],
-        correction: [
-          "Motif de comptage : compte[x] = compte.get(x, 0) + 1 ; le get(x, 0) renvoie 0 la première fois. max(d, key=d.get) donne la clé de plus grande valeur.",
-          { text: "Solution :" },
-          { code: `mot = "mississippi"
-occ = {}
-for c in mot:
-    occ[c] = occ.get(c, 0) + 1
-print(occ)   # {'m': 1, 'i': 4, 's': 4, 'p': 2}` },
-        ],
-      },
-      {
-        num: "5", titre: "Compréhension de dictionnaire",
-        code: `mots = ["python", "nsi", "lycee"]
-longueurs = {m: len(m) for m in mots}
-print(longueurs)               # {'python': 6, 'nsi': 3, 'lycee': 5}
-
-# transformer les valeurs : prix + 10 %
-prix = {"pomme": 2, "kiwi": 3}
-nouveaux = {f: round(p * 1.1, 2) for f, p in prix.items()}
-print(nouveaux)`,
-        run: true,
-        questions: [
-          "À partir de noms = ['Ada', 'Alan', 'Grace'], construis {nom: longueur du nom}.",
-        ],
-        correction: [
-          "Compréhension de dict : {cle: valeur for élément in itérable}. On peut partir d'une liste, ou de .items() pour transformer un dict existant.",
-          { text: "Solution :" },
-          { code: `noms = ["Ada", "Alan", "Grace"]
-print({n: len(n) for n in noms})   # {'Ada': 3, 'Alan': 4, 'Grace': 5}` },
-        ],
-      },
-      {
-        num: "6", titre: "Les ensembles (set) : comparer des groupes",
-        code: `# Un ensemble : sans doublon, non ordonné
-foot = {"Léa", "Tom", "Hugo", "Inès"}
-theatre = {"Tom", "Inès", "Maya"}
-
-print("les deux    :", sorted(foot & theatre))   # intersection (ET)
-print("au moins 1  :", sorted(foot | theatre))   # union (OU)
-print("foot seul   :", sorted(foot - theatre))   # différence
-
-# Dédoublonner une liste
-inscriptions = ["Léa", "Tom", "Léa", "Maya", "Tom"]
-print(len(set(inscriptions)), "personnes distinctes")`,
-        run: true,
-        questions: [
-          "Deux options : latin = {'Léa','Tom','Maya'} et grec = {'Tom','Inès'}. Affiche qui fait LES DEUX, puis qui fait L'UNE OU L'AUTRE.",
-          "À partir de notes = [12, 15, 12, 8, 15], affiche le nombre de notes DISTINCTES.",
-        ],
-        correction: [
-          "& = intersection (présent dans les deux), | = union (dans l'un ou l'autre), - = différence. set(liste) dédoublonne ; len(set(...)) compte les éléments distincts.",
-          { text: "Solution :" },
-          { code: `latin = {"Léa", "Tom", "Maya"}
-grec = {"Tom", "Inès"}
-print(sorted(latin & grec))   # ['Tom']
-print(sorted(latin | grec))   # ['Inès', 'Léa', 'Maya', 'Tom']
-
-notes = [12, 15, 12, 8, 15]
-print(len(set(notes)), "distinctes")   # 3` },
-        ],
-      },
-      {
-        num: "7", titre: "Pour aller plus loin — Counter & rapidité (O(1))",
+        num: "2", titre: "Exercice 2 — Pays des participants (comptage avec Counter)",
         code: `from collections import Counter
 
-votes = ["France", "Japon", "France", "Liban", "France", "Japon"]
-compte = Counter(votes)            # comptage en UNE ligne
-print(compte)
-print("podium :", compte.most_common(2))   # les 2 plus fréquents
+pays = ["France", "Sénégal", "France", "Japon", "France", "Canada", "Japon", "Liban"]
 
-# Pourquoi dict et set sont rapides : chercher une clé est O(1)
-pays = {"France", "Japon", "Liban", "Canada"}
-print("Japon connu ?", "Japon" in pays)   # quasi immédiat, quelle que soit la taille`,
+# À toi de jouer
+`,
         run: true,
         questions: [
-          "Avec Counter, affiche la lettre la plus fréquente de 'mississippi' (most_common(1)).",
+          "Avec collections.Counter, compte les participants par pays.",
+          "Affiche le pays le plus représenté et son effectif.",
+          "Affiche le classement des 3 premiers pays.",
         ],
         correction: [
-          "Counter(liste) compte tout seul ; .most_common(n) renvoie les n plus fréquents. Chercher « x in dict/set » est O(1) (table de hachage) — bien plus rapide que « x in liste » (O(n)) sur de grandes données.",
-          { text: "Solution :" },
+          "Counter(liste) compte en une ligne ; .most_common(n) renvoie les n plus fréquents, du plus grand au plus petit. most_common(1)[0] donne le couple (pays, effectif) du premier.",
+          { text: "Corrigé :" },
           { code: `from collections import Counter
-print(Counter("mississippi").most_common(1))   # [('i', 4)]  (ou 's')` },
+pays = ["France", "Sénégal", "France", "Japon", "France", "Canada", "Japon", "Liban"]
+compte = Counter(pays)
+premier, effectif = compte.most_common(1)[0]
+print(f"le plus représenté : {premier} ({effectif})")
+print(compte.most_common(3))` },
         ],
       },
       {
-        num: "8", titre: "Défi — l'inventaire d'un jeu",
-        code: `# Inventaire d'un héros : objet -> quantité
-inventaire = {"potion": 3, "or": 150}
+        num: "3", titre: "Exercice 3 — Dictionnaire en compréhension",
+        code: `villes = ["Paris", "Dakar", "Tokyo", "Montréal"]
+fuseaux = {"Paris": 2, "Tokyo": 9, "Dakar": 0}
 
-inventaire["potion"] += 2          # ramasse 2 potions
-inventaire["bouclier"] = 1         # gagne un bouclier
-print(inventaire)
-print("flèches :", inventaire.get("fleche", 0))   # 0 sans erreur`,
+# À toi de jouer
+`,
         run: true,
         questions: [
-          "Le héros dépense 50 or et perd son bouclier (supprime la clé). Affiche l'inventaire final et l'or restant.",
+          "En compréhension, construis le dict « ville → longueur du nom ».",
+          "À partir de fuseaux (décalage par rapport à UTC), construis le dict « ville → heure locale » quand il est 12h UTC.",
+          "Bonus : ne garde que les villes dont l'heure locale est en après-midi (≥ 12).",
         ],
         correction: [
-          { text: "Solution — += modifie une clé existante, del supprime, .get évite l'erreur :" },
-          { code: `inventaire = {"potion": 5, "or": 150, "bouclier": 1}
-inventaire["or"] -= 50
-del inventaire["bouclier"]
-print(inventaire)
-print("or :", inventaire["or"])   # 100` },
+          "Compréhension : {cle: valeur for … in …}, avec un filtre if optionnel. Heure locale = (12 + décalage) % 24.",
+          { text: "Corrigé :" },
+          { code: `villes = ["Paris", "Dakar", "Tokyo", "Montréal"]
+longueurs = {ville: len(ville) for ville in villes}
+print(longueurs)
+
+fuseaux = {"Paris": 2, "Tokyo": 9, "Dakar": 0}
+locales = {ville: (12 + dec) % 24 for ville, dec in fuseaux.items()}
+print(locales)
+
+aprem = {ville: h for ville, h in locales.items() if h >= 12}
+print(aprem)` },
+        ],
+      },
+      {
+        num: "4", titre: "Exercice 4 — Présence aux sessions (ensembles)",
+        code: `session1 = {"Awa", "Lin", "Marc", "Sofia", "Ravi"}
+session2 = {"Lin", "Sofia", "Ravi", "Yuki"}
+connexions = ["Awa", "Lin", "Awa", "Marc", "Lin"]
+
+# À toi de jouer
+`,
+        run: true,
+        questions: [
+          "Qui était présent AUX DEUX sessions ? (intersection &)",
+          "Qui a assisté à AU MOINS UNE session ? (union |)",
+          "Qui était à la 1re MAIS PAS à la 2e ? (différence -)",
+          "À partir de connexions, combien de personnes DISTINCTES se sont connectées ?",
+        ],
+        correction: [
+          "& = intersection, | = union, - = différence. set(liste) dédoublonne ; len(set(...)) compte les distincts. sorted(...) trie pour un affichage lisible.",
+          { text: "Corrigé :" },
+          { code: `session1 = {"Awa", "Lin", "Marc", "Sofia", "Ravi"}
+session2 = {"Lin", "Sofia", "Ravi", "Yuki"}
+connexions = ["Awa", "Lin", "Awa", "Marc", "Lin"]
+print(sorted(session1 & session2))   # les deux
+print(sorted(session1 | session2))   # au moins une
+print(sorted(session1 - session2))   # 1re mais pas 2e
+print(len(set(connexions)), "personnes distinctes")` },
+        ],
+      },
+      {
+        num: "5", titre: "Exercice 5 — Défi : agenda multi-fuseaux (et rapidité dict vs liste)",
+        code: `import timeit
+
+fuseaux = {"Paris": 2, "Montréal": -4, "Tokyo": 9, "Nouméa": 11, "Dakar": 0}
+
+# À toi de jouer
+`,
+        run: true,
+        questions: [
+          "Une session démarre à 14h00 UTC. Écris une fonction heure_locale(ville, h_utc) qui renvoie l'heure locale (modulo 24).",
+          "Affiche l'heure locale de début pour CHAQUE ville (parcours du dict).",
+          "Perf : compare avec timeit le coût de « 'Tokyo' in fuseaux » (dict) vs la même recherche dans list(fuseaux.keys()) (liste). Que conclus-tu ?",
+        ],
+        correction: [
+          "(h_utc + fuseaux[ville]) % 24 : le modulo gère le passage de minuit. « x in dict » va directement à la clé (O(1)) ; « x in liste » parcourt (O(n)). Sur 5 villes l'écart est minime, il se creuse avec la taille.",
+          { text: "Corrigé :" },
+          { code: `import timeit
+fuseaux = {"Paris": 2, "Montréal": -4, "Tokyo": 9, "Nouméa": 11, "Dakar": 0}
+
+def heure_locale(ville, h_utc):
+    return (h_utc + fuseaux[ville]) % 24
+
+for ville in fuseaux:
+    print(f"{ville} : {heure_locale(ville, 14)}h")
+
+cles_liste = list(fuseaux.keys())
+t_dict = timeit.timeit(lambda: "Tokyo" in fuseaux, number=50000)
+t_liste = timeit.timeit(lambda: "Tokyo" in cles_liste, number=50000)
+print(f"dict  : {t_dict:.4f} s")
+print(f"liste : {t_liste:.4f} s")` },
         ],
       },
     ],
