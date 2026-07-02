@@ -27,7 +27,7 @@
 
   // Comptes « démo prof » : accès professeur immédiat (sans validation admin),
   // mais SANS les droits admin (pas de gestion des comptes profs).
-  var DEMO_EMAILS = ["prof.demo@nsi.app"];
+  var DEMO_EMAILS = ["prof.demo@nsi.app", "prof.demo2@nsi.app"];
   function isDemoEmail(e) { return DEMO_EMAILS.indexOf((e || "").toLowerCase()) !== -1; }
 
   var LS = { classes: "nsi-classes", students: "nsi-students", session: "nsi-session", link: "nsi-student-link" };
