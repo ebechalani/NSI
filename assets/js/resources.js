@@ -478,22 +478,28 @@ const THEME_RESSOURCES_EXT = {
 const PROGRESSION_INTRO =
   "Progression <strong>indicative</strong> pour 4 h hebdomadaires (~30 semaines effectives, soit ~120 h). " +
   "À adapter au calendrier, au niveau de la classe et aux projets. La <em>programmation</em> est introduite tôt " +
-  "puis réinvestie toute l'année ; l'<em>histoire</em> sert de fil rouge transversal.";
+  "puis réinvestie toute l'année ; l'<em>histoire</em> sert de fil rouge transversal. " +
+  "<br><br>🐍 <strong>Classe de grands débutants Python</strong> — c'est le cas le plus fréquent (la SNT de Seconde " +
+  "ne garantit aucun acquis de programmation) : les <strong>6 premières semaines</strong> sont sanctuarisées pour les bases " +
+  "(thème « Langages et programmation », détaillé semaine par semaine ci-dessous), <em>avant</em> tout thème qui utilise du code. " +
+  "Règle d'or en début d'année : chaque notion se manipule <em>trois fois</em> — en <strong>débranché</strong> (papier/îlots), " +
+  "en <strong>texte à trous</strong> (sur le site), puis en <strong>écriture libre</strong> (TP guidé, puis Capytale/Thonny). " +
+  "Ne pas hésiter à ralentir : tout le reste de l'année réinvestit ces 6 semaines.";
 
 const PROGRESSION = [
   {
     periode: "Sept. — Période 1", semaines: "S1–S3", heures: "≈ 12 h",
-    theme: "Langages et programmation (1)", themeId: "langages-prog",
-    objectifs: "Prise en main de l'environnement. Variables, types, affectation, conditions, boucles for/while.",
-    activites: "Cours + TP au poste. Jeu d'évasion « histoire » en fil rouge.",
-    evaluation: "TP noté n°1 (programmation de base).",
+    theme: "Langages et programmation (1) — bases, rythme débutant", themeId: "langages-prog",
+    objectifs: "S1 : découverte (qu'est-ce qu'un programme ? environnement, print, premières erreurs lues ENSEMBLE) + variables et affectation. S2 : types de base (int/float/str/bool), conversions, conditions if/elif/else. S3 : boucle for + range (motif du compteur).",
+    activites: "Chaque notion en 3 temps : débranché (l'élève-robot exécute des instructions), texte à trous du site, puis TP guidés « Variables et types » et « Les conditions » (dans le thème). Jeu d'évasion « histoire » en fil rouge une heure par semaine.",
+    evaluation: "Mini-QCM hebdomadaire (site) + TP noté n°1 (variables/conditions) fin S3 — barème bienveillant, l'objectif est le diagnostic.",
   },
   {
     periode: "Oct. — Période 1", semaines: "S4–S6", heures: "≈ 12 h",
-    theme: "Langages et programmation (2)", themeId: "langages-prog",
-    objectifs: "Fonctions, paramètres, return. Spécifier (docstring, assert). Débogage. Bibliothèques et documentation.",
-    activites: "Cours + exercices gradués. Fiches méthode « erreur » et « jeu de tests ».",
-    evaluation: "DS n°1 (langages et programmation).",
+    theme: "Langages et programmation (2) — boucles, fonctions", themeId: "langages-prog",
+    objectifs: "S4 : boucle while (motif d'arrêt, garde-fou anti-boucle infinie) + jeu du nombre deviné. S5 : fonctions (def, paramètres, return — bien distinguer return et print), spécifier (docstring, assert). S6 : consolidation, débogage (lire un traceback), bibliothèques (random, math) et documentation.",
+    activites: "TP guidé « Les boucles » puis exercices gradués du thème (l'élève écrit dans une cellule VIDE, corrigés poussés après coup). Fiches méthode « erreur » et « jeu de tests ». Premier passage sur Capytale/Thonny (vrai environnement).",
+    evaluation: "DS n°1 (langages et programmation) — inclure une lecture de code « que fait ce programme ? », pas seulement de l'écriture.",
   },
   {
     periode: "Nov. — Période 2", semaines: "S7–S9", heures: "≈ 12 h",

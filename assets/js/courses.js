@@ -10,7 +10,7 @@ const COURSES = [
   /* ============================================================= 1 */
   {
     id: "donnees-base",
-    num: 2,
+    num: 3,
     emoji: "🔢",
     title: "Représentation des données : types et valeurs de base",
     intro:
@@ -309,7 +309,7 @@ for c in "Aé€😀":
   /* ============================================================= 2 */
   {
     id: "types-construits",
-    num: 3,
+    num: 4,
     emoji: "🧱",
     title: "Représentation des données : types construits",
     intro:
@@ -717,7 +717,7 @@ print("a inchangé :", a)        # {'x': 99}`,
           <tr><td>Association nom → valeur</td><td><strong>dictionnaire</strong></td><td>une fiche élève</td></tr>
           <tr><td>Éliminer les doublons / comparer des groupes</td><td><strong>ensemble (set)</strong></td><td>les notes distinctes, les options communes</td></tr>
           <tr><td>Tableau à 2 dimensions</td><td><strong>liste de listes</strong></td><td>une grille, une image</td></tr>
-          <tr><td>Liste de fiches</td><td><strong>liste de dictionnaires</strong></td><td>une classe entière (→ thème 4)</td></tr>
+          <tr><td>Liste de fiches</td><td><strong>liste de dictionnaires</strong></td><td>une classe entière (→ thème « Données en tables »)</td></tr>
         </table>
         <p>Cette dernière ligne est essentielle : une <strong>liste de dictionnaires</strong> est exactement ce qu'on appellera une <em>table de données</em> au thème suivant. Tout se tient !</p>
         <p class="note">🔭 <strong>De la Première à la Terminale</strong> : ici, on <em>utilise</em> listes, tuples et dictionnaires comme des <strong>outils</strong>. En <strong>Terminale</strong>, on étudiera les <strong>structures de données</strong> pour elles-mêmes (piles, files, listes chaînées, arbres, <strong>graphes</strong>) — souvent <strong>implémentées</strong> à partir des listes et dictionnaires vus ici (un graphe se range dans un dict de listes d'adjacence ; un dict sert aussi à <em>mémoïser</em> des résultats). Le fil rouge « <strong>quelle structure, à quel coût</strong> » relie toute la discipline.</p>`,
@@ -728,7 +728,7 @@ print("a inchangé :", a)        # {'x': 99}`,
   /* ============================================================= 3 */
   {
     id: "donnees-tables",
-    num: 4,
+    num: 5,
     emoji: "📊",
     title: "Traitement de données en tables",
     intro:
@@ -809,7 +809,7 @@ print("Le plus ancien :", plus_vieux["nom"])`,
         html: `
         <p>Un fichier CSV « du monde réel » est rarement parfait : lignes en <strong>double</strong>, valeurs <strong>manquantes</strong>, nombres mal saisis (<code>"dix-sept"</code> dans une colonne d'entiers)… Avant tout traitement, le BO demande de savoir <strong>vérifier la cohérence</strong> de la table. Trois contrôles simples :</p>
         <ul>
-          <li><strong>doublons</strong> : on transforme chaque ligne en <em>tuple</em> (immuable) et on les range dans un <strong>ensemble</strong> (<code>set</code>, thème 3) — si l'ensemble est plus petit que la table, il y a des doublons ;</li>
+          <li><strong>doublons</strong> : on transforme chaque ligne en <em>tuple</em> (immuable) et on les range dans un <strong>ensemble</strong> (<code>set</code>, thème « Types construits ») — si l'ensemble est plus petit que la table, il y a des doublons ;</li>
           <li><strong>types</strong> : une valeur censée être un nombre doit se convertir sans erreur — on essaie <code>int(...)</code> dans un <code>try</code> ;</li>
           <li><strong>valeurs manquantes</strong> : une case vide (<code>""</code>) ou absente doit être repérée avant de calculer.</li>
         </ul>`,
@@ -843,7 +843,7 @@ for l in table:
         title: "Rechercher : filtrer des lignes",
         html: `
         <p><strong>Rechercher</strong> dans une table, c'est <strong>sélectionner</strong> les lignes qui vérifient une condition (un critère). La <strong>compréhension de liste</strong> du thème précédent est l'outil parfait : <code>[ ligne for ligne in table if condition ]</code>.</p>
-        <p>On peut combiner plusieurs critères avec <code>and</code> / <code>or</code> (les booléens du thème 2 reviennent !). Et comme le résultat est encore une table, on peut compter ses lignes avec <code>len(...)</code>.</p>`,
+        <p>On peut combiner plusieurs critères avec <code>and</code> / <code>or</code> (les booléens du thème « Représentation des données » reviennent !). Et comme le résultat est encore une table, on peut compter ses lignes avec <code>len(...)</code>.</p>`,
         code: `table = [
     {"nom": "Turing",   "naissance": 1912, "pays": "UK"},
     {"nom": "Lovelace", "naissance": 1815, "pays": "UK"},
@@ -949,7 +949,7 @@ for l in fusion:
   /* ============================================================= 4 */
   {
     id: "ihm-web",
-    num: 5,
+    num: 6,
     emoji: "🌐",
     title: "Interactions homme-machine sur le Web",
     intro:
@@ -2802,7 +2802,7 @@ e.afficher();                                 // Ada : 1050 euros
   /* ============================================================= 5 */
   {
     id: "architecture-os",
-    num: 6,
+    num: 7,
     emoji: "🖥️",
     title: "Architectures matérielles et systèmes d'exploitation",
     intro:
@@ -2903,7 +2903,7 @@ print("Résultat : mem[2] =", mem[2])`,
         title: "Du transistor à la porte logique",
         html: `
         <p>Comment le processeur « calcule »-t-il, avec seulement de l'électricité ? Tout repose sur le <strong>transistor</strong> : un minuscule <em>interrupteur</em> commandé électriquement (passant = 1, bloqué = 0). Un processeur moderne en contient des <strong>milliards</strong>.</p>
-        <p>En combinant des transistors, on fabrique des <strong>portes logiques</strong> qui réalisent les opérations booléennes du thème 2 :</p>
+        <p>En combinant des transistors, on fabrique des <strong>portes logiques</strong> qui réalisent les opérations booléennes du thème « Représentation des données » :</p>
         <table>
           <tr><th>Porte</th><th>Donne 1 si…</th></tr>
           <tr><td><strong>ET</strong> (AND)</td><td>les deux entrées valent 1</td></tr>
@@ -2911,7 +2911,7 @@ print("Résultat : mem[2] =", mem[2])`,
           <tr><td><strong>NON</strong> (NOT)</td><td>l'entrée vaut 0 (elle inverse)</td></tr>
           <tr><td><strong>OU exclusif</strong> (XOR)</td><td>les deux entrées sont différentes</td></tr>
         </table>
-        <p>En assemblant ces portes, on construit des circuits qui <em>additionnent</em>, <em>comparent</em>, <em>mémorisent</em>. L'algèbre de Boole (thème 2) est donc littéralement gravée dans le silicium. C'est le pont entre les maths logiques et le matériel.</p>`,
+        <p>En assemblant ces portes, on construit des circuits qui <em>additionnent</em>, <em>comparent</em>, <em>mémorisent</em>. L'algèbre de Boole (thème « Représentation des données ») est donc littéralement gravée dans le silicium. C'est le pont entre les maths logiques et le matériel.</p>`,
       },
       {
         title: "Construire un circuit : le demi-additionneur",
@@ -3055,7 +3055,7 @@ print(f"chmod {prop}{groupe}{autres}")  # chmod 750`,
         html: `
         <p>Ce thème relie plusieurs niveaux qui s'empilent :</p>
         <p style="text-align:center"><strong>transistors</strong> → <strong>portes logiques</strong> → <strong>processeur</strong> (modèle de von Neumann) → <strong>système d'exploitation</strong> → <strong>applications</strong> que tu utilises.</p>
-        <p>Chaque couche cache la complexité de celle d'en dessous : tu cliques sur une icône (application) sans penser aux milliards de transistors qui s'activent. On retrouve aussi le fil rouge de l'année : l'<em>algèbre de Boole</em> (thème 2) gravée dans le matériel, et le <em>binaire</em> partout.</p>
+        <p>Chaque couche cache la complexité de celle d'en dessous : tu cliques sur une icône (application) sans penser aux milliards de transistors qui s'activent. On retrouve aussi le fil rouge de l'année : l'<em>algèbre de Boole</em> (thème « Représentation des données ») gravée dans le matériel, et le <em>binaire</em> partout.</p>
         <p>Pour pratiquer concrètement la partie « système de fichiers + ligne de commande », enchaîne sur le <strong>projet « Mission terminal »</strong>.</p>`,
       },
     ],
@@ -3064,7 +3064,7 @@ print(f"chmod {prop}{groupe}{autres}")  # chmod 750`,
   /* ============================================================= 6 */
   {
     id: "langages-prog",
-    num: 7,
+    num: 2,
     emoji: "🐍",
     title: "Langages et programmation",
     intro:
@@ -3157,7 +3157,7 @@ print(3 + 4)        # 7  (addition de nombres)`,
       {
         title: "Les instructions conditionnelles",
         html: `
-        <p>Une <strong>condition</strong> permet d'exécuter un bloc <em>seulement si</em> un test est vrai : c'est <code>if</code> (si) / <code>elif</code> (sinon si) / <code>else</code> (sinon). Le test est une expression <strong>booléenne</strong> (thème 2), qui vaut <code>True</code> ou <code>False</code>.</p>
+        <p>Une <strong>condition</strong> permet d'exécuter un bloc <em>seulement si</em> un test est vrai : c'est <code>if</code> (si) / <code>elif</code> (sinon si) / <code>else</code> (sinon). Le test est une expression <strong>booléenne</strong> : elle vaut <code>True</code> (vrai) ou <code>False</code> (faux) — le thème « Représentation des données » y reviendra en détail.</p>
         <p>Les opérateurs de comparaison renvoient un booléen :</p>
         <table>
           <tr><th>Opérateur</th><td><code>==</code></td><td><code>!=</code></td><td><code>&lt;</code></td><td><code>&gt;</code></td><td><code>&lt;=</code></td><td><code>&gt;=</code></td></tr>
@@ -3849,7 +3849,8 @@ for taille in [10, 1000, 1000000]:
       {
         title: "Construire et trier une frise chronologique",
         html: `
-        <p>On peut représenter l'histoire comme une <strong>table de données</strong> (thème 3) et la trier par date. Voici une petite frise interactive : modifie-la, ajoute un événement !</p>`,
+        <p>On peut représenter l'histoire comme une <strong>table de données</strong> (thème « Données en tables ») et la trier par date. Voici une petite frise interactive : modifie-la, ajoute un événement !</p>
+        <p class="note">🧭 <strong>À lire plus tard si tu débutes</strong> : cette section utilise des notions de Python (listes de dictionnaires, tri) vues dans les thèmes « Types construits » et « Données en tables ». En début d'année, contente-toi de regarder — tu reviendras la faire quand ces thèmes seront passés.</p>`,
         code: `frise = [
     {"annee": 1642, "evenement": "Pascaline (Pascal)"},
     {"annee": 1843, "evenement": "Premier algorithme (Lovelace)"},
@@ -3861,7 +3862,7 @@ for taille in [10, 1000, 1000000]:
     {"annee": 1991, "evenement": "Le World Wide Web"},
 ]
 
-# Tri chronologique (thème 3 : trier une table selon une colonne)
+# Tri chronologique (thème « Données en tables » : trier selon une colonne)
 for e in sorted(frise, key=lambda x: x["annee"]):
     print(e["annee"], "—", e["evenement"])
 
@@ -3931,7 +3932,7 @@ print("\\nNombre d'événements :", len(frise))`,
 │           └────────────────────────────────────────────┘  │
 └───────────────────────────────────────────────────────────┘</code></pre>
         <p>Les <strong>données</strong> sont glissées dans un <strong>segment TCP</strong> (qui ajoute le numéro d'ordre), lui-même glissé dans un <strong>paquet IP</strong> (qui ajoute les adresses source/destination), lui-même glissé dans une <strong>trame</strong> pour voyager sur le câble ou le Wi-Fi. À l'arrivée, on ouvre les enveloppes une à une, dans l'ordre inverse.</p>
-        <p>Le numéro est donc essentiel : c'est lui qui permet de recoller le message. Programmons ce découpage et cette reconstruction (un paquet = un dictionnaire <code>{src, dst, num, data}</code>, vu au thème 3) :</p>`,
+        <p>Le numéro est donc essentiel : c'est lui qui permet de recoller le message. Programmons ce découpage et cette reconstruction (un paquet = un dictionnaire <code>{src, dst, num, data}</code>, vu au thème « Types construits ») :</p>`,
         code: `# Découper un message en paquets numérotés, avec en-tête (src, dst, num)
 message = "Bonjour le monde"
 mots = message.split(" ")
@@ -3942,7 +3943,7 @@ paquets = [
 for p in paquets:
     print(p)
 
-# Reconstruction : on trie par numéro, puis on recolle (thème 4 : trier une table)
+# Reconstruction : on trie par numéro, puis on recolle (thème « Données en tables »)
 recompose = " ".join(p["data"] for p in sorted(paquets, key=lambda p: p["num"]))
 print("Message reçu :", recompose)`,
       },

@@ -110,7 +110,7 @@ const THEME_EXTRAS = {
         solution: "On construit la grille par compréhension imbriquée (jamais [[0]*n]*n, piège des alias !), puis on parcourt les indices i pour poser m[i][i] = 1 : on obtient la matrice identité." },
       { niveau: "défi", enonce: "On a une classe = liste de dictionnaires {nom, moyenne}. Trouve le nom de l'élève ayant la meilleure moyenne (sans sorted).",
         code: `classe = [\n    {"nom": "Ada", "moyenne": 14},\n    {"nom": "Alan", "moyenne": 17},\n    {"nom": "Grace", "moyenne": 16},\n]\nmeilleur = classe[0]\nfor e in classe:\n    if e["moyenne"] > meilleur["moyenne"]:\n        meilleur = e\nprint(meilleur["nom"])`,
-        solution: "Même schéma que la recherche de maximum, mais on compare e['moyenne'] et on garde le dictionnaire entier. Réponse : Alan (17). Cette structure liste-de-dictionnaires annonce le thème 4." },
+        solution: "Même schéma que la recherche de maximum, mais on compare e['moyenne'] et on garde le dictionnaire entier. Réponse : Alan (17). Cette structure liste-de-dictionnaires annonce le thème « Traitement de données en tables »." },
       { niveau: "facile", enonce: "On a notes = [12, 15, 12, 8, 15, 19, 8]. Combien y a-t-il de notes DIFFÉRENTES ? Affiche-les triées (avec un set).",
         code: `notes = [12, 15, 12, 8, 15, 19, 8]\ndistinctes = set(notes)\nprint(len(distinctes), "notes différentes")\nprint(sorted(distinctes))`,
         solution: "set(notes) supprime les doublons -> {8, 12, 15, 19}, soit 4 notes différentes. sorted(set) les affiche triées : [8, 12, 15, 19]." },
