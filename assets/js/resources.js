@@ -397,6 +397,49 @@ print(a)       # [1, 2, 3, 4] — surprise !</code></pre>
       titre: "4 · Mettre en œuvre en classe",
       items: [
         {
+          t: "🚀 Séquence 0 — les 2 premières séances clé en main (grands débutants)", file: "sequence0.html",
+          fiche: `
+            <p>Deux séances de <strong>2 h</strong> pour démarrer l'année avec des élèves qui n'ont <strong>jamais programmé</strong>. Objectif : qu'à la fin de la semaine 1, chaque élève ait <em>écrit et corrigé</em> son premier programme — et n'ait plus peur des messages d'erreur. Tout le matériel élève est déjà sur le site (thème « 🐍 Langages et programmation », TP « Variables et types »).</p>
+
+            <h3>Séance 1 (2 h) — « L'ordinateur ne comprend que ce qu'on lui dit »</h3>
+            <table>
+              <tr><th>Temps</th><th>Phase</th><th>Déroulé</th></tr>
+              <tr><td>0–15</td><td>Accueil</td><td>Tour d'horizon de l'année (les 9 thèmes du menu, la progression), fonctionnement de la salle et des îlots, présentation du site (comptes élèves : code de classe + nom).</td></tr>
+              <tr><td>15–40</td><td>Débranché : « le prof-robot »</td><td>Consigne aux îlots : « écrivez la recette pour que je dessine un carré au tableau / que je fasse une tartine ». Le professeur exécute <strong>littéralement</strong> chaque consigne (ambiguïtés comprises : « mets du beurre » → poser la plaquette entière). Fous rires garantis, et la leçon s'impose d'elle-même : <em>une machine exécute exactement ce qu'on lui dit, pas ce qu'on veut dire</em>.</td></tr>
+              <tr><td>40–55</td><td>Institutionnalisation</td><td>Trace écrite : <strong>programme</strong> = suite d'instructions précises et ordonnées ; <strong>langage de programmation</strong> = langue sans ambiguïté ; nous utiliserons <strong>Python</strong>. (Repère histoire : Python, Guido van Rossum, 1991.)</td></tr>
+              <tr><td>55–85</td><td>Machine : premiers programmes</td><td>Sur le site, thème « Langages et programmation », première cellule : exécuter <code>print("Bonjour")</code>, puis <strong>modifier</strong> (son prénom, deux print, un calcul <code>print(3 * 7)</code>). Chaque élève doit faire afficher 3 choses différentes.</td></tr>
+              <tr><td>85–100</td><td>⭐ Provoquer l'erreur</td><td>Consigne inhabituelle : « <strong>cassez</strong> votre programme » (enlever une parenthèse, écrire <code>Print</code>…). Lire ENSEMBLE les messages (<code>SyntaxError</code>, <code>NameError</code>) : l'erreur n'est pas une punition, c'est <em>la machine qui explique ce qu'elle n'a pas compris</em>. Réflexe à installer dès le jour 1 — c'est le meilleur prédicteur d'autonomie future.</td></tr>
+              <tr><td>100–115</td><td>Variables (découverte)</td><td>Débranché express sur ardoise : le professeur dicte <code>x = 5</code>, <code>x = x + 3</code>, <code>x = x * 2</code> ; chaque îlot suit la valeur de x (verbaliser : <code>=</code> n'est PAS l'égalité des maths, c'est « range dans la boîte »). Puis vérification sur machine.</td></tr>
+              <tr><td>115–120</td><td>Bilan</td><td>3 questions à l'oral : qu'est-ce qu'un programme ? que fait <code>=</code> ? que faire face à une erreur ? (→ les mêmes ouvriront la séance 2.)</td></tr>
+            </table>
+
+            <h3>Séance 2 (2 h) — « Des boîtes qui se souviennent, des programmes qui décident »</h3>
+            <table>
+              <tr><th>Temps</th><th>Phase</th><th>Déroulé</th></tr>
+              <tr><td>0–10</td><td>Rituel d'entrée</td><td>Les 3 questions du bilan S1, ardoises levées. Ré-expliquer par un élève, pas par le professeur.</td></tr>
+              <tr><td>10–30</td><td>Types de base</td><td>Le piège fondateur au tableau : que vaut <code>3 + 4</code> ? et <code>"3" + "4"</code> ? Faire parier les îlots, puis vérifier sur machine. Trace écrite : <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, et <code>type()</code> pour demander à Python.</td></tr>
+              <tr><td>30–60</td><td>TP guidé sur le site</td><td>TP « <strong>Variables et types</strong> » (dans le thème) : les 4 étapes, dont le texte à trous de la calculatrice de moyenne. Travail en binômes « pilote/copilote » (on échange les rôles à mi-parcours).</td></tr>
+              <tr><td>60–75</td><td>Conditions (découverte débranchée)</td><td>Jeu : le professeur pense à une règle (« si la note ≥ 10, je dis Reçu, sinon Raté ») et répond aux propositions des îlots ; ils doivent deviner la règle. Puis : comment l'écrire pour la machine ?</td></tr>
+              <tr><td>75–105</td><td>if / else sur machine</td><td>Écrire ensemble <code>mention(note)</code> pas à pas (d'abord if/else simple, puis elif). Exercices gradués du thème (cellules vides — les corrigés sont poussés en fin de séance). Différenciation : les plus rapides font l'exercice « défi » et deviennent <strong>tuteurs</strong> de leur îlot.</td></tr>
+              <tr><td>105–120</td><td>Bilan + QCM</td><td>Mini-QCM du thème sur le site (auto-corrigé, remonte dans « Ma classe ») + annonce du fil de la semaine suivante (boucles : « et si on veut répéter 100 fois ? »).</td></tr>
+            </table>
+
+            <h3>Pièges de débutants à guetter dès ces 2 séances</h3>
+            <ul>
+              <li><code>=</code> (affecter) confondu avec <code>==</code> (comparer) — le verbaliser À CHAQUE occasion (« range dans la boîte » vs « est-ce égal ? ») ;</li>
+              <li>majuscules/minuscules (<code>Print</code>), guillemets oubliés autour des chaînes ;</li>
+              <li>l'<strong>indentation</strong> : présentée dès le premier <code>if</code> comme « la phrase appartient au si », jamais comme une contrainte arbitraire ;</li>
+              <li>la peur du message d'erreur → d'où la phase « cassez votre programme » de la séance 1.</li>
+            </ul>
+            <h3>À ne PAS faire en semaine 1</h3>
+            <ul>
+              <li>Empiler la syntaxe (f-strings, listes, fonctions…) : variables + types + if suffisent largement ;</li>
+              <li>Noter la performance : les premières évaluations sont <strong>diagnostiques</strong> (QCM auto-corrigés, TP à barème bienveillant) ;</li>
+              <li>Laisser les élèves « qui savent déjà » s'ennuyer : exercices défi + rôle de tuteur (expliquer, c'est consolider).</li>
+            </ul>
+            <p class="note">📅 La suite (S2 → S6 : boucles, fonctions, débogage) est détaillée semaine par semaine dans la rubrique <strong>🗓️ Progression annuelle</strong>. Matériel : ardoises (ou feuilles A5), le site (aucune installation), et si possible Capytale/Thonny à partir de la semaine 4.</p>`,
+        },
+        {
           t: "Idées de projets NSI", file: "ideesProjets.html",
           fiche: `
             <p>Une banque de sujets, du plus accessible au plus ambitieux. Bien choisis, ils couvrent à eux seuls la plupart des capacités du programme.</p>
