@@ -13,6 +13,10 @@
   --bad: #dc2626;
   --bad-soft: #fee2e2;
   --warn: #d97706;
+  /* Couleurs de TEXTE à contraste suffisant sur les fonds -soft (WCAG AA) */
+  --ok-text: #15803d;
+  --bad-text: #b91c1c;
+  --warn-text: #a16207;
   --code-bg: #0f172a;
   --code-text: #e2e8f0;
   --shadow: 0 6px 24px rgba(20, 30, 60, .08);
@@ -32,6 +36,9 @@ html[data-theme="dark"] {
   --accent-2: #38bdf8;
   --ok-soft: #11321f;
   --bad-soft: #3a1717;
+  --ok-text: #4ade80;
+  --bad-text: #f87171;
+  --warn-text: #fbbf24;
   --shadow: 0 6px 24px rgba(0, 0, 0, .4);
 }
 
@@ -147,8 +154,14 @@ body {
 
 /* ---------- Theme view ---------- */
 .theme-header { border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-.crumb { font-size: .85rem; color: var(--text-soft); cursor: pointer; display: inline-flex; gap: .3rem; align-items: center; }
+.crumb { font-size: .85rem; color: var(--text-soft); cursor: pointer; display: inline-flex; gap: .3rem; align-items: center; background: none; border: 0; padding: 0; font-family: inherit; line-height: inherit; }
 .crumb:hover { color: var(--accent); }
+
+/* Focus clavier visible sur tous les éléments interactifs */
+.nav-link:focus-visible, .crumb:focus-visible, .theme-card:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .theme-header h1 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin: .5rem 0 .3rem; display:flex; gap:.6rem; align-items:center; }
 .theme-header .th-emoji { font-size: 1.8rem; }
 .theme-intro { color: var(--text-soft); font-size: 1.02rem; }
@@ -328,8 +341,8 @@ html[data-theme="dark"] .exo-snippet-bar { background: #0c1424; }
 .choice.disabled { cursor: default; opacity: .9; }
 .quiz-feedback { margin-top: .7rem; font-size: .9rem; padding: .55rem .8rem; border-radius: 8px; display: none; }
 .quiz-feedback.show { display: block; }
-.quiz-feedback.good { background: var(--ok-soft); color: var(--ok); }
-.quiz-feedback.bad { background: var(--bad-soft); color: var(--bad); }
+.quiz-feedback.good { background: var(--ok-soft); color: var(--ok-text); }
+.quiz-feedback.bad { background: var(--bad-soft); color: var(--bad-text); }
 .quiz-actions { display: flex; gap: .7rem; align-items: center; margin-top: 1rem; flex-wrap: wrap; }
 .btn {
   font-family: var(--sans); font-weight: 600; font-size: .9rem; cursor: pointer;
@@ -530,21 +543,21 @@ body.teacher-on .teacher-block > summary { color: var(--accent); }
 .extra-block > h2 { font-size: 1.35rem; }
 .extra-hint { color: var(--text-soft); font-size: .9rem; margin-top: -.3rem; }
 .lv-tag { font-size: .72rem; font-weight: 700; border-radius: 99px; padding: .15rem .6rem; white-space: nowrap; }
-.lv-facile { background: var(--ok-soft); color: var(--ok); }
+.lv-facile { background: var(--ok-soft); color: var(--ok-text); }
 .lv-moyen { background: #fef3c7; color: var(--warn); }
 html[data-theme="dark"] .lv-moyen { background: #3a2c10; }
-.lv-defi { background: var(--bad-soft); color: var(--bad); }
+.lv-defi { background: var(--bad-soft); color: var(--bad-text); }
 .exo-item { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; }
 .exo-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; }
 .exo-n { font-weight: 700; font-size: .9rem; color: var(--text-soft); }
 .exo-enonce { font-size: .95rem; }
-.exo-done { display: inline-flex; align-items: center; gap: .5rem; margin-top: .8rem; font-size: .9rem; font-weight: 600; cursor: pointer; background: var(--ok-soft); color: var(--ok); border: 1px solid var(--ok); border-radius: 9px; padding: .4rem .8rem; }
+.exo-done { display: inline-flex; align-items: center; gap: .5rem; margin-top: .8rem; font-size: .9rem; font-weight: 600; cursor: pointer; background: var(--ok-soft); color: var(--ok-text); border: 1px solid var(--ok); border-radius: 9px; padding: .4rem .8rem; }
 .exo-done input { accent-color: var(--ok); width: 16px; height: 16px; }
 details.corrige {
   margin-top: .8rem; border: 1px solid var(--border); border-radius: 9px;
   background: var(--bg-soft); padding: .4rem .8rem;
 }
-details.corrige > summary { cursor: pointer; font-weight: 600; font-size: .88rem; color: var(--ok); }
+details.corrige > summary { cursor: pointer; font-weight: 600; font-size: .88rem; color: var(--ok-text); }
 details.corrige[open] > summary { margin-bottom: .5rem; }
 .corrige-body { font-size: .9rem; }
 
@@ -895,4 +908,52 @@ html[data-theme="dark"] .prof-note { background: #2a2410; border-color: #b45309;
 @media (max-width: 520px) {
   .theme-nav { flex-direction: column; }
   .content { padding: 1.25rem 1rem 4rem; }
+}
+
+/* ---------- Sommaire de thème (thèmes longs) ---------- */
+.theme-toc {
+  background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: .8rem 1.1rem; margin: 1.2rem 0;
+}
+.theme-toc > summary { cursor: pointer; font-weight: 700; font-size: .95rem; }
+.theme-toc ol { columns: 2; column-gap: 1.5rem; margin: .6rem 0 .2rem; padding-left: 1.2rem; }
+.theme-toc li { break-inside: avoid; margin: .2rem 0; }
+.theme-toc .toc-link {
+  background: none; border: 0; padding: 0; font-family: inherit; font-size: .88rem;
+  color: var(--accent); cursor: pointer; text-align: left;
+}
+.theme-toc .toc-link:hover { text-decoration: underline; }
+@media (max-width: 700px) { .theme-toc ol { columns: 1; } }
+
+/* ---------- Bouton retour en haut ---------- */
+.to-top {
+  display: none; position: fixed; bottom: 4rem; right: 1rem; z-index: 40;
+  width: 42px; height: 42px; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1px solid var(--border);
+  background: var(--bg-elev); color: var(--accent);
+  font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow);
+}
+.to-top.show { display: flex; }
+.to-top:hover { background: var(--accent); color: #fff; }
+
+/* ---------- Élève en difficulté (tableau de classe) ---------- */
+.classe-table tr.row-alert td { background: var(--bad-soft); }
+
+/* ---------- Accessibilité : animations réduites ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ---------- Impression ---------- */
+@media print {
+  .topbar, .sidebar, .overlay, .pyodide-status, .theme-nav,
+  .btn-run, .btn-basthon-cell, .to-top, .search-wrap, .exo-push-btn { display: none !important; }
+  .code-editor, .code-output {
+    color: #000 !important; background: #fff !important; border: 1px solid #999;
+  }
+  .section { box-shadow: none; break-inside: avoid; }
+  .content { max-width: 100%; padding: 0; }
 }

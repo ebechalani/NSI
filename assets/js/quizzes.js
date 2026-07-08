@@ -156,6 +156,41 @@ const QUIZZES = {
       answer: 2,
       explain: "m[1] est la 2e ligne [3,4] ; son indice 0 vaut 3.",
     },
+    {
+      q: "Que vaut len(set([3, 1, 3, 2, 1])) ?",
+      choices: ["3", "5", "2", "1"],
+      answer: 0,
+      explain: "Un ensemble (set) élimine les doublons : il reste {1, 2, 3}, soit 3 éléments.",
+    },
+    {
+      q: "Dans un comptage d'occurrences, que fait occ.get(c, 0) ?",
+      choices: [
+        "il supprime la clé c du dictionnaire",
+        "il ajoute 0 à la clé c",
+        "il renvoie la valeur associée à c, ou 0 si la clé n'existe pas encore",
+        "il provoque une erreur si c est absent",
+      ],
+      answer: 2,
+      explain: "get(clé, défaut) évite le KeyError : au premier passage, le compteur part de 0. occ[c] = occ.get(c, 0) + 1.",
+    },
+    {
+      q: "Après a, b = 2, 7 puis a, b = b, a, que valent a et b ?",
+      choices: ["a = 2 et b = 7", "a = 7 et b = 2", "a = 7 et b = 7", "erreur : il faut une variable temporaire"],
+      answer: 1,
+      explain: "L'affectation multiple évalue d'abord toute la partie droite (7, 2) puis affecte : les valeurs sont échangées sans variable temporaire.",
+    },
+    {
+      q: "Quelle structure choisir pour associer à chaque élève sa note, avec un accès direct par le nom ?",
+      choices: ["une liste", "un tuple", "un ensemble (set)", "un dictionnaire"],
+      answer: 3,
+      explain: "Le dictionnaire associe clé → valeur (nom → note). Liste/tuple : accès par position ; set : pas d'association, ni doublons.",
+    },
+    {
+      q: "Après a = [1, 2, 3] puis b = a puis b.append(4), que vaut a ?",
+      choices: ["[1, 2, 3, 4]", "[1, 2, 3]", "[4]", "erreur"],
+      answer: 0,
+      explain: "b = a ne copie PAS la liste : a et b sont deux noms (alias) de la MÊME liste. Pour copier : b = list(a) ou a[:].",
+    },
   ],
 
   "donnees-tables": [
@@ -203,6 +238,39 @@ const QUIZZES = {
       choices: ["un tri", "un filtre", "une fusion (jointure)", "une compression"],
       answer: 2,
       explain: "La jointure relie les lignes par leur valeur commune.",
+    },
+    {
+      q: "Après lecture d'un CSV, pourquoi faut-il écrire int(ligne['age']) avant de comparer les âges ?",
+      choices: [
+        "pour arrondir les âges",
+        "parce que int() trie la colonne",
+        "parce que le CSV ne contient que des CHAÎNES : sans conversion, '9' > '10' !",
+        "ce n'est pas nécessaire, Python convertit tout seul",
+      ],
+      answer: 2,
+      explain: "Tout ce qui sort d'un fichier CSV est du texte. La comparaison de chaînes est alphabétique : '9' > '10'. Il faut convertir avec int() ou float().",
+    },
+    {
+      q: "Que fait sorted(table, key=lambda l: l['note'], reverse=True) ?",
+      choices: [
+        "il trie la table par note DÉCROISSANTE (de la plus grande à la plus petite)",
+        "il inverse les colonnes de la table",
+        "il supprime les mauvaises notes",
+        "il trie par note croissante",
+      ],
+      answer: 0,
+      explain: "key indique la colonne de tri ; reverse=True inverse l'ordre : les plus grandes notes d'abord.",
+    },
+    {
+      q: "Deux lignes STRICTEMENT identiques apparaissent dans une table. Pourquoi est-ce un problème ?",
+      choices: [
+        "la table devient illisible par Python",
+        "les comptages et statistiques sont faussés (l'enregistrement est compté deux fois)",
+        "le fichier CSV ne peut plus être enregistré",
+        "ce n'est jamais un problème",
+      ],
+      answer: 1,
+      explain: "Un doublon fausse effectifs, moyennes et jointures. Avant de traiter une table, on la nettoie : on détecte et on élimine les doublons.",
     },
   ],
 
@@ -291,6 +359,94 @@ const QUIZZES = {
       answer: 1,
       explain: "Le RGPD impose le consentement (bandeaux cookies), l'information et des droits sur tes données.",
     },
+    {
+      q: "En JavaScript moderne, pourquoi préférer let et const à var ?",
+      choices: [
+        "var n'existe plus dans les navigateurs",
+        "let et const sont plus rapides à exécuter",
+        "leur portée est limitée au bloc { }, ce qui évite des bugs (var « déborde » de son bloc)",
+        "var ne peut stocker que des nombres",
+      ],
+      answer: 2,
+      explain: "let/const ont une portée de bloc et const interdit la réaffectation ; var, à portée de fonction, provoque des surprises. var fonctionne encore, mais on l'évite.",
+    },
+    {
+      q: "En JavaScript, quelle est la différence entre == et === ?",
+      choices: [
+        "=== compare valeur ET type, sans conversion automatique ('5' === 5 est faux)",
+        "== est une affectation, === une comparaison",
+        "aucune, ce sont des synonymes",
+        "=== ne marche que sur les chaînes",
+      ],
+      answer: 0,
+      explain: "== convertit les types avant de comparer ('5' == 5 est vrai !) ; === exige même type et même valeur. On privilégie ===.",
+    },
+    {
+      q: "Que fait bouton.addEventListener('click', maFonction) ?",
+      choices: [
+        "il exécute maFonction immédiatement",
+        "il demande d'exécuter maFonction À CHAQUE clic sur le bouton",
+        "il supprime le bouton après un clic",
+        "il crée un nouveau bouton",
+      ],
+      answer: 1,
+      explain: "addEventListener « abonne » la fonction à l'événement : elle sera rappelée à chaque clic. Attention : on passe maFonction sans parenthèses.",
+    },
+    {
+      q: "Quelle instruction sélectionne l'élément d'id 'titre' ?",
+      choices: [
+        "document.querySelector('titre')",
+        "document.getElementById('#titre')",
+        "document.querySelector('.titre')",
+        "document.querySelector('#titre') ou document.getElementById('titre')",
+      ],
+      answer: 3,
+      explain: "querySelector utilise la syntaxe CSS (# pour un id, . pour une classe) ; getElementById prend le nom de l'id SANS #.",
+    },
+    {
+      q: "Pour afficher un texte saisi par l'utilisateur dans la page, pourquoi préférer textContent à innerHTML ?",
+      choices: [
+        "textContent traite la saisie comme du texte brut : une balise <script> injectée ne sera pas exécutée",
+        "innerHTML est plus lent, c'est tout",
+        "textContent met le texte en gras",
+        "innerHTML n'existe que dans Firefox",
+      ],
+      answer: 0,
+      explain: "innerHTML interprète la chaîne comme du HTML : un utilisateur malveillant peut injecter du code (attaque XSS). textContent affiche le texte tel quel.",
+    },
+    {
+      q: "Le DOM (Document Object Model), c'est…",
+      choices: [
+        "le fichier CSS de la page",
+        "le serveur qui héberge la page",
+        "la représentation de la page en ARBRE d'objets, que JavaScript peut parcourir et modifier",
+        "un langage de programmation",
+      ],
+      answer: 2,
+      explain: "Le navigateur transforme le HTML en un arbre (éléments imbriqués = branches) ; JS modifie cet arbre, et l'affichage suit.",
+    },
+    {
+      q: "Qu'est-ce que le format JSON ?",
+      choices: [
+        "un langage pour styliser les pages",
+        "un format texte d'échange de données (clés/valeurs), très proche des dictionnaires Python",
+        "un protocole de routage des paquets",
+        "une base de données",
+      ],
+      answer: 1,
+      explain: "JSON (JavaScript Object Notation) sert à échanger des données structurées entre client et serveur : {\"nom\": \"Ada\", \"age\": 17}.",
+    },
+    {
+      q: "Un formulaire est vérifié en JavaScript côté client. Le serveur peut-il se dispenser de revérifier ?",
+      choices: [
+        "oui, le JavaScript garantit la validité",
+        "oui, si le site est en HTTPS",
+        "oui, sauf pour les mots de passe",
+        "non : le client peut désactiver ou contourner le JS, le serveur doit TOUJOURS revalider",
+      ],
+      answer: 3,
+      explain: "La validation client n'est que du confort (message immédiat). Une requête peut être forgée sans passer par la page : seule la vérification serveur protège.",
+    },
   ],
 
   "architecture-os": [
@@ -349,6 +505,23 @@ const QUIZZES = {
       choices: ["777", "750", "640", "700"],
       answer: 1,
       explain: "rwx=7, r-x=5, ---=0 → 750.",
+    },
+    {
+      q: "Avec mem = [7, 5], que vaut l'accumulateur après LOAD 0 puis ADD 1 ?",
+      choices: ["7", "5", "12", "2"],
+      answer: 2,
+      explain: "LOAD 0 charge mem[0] = 7 dans l'accumulateur ; ADD 1 lui ajoute mem[1] = 5 → ACC = 12.",
+    },
+    {
+      q: "Un capteur (sonde de température, caméra…) est un périphérique…",
+      choices: [
+        "d'ENTRÉE : il envoie une information du monde réel VERS la machine",
+        "de SORTIE : il reçoit les ordres de la machine",
+        "de stockage permanent",
+        "de calcul, comme l'UAL",
+      ],
+      answer: 0,
+      explain: "Un capteur mesure et informe la machine (entrée) ; un actionneur (moteur, haut-parleur…) reçoit un ordre et agit (sortie).",
     },
   ],
 
@@ -554,6 +727,45 @@ const QUIZZES = {
       choices: ["un doublon", "un paquet perdu", "un routeur en panne définitive", "une adresse IP"],
       answer: 1,
       explain: "Un numéro manquant signale une perte : le protocole TCP peut redemander ce paquet.",
+    },
+    {
+      q: "Quel équipement relie plusieurs réseaux entre eux et choisit, de proche en proche, le chemin des paquets ?",
+      choices: ["l'écran", "le serveur web", "le disque dur", "le routeur"],
+      answer: 3,
+      explain: "Le routeur consulte sa table de routage et transmet chaque paquet au voisin le plus adapté ; les routeurs relient les réseaux entre eux.",
+    },
+    {
+      q: "Quelle est la bonne répartition des rôles entre IP et TCP ?",
+      choices: [
+        "IP achemine les paquets vers la bonne machine ; TCP fiabilise (ordre, pertes, retransmission)",
+        "TCP achemine les paquets ; IP corrige les erreurs",
+        "IP et TCP font exactement la même chose",
+        "TCP sert uniquement à chiffrer les données",
+      ],
+      answer: 0,
+      explain: "IP = adressage et routage, sans garantie de livraison ; TCP = numérotation, accusés de réception et retransmission.",
+    },
+    {
+      q: "Dans le protocole du bit alterné, à quoi sert l'ACK (accusé de réception) ?",
+      choices: [
+        "à chiffrer le paquet",
+        "à donner l'adresse IP du destinataire",
+        "à confirmer à l'émetteur que le paquet est bien arrivé : sans ACK avant le timeout, il retransmet",
+        "à accélérer la transmission",
+      ],
+      answer: 2,
+      explain: "L'émetteur attend un ACK portant le bit du paquet envoyé. S'il ne le reçoit pas à temps (timeout), il renvoie le même paquet.",
+    },
+    {
+      q: "Bit alterné : pourquoi l'alternance 0/1 permet-elle de distinguer un doublon d'un nouveau paquet ?",
+      choices: [
+        "parce que le bit chiffre le contenu",
+        "un paquet reçu avec le MÊME bit que le précédent est une retransmission (doublon) ; un bit différent annonce un NOUVEAU paquet",
+        "parce que 0 signifie perdu et 1 signifie arrivé",
+        "l'alternance ne sert qu'à compter les paquets",
+      ],
+      answer: 1,
+      explain: "Le récepteur attend le bit opposé au dernier paquet accepté : même bit → doublon (ACK renvoyé mais paquet ignoré) ; bit attendu → nouveau paquet.",
     },
   ],
 };

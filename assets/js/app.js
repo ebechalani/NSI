@@ -86,15 +86,23 @@
   /* ---------------- Menu mobile ---------------- */
   const sidebar = $("#sidebar");
   const overlay = $("#overlay");
+  const menuToggle = $("#menuToggle");
+  if (sidebar.id) menuToggle.setAttribute("aria-controls", sidebar.id);
+  menuToggle.setAttribute("aria-expanded", "false");
   function closeMenu() {
     sidebar.classList.remove("open");
     overlay.classList.add("hidden");
+    menuToggle.setAttribute("aria-expanded", "false");
   }
-  $("#menuToggle").addEventListener("click", () => {
+  menuToggle.addEventListener("click", () => {
     sidebar.classList.toggle("open");
     overlay.classList.toggle("hidden");
+    menuToggle.setAttribute("aria-expanded", sidebar.classList.contains("open") ? "true" : "false");
   });
   overlay.addEventListener("click", closeMenu);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidebar.classList.contains("open")) closeMenu();
+  });
 
   /* ---------------- Progression (localStorage) ---------------- */
   const PROG_KEY = "nsi-progression";
@@ -255,6 +263,7 @@
       `<span class="nav-num">⌂</span><span class="nav-text">Accueil</span>`
     );
     homeLink.dataset.target = "home";
+    homeLink.href = "#";
     home.appendChild(homeLink);
     navList.appendChild(home);
 
@@ -270,6 +279,7 @@
           (done ? `<span class="nav-check">✓</span>` : ``)
       );
       link.dataset.target = c.id;
+      link.href = "#" + c.id;
       li.appendChild(link);
       navList.appendChild(li);
     });
@@ -302,6 +312,7 @@
           `<span class="nav-text">${x.text}</span>`
       );
       link.dataset.target = x.target;
+      link.href = "#" + x.target;
       li.appendChild(link);
       navList.appendChild(li);
     });
@@ -317,7 +328,10 @@
 
   function setActiveNav(target) {
     navList.querySelectorAll(".nav-link").forEach((l) => {
-      l.classList.toggle("active", l.dataset.target === target);
+      const active = l.dataset.target === target;
+      l.classList.toggle("active", active);
+      if (active) l.setAttribute("aria-current", "page");
+      else l.removeAttribute("aria-current");
     });
   }
 
@@ -483,10 +497,11 @@
   let currentThemeId = null; // thème affiché (pour rattacher l'activité de l'élève)
   function renderTheme(c) {
     currentThemeId = c.id;
+    exoCorrMap.clear(); // les corrigés référencés appartiennent au thème affiché
     viewTheme.innerHTML = "";
 
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(
@@ -519,9 +534,31 @@
     // Déroulé de séance (réservé au prof, masqué hors mode professeur)
     if (c.seance) viewTheme.appendChild(makeSeance(c.seance));
 
+    // Sommaire cliquable pour les thèmes longs (8 sections ou plus)
+    if (c.sections.length >= 8) {
+      const toc = el("details", "theme-toc");
+      toc.open = true;
+      toc.appendChild(el("summary", null, "📑 Sommaire du thème"));
+      const ol = el("ol");
+      c.sections.forEach((s, i) => {
+        const li = el("li");
+        const b = el("button", "toc-link", `${i + 1}. ${s.title}`);
+        b.type = "button";
+        b.addEventListener("click", () => {
+          const target = document.getElementById(c.id + "-s" + (i + 1));
+          if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        li.appendChild(b);
+        ol.appendChild(li);
+      });
+      toc.appendChild(ol);
+      viewTheme.appendChild(toc);
+    }
+
     // Sections
     c.sections.forEach((s, i) => {
       const sec = el("div", "section");
+      sec.id = c.id + "-s" + (i + 1);
       sec.appendChild(el("h2", null, `${i + 1}. ${s.title}`));
       if (s.html) sec.appendChild(el("div", null, s.html));
       if (s.schema) sec.appendChild(el("div", "schema", s.schema));
@@ -660,6 +697,8 @@
     });
 
     const out = el("div", "code-output empty");
+    out.setAttribute("role", "status");
+    out.setAttribute("aria-live", "polite");
 
     btnReset.addEventListener("click", () => {
       ta.value = code;
@@ -794,6 +833,20 @@
   // « DOM playground » (façon Slate) : un HTML FOURNI (lecture seule) + son aperçu,
   // un éditeur JavaScript, et une console qui capture les console.log de l'élève.
   // Le JS s'exécute dans une iframe ISOLÉE (sandbox) ; la sortie remonte par postMessage.
+  // UN SEUL listener « message » global pour toutes les cellules DOM (au lieu d'un
+  // listener par cellule, qui fuyait à chaque re-rendu). Map token → { cell, handler }.
+  const domCellHandlers = new Map();
+  window.addEventListener("message", (ev) => {
+    if (!ev.data || !ev.data.t) return;
+    const entry = domCellHandlers.get(ev.data.t);
+    if (!entry) return;
+    if (!entry.cell.isConnected) {
+      domCellHandlers.delete(ev.data.t); // cellule retirée du DOM → on oublie son handler
+      return;
+    }
+    entry.handler(ev);
+  });
+
   function makeDomCell(htmlBody, starterJs, solutionJs) {
     const token = "dom" + Math.random().toString(36).slice(2);
     htmlBody = (htmlBody || "").trim();
@@ -831,6 +884,8 @@
     rightStack.appendChild(slatePane("👁️ Aperçu de la page", frame));
 
     const out = el("div", "code-output dom-console");
+    out.setAttribute("role", "status");
+    out.setAttribute("aria-live", "polite");
     out.textContent = "(clique « Exécuter » pour voir la sortie)";
     rightStack.appendChild(slatePane("🖥️ Console", out));
     main.appendChild(rightStack);
@@ -861,12 +916,14 @@
     runBtn.addEventListener("click", run);
     setTimeout(() => { frame.srcdoc = buildDoc(false); }, 0); // aperçu initial (HTML seul)
 
-    window.addEventListener("message", (ev) => {
-      if (!ev.data || ev.data.t !== token) return;
-      if (out.firstChild && out.textContent.indexOf("Exécuter") >= 0) out.innerHTML = "";
-      const line = el("div", ev.data.e ? "err" : null);
-      line.textContent = ev.data.m;
-      out.appendChild(line);
+    domCellHandlers.set(token, {
+      cell,
+      handler: (ev) => {
+        if (out.firstChild && out.textContent.indexOf("Exécuter") >= 0) out.innerHTML = "";
+        const line = el("div", ev.data.e ? "err" : null);
+        line.textContent = ev.data.m;
+        out.appendChild(line);
+      },
     });
 
     // Correction optionnelle (masquée aux élèves tant qu'elle n'est pas poussée)
@@ -1035,6 +1092,8 @@
     if (!t) {
       t = el("div", "nsi-toast");
       t.id = "nsiToast";
+      t.setAttribute("role", "status");
+      t.setAttribute("aria-live", "polite");
       document.body.appendChild(t);
     }
     t.textContent = msg;
@@ -1042,6 +1101,21 @@
     clearTimeout(toast._t);
     toast._t = setTimeout(() => t.classList.remove("show"), 4000);
   }
+
+  /* ---------------- Bouton « retour en haut » (créé une seule fois) ---------------- */
+  (function setupToTop() {
+    const btn = el("button", "to-top", "↑");
+    btn.type = "button";
+    btn.setAttribute("aria-label", "Retour en haut de page");
+    btn.title = "Retour en haut";
+    btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    document.body.appendChild(btn);
+    window.addEventListener(
+      "scroll",
+      () => btn.classList.toggle("show", window.scrollY > 600),
+      { passive: true }
+    );
+  })();
 
   /* ---------------- Textes à trou (cloze interactif) ---------------- */
   // code : texte avec des marqueurs ___ ; gaps : réponses attendues
@@ -1079,6 +1153,8 @@
 
     const feedback = el("div", "gap-feedback");
     const out = el("div", "code-output empty");
+    out.setAttribute("role", "status");
+    out.setAttribute("aria-live", "polite");
 
     const norm = (s) => String(s).trim().replace(/\s+/g, " ").replace(/\s*([(),:=+\-*/%<>])\s*/g, "$1");
     function accepts(expected, val) {
@@ -1232,7 +1308,9 @@ except Exception:
     return String(s)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   /* ---------------- QCM ---------------- */
@@ -1821,6 +1899,10 @@ except Exception:
     defi: { cls: "lv-defi", label: "🔴 Défi" },
   };
 
+  // Corrigés d'exercices : construits À LA DEMANDE (jamais présents dans le DOM
+  // d'un élève tant qu'ils ne sont pas poussés). Clé exoKey → { slot, buildCorr }.
+  const exoCorrMap = new Map();
+
   function makeExercices(liste, themeId) {
     const wrap = el("div", "extra-block exos");
     wrap.appendChild(el("h2", null, "🏋️ Exercices progressifs"));
@@ -1831,6 +1913,26 @@ except Exception:
           ? "Le corrigé de chaque exercice est masqué aux élèves. Clique <strong>« Pousser le corrigé »</strong> sur un exercice pour le révéler à ta classe (et « Retirer » pour le cacher de nouveau)."
           : "Écris ta réponse dans la cellule, puis exécute. <strong>Le corrigé apparaîtra quand le professeur le poussera.</strong>")
     );
+    const themeCorrKeys = []; // exercices de ce thème ayant un corrigé (pour pousser/retirer en masse)
+    const pushSyncFns = []; // resynchronise l'état des boutons « pousser » individuels
+    if (teacher) {
+      const bulk = el("div", "proj-tools");
+      const bAll = el("button", "btn secondary exo-push-btn", "📤 Pousser tout le thème");
+      bAll.addEventListener("click", () => {
+        themeCorrKeys.forEach((k) => P.setCorrPushed(k, true));
+        pushSyncFns.forEach((f) => f());
+        refreshExoCorrections();
+      });
+      const bNone = el("button", "btn secondary exo-push-btn", "📥 Tout retirer");
+      bNone.addEventListener("click", () => {
+        themeCorrKeys.forEach((k) => P.setCorrPushed(k, false));
+        pushSyncFns.forEach((f) => f());
+        refreshExoCorrections();
+      });
+      bulk.appendChild(bAll);
+      bulk.appendChild(bNone);
+      wrap.appendChild(bulk);
+    }
     liste.forEach((exo, i) => {
       const lv = NIVEAU_BADGE[exo.niveau] || NIVEAU_BADGE.facile;
       const box = el("div", "exo-item");
@@ -1852,14 +1954,22 @@ except Exception:
         box.appendChild(makeCodeCell("# Écris ta réponse ici, puis clique ▶ Exécuter\n", done));
       }
 
-      // Corrigé : caché par défaut aux élèves, révélé exercice par exercice par le prof.
+      // Corrigé : le nœud n'est CRÉÉ que pour le prof ou si le corrigé est poussé.
+      // Sinon, il n'existe pas du tout dans le DOM de l'élève (rien à inspecter).
       if ((exo.code && !(exo.gapcode && exo.gaps)) || exo.solution) {
-        const corr = el("div", "exo-corrige");
-        corr.dataset.exoKey = exoKey;
-        corr.appendChild(el("div", "exo-corrige-head", "✅ Corrigé"));
-        if (exo.code && !(exo.gapcode && exo.gaps)) corr.appendChild(makeCodeCell(exo.code));
-        if (exo.solution) corr.appendChild(el("div", "corrige-body", exo.solution));
-        box.appendChild(corr);
+        const slot = el("div", "exo-corrige-slot");
+        const buildCorr = () => {
+          const corr = el("div", "exo-corrige");
+          corr.dataset.exoKey = exoKey;
+          corr.appendChild(el("div", "exo-corrige-head", "✅ Corrigé"));
+          if (exo.code && !(exo.gapcode && exo.gaps)) corr.appendChild(makeCodeCell(exo.code));
+          if (exo.solution) corr.appendChild(el("div", "corrige-body", exo.solution));
+          return corr;
+        };
+        exoCorrMap.set(exoKey, { slot, buildCorr });
+        if (P.isTeacher() || P.isCorrPushed(exoKey)) slot.appendChild(buildCorr());
+        box.appendChild(slot);
+        themeCorrKeys.push(exoKey);
       }
 
       // Prof : pousser / retirer ce corrigé pour la classe.
@@ -1871,6 +1981,7 @@ except Exception:
           pushBtn.classList.toggle("on", on);
         };
         sync();
+        pushSyncFns.push(sync);
         pushBtn.addEventListener("click", () => { P.setCorrPushed(exoKey, !P.isCorrPushed(exoKey)); sync(); });
         box.appendChild(pushBtn);
       }
@@ -1894,7 +2005,20 @@ except Exception:
   }
 
   // Affiche/masque les corrigés d'exercices selon ce que le prof a poussé (par exercice).
+  // Insère le nœud corrigé quand il est poussé, et le RETIRE du DOM de l'élève sinon.
   function refreshExoCorrections(root) {
+    exoCorrMap.forEach((entry, key) => {
+      // Slot pas (encore) dans le document : bloc en cours de construction ou vue
+      // quittée. On n'y touche pas — la Map est vidée au prochain renderTheme.
+      if (!entry.slot.isConnected && !(root && root.contains(entry.slot))) return;
+      const pushed = P.isCorrPushed(key);
+      const node = entry.slot.querySelector(".exo-corrige");
+      if ((pushed || P.isTeacher()) && !node) {
+        entry.slot.appendChild(entry.buildCorr());
+      } else if (!pushed && !P.isTeacher() && node) {
+        node.remove();
+      }
+    });
     (root || document).querySelectorAll(".exo-corrige").forEach((c) => {
       c.classList.toggle("pushed", P.isCorrPushed(c.dataset.exoKey));
     });
@@ -2006,7 +2130,7 @@ except Exception:
   function renderProjectsHome() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, `🏝️ Projets en îlots`));
@@ -2096,7 +2220,7 @@ except Exception:
     viewTheme.innerHTML = "";
 
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "🏝️ Projets en îlots");
+    const crumb = el("button", "crumb", "🏝️ Projets en îlots");
     crumb.addEventListener("click", () => navigate("projets"));
     header.appendChild(crumb);
     const lv = NIVEAU_BADGE[p.niveau] || NIVEAU_BADGE.facile;
@@ -2200,7 +2324,7 @@ except Exception:
   function renderGlossary() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "📖 Glossaire NSI"));
@@ -2270,7 +2394,7 @@ except Exception:
   function renderBO() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "✅ Conformité au programme (BO)"));
@@ -2344,7 +2468,7 @@ except Exception:
   function renderProgression() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "🗓️ Progression annuelle"));
@@ -2400,7 +2524,7 @@ except Exception:
   function renderMethodes() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "🧭 Fiches méthode"));
@@ -2433,7 +2557,7 @@ except Exception:
   function renderEvaluations() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "📝 Évaluations"));
@@ -2478,7 +2602,7 @@ except Exception:
       );
       tools.appendChild(bPrint);
 
-      if (ev.corrige) {
+      if (ev.corrige && P.isTeacher()) {
         const det = el("details", "corrige teacher-block");
         det.appendChild(el("summary", null, "🔑 Corrigé (enseignant)"));
         det.appendChild(el("div", "corrige-body", ev.corrige));
@@ -2745,6 +2869,7 @@ except Exception:
   }
 
   function makeLogisimBlock() {
+    if (typeof LOGISIM_PLATFORM === "undefined" || typeof LOGISIM_CIRCUITS === "undefined") return el("div", "logisim-block");
     const wrap = el("div", "logisim-block");
     wrap.appendChild(
       el(
@@ -2900,7 +3025,7 @@ except Exception:
   function renderTP() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "🧪 TP guidés (DIU)"));
@@ -2950,7 +3075,7 @@ except Exception:
         viewTheme.appendChild(el("h2", "home-h2", "🐍 Mini-projets Python"));
         mps.forEach((p) => viewTheme.appendChild(makeMiniProjet(p)));
       }
-      if (tpFilter === "all" || tpFilter === "architecture-os") {
+      if ((tpFilter === "all" || tpFilter === "architecture-os") && typeof LOGISIM_CIRCUITS !== "undefined" && typeof LOGISIM_PLATFORM !== "undefined") {
         viewTheme.appendChild(el("h2", "home-h2", "🔌 Circuits Logisim (Architectures)"));
         viewTheme.appendChild(makeLogisimBlock());
       }
@@ -3085,10 +3210,10 @@ except Exception:
 
   /* ---------------- Espace « Ma classe » (prof) ---------------- */
   let selectedClassId = null;
-  function renderClasse() {
+  function renderClasse(isLiveRefresh) {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "🏫 Ma classe"));
@@ -3115,18 +3240,18 @@ except Exception:
 
     if (!classes.length) {
       viewTheme.appendChild(el("div", "info-callout", "👋 Commence par créer une classe avec « + Nouvelle classe »."));
-      scrollTop();
+      if (!isLiveRefresh) scrollTop();
       return;
     }
 
     const cls = P.getClass(selectedClassId);
-    if (!cls) { selectedClassId = classes[0].id; return renderClasse(); }
+    if (!cls) { selectedClassId = classes[0].id; return renderClasse(isLiveRefresh); }
 
     // En-tête classe : code + corrigés + suppression
     const head = el("div", "classe-head");
     head.innerHTML =
       `<div><span class="muted-text">Code de classe (à donner aux élèves)</span>` +
-      `<div class="classe-code">${cls.code}</div></div>`;
+      `<div class="classe-code">${escapeHtml(cls.code)}</div></div>`;
     const pushWrap = el("label", "switch-wrap");
     const pushed = P.isCorrectionsPushed(cls.id);
     pushWrap.innerHTML = `<input type="checkbox" ${pushed ? "checked" : ""}> Pousser les corrigés aux élèves`;
@@ -3156,14 +3281,15 @@ except Exception:
           const prog = P.getProgress(st.uid);
           const sum = statsFrom(prog.qcm, prog.exos, prog.activite);
           const nbCap = Object.values(prog.capacites || {}).filter(Boolean).length;
+          const alerte = sum.qcmFaits > 0 && sum.reussite < 50;
           return (
-            `<tr data-uid="${st.uid}">` +
-            `<td><strong>${escapeHtml(st.name)}</strong></td>` +
+            `<tr data-uid="${st.uid}"${alerte ? ' class="row-alert"' : ""}>` +
+            `<td><strong>${alerte ? '<span title="réussite < 50 % : élève à accompagner">⚠️</span> ' : ""}${escapeHtml(st.name)}</strong></td>` +
             `<td class="num" title="thèmes travaillés · ${sum.activites} activité(s) au total">${sum.progression} %</td>` +
             `<td class="num" title="${sum.themesValidés} thème(s) au QCM parfait">${sum.themesValidés}/${COURSES.length}</td>` +
             `<td class="num" title="réussite moyenne aux QCM faits">${sum.reussite} %</td>` +
             `<td class="num">${nbCap}</td>` +
-            `<td><input class="note-input" value="${escapeHtml(prog.note || "")}" placeholder="note/appréc."></td>` +
+            `<td class="note-td"></td>` +
             `<td><button class="btn secondary btn-detail">Capacités</button> <button class="btn secondary btn-del">✕</button></td>` +
             `</tr>`
           );
@@ -3173,22 +3299,57 @@ except Exception:
         `<table><tr><th>Élève</th><th>Progression</th><th>Validés</th><th>Réussite</th><th>Capacités</th><th>Note / appréciation</th><th></th></tr>${rows}</table>`;
       tbl.querySelectorAll("tr[data-uid]").forEach((tr) => {
         const u = tr.dataset.uid;
-        tr.querySelector(".note-input").addEventListener("change", (e) => P.setNote(u, e.target.value));
+        // Champ note construit par el() (jamais interpolé en HTML) : valeur posée par propriété.
+        const inp = el("input", "note-input");
+        inp.placeholder = "note/appréc.";
+        inp.value = P.getProgress(u).note || "";
+        inp.addEventListener("change", () => P.setNote(u, inp.value));
+        inp.addEventListener("blur", () => {
+          if (window.__classeRefreshPending) {
+            window.__classeRefreshPending = false;
+            renderClasse(true);
+          }
+        });
+        tr.querySelector(".note-td").appendChild(inp);
         tr.querySelector(".btn-del").addEventListener("click", () => {
           if (confirm("Retirer cet élève ?")) { P.removeStudent(u); renderClasse(); }
         });
         tr.querySelector(".btn-detail").addEventListener("click", () => openCapacites(u, students.find((s) => s.uid === u).name));
       });
       viewTheme.appendChild(tbl);
+
+      // Export CSV (Excel/LibreOffice) de la classe affichée
+      const bCsv = el("button", "btn secondary", "⬇️ Export CSV");
+      bCsv.addEventListener("click", () => {
+        const clean = (v) => String(v == null ? "" : v).replace(/;/g, ",").replace(/\r?\n/g, " ");
+        const lignes = students.map((st) => {
+          const prog = P.getProgress(st.uid);
+          const sum = statsFrom(prog.qcm, prog.exos, prog.activite);
+          const nbCap = Object.values(prog.capacites || {}).filter(Boolean).length;
+          return [clean(st.name), sum.progression, sum.reussite, sum.themesValidés, nbCap, clean(prog.note)].join(";");
+        });
+        const csv = "\uFEFF" + ["Élève;Progression%;Réussite%;Validés;Capacités;Note"].concat(lignes).join("\r\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = (cls.name || "classe").replace(/[^\w\-]+/g, "_") + ".csv";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+      bCsv.style.marginTop = ".8rem";
+      viewTheme.appendChild(bCsv);
     }
-    scrollTop();
+    if (!isLiveRefresh) scrollTop();
   }
 
   // Grille des capacités BO d'un élève (cochables par le prof)
   function openCapacites(studentUid, name) {
     const prog = P.getProgress(studentUid);
     const wrap = el("div", "extra-block");
-    wrap.appendChild(el("h2", null, "✅ Capacités — " + name));
+    wrap.appendChild(el("h2", null, "✅ Capacités — " + escapeHtml(name)));
     COURSES.slice().sort((a, b) => a.num - b.num).forEach((c) => {
       const det = el("details", "cap-theme");
       const done = (c.capacites || []).filter((_, i) => prog.capacites[c.id + ":" + i]).length;
@@ -3208,7 +3369,7 @@ except Exception:
     });
     // remplace la vue par la grille, avec retour
     viewTheme.innerHTML = "";
-    const back = el("span", "crumb", "← Retour à la classe");
+    const back = el("button", "crumb", "← Retour à la classe");
     back.addEventListener("click", () => renderClasse());
     viewTheme.appendChild(back);
     viewTheme.appendChild(wrap);
@@ -3219,7 +3380,7 @@ except Exception:
   function renderTeachers() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "👤 Comptes professeurs"));
@@ -3292,7 +3453,7 @@ except Exception:
   function renderDebranche() {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "🎲 Activités débranchées"));
@@ -3327,7 +3488,7 @@ except Exception:
     const base = typeof DIDACTIQUE_BASE !== "undefined" ? DIDACTIQUE_BASE : "";
 
     const header = el("div", "theme-header");
-    const crumb = el("span", "crumb", "⌂ Accueil");
+    const crumb = el("button", "crumb", "⌂ Accueil");
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, `📚 Enseigner la NSI en ${NIV.label}`));
@@ -3631,6 +3792,7 @@ except Exception:
       renderGlossary();
       location.hash = "glossaire";
     } else if (target === "progression") {
+      if (!P.isTeacher()) return navigate("home");
       showThemeView("progression");
       renderProgression();
       location.hash = "progression";
@@ -3639,10 +3801,12 @@ except Exception:
       renderMethodes();
       location.hash = "methodes";
     } else if (target === "evaluations") {
+      if (!P.isTeacher()) return navigate("home");
       showThemeView("evaluations");
       renderEvaluations();
       location.hash = "evaluations";
     } else if (target === "bo") {
+      if (!P.isTeacher()) return navigate("home");
       showThemeView("bo");
       renderBO();
       location.hash = "bo";
@@ -3753,7 +3917,12 @@ except Exception:
       if (noteCard) fillStudentNote(noteCard); // note mise à jour en direct
     }
     if (P.isTeacher() && location.hash.replace("#", "") === "classe" && !document.querySelector(".cap-theme")) {
-      renderClasse();
+      // Ne pas re-rendre pendant que le prof tape une note : on diffère au blur.
+      if (document.activeElement && document.activeElement.classList.contains("note-input")) {
+        window.__classeRefreshPending = true;
+      } else {
+        renderClasse(true);
+      }
     }
   }
   P.onData = handlePlatformData;

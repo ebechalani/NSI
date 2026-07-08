@@ -2,7 +2,7 @@
    GLOSSAIRE NSI — Terminale
    Définitions courtes, classées par thème, recherchables.
    theme : id du thème associé (sert au filtre et aux liens).
-   Pour l'instant : termes du thème « Structures de données ».
+   Les 6 thèmes du programme de Terminale sont couverts.
    ===================================================================== */
 
 const GLOSSARY = [
@@ -21,6 +21,8 @@ const GLOSSARY = [
   { terme: "Parcours infixe", theme: "term-structures", def: "Parcours gauche → racine → droite ; sur un ABR, il ressort les valeurs triées." },
   { terme: "Graphe", theme: "term-structures", def: "Ensemble de sommets reliés par des arêtes, pour modéliser des relations." },
   { terme: "Liste d'adjacence", theme: "term-structures", def: "Représentation d'un graphe associant à chaque sommet la liste de ses voisins (souvent un dictionnaire)." },
+  { terme: "Matrice d'adjacence", theme: "term-structures", def: "Représentation d'un graphe par un tableau : la case (i, j) vaut 1 s'il existe une arête entre les sommets i et j (matrice symétrique si le graphe est non orienté)." },
+  { terme: "Cycle (graphe)", theme: "term-structures", def: "Chemin qui revient à son sommet de départ sans réutiliser la même arête ; se détecte par un DFS avec suivi du parent (graphe non orienté)." },
   { terme: "Parcours en largeur (BFS)", theme: "term-structures", def: "Exploration d'un graphe niveau par niveau, à l'aide d'une file." },
   { terme: "Parcours en profondeur (DFS)", theme: "term-structures", def: "Exploration d'un graphe en s'enfonçant le plus loin possible, à l'aide d'une pile." },
 
@@ -53,7 +55,8 @@ const GLOSSARY = [
   { terme: "Tri fusion", theme: "term-algo", def: "Tri « diviser pour régner » : couper en deux, trier chaque moitié, fusionner ; coût O(n log n)." },
   { terme: "Programmation dynamique", theme: "term-algo", def: "Résolution par sous-problèmes répétés et mémorisation des résultats (ex. rendu de monnaie optimal)." },
   { terme: "Dijkstra", theme: "term-algo", def: "Algorithme du plus court chemin depuis une source dans un graphe à poids positifs." },
-  { terme: "k plus proches voisins (k-NN)", theme: "term-algo", def: "Méthode de classification : on attribue à un point l'étiquette majoritaire de ses k voisins les plus proches." },
+  { terme: "k plus proches voisins (k-NN)", theme: "term-algo", def: "Méthode de classification : on attribue à un point l'étiquette majoritaire de ses k voisins les plus proches (rappel de Première)." },
+  { terme: "Boyer-Moore (règle du mauvais caractère)", theme: "term-algo", def: "Algorithme de recherche de motif : on compare le motif de droite à gauche et, en cas d'échec, une table du dernier indice de chaque caractère permet de sauter plusieurs positions d'un coup." },
 
   { terme: "Machine de Turing", theme: "term-histoire", def: "Modèle théorique du calcul (Turing, 1936) qui définit ce qui est calculable par un algorithme." },
   { terme: "Architecture de von Neumann", theme: "term-histoire", def: "Organisation d'un ordinateur où le programme est stocké dans la même mémoire que les données (1945)." },
@@ -61,7 +64,9 @@ const GLOSSARY = [
   { terme: "ARPANET / TCP-IP", theme: "term-histoire", def: "Ancêtre d'Internet et protocoles (Cerf & Kahn) permettant à des réseaux différents de communiquer." },
   { terme: "World Wide Web", theme: "term-histoire", def: "Service de pages liées par hypertexte (Berners-Lee, 1989-1991), distinct d'Internet (le réseau)." },
 
+  { terme: "Système sur puce (SoC)", theme: "term-archi-reseaux", def: "Puce unique intégrant CPU, GPU, mémoire, modem radio et contrôleurs d'entrées/sorties (smartphones, Raspberry Pi) : compacte et économe, mais non évolutive et difficile à refroidir." },
   { terme: "Système d'exploitation (OS)", theme: "term-archi-reseaux", def: "Logiciel qui gère et partage les ressources de la machine (processus, mémoire, fichiers, périphériques)." },
+  { terme: "PID / PPID", theme: "term-archi-reseaux", def: "Numéro unique d'un processus / numéro de son processus parent ; tout processus est créé par un parent (commandes ps -ef, pstree)." },
   { terme: "Processus", theme: "term-archi-reseaux", def: "Programme en cours d'exécution, avec son état (mémoire, position) ; distinct du fichier programme." },
   { terme: "Ordonnanceur", theme: "term-archi-reseaux", def: "Composant de l'OS qui répartit le temps de processeur entre les processus (ex. round-robin)." },
   { terme: "Interblocage (deadlock)", theme: "term-archi-reseaux", def: "Situation où des processus s'attendent mutuellement et ne peuvent plus avancer (dîner des philosophes)." },

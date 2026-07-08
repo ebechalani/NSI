@@ -5,9 +5,9 @@
    spécialité « Numérique et Sciences Informatiques »).
    Chaque thème reprend les "capacités attendues" du BO.
 
-   ⚠️ SQUELETTE : seul le thème « Structures de données » est entièrement
-   développé (démonstration). Les autres thèmes contiennent l'intro, les
-   capacités du BO et une section « à compléter » — on les remplit ensemble.
+   ✅ Les 6 thèmes du programme sont entièrement développés : cours,
+   cellules Python exécutables (Pyodide + Basthon), exercices, QCM et
+   glossaire (voir terminale/exercises.js, quizzes.js, glossary.js).
    ===================================================================== */
 
 const COURSES = [
@@ -142,7 +142,9 @@ for n in [2, 8, 16, 256, 1000]:
       "Spécifier et implémenter les structures linéaires : listes, piles (LIFO) et files (FIFO).",
       "Distinguer une recherche dans une liste d'une recherche dans un dictionnaire (par clé).",
       "Identifier des situations nécessitant une structure arborescente ; évaluer quelques mesures d'un arbre binaire (taille, hauteur) ; le parcourir (préfixe, infixe, suffixe, en largeur).",
+      "Rechercher/insérer une clé dans un arbre binaire de recherche.",
       "Modéliser des situations à l'aide de graphes ; écrire les implémentations d'un graphe (matrice d'adjacence, listes d'adjacence) et passer de l'une à l'autre ; le parcourir (en profondeur, en largeur).",
+      "Repérer la présence d'un cycle dans un graphe.",
     ],
     sections: [
       {
@@ -328,8 +330,11 @@ print("Hauteur :", hauteur(arbre))  # 3 (chemin 7 -> 3 -> 1 ou 7 -> 3 -> 5)`,
           <li><strong>Infixe</strong> : gauche, puis racine, puis droite ;</li>
           <li><strong>Suffixe</strong> : gauche, puis droite, puis racine.</li>
         </ul>
-        <p>Détail important : pour un <strong>arbre binaire de recherche</strong> (ABR), où tout ce qui est à gauche d'un nœud est plus petit et tout ce qui est à droite est plus grand, le parcours <strong>infixe</strong> ressort les valeurs <strong>dans l'ordre croissant</strong>. C'est ce qui rend les ABR si pratiques pour ranger et rechercher.</p>`,
-        code: `arbre = (7, (3, (1, None, None), (5, None, None)), (9, None, None))
+        <p>À ces trois parcours <em>en profondeur</em> s'ajoute le parcours <strong>en largeur</strong> : on visite l'arbre <strong>niveau par niveau</strong> (la racine, puis ses fils, puis les fils de ses fils…). Comme pour un graphe, on s'appuie sur une <strong>file</strong> (FIFO) : on défile un nœud, on le traite, et on enfile ses deux fils.</p>
+        <p>Détail important : pour un <strong>arbre binaire de recherche</strong> (ABR), où tout ce qui est à gauche d'un nœud est plus petit et tout ce qui est à droite est plus grand, le parcours <strong>infixe</strong> ressort les valeurs <strong>dans l'ordre croissant</strong>. C'est ce qui rend les ABR si pratiques pour ranger et rechercher (section suivante).</p>`,
+        code: `from collections import deque
+
+arbre = (7, (3, (1, None, None), (5, None, None)), (9, None, None))
 
 def infixe(a):
     if a is None:
@@ -343,8 +348,84 @@ def prefixe(a):
     valeur, gauche, droite = a
     return [valeur] + prefixe(gauche) + prefixe(droite)
 
+def suffixe(a):
+    if a is None:
+        return []
+    valeur, gauche, droite = a
+    return suffixe(gauche) + suffixe(droite) + [valeur]
+
+def largeur(a):
+    """Parcours en largeur : niveau par niveau, grâce à une FILE (deque)."""
+    if a is None:
+        return []
+    resultat = []
+    file = deque([a])
+    while file:
+        valeur, gauche, droite = file.popleft()
+        resultat.append(valeur)
+        if gauche is not None:
+            file.append(gauche)
+        if droite is not None:
+            file.append(droite)
+    return resultat
+
 print("Infixe  :", infixe(arbre))   # [1, 3, 5, 7, 9]  -> trié (c'est un ABR)
-print("Préfixe :", prefixe(arbre))  # [7, 3, 1, 5, 9]`,
+print("Préfixe :", prefixe(arbre))  # [7, 3, 1, 5, 9]
+print("Suffixe :", suffixe(arbre))  # [1, 5, 3, 9, 7]  -> la racine en DERNIER
+print("Largeur :", largeur(arbre))  # [7, 3, 9, 1, 5]  -> niveau par niveau`,
+      },
+      {
+        title: "L'arbre binaire de recherche : rechercher et insérer une clé",
+        html: `
+        <p>Un <strong>arbre binaire de recherche</strong> (ABR) est un arbre binaire qui respecte partout le même <strong>invariant</strong> : pour chaque nœud, <strong>tout le sous-arbre gauche &lt; racine &lt; tout le sous-arbre droit</strong>. Cet ordre change tout : pour chercher une clé, on n'explore <em>jamais</em> tout l'arbre.</p>
+        <ul>
+          <li><strong>Rechercher</strong> une clé <code>c</code> : on compare à la racine. Égale ? trouvé. Plus petite ? elle ne peut être qu'<strong>à gauche</strong>. Plus grande ? qu'<strong>à droite</strong>. À chaque étape, on <strong>élimine tout un sous-arbre</strong>.</li>
+          <li><strong>Insérer</strong> une clé : on descend exactement comme pour la recherche, et on accroche la nouvelle clé à la place vide où la descente s'arrête. L'invariant est préservé.</li>
+        </ul>
+        <p>Le coût de ces deux opérations est en <strong>O(hauteur)</strong> : si l'arbre est <strong>équilibré</strong>, la hauteur vaut environ log₂(n) — chercher parmi un million de clés ne demande qu'une vingtaine de comparaisons, comme la dichotomie.</p>
+        <p class="warnbox">⚠️ <strong>Le cas dégénéré : l'arbre « peigne ».</strong> Si on insère des clés déjà triées (1, 2, 3, 4…), chaque clé part à droite de la précédente : l'arbre devient un long fil de hauteur n. La recherche retombe alors à <strong>O(n)</strong>, comme dans une liste ! L'efficacité d'un ABR dépend de son <strong>équilibre</strong> (des variantes auto-équilibrées existent, hors programme).</p>
+        <p>Nos arbres sont des <strong>tuples</strong> <code>(valeur, gauche, droite)</code> — et un tuple est <strong>immuable</strong> : impossible de le modifier. Alors comment insérer ? On <strong>reconstruit</strong> : <code>inserer</code> renvoie un <em>nouvel</em> arbre, en rebâtissant uniquement la branche parcourue (le reste est réutilisé tel quel).</p>`,
+        code: `# ABR représenté par des tuples (valeur, gauche, droite) ; None = arbre vide
+
+def recherche(a, c):
+    """La clé c est-elle dans l'ABR a ? Coût O(hauteur)."""
+    if a is None:
+        return False              # arbre vide : c n'y est pas
+    valeur, gauche, droite = a
+    if c == valeur:
+        return True
+    if c < valeur:
+        return recherche(gauche, c)   # c ne peut être qu'à gauche
+    return recherche(droite, c)       # sinon, qu'à droite
+
+def inserer(a, c):
+    """Renvoie un NOUVEL ABR contenant c (les tuples sont immuables :
+    on reconstruit la branche parcourue, le reste est partagé)."""
+    if a is None:
+        return (c, None, None)                        # nouvelle feuille
+    valeur, gauche, droite = a
+    if c < valeur:
+        return (valeur, inserer(gauche, c), droite)   # on rebâtit à gauche
+    if c > valeur:
+        return (valeur, gauche, inserer(droite, c))   # on rebâtit à droite
+    return a                                          # c déjà présente
+
+def infixe(a):
+    if a is None:
+        return []
+    valeur, gauche, droite = a
+    return infixe(gauche) + [valeur] + infixe(droite)
+
+# On construit l'ABR en insérant les clés une à une dans l'arbre vide
+abr = None
+for cle in [7, 3, 9, 1, 5]:
+    abr = inserer(abr, cle)
+
+print("Infixe :", infixe(abr))   # [1, 3, 5, 7, 9] -> trié : l'invariant est respecté
+print(recherche(abr, 5))         # True
+print(recherche(abr, 6))         # False
+abr = inserer(abr, 6)
+print("Infixe :", infixe(abr))   # [1, 3, 5, 6, 7, 9] -> 6 a trouvé sa place`,
       },
       {
         title: "Les graphes : modéliser des relations",
@@ -380,6 +461,151 @@ def parcours_largeur(g, depart):
 print(parcours_largeur(graphe, "Ava"))  # ['Ava', 'Bilal', 'Chloé', 'Dan']`,
       },
       {
+        title: "Matrice ou listes d'adjacence : passer de l'une à l'autre",
+        html: `
+        <p>Le BO demande de savoir écrire <strong>les deux implémentations</strong> d'un graphe <em>et de passer de l'une à l'autre</em>. Reprenons exactement le même réseau d'amis :</p>
+        <ul>
+          <li><strong>Matrice d'adjacence</strong> : on numérote les sommets (Ava = 0, Bilal = 1, Chloé = 2, Dan = 3) ; la case <code>matrice[i][j]</code> vaut 1 s'il y a une arête entre i et j, 0 sinon. Pour un graphe <em>non orienté</em>, la matrice est <strong>symétrique</strong>.</li>
+          <li><strong>Listes d'adjacence</strong> : un dictionnaire qui associe à chaque sommet la liste de ses voisins.</li>
+        </ul>
+        <p>Quand préférer l'une ou l'autre ? La matrice répond en O(1) à « i et j sont-ils voisins ? » mais occupe toujours n² cases ; les listes sont compactes quand le graphe a peu d'arêtes et donnent directement les voisins d'un sommet. Les deux décrivent <strong>le même graphe</strong> — la preuve : on convertit dans les deux sens.</p>`,
+        code: `# Le MÊME graphe écrit de deux façons
+sommets = ["Ava", "Bilal", "Chloé", "Dan"]   # Ava = 0, Bilal = 1, Chloé = 2, Dan = 3
+
+# 1) Matrice d'adjacence : matrice[i][j] = 1 si arête entre sommets i et j
+matrice = [
+    [0, 1, 1, 0],    # Ava   : reliée à Bilal et Chloé
+    [1, 0, 0, 1],    # Bilal : relié à Ava et Dan
+    [1, 0, 0, 1],    # Chloé : reliée à Ava et Dan
+    [0, 1, 1, 0],    # Dan   : relié à Bilal et Chloé
+]
+
+# 2) Listes d'adjacence : un dictionnaire sommet -> liste des voisins
+listes = {
+    "Ava":   ["Bilal", "Chloé"],
+    "Bilal": ["Ava", "Dan"],
+    "Chloé": ["Ava", "Dan"],
+    "Dan":   ["Bilal", "Chloé"],
+}
+
+def matrice_vers_listes(m, noms):
+    g = {}
+    for i in range(len(noms)):
+        g[noms[i]] = [noms[j] for j in range(len(noms)) if m[i][j] == 1]
+    return g
+
+def listes_vers_matrice(g, noms):
+    n = len(noms)
+    m = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if noms[j] in g[noms[i]]:
+                m[i][j] = 1
+    return m
+
+print(matrice_vers_listes(matrice, sommets) == listes)   # True
+print(listes_vers_matrice(listes, sommets) == matrice)   # True
+# Les deux représentations décrivent bien le même graphe.`,
+      },
+      {
+        title: "Le parcours en profondeur (DFS) : s'enfoncer avant d'élargir",
+        html: `
+        <p>Le parcours en largeur (BFS) explore « en cercles concentriques » autour du départ. Le <strong>parcours en profondeur</strong> (DFS, <em>Depth-First Search</em>) fait l'inverse : il <strong>s'enfonce le plus loin possible</strong> le long d'un chemin, et ne revient en arrière que lorsqu'il est bloqué — comme on explore un labyrinthe en suivant un mur.</p>
+        <p>Le secret est le changement de structure : on remplace la <strong>file</strong> (FIFO) du BFS par une <strong>pile</strong> (LIFO). Le dernier sommet découvert est le premier exploré : c'est exactement ce qui fait « descendre » le parcours.</p>
+        <p>Deux écritures équivalentes :</p>
+        <ul>
+          <li><strong>itérative</strong> : une pile explicite (une simple <code>list</code> avec <code>append</code>/<code>pop</code>) ;</li>
+          <li><strong>récursive</strong> : aucune pile visible… car c'est la <strong>pile d'appels</strong> de Python qui joue ce rôle !</li>
+        </ul>
+        <p>Comparons les deux ordres de visite sur <strong>le même graphe</strong> que le BFS :</p>`,
+        code: `from collections import deque
+
+graphe = {
+    "Ava":   ["Bilal", "Chloé"],
+    "Bilal": ["Ava", "Dan"],
+    "Chloé": ["Ava", "Dan"],
+    "Dan":   ["Bilal", "Chloé"],
+}
+
+def parcours_largeur(g, depart):
+    """Rappel : BFS avec une FILE (deque)."""
+    vus = [depart]
+    file = deque([depart])
+    while file:
+        s = file.popleft()
+        for voisin in g[s]:
+            if voisin not in vus:
+                vus.append(voisin)
+                file.append(voisin)
+    return vus
+
+def parcours_profondeur(g, depart):
+    """DFS version ITÉRATIVE : une PILE (une simple list)."""
+    vus = []
+    pile = [depart]
+    while pile:
+        s = pile.pop()                 # on dépile le DERNIER découvert (LIFO)
+        if s not in vus:
+            vus.append(s)
+            for voisin in reversed(g[s]):   # reversed : pour explorer les voisins dans l'ordre
+                if voisin not in vus:
+                    pile.append(voisin)
+    return vus
+
+def parcours_profondeur_rec(g, s, vus=None):
+    """DFS version RÉCURSIVE : la pile est celle des appels de fonctions."""
+    if vus is None:
+        vus = []
+    vus.append(s)
+    for voisin in g[s]:
+        if voisin not in vus:
+            parcours_profondeur_rec(g, voisin, vus)
+    return vus
+
+print("BFS (file) :", parcours_largeur(graphe, "Ava"))
+print("DFS (pile) :", parcours_profondeur(graphe, "Ava"))
+print("DFS (réc.) :", parcours_profondeur_rec(graphe, "Ava"))
+# BFS : ['Ava', 'Bilal', 'Chloé', 'Dan'] -> on élargit d'abord (Chloé avant Dan)
+# DFS : ['Ava', 'Bilal', 'Dan', 'Chloé'] -> on s'enfonce d'abord (Dan avant Chloé)`,
+      },
+      {
+        title: "Détecter un cycle dans un graphe",
+        html: `
+        <p>Un <strong>cycle</strong> est un chemin qui revient à son point de départ sans réutiliser la même arête. Savoir en repérer un est utile partout : détecter un interblocage entre processus, vérifier qu'un réseau électrique ne boucle pas, s'assurer qu'un plan de tâches « A avant B » est réalisable…</p>
+        <p>L'outil est… le <strong>DFS</strong> que l'on vient d'écrire, avec une astuce : dans un graphe <strong>non orienté</strong>, pendant le parcours, on retient pour chaque sommet <strong>d'où l'on vient</strong> (son <em>parent</em>).</p>
+        <ul>
+          <li>Si l'on tombe sur un voisin <strong>jamais vu</strong> : on continue le DFS (il devient un fils).</li>
+          <li>Si l'on tombe sur un voisin <strong>déjà vu</strong> qui <strong>n'est pas le parent</strong> : on vient de refermer une boucle → <strong>cycle détecté !</strong> (Le parent, lui, est juste l'arête par laquelle on est arrivé : ce n'est pas un cycle.)</li>
+        </ul>
+        <p class="warnbox">⚠️ <strong>Variante pour un graphe orienté</strong> (hors de notre exemple) : le test du parent ne suffit plus. On colore les sommets en <strong>3 états</strong> — blanc (jamais visité), gris (en cours de visite, encore dans la pile d'appels), noir (visite terminée). Retomber sur un sommet <strong>gris</strong> signale un cycle ; retomber sur un noir, non.</p>`,
+        code: `def contient_cycle(g):
+    """Détection de cycle dans un graphe NON ORIENTÉ : DFS + suivi du parent."""
+    vus = set()
+
+    def dfs(s, parent):
+        vus.add(s)
+        for voisin in g[s]:
+            if voisin not in vus:
+                if dfs(voisin, s):        # on descend en retenant d'où l'on vient
+                    return True
+            elif voisin != parent:        # déjà vu et PAS notre parent -> cycle !
+                return True
+        return False
+
+    for depart in g:                      # le graphe peut être en plusieurs morceaux
+        if depart not in vus and dfs(depart, None):
+            return True
+    return False
+
+# Un carré A-B-C-D-A : il y a un cycle
+carre = {"A": ["B", "D"], "B": ["A", "C"], "C": ["B", "D"], "D": ["A", "C"]}
+# Une simple chaîne A-B-C : pas de cycle
+chaine = {"A": ["B"], "B": ["A", "C"], "C": ["B"]}
+
+print(contient_cycle(carre))    # True  (A -> B -> C -> D -> A)
+print(contient_cycle(chaine))   # False (on peut toujours revenir, jamais boucler)`,
+      },
+      {
         title: "Bien choisir : un récapitulatif",
         html: `
         <p>Le réflexe de Terminale : avant de coder, se demander « <strong>de quelle structure ai-je besoin ?</strong> » selon les opérations dominantes.</p>
@@ -393,7 +619,30 @@ print(parcours_largeur(graphe, "Ava"))  # ['Ava', 'Bilal', 'Chloé', 'Dan']`,
           <tr><td>Retrouver par une clé</td><td>Dictionnaire</td><td>Accès direct ≈ immédiat, sans parcourir.</td></tr>
           <tr><td>Représenter des relations</td><td>Graphe</td><td>Sommets + arêtes ; parcours BFS/DFS.</td></tr>
         </table>
-        <p class="note">🎯 Activité débranchée (en îlot) : avec des gobelets empilables et une file d'élèves, faites « jouer » une pile puis une file, et notez à voix haute LIFO / FIFO à chaque opération. Puis modélisez les amitiés de l'îlot par un graphe au tableau et faites-en le parcours en largeur.</p>`,
+        <p class="note">🎯 Activité débranchée (en îlot) : avec des gobelets empilables et une file d'élèves, faites « jouer » une pile puis une file, et notez à voix haute LIFO / FIFO à chaque opération. Puis modélisez les amitiés de l'îlot par un graphe au tableau et faites-en le parcours en largeur.</p>
+        <p>Mesurons la différence <strong>liste vs dictionnaire</strong> pour la recherche par clé — la même donnée, deux coûts sans commune mesure :</p>`,
+        code: `import time
+
+# Le même annuaire (nom -> numéro), rangé de deux façons
+n = 200_000
+annuaire_liste = [("eleve" + str(i), i) for i in range(n)]     # liste de couples
+annuaire_dict = {"eleve" + str(i): i for i in range(n)}        # dictionnaire
+
+cible = "eleve" + str(n - 1)        # le PIRE cas pour la liste : tout au bout
+
+t0 = time.perf_counter()
+for nom, numero in annuaire_liste:  # LISTE : on parcourt élément par élément -> O(n)
+    if nom == cible:
+        trouve = numero
+t1 = time.perf_counter()
+
+trouve2 = annuaire_dict[cible]      # DICT : accès direct par la clé -> quasi O(1)
+t2 = time.perf_counter()
+
+print(f"Liste : {t1 - t0:.5f} s (parcours des {n} éléments)")
+print(f"Dict  : {t2 - t1:.6f} s (accès direct par clé)")
+# Le dictionnaire est des milliers de fois plus rapide : si on cherche
+# souvent PAR CLÉ, on choisit un dictionnaire, pas une liste.`,
       },
     ],
   },
@@ -463,6 +712,30 @@ print(parcours_largeur(graphe, "Ava"))  # ['Ava', 'Bilal', 'Chloé', 'Dan']`,
         </ul>
         <p>Grâce aux clés étrangères, on évite de recopier le nom de la classe dans chaque élève : l'information n'est écrite <strong>qu'une seule fois</strong>, et on relie les tables au besoin (par une <em>jointure</em>).</p>
         <p class="warnbox">⚠️ L'intégrité référentielle protège la base : le SGBD <strong>refusera</strong> d'insérer un élève dont <code>id_classe</code> ne correspond à aucune classe, ou de supprimer une classe encore référencée par des élèves.</p>`,
+      },
+      {
+        title: "Un schéma « malade » : repérer les anomalies",
+        html: `
+        <p>Le BO demande de savoir <strong>repérer des anomalies dans un schéma</strong>. Le symptôme numéro un : la <strong>redondance</strong>. Voici une table unique <code>emprunt</code> qu'un CDI mal conseillé pourrait utiliser :</p>
+        <table>
+          <tr><th>nom_eleve</th><th>classe</th><th>prof_principal</th><th>titre_livre</th><th>auteur</th><th>date_emprunt</th></tr>
+          <tr><td>Ada</td><td>TG1</td><td>M. Martin</td><td>1984</td><td>Orwell</td><td>2026-01-10</td></tr>
+          <tr><td>Ada</td><td>TG1</td><td>M. Martin</td><td>Dune</td><td>Herbert</td><td>2026-02-03</td></tr>
+          <tr><td>Alan</td><td>TG1</td><td>M. Martin</td><td>1984</td><td>Orwell</td><td>2026-02-15</td></tr>
+          <tr><td>Grace</td><td>1G2</td><td>Mme Curie</td><td>Fondation</td><td>Asimov</td><td>2026-03-01</td></tr>
+        </table>
+        <p>Tout est recopié à chaque emprunt… et chaque copie est une occasion d'incohérence :</p>
+        <ul>
+          <li><strong>Anomalie de mise à jour</strong> : si le professeur principal de TG1 change, il faut corriger <em>trois</em> lignes ; en oublier une et la base se contredit (M. Martin ici, M. Dupont là).</li>
+          <li><strong>Anomalie d'insertion</strong> : impossible d'enregistrer un nouveau livre (ou un nouvel élève) tant que personne ne l'a emprunté — il n'a pas de ligne où exister.</li>
+          <li><strong>Anomalie de suppression</strong> : si Grace rend son livre et qu'on efface sa ligne, on perd du même coup toute trace du livre « Fondation »… et de la classe 1G2 !</li>
+        </ul>
+        <p>Le remède : <strong>découper</strong> en plusieurs tables, une par « type d'objet », reliées par des clés étrangères — chaque information n'est écrite qu'<strong>une seule fois</strong> :</p>
+        <pre class="sql">eleve(<u>id</u>, nom, #id_classe)
+classe(<u>id</u>, nom, prof_principal)
+livre(<u>id</u>, titre, auteur)
+emprunt(<u>#id_eleve, #id_livre, date_emprunt</u>)</pre>
+        <p class="note">💡 Réflexe de diagnostic : si la <em>même</em> information apparaît sur <em>plusieurs</em> lignes d'une table, le schéma est probablement malade. On dit qu'on <strong>normalise</strong> le schéma en le découpant (la théorie complète est hors programme, le réflexe est au programme).</p>`,
       },
       {
         title: "Interroger : SELECT … FROM … WHERE",
@@ -605,6 +878,7 @@ VALUES (5, 'Margaret', 2, 17.0);</pre>
     intro:
       "Sous le code, il y a une machine et un réseau. On approfondit le rôle du système d'exploitation (processus, ordonnancement) et le fonctionnement d'Internet (paquets, routage, sécurisation des échanges).",
     capacites: [
+      "Identifier les principaux composants d'un système sur puce (SoC) sur un schéma et préciser leurs rôles fonctionnels.",
       "Décrire les principales caractéristiques d'un processus ; mettre en évidence le rôle de l'ordonnanceur et simuler son fonctionnement (ex. tourniquet / round-robin).",
       "Identifier une situation d'interblocage (deadlock).",
       "Utiliser quelques commandes du système d'exploitation pour gérer les processus et les fichiers.",
@@ -612,6 +886,32 @@ VALUES (5, 'Margaret', 2, 17.0);</pre>
       "Décrire les principes du chiffrement symétrique et asymétrique, et l'intérêt des protocoles sécurisés (HTTPS).",
     ],
     sections: [
+      {
+        title: "Le système sur puce (SoC) : un ordinateur sur quelques mm²",
+        html: `
+        <p>Ouvre un ordinateur de bureau : le processeur, la mémoire, la carte graphique, la carte réseau sont des <strong>composants séparés</strong>, enfichés sur une carte mère. Ouvre un smartphone : tout cela tient sur <strong>une seule puce</strong> de quelques millimètres carrés. C'est un <strong>système sur puce</strong> (<em>SoC</em>, <strong>System on a Chip</strong>) — le cœur des smartphones, tablettes, montres connectées, box Internet et nano-ordinateurs comme le Raspberry Pi.</p>
+        <p>Sur le silicium d'un SoC, on grave côte à côte les grands blocs fonctionnels (schéma simplifié) :</p>
+        <table>
+          <tr><th colspan="3" style="text-align:center">Système sur puce (SoC) — une seule puce</th></tr>
+          <tr>
+            <td><strong>CPU</strong><br>processeur (plusieurs cœurs) : exécute les instructions des programmes</td>
+            <td><strong>GPU</strong><br>processeur graphique : calcule l'affichage (écran, jeux, vidéo)</td>
+            <td><strong>Mémoire</strong><br>RAM (données et programmes en cours) et caches</td>
+          </tr>
+          <tr>
+            <td><strong>Modem radio</strong><br>4G/5G, Wi-Fi, Bluetooth, GPS : les communications sans fil</td>
+            <td><strong>Contrôleurs d'entrées/sorties</strong><br>écran tactile, caméra, USB, stockage, capteurs</td>
+            <td><strong>NPU / DSP</strong><br>unités spécialisées : IA (photos, voix), traitement du signal</td>
+          </tr>
+        </table>
+        <p>Pourquoi tout intégrer ? Deux avantages décisifs :</p>
+        <ul>
+          <li><strong>Compacité</strong> : plus de câbles ni de connecteurs entre composants — indispensable pour tenir dans une poche ;</li>
+          <li><strong>Consommation réduite</strong> : les données circulent sur quelques millimètres au lieu de traverser une carte mère. Moins de distance = moins d'énergie et plus de vitesse. C'est ce qui donne à un smartphone son autonomie d'une journée là où un PC chauffe et ventile.</li>
+        </ul>
+        <p class="warnbox">⚠️ En contrepartie, un SoC n'est <strong>pas évolutif</strong> : impossible d'ajouter de la RAM ou de changer le GPU comme sur un PC — tout est gravé une fois pour toutes. Et la <strong>dissipation thermique</strong> est délicate : tant de circuits si serrés chauffent, sans place pour un gros ventilateur ; le SoC doit se brider quand il surchauffe (<em>throttling</em>).</p>
+        <p class="note">💡 Lien avec l'histoire et la Première : un SoC reste une machine de <strong>von Neumann</strong> (processeur + mémoire + entrées/sorties, programme stocké en mémoire). C'est l'aboutissement de la miniaturisation commencée avec le premier microprocesseur, l'<strong>Intel 4004</strong> (1971) : hier un processeur sur une puce, aujourd'hui l'ordinateur entier.</p>`,
+      },
       {
         title: "Le système d'exploitation : chef d'orchestre de la machine",
         html: `
@@ -628,6 +928,8 @@ VALUES (5, 'Margaret', 2, 17.0);</pre>
         title: "Processus et ordonnancement",
         html: `
         <p>Un <strong>programme</strong> est un fichier sur le disque ; un <strong>processus</strong> est ce programme <em>en train de s'exécuter</em>, avec son état (mémoire, position dans le code…). Un même programme peut donner plusieurs processus.</p>
+        <p><strong>Comment naît un processus ?</strong> Toujours de la même façon : un processus existant — le <strong>parent</strong> — demande au système d'en créer un nouveau — son <strong>fils</strong>. Chaque processus reçoit un numéro unique, son <strong>PID</strong> (<em>Process IDentifier</em>), et connaît le PID de son parent (le <strong>PPID</strong>). Quand tu lances un programme depuis le terminal, le processus du terminal devient le parent du nouveau processus. De proche en proche, tous les processus forment un <strong>arbre généalogique</strong> dont la racine est le tout premier processus lancé au démarrage (PID 1, <code>init</code>/<code>systemd</code> sous Linux).</p>
+        <p class="note">🧪 À observer sous Linux : <code>ps -ef</code> liste tous les processus avec leur <strong>PID</strong> et le <strong>PPID</strong> de leur parent ; <code>pstree</code> dessine directement l'arbre des processus (encore un <strong>arbre</strong>, comme au thème Structures de données !).</p>
         <p>Un processeur ne traite qu'<strong>une instruction à la fois par cœur</strong>. Pourtant, des dizaines de processus semblent tourner « en même temps » : l'OS les fait avancer <strong>chacun à son tour, très vite</strong>. C'est le rôle de l'<strong>ordonnanceur</strong> (<em>scheduler</em>).</p>
         <p>Un processus passe par trois états principaux :</p>
         <ul>
@@ -695,7 +997,21 @@ tourniquet({"P1": 5, "P2": 3, "P3": 4}, quantum=2)`,
           <li><strong>RIP</strong> (<em>Routing Information Protocol</em>) — par <strong>vecteur de distance</strong> : chaque routeur choisit le chemin avec le <strong>moins de sauts</strong> (de routeurs traversés). Simple, mais ignore le débit des liens.</li>
           <li><strong>OSPF</strong> (<em>Open Shortest Path First</em>) — par <strong>état de liens</strong> : chaque routeur connaît la carte du réseau avec le <strong>coût</strong> de chaque lien, et calcule le plus court chemin… avec l'algorithme de <strong>Dijkstra</strong> (thème Algorithmique !). Plus efficace sur les grands réseaux.</li>
         </ul>
-        <p>Autrement dit, le « GPS d'Internet » (OSPF) est exactement l'algorithme de plus court chemin que vous avez codé. Réseau et algorithmique se rejoignent.</p>`,
+        <p>Autrement dit, le « GPS d'Internet » (OSPF) est exactement l'algorithme de plus court chemin que vous avez codé. Réseau et algorithmique se rejoignent.</p>
+        <p><strong>RIP et OSPF ne choisissent pas toujours la même route !</strong> Prenons un petit réseau de 5 routeurs, où deux chemins mènent de R1 à R5 :</p>
+        <table>
+          <tr><th>Liaison</th><th>Débit</th><th>Coût OSPF (∝ 1/débit)</th></tr>
+          <tr><td>R1 – R2</td><td>10 Mbit/s (lent)</td><td>10</td></tr>
+          <tr><td>R2 – R5</td><td>10 Mbit/s (lent)</td><td>10</td></tr>
+          <tr><td>R1 – R3</td><td>100 Mbit/s (rapide)</td><td>1</td></tr>
+          <tr><td>R3 – R4</td><td>100 Mbit/s (rapide)</td><td>1</td></tr>
+          <tr><td>R4 – R5</td><td>100 Mbit/s (rapide)</td><td>1</td></tr>
+        </table>
+        <ul>
+          <li><strong>RIP</strong> compte les <strong>sauts</strong> : R1→R2→R5 = 2 sauts, contre R1→R3→R4→R5 = 3 sauts. RIP choisit donc <strong>R1→R2→R5</strong>… en empruntant les liaisons lentes !</li>
+          <li><strong>OSPF</strong> additionne les <strong>coûts</strong> : via R2 : 10 + 10 = 20 ; via R3 et R4 : 1 + 1 + 1 = 3. OSPF choisit <strong>R1→R3→R4→R5</strong> : un saut de plus, mais dix fois plus rapide.</li>
+        </ul>
+        <p>La table de routage de R1 (pour la destination R5) diffère donc : « prochain saut = R2 » avec RIP, « prochain saut = R3 » avec OSPF. Même réseau, deux métriques, deux routes.</p>`,
       },
       {
         title: "Sécuriser les communications : le chiffrement",
@@ -848,7 +1164,8 @@ print(somme(100))        # 5050`,
         html: `
         <p>La récursivité peut être <strong>élégante mais coûteuse</strong>. L'exemple classique est la suite de <strong>Fibonacci</strong> : fib(n) = fib(n−1) + fib(n−2), avec fib(0)=0 et fib(1)=1.</p>
         <p>Écrite naïvement, fib(n) <strong>recalcule des milliers de fois</strong> les mêmes valeurs : fib(30) déclenche plus d'un million d'appels ! Le problème : on refait sans cesse le même travail.</p>
-        <p>La <strong>mémoïsation</strong> corrige cela : on <strong>retient</strong> (dans un dictionnaire) les résultats déjà calculés pour ne jamais les recalculer. C'est la porte d'entrée de la <strong>programmation dynamique</strong> (revue dans le thème Algorithmique).</p>`,
+        <p>La <strong>mémoïsation</strong> corrige cela : on <strong>retient</strong> (dans un dictionnaire) les résultats déjà calculés pour ne jamais les recalculer. C'est la porte d'entrée de la <strong>programmation dynamique</strong> (revue dans le thème Algorithmique).</p>
+        <p class="warnbox">⚠️ <strong>Le piège de <code>memo={}</code> en argument par défaut.</strong> En Python, la valeur par défaut d'un paramètre est créée <strong>une seule fois</strong>, à la définition de la fonction — pas à chaque appel ! Le dictionnaire <code>memo</code> est donc <strong>partagé entre tous les appels</strong> à <code>fib_memo</code>. Ici, c'est voulu (le cache survit et accélère les appels suivants), mais c'est un piège classique : une fonction qui accumule dans une liste par défaut <code>def f(x, resultats=[])</code> verra les résultats des appels précédents « réapparaître ». La version propre : <code>memo=None</code> puis <code>if memo is None: memo = {}</code> dans le corps de la fonction.</p>`,
         code: `# Version naïve : correcte mais TRÈS lente quand n grandit
 def fib_naif(n):
     if n < 2:
@@ -919,6 +1236,42 @@ import doctest
 print(doctest.testmod())   # TestResults(failed=0, attempted=2)`,
       },
       {
+        title: "Le bestiaire des bugs classiques",
+        html: `
+        <p>Certains bugs reviennent si souvent qu'ils ont un nom. Les connaître, c'est les repérer d'un coup d'œil — chez soi comme dans les questions « que fait ce programme ? » du bac.</p>
+        <ul>
+          <li><strong>Les flottants inexacts</strong> : les réels sont codés en binaire sur un nombre fini de bits ; 0.1 et 0.2 n'y sont pas exacts, donc <code>0.1 + 0.2 != 0.3</code> ! On ne teste <em>jamais</em> l'égalité de deux flottants, on compare leur écart à un petit seuil.</li>
+          <li><strong>L'effet de bord</strong> : affecter <code>b = a</code> ne copie pas une liste — les deux noms désignent <strong>le même objet</strong>. Modifier <code>b</code>, c'est modifier <code>a</code>.</li>
+          <li><strong>L'erreur d'une unité</strong> (<em>off-by-one</em>) : oublier que le dernier indice est <code>len(t) - 1</code>, ou que <code>range(n)</code> s'arrête à n−1. La cause n°1 des <code>IndexError</code> et des boucles qui traitent un élément de trop… ou de moins.</li>
+          <li><strong>Le <code>elif</code> manquant</strong> : des <code>if</code> successifs s'exécutent <em>tous</em> ; le dernier vrai « gagne » et écrase le résultat des précédents.</li>
+        </ul>`,
+        code: `# 1) Les flottants ne sont pas exacts
+print(0.1 + 0.2)                # 0.30000000000000004 !
+print(0.1 + 0.2 == 0.3)         # False
+print(abs((0.1 + 0.2) - 0.3) < 1e-9)   # True : la bonne façon de comparer
+
+# 2) L'effet de bord : b = a ne copie PAS la liste
+a = [1, 2, 3]
+b = a                    # b et a désignent LE MÊME objet
+b.append(4)
+print("a =", a)          # [1, 2, 3, 4] -> a a changé « tout seul » !
+c = list(a)              # ça, c'est une vraie copie
+c.append(5)
+print("a =", a)          # [1, 2, 3, 4] -> a est intact cette fois
+
+# 3) Off-by-one : le dernier indice est len - 1
+mots = ["un", "deux", "trois"]
+print(mots[len(mots) - 1])      # 'trois' (mots[3] lèverait IndexError)
+
+# 4) Le elif manquant : le dernier if vrai écrase les autres
+note = 18
+if note >= 16:
+    mention = "très bien"
+if note >= 12:                  # BUG : il fallait elif ! 18 >= 12 aussi...
+    mention = "assez bien"
+print(mention)                  # 'assez bien' au lieu de 'très bien'`,
+      },
+      {
         title: "Calculabilité & décidabilité : les limites du calcul",
         html: `
         <p>Question vertigineuse : <strong>existe-t-il des problèmes qu'aucun programme ne pourra jamais résoudre</strong>, même avec un ordinateur infiniment rapide ? La réponse, démontrée par <strong>Alan Turing</strong> en 1936, est <strong>oui</strong>.</p>
@@ -926,7 +1279,26 @@ print(doctest.testmod())   # TestResults(failed=0, attempted=2)`,
         <p class="note">🛑 <strong>Problème de l'arrêt :</strong> peut-on écrire un programme <code>arrete?(P, e)</code> qui, en lisant le code d'un programme <code>P</code> et une entrée <code>e</code>, dirait toujours correctement si <code>P</code> <em>s'arrête</em> ou <em>tourne à l'infini</em> sur <code>e</code> ? Turing a prouvé qu'un tel programme <strong>ne peut pas exister</strong>.</p>
         <p>L'idée de la preuve (par l'absurde) : si <code>arrete?</code> existait, on pourrait construire un programme « diabolique » qui s'arrête <em>si et seulement si</em> il ne s'arrête pas — une contradiction. Donc l'hypothèse de départ est fausse.</p>
         <p>Conséquence très concrète : il <strong>n'existera jamais</strong> de logiciel parfait capable de détecter à coup sûr toutes les boucles infinies (ou tous les virus) dans n'importe quel programme. Certaines limites ne sont pas techniques mais <strong>mathématiques</strong>.</p>
+        <p>Toute la preuve repose sur une idée profonde : <strong>un programme est aussi une donnée</strong>. Le texte d'un programme n'est qu'une suite de caractères — on peut donc le stocker, l'afficher… ou le donner à manger à un autre programme (c'est ce que fait un interpréteur Python, et c'est le cœur de l'architecture de von Neumann : programme et données dans la même mémoire). La cellule ci-dessous le montre : la <em>même</em> chaîne de caractères est tour à tour affichée comme donnée, puis exécutée comme programme.</p>
+        <p class="note">📌 <strong>La calculabilité ne dépend pas du langage.</strong> Un problème calculable en Python l'est aussi en C, en Java ou sur une machine de Turing — et réciproquement : tous les langages « raisonnables » ont exactement la <strong>même puissance de calcul</strong> (thèse de Church-Turing). Le problème de l'arrêt n'est donc pas une faiblesse de Python : aucun langage, présent ou futur, ne le résoudra.</p>
         <p class="note">🎯 Activité débranchée : faire « jouer » le paradoxe avec une phrase auto-référente (« cette phrase est fausse ») pour faire sentir la contradiction du programme diabolique.</p>`,
+        code: `# Un programme n'est qu'une DONNÉE : une simple chaîne de caractères.
+programme = """
+for k in range(1, 4):
+    print("ligne", k)
+"""
+
+# 1) Comme DONNÉE : on peut la mesurer, l'afficher, la transformer...
+print("Ce programme fait", len(programme), "caractères :")
+print(programme)
+
+# 2) Comme PROGRAMME : on peut l'exécuter !
+print("Exécution :")
+exec(programme)
+
+# C'est ce que fait l'interpréteur Python en permanence : lire du texte
+# (le code source) et l'exécuter. Programme = donnée -> une machine peut
+# recevoir un programme en entrée... d'où le problème de l'arrêt.`,
       },
     ],
   },
@@ -945,7 +1317,7 @@ print(doctest.testmod())   # TestResults(failed=0, attempted=2)`,
       "Mettre en œuvre la programmation dynamique sur des exemples (rendu de monnaie, etc.).",
       "Parcourir un graphe et y chercher un plus court chemin (algorithme de Dijkstra).",
       "Mettre en œuvre l'algorithme des k plus proches voisins (k-NN).",
-      "Mettre en œuvre un algorithme de recherche textuelle (recherche d'un motif dans un texte).",
+      "Mettre en œuvre un algorithme de recherche textuelle : recherche naïve d'un motif dans un texte, puis étudier l'algorithme de Boyer-Moore (version simplifiée : règle du mauvais caractère).",
     ],
     sections: [
       {
@@ -1104,7 +1476,8 @@ print(dijkstra(reseau, "A"))   # {'A': 0, 'C': 1, 'B': 3, 'D': 4}`,
         title: "Les k plus proches voisins (k-NN)",
         html: `
         <p>Comment un programme <strong>classe</strong>-t-il un objet nouveau (un mail en spam/non-spam, une fleur par espèce) ? Une méthode simple et efficace : les <strong>k plus proches voisins</strong>.</p>
-        <p>Principe : on dispose d'exemples déjà étiquetés. Pour un nouveau point, on calcule sa <strong>distance</strong> à tous les exemples, on garde les <strong>k plus proches</strong>, et on lui attribue l'étiquette <strong>majoritaire</strong> parmi ces voisins. C'est une première brique d'<strong>intelligence artificielle</strong> (apprentissage supervisé).</p>`,
+        <p>Principe : on dispose d'exemples déjà étiquetés. Pour un nouveau point, on calcule sa <strong>distance</strong> à tous les exemples, on garde les <strong>k plus proches</strong>, et on lui attribue l'étiquette <strong>majoritaire</strong> parmi ces voisins. C'est une première brique d'<strong>intelligence artificielle</strong> (apprentissage supervisé).</p>
+        <p class="note">📌 <strong>Rappel de Première</strong> : « mettre en œuvre l'algorithme des k plus proches voisins » est une capacité du programme de <em>Première</em> (thème Algorithmique). On la révise ici car elle éclaire la Terminale : le cœur de k-NN est un calcul de distances suivi d'un <strong>tri</strong> — dont on sait désormais évaluer le coût.</p>`,
         code: `def distance(p, q):
     return ((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2) ** 0.5
 
@@ -1135,6 +1508,76 @@ print(knn(exemples, (6, 5)))   # B (entouré de B)`,
 
 print(recherche_naive("abracadabra", "abra"))   # [0, 7]
 print(recherche_naive("aaaa", "aa"))            # [0, 1, 2]`,
+      },
+      {
+        title: "Boyer-Moore : la règle du mauvais caractère",
+        html: `
+        <p>L'algorithme de <strong>Boyer-Moore</strong> (1977) accélère la recherche d'un motif grâce à deux idées contre-intuitives :</p>
+        <ol>
+          <li>On compare le motif au texte <strong>de droite à gauche</strong> (en commençant par la <em>dernière</em> lettre du motif) ;</li>
+          <li>En cas d'échec, on ne se décale pas d'une case : on <strong>saute</strong> le plus loin possible, grâce à la <strong>règle du mauvais caractère</strong>.</li>
+        </ol>
+        <p>La règle du mauvais caractère : quand la comparaison échoue sur un caractère du texte (le « mauvais caractère »), on regarde <strong>où ce caractère apparaît pour la dernière fois dans le motif</strong> :</p>
+        <ul>
+          <li>s'il n'apparaît <strong>pas du tout</strong> dans le motif : aucun alignement le chevauchant ne peut marcher → on décale le motif <strong>entièrement après</strong> lui ;</li>
+          <li>s'il apparaît : on décale juste ce qu'il faut pour <strong>aligner sa dernière occurrence</strong> du motif sous lui.</li>
+        </ul>
+        <p>Pour décider vite, on précalcule une <strong>table</strong> (un dictionnaire) donnant, pour chaque caractère du motif, l'<strong>indice de sa dernière occurrence</strong>. Le décalage vaut alors <code>j - table[caractère]</code> (et au minimum 1). Plus le motif est long et l'alphabet varié, plus les sauts sont grands : sur un texte ordinaire, Boyer-Moore ne lit qu'une <em>fraction</em> des caractères — c'est l'algorithme derrière bien des Ctrl-F.</p>
+        <p class="note">💡 Version simplifiée conforme au programme : le « vrai » Boyer-Moore combine cette règle avec une seconde (la règle du bon suffixe), hors programme. La règle du mauvais caractère suffit à comprendre — et à mesurer — le gain.</p>`,
+        code: `def table_mauvais_caractere(motif):
+    """Pour chaque caractère du motif : l'indice de sa DERNIÈRE occurrence."""
+    table = {}
+    for i in range(len(motif)):
+        table[motif[i]] = i      # les occurrences suivantes écrasent les précédentes
+    return table
+
+def boyer_moore(texte, motif):
+    """Recherche de motif (règle du mauvais caractère).
+    Renvoie (positions, nombre de comparaisons)."""
+    n, m = len(texte), len(motif)
+    dernier = table_mauvais_caractere(motif)
+    positions = []
+    comparaisons = 0
+    i = 0                              # position d'alignement du motif dans le texte
+    while i <= n - m:
+        j = m - 1                      # on compare de DROITE à GAUCHE
+        while j >= 0:
+            comparaisons += 1
+            if texte[i + j] != motif[j]:
+                break
+            j -= 1
+        if j < 0:
+            positions.append(i)        # motif trouvé en i
+            i += 1
+        else:
+            saut = j - dernier.get(texte[i + j], -1)   # règle du mauvais caractère
+            i += max(1, saut)          # on SAUTE plusieurs positions d'un coup
+    return positions, comparaisons
+
+def recherche_naive(texte, motif):
+    """La version naïve, avec compteur, pour comparer à armes égales."""
+    positions = []
+    comparaisons = 0
+    n, m = len(texte), len(motif)
+    for i in range(n - m + 1):
+        j = 0
+        while j < m:
+            comparaisons += 1
+            if texte[i + j] != motif[j]:
+                break
+            j += 1
+        if j == m:
+            positions.append(i)
+    return positions, comparaisons
+
+texte = "on cherche une aiguille dans une botte de foin, une vraie aiguille"
+motif = "aiguille"
+print("Table du dernier indice :", table_mauvais_caractere(motif))
+pos_n, cmp_n = recherche_naive(texte, motif)
+pos_b, cmp_b = boyer_moore(texte, motif)
+print("Naïve       :", pos_n, "->", cmp_n, "comparaisons")
+print("Boyer-Moore :", pos_b, "->", cmp_b, "comparaisons")
+# Mêmes positions trouvées, mais bien moins de comparaisons : les sauts payent.`,
       },
     ],
   },

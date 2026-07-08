@@ -13,7 +13,8 @@ const THEME_EXTRAS = {
       "File = FIFO (premier entré, premier sorti) ; à implémenter avec collections.deque (efficace aux deux bouts).",
       "Liste chaînée : maillons reliés par des flèches ; insertion en tête sans décalage, mais pas d'accès direct par indice.",
       "Arbre : structure hiérarchique. Taille = nombre de nœuds ; hauteur = plus long chemin racine → feuille. Définition récursive.",
-      "ABR : parcours infixe = valeurs triées. Graphe : sommets + arêtes ; BFS s'appuie sur une file, DFS sur une pile.",
+      "ABR : parcours infixe = valeurs triées ; recherche/insertion en O(hauteur) — O(log n) si équilibré, O(n) si dégénéré (« peigne »).",
+      "Graphe : sommets + arêtes ; matrice OU listes d'adjacence (on sait convertir). BFS s'appuie sur une file, DFS sur une pile ; cycle détecté par DFS + suivi du parent.",
     ],
     erreurs: [
       "Confondre pile (LIFO) et file (FIFO) : c'est l'ORDRE DE SORTIE qui les distingue.",
@@ -134,6 +135,124 @@ def recherche(a, cible):
 print(recherche(arbre, 5))   # True
 print(recherche(arbre, 6))   # False`,
         solution: "Dans un ABR, à chaque nœud on élimine la moitié de l'arbre : si la cible est plus petite que la racine, elle ne peut être qu'à gauche, sinon à droite. Coût O(hauteur), bien plus rapide qu'un parcours complet.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Les 4 parcours du même arbre : sans exécuter, donne le préfixe, l'infixe, le suffixe et le parcours en largeur de l'arbre (4, (2, (1,None,None), (3,None,None)), (6, (5,None,None), (7,None,None))). Vérifie ensuite en codant les quatre fonctions.",
+        code: `from collections import deque
+
+arbre = (4, (2, (1, None, None), (3, None, None)), (6, (5, None, None), (7, None, None)))
+
+def prefixe(a):
+    if a is None:
+        return []
+    v, g, d = a
+    return [v] + prefixe(g) + prefixe(d)
+
+def infixe(a):
+    if a is None:
+        return []
+    v, g, d = a
+    return infixe(g) + [v] + infixe(d)
+
+def suffixe(a):
+    if a is None:
+        return []
+    v, g, d = a
+    return suffixe(g) + suffixe(d) + [v]
+
+def largeur(a):
+    resultat, file = [], deque([a])
+    while file:
+        v, g, d = file.popleft()
+        resultat.append(v)
+        if g is not None:
+            file.append(g)
+        if d is not None:
+            file.append(d)
+    return resultat
+
+print("Préfixe :", prefixe(arbre))   # [4, 2, 1, 3, 6, 5, 7]
+print("Infixe  :", infixe(arbre))    # [1, 2, 3, 4, 5, 6, 7] (ABR -> trié)
+print("Suffixe :", suffixe(arbre))   # [1, 3, 2, 5, 7, 6, 4]
+print("Largeur :", largeur(arbre))   # [4, 2, 6, 1, 3, 5, 7]`,
+        solution: "Préfixe : racine d'abord → [4, 2, 1, 3, 6, 5, 7]. Infixe : gauche-racine-droite → [1, 2, 3, 4, 5, 6, 7] (trié : c'est un ABR). Suffixe : racine en dernier → [1, 3, 2, 5, 7, 6, 4]. Largeur : niveau par niveau avec une FILE → [4, 2, 6, 1, 3, 5, 7].",
+      },
+      {
+        niveau: "défi",
+        enonce: "Écris inserer(a, c) qui insère la clé c dans un ABR en tuples (valeur, gauche, droite). Attention : les tuples sont immuables, il faut RECONSTRUIRE la branche parcourue et renvoyer un nouvel arbre ((c, None, None) si l'arbre est vide). Vérifie avec un parcours infixe.",
+        code: `def inserer(a, c):
+    if a is None:
+        return (c, None, None)                        # nouvelle feuille
+    valeur, gauche, droite = a
+    if c < valeur:
+        return (valeur, inserer(gauche, c), droite)   # on rebâtit à gauche
+    if c > valeur:
+        return (valeur, gauche, inserer(droite, c))   # on rebâtit à droite
+    return a                                          # déjà présente
+
+def infixe(a):
+    if a is None:
+        return []
+    v, g, d = a
+    return infixe(g) + [v] + infixe(d)
+
+abr = None
+for cle in [8, 3, 10, 1, 6]:
+    abr = inserer(abr, cle)
+
+print(infixe(abr))               # [1, 3, 6, 8, 10] -> trié : l'invariant tient
+print(infixe(inserer(abr, 7)))   # [1, 3, 6, 7, 8, 10]`,
+        solution: "On descend comme pour une recherche (à gauche si c < valeur, à droite si c > valeur). Comme les tuples sont immuables, chaque appel renvoie un NOUVEAU nœud : (valeur, inserer(gauche, c), droite) reconstruit la branche, le sous-arbre non parcouru est réutilisé tel quel. Cas de base : arbre vide → (c, None, None). Le parcours infixe trié prouve que l'invariant de l'ABR est préservé.",
+      },
+      {
+        niveau: "défi",
+        enonce: "Écris dfs(g, depart), le parcours en profondeur ITÉRATIF d'un graphe en dictionnaire d'adjacence, avec une pile (une simple list). Compare l'ordre obtenu au BFS sur le même graphe.",
+        code: `graphe = {"A": ["B", "C"], "B": ["D"], "C": ["D", "E"], "D": [], "E": []}
+
+def dfs(g, depart):
+    vus = []
+    pile = [depart]
+    while pile:
+        s = pile.pop()                    # LIFO : le dernier découvert d'abord
+        if s not in vus:
+            vus.append(s)
+            for voisin in reversed(g[s]):
+                if voisin not in vus:
+                    pile.append(voisin)
+    return vus
+
+print(dfs(graphe, "A"))   # ['A', 'B', 'D', 'C', 'E']
+# Le BFS sur le même graphe donnait ['A', 'B', 'C', 'D', 'E'] :
+# le DFS s'enfonce (A -> B -> D) avant d'explorer C et E.`,
+        solution: "On remplace la file du BFS par une PILE : pile.pop() prend le DERNIER sommet découvert, donc on s'enfonce le long d'un chemin avant de revenir. Le test 'if s not in vus' au dépilage évite les doublons (un sommet peut être empilé deux fois) ; reversed() sert juste à visiter les voisins dans l'ordre de la liste.",
+      },
+      {
+        niveau: "défi",
+        enonce: "Écris contient_cycle(g) qui détecte un cycle dans un graphe NON ORIENTÉ (dictionnaire d'adjacence) : DFS en retenant le parent de chaque sommet ; un voisin déjà vu qui n'est pas le parent signale un cycle.",
+        code: `def contient_cycle(g):
+    vus = set()
+
+    def dfs(s, parent):
+        vus.add(s)
+        for voisin in g[s]:
+            if voisin not in vus:
+                if dfs(voisin, s):
+                    return True
+            elif voisin != parent:    # déjà vu et pas notre parent -> cycle
+                return True
+        return False
+
+    for depart in g:                  # graphe éventuellement non connexe
+        if depart not in vus and dfs(depart, None):
+            return True
+    return False
+
+triangle = {"A": ["B", "C"], "B": ["A", "C"], "C": ["A", "B"]}
+chaine   = {"A": ["B"], "B": ["A", "C"], "C": ["B"]}
+print(contient_cycle(triangle))   # True  (A-B-C-A)
+print(contient_cycle(chaine))     # False`,
+        solution: "Dans un graphe non orienté, retomber sur un sommet déjà visité n'est un cycle QUE si ce n'est pas le parent (l'arête par laquelle on vient de passer). D'où le DFS avec le paramètre parent. La boucle finale sur tous les sommets couvre les graphes en plusieurs morceaux (non connexes).",
       },
     ],
     defi: {
@@ -292,7 +411,8 @@ print("Tous les tests passent ✅")`,
       "Recherche dichotomique : tableau trié, on élimine une moitié à chaque comparaison.",
       "Programmation dynamique : sous-problèmes répétés + mémorisation. Ex. rendu de monnaie (optimum garanti, contrairement au glouton).",
       "Graphes pondérés : Dijkstra = plus court chemin depuis une source (file de priorité heapq).",
-      "k-NN : on classe un point par l'étiquette majoritaire de ses k plus proches voisins.",
+      "k-NN : on classe un point par l'étiquette majoritaire de ses k plus proches voisins (rappel de Première).",
+      "Recherche textuelle : naïve en O(n×m) ; Boyer-Moore compare le motif de DROITE à GAUCHE et saute grâce à la règle du mauvais caractère (table du dernier indice).",
     ],
     erreurs: [
       "Appliquer la dichotomie sur un tableau NON trié.",
@@ -419,6 +539,23 @@ def bfs(g, depart):
 print(bfs(graphe, "A"))   # ['A', 'B', 'C', 'D', 'E']`,
         solution: "Le BFS s'appuie sur une FILE : on visite un sommet, on enfile ses voisins non vus (l'ensemble 'vus' évite de repasser). On explore le graphe niveau par niveau.",
       },
+      {
+        niveau: "moyen",
+        enonce: "Texte à trou — Boyer-Moore : construis la table du mauvais caractère (dernier indice de chaque caractère du motif) et rappelle le sens de comparaison.",
+        gapcode: `def table_mauvais_caractere(motif):
+    table = {}
+    for i in range(len(motif)):
+        table[motif[i]] = ___     # les occurrences suivantes écrasent : on garde la DERNIÈRE
+    return table
+
+print(table_mauvais_caractere("ananas"))
+# {'a': 4, 'n': 3, 's': 5}
+
+# Dans la recherche, on compare le motif au texte de droite à gauche :
+# j démarre à len(motif) - ___ et diminue jusqu'à 0`,
+        gaps: ["i", "1"],
+        solution: "On range l'indice i : comme la boucle avance, la valeur finale est l'indice de la DERNIÈRE occurrence de chaque caractère ('a'→4, 'n'→3, 's'→5 pour « ananas »). La comparaison part de la fin du motif : j = len(motif) - 1. En cas d'échec sur un caractère, le saut vaut j - table.get(caractère, -1).",
+      },
     ],
     defi: {
       titre: "Mission : le GPS du lycée",
@@ -500,6 +637,11 @@ print(dijkstra(reseau, "A"))   # {'A': 0, 'C': 1, 'B': 3, 'D': 4}`,
         enonce: "Inscris un nouvel élève : 'Lovelace', moyenne 19, classe 2 (attributs nom, moyenne, id_classe).",
         solution: "INSERT INTO eleve (nom, moyenne, id_classe) VALUES ('Lovelace', 19, 2); — INSERT INTO précise la table et les attributs, VALUES donne les valeurs dans le même ordre.",
       },
+      {
+        niveau: "moyen",
+        enonce: "Repère les anomalies — un club de sport range tout dans une table unique : inscription(nom_adherent, telephone, nom_activite, jour, tarif). Exemple de lignes : (Ada, 0601..., Judo, mardi, 120), (Ada, 0601..., Escalade, jeudi, 150), (Alan, 0699..., Judo, mardi, 120). Identifie au moins trois anomalies de ce schéma (redondance, mise à jour, insertion, suppression), puis propose un découpage en plusieurs tables avec clés primaires et étrangères.",
+        solution: "Anomalies : (1) redondance — le téléphone d'Ada et le couple (jour, tarif) du Judo sont recopiés à chaque ligne ; (2) mise à jour — si le tarif du Judo change, il faut modifier TOUTES les lignes Judo, en oublier une crée une incohérence ; (3) insertion — impossible d'enregistrer une nouvelle activité tant que personne n'y est inscrit ; (4) suppression — si Alan se désinscrit du Judo et qu'Ada aussi, l'activité Judo disparaît de la base. Schéma sain : adherent(id, nom, telephone) ; activite(id, nom, jour, tarif) ; inscription(#id_adherent, #id_activite) — chaque information n'est écrite qu'une fois, les clés étrangères font le lien.",
+      },
     ],
     defi: {
       titre: "Mission : le tableau d'honneur",
@@ -569,6 +711,7 @@ print(math.___(1024))    # 10.0 bits`,
 
   "term-archi-reseaux": {
     resume: [
+      "SoC (système sur puce) : CPU, GPU, mémoire, modem radio et contrôleurs d'E/S gravés sur UNE seule puce — compact et économe en énergie, mais ni évolutif ni facile à refroidir.",
       "L'OS gère et partage les ressources : processus, mémoire, fichiers, périphériques (abstraction).",
       "Processus = programme en cours d'exécution (états : prêt / élu / bloqué). L'ordonnanceur répartit le processeur (ex. round-robin).",
       "Interblocage : des processus s'attendent mutuellement (dîner des philosophes). Casser une condition (ex. ordre d'acquisition) l'évite.",
@@ -583,6 +726,16 @@ print(math.___(1024))    # 10.0 bits`,
       "Confondre clé publique et clé privée dans le chiffrement asymétrique.",
     ],
     exercices: [
+      {
+        niveau: "facile",
+        enonce: "Système sur puce (SoC) : associe chaque fonction au composant qui la réalise — (1) exécuter les instructions des programmes ; (2) calculer l'image affichée à l'écran ; (3) stocker programmes et données en cours d'exécution ; (4) communiquer en 4G/5G, Wi-Fi et Bluetooth ; (5) piloter l'écran tactile, la caméra et les capteurs. Composants : CPU, GPU, mémoire (RAM), modem radio, contrôleurs d'entrées/sorties. Donne ensuite un avantage et une limite du SoC par rapport à un PC « en pièces détachées ».",
+        solution: "(1) → CPU (le processeur exécute les instructions) ; (2) → GPU (processeur graphique) ; (3) → mémoire RAM ; (4) → modem radio ; (5) → contrôleurs d'entrées/sorties. Avantages : compacité (tout tient sur quelques mm², idéal smartphone) et consommation réduite (les données parcourent des distances minuscules). Limites : rien n'est évolutif (impossible d'ajouter de la RAM ou de changer le GPU, tout est gravé) et la dissipation thermique est difficile (la puce doit se brider quand elle chauffe).",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Routage — reprends le réseau du cours : R1–R2 et R2–R5 à 10 Mbit/s (coût OSPF 10 chacun), R1–R3, R3–R4 et R4–R5 à 100 Mbit/s (coût OSPF 1 chacun). Remplis la table de routage de R1 pour la destination R5 : quel est le prochain saut choisi par RIP ? par OSPF ? Justifie avec le nombre de sauts et le coût total.",
+        solution: "RIP (nombre de sauts) : R1→R2→R5 = 2 sauts contre R1→R3→R4→R5 = 3 sauts → RIP inscrit « destination R5 : prochain saut R2 ». OSPF (somme des coûts) : via R2 : 10 + 10 = 20 ; via R3 : 1 + 1 + 1 = 3 → OSPF inscrit « destination R5 : prochain saut R3 ». Les deux protocoles choisissent des routes différentes : RIP minimise les sauts (et emprunte les liaisons lentes), OSPF minimise le coût (∝ 1/débit, calculé par Dijkstra) et passe par le chemin rapide.",
+      },
       {
         niveau: "facile",
         enonce: "Texte à trou — compléter le code de César (décalage d'une lettre majuscule, avec retour de Z à A).",

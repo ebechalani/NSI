@@ -45,6 +45,10 @@ const GLOSSARY = [
   { terme: "Arborescence", theme: "architecture-os", def: "Organisation des fichiers en dossiers imbriqués depuis une racine." },
   { terme: "Chemin absolu / relatif", theme: "architecture-os", def: "Absolu : depuis la racine. Relatif : depuis le dossier courant (. et ..)." },
   { terme: "Permissions", theme: "architecture-os", def: "Droits r (lecture), w (écriture), x (exécution) pour propriétaire, groupe, autres." },
+  { terme: "Périphérique", theme: "architecture-os", def: "Matériel relié à l'ordinateur pour l'entrée (clavier, capteur) ou la sortie (écran, actionneur)." },
+  { terme: "Capteur", theme: "architecture-os", def: "Périphérique d'ENTRÉE qui mesure une grandeur du monde réel (température, lumière…) et l'envoie à la machine." },
+  { terme: "Actionneur", theme: "architecture-os", def: "Périphérique de SORTIE qui agit sur le monde réel sur ordre de la machine (moteur, haut-parleur, LED…)." },
+  { terme: "Langage machine", theme: "architecture-os", def: "Instructions binaires élémentaires (LOAD, ADD, STORE…) directement exécutées par le processeur." },
 
   { terme: "Variable", theme: "langages-prog", def: "Nom qui désigne une valeur stockée en mémoire." },
   { terme: "Affectation", theme: "langages-prog", def: "Donner une valeur à une variable avec =." },
@@ -70,6 +74,15 @@ const GLOSSARY = [
   { terme: "Paquet", theme: "reseaux", def: "Petit morceau numéroté d'un message, transmis indépendamment sur le réseau." },
   { terme: "Routage", theme: "reseaux", def: "Choix du chemin que suivent les paquets entre l'expéditeur et le destinataire." },
   { terme: "Adresse IP", theme: "reseaux", def: "Identifiant numérique d'une machine sur un réseau." },
+
+  { terme: "Pascaline", theme: "histoire-informatique", def: "Machine mécanique à additionner de Blaise Pascal (1642), à roues dentées : l'ancêtre du calcul automatique." },
+  { terme: "Machine analytique", theme: "histoire-informatique", def: "Machine programmable imaginée par Charles Babbage (~1837), pour laquelle Ada Lovelace écrit le premier algorithme (1843)." },
+  { terme: "Machine de Turing", theme: "histoire-informatique", def: "Modèle théorique du calcul défini par Alan Turing (1936) : fonde la notion de calculabilité, avant tout ordinateur." },
+  { terme: "Transistor", theme: "histoire-informatique", def: "Composant électronique (Bell Labs, 1947) qui remplace les tubes à vide : plus petit, fiable et économe ; brique de base des circuits." },
+  { terme: "Circuit intégré", theme: "histoire-informatique", def: "Puce (1958) regroupant de nombreux transistors sur un même support de silicium : miniaturisation décrite par la loi de Moore." },
+  { terme: "Microprocesseur", theme: "histoire-informatique", def: "Processeur complet sur une seule puce (Intel 4004, 1971) : ouvre la voie aux micro-ordinateurs personnels." },
+  { terme: "ARPANET", theme: "histoire-informatique", def: "Réseau américain (1969) reliant des universités par commutation de paquets : l'ancêtre direct d'Internet." },
+  { terme: "Web (World Wide Web)", theme: "histoire-informatique", def: "Service inventé par Tim Berners-Lee au CERN (1989-1991) : pages HTML reliées par des liens, via HTTP. Le Web circule SUR Internet, il ne le remplace pas." },
 
   { terme: "Bibliothèque (module)", theme: "langages-prog", def: "Ensemble de fonctions prêtes à l'emploi qu'on importe (ex. math, random, csv)." },
   { terme: "Documentation", theme: "langages-prog", def: "Texte décrivant comment utiliser une fonction ou une bibliothèque (help, docstring)." },

@@ -138,7 +138,20 @@
     var cls = { id: newId("classes"), name: name || "Ma classe", code: classCode(), teacherUid: uid, pushed: false };
     cache.classes.push(cls); persistLocal(); notify();
     fbSet("classes", cls.id, { name: cls.name, code: cls.code, teacherUid: cls.teacherUid, pushed: false });
+    ensureUniqueCode(cls, 0);
     return cls;
+  }
+  // Collision de codes entre profs : vérifie a posteriori l'unicité globale du code
+  // (loginStudent résout par code → un doublon rattacherait l'élève à une classe arbitraire).
+  function ensureUniqueCode(cls, tries) {
+    if (!FB || !db || tries > 5) return;
+    db.collection("classes").where("code", "==", cls.code).get().then(function (r) {
+      if (r.size <= 1) return; // unique (nous seuls)
+      cls.code = classCode();
+      persistLocal(); notify();
+      fbSet("classes", cls.id, { code: cls.code });
+      ensureUniqueCode(cls, tries + 1);
+    }).catch(function () {});
   }
   function renameClass(id, name) {
     var c = getClass(id); if (!c) return; c.name = name; persistLocal(); notify();
@@ -196,6 +209,10 @@
   function recordQcm(themeId, answered, correct, total) {
     if (!isStudent()) return;
     var s = studentByUid(cache.session.uid); if (!s) return;
+    // Ne jamais dégrader un meilleur résultat déjà enregistré : un 10/10 ne doit pas
+    // être écrasé par une nouvelle tentative à 3/10 (on garde le meilleur instantané).
+    var prev = s.qcm && s.qcm[themeId];
+    if (prev && !(answered > (prev.answered || 0) || (answered === prev.answered && correct > (prev.correct || 0)))) return;
     var data = { answered: answered, correct: correct, total: total };
     s.qcm = s.qcm || {}; s.qcm[themeId] = data;
     persistLocal(); fbUpdatePath("students", s.uid, ["qcm", themeId], data);
@@ -313,10 +330,25 @@
         db.collection("classes").doc(link.classId).get(),
       ]).then(function (r) {
         if (!r[0].exists) { cache.session = null; return null; }
-        cache.students = [Object.assign({ uid: r[0].id }, r[0].data())];
+        var data = r[0].data();
+        // Anti-usurpation : si la fiche est rattachée à un AUTRE uid (autre appareil,
+        // ou lien localStorage falsifié), on refuse de reconstruire la session.
+        if (data.linkedUid && data.linkedUid !== user.uid) {
+          localStorage.removeItem(LS.link);
+          cache.session = null; establishedUid = user.uid;
+          return null;
+        }
+        cache.students = [Object.assign({ uid: r[0].id }, data)];
         cache.classes = r[1].exists ? [Object.assign({ id: r[1].id }, r[1].data())] : [];
-        cache.session = { role: "student", uid: link.studentId, name: r[0].data().name, classId: link.classId, fbUid: user.uid };
+        cache.session = { role: "student", uid: link.studentId, name: data.name, classId: link.classId, fbUid: user.uid };
         persistLocal(); subscribeStudent(link.studentId, link.classId); establishedUid = user.uid;
+        return cache.session;
+      }).catch(function () {
+        // Hors-ligne / règles indisponibles : on retombe sur la session en cache
+        // au lieu de laisser l'app bloquée sur un écran vide.
+        var cached = loadLS(LS.session, null);
+        if (cached && cached.role === "student") cache.session = cached;
+        establishedUid = user.uid;
         return cache.session;
       });
     }
@@ -418,6 +450,8 @@
     clearSubs(); establishedUid = null;
     cache.session = null; cache.classes = []; cache.students = [];
     localStorage.removeItem(LS.session); localStorage.removeItem(LS.link);
+    // Poste partagé (salle info) : ne pas laisser noms/notes des élèves en localStorage.
+    if (FB) { localStorage.removeItem(LS.classes); localStorage.removeItem(LS.students); }
     if (FB && auth.currentUser) auth.signOut().catch(function () {});
   }
 

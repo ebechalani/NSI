@@ -1,8 +1,8 @@
 /* =====================================================================
    QCM auto-corrigés — Terminale NSI.
    answer = indice de la bonne réponse (commence à 0).
-   Seul le thème « Structures de données » a un QCM pour l'instant
-   (les autres thèmes sont au stade squelette).
+   Les 6 thèmes du programme ont leur QCM (≈ 10 questions par thème,
+   dont des questions « style bac » : lecture de code, déroulés, SQL).
    ===================================================================== */
 
 const QUIZZES = {
@@ -63,6 +63,49 @@ const QUIZZES = {
       answer: 1,
       explain:
         "BFS utilise une file (on traite d'abord les sommets proches du départ). Le parcours en profondeur (DFS), lui, s'appuie sur une pile.",
+    },
+    {
+      q: "Le parcours en profondeur (DFS) d'un graphe s'appuie sur…",
+      choices: ["une pile (ou la pile des appels récursifs)", "une file", "un dictionnaire trié", "une matrice d'adjacence obligatoirement"],
+      answer: 0,
+      explain:
+        "Le DFS dépile le DERNIER sommet découvert (LIFO) : c'est ce qui le fait s'enfoncer le long d'un chemin. La version récursive utilise la pile d'appels de Python.",
+    },
+    {
+      q: "Rechercher une clé parmi n = 1 000 000 de valeurs : quel coût dans un ABR équilibré, et dans un ABR dégénéré en « peigne » ?",
+      choices: [
+        "O(1) dans les deux cas",
+        "O(n) dans les deux cas",
+        "O(log n) équilibré (≈ 20 comparaisons) ; O(n) dégénéré (jusqu'à 1 000 000)",
+        "O(n²) équilibré ; O(log n) dégénéré",
+      ],
+      answer: 2,
+      explain:
+        "Le coût est en O(hauteur). Équilibré : hauteur ≈ log₂(n) ≈ 20. Dégénéré (clés insérées déjà triées) : l'arbre est un fil de hauteur n, la recherche redevient linéaire.",
+    },
+    {
+      q: "Dans un graphe NON orienté parcouru en profondeur, on détecte un cycle quand…",
+      choices: [
+        "on retombe sur n'importe quel sommet déjà visité",
+        "on visite deux fois le sommet de départ",
+        "la pile devient vide",
+        "on retombe sur un sommet déjà visité qui n'est PAS le parent du sommet courant",
+      ],
+      answer: 3,
+      explain:
+        "Retomber sur son parent est normal (c'est l'arête par laquelle on vient d'arriver). Un autre sommet déjà vu, en revanche, referme une boucle : cycle détecté.",
+    },
+    {
+      q: "Pour retrouver très souvent le numéro associé à un nom parmi 100 000 entrées, la meilleure structure est…",
+      choices: [
+        "une liste de couples (nom, numéro), parcourue à chaque recherche",
+        "un dictionnaire nom → numéro : l'accès par clé est quasi immédiat",
+        "une pile",
+        "une file",
+      ],
+      answer: 1,
+      explain:
+        "Chercher dans une liste oblige à la parcourir : O(n). Le dictionnaire accède directement par la clé (quasi O(1)), quelle que soit la taille.",
     },
   ],
 
@@ -129,6 +172,35 @@ const QUIZZES = {
       answer: 2,
       explain: "Sans condition WHERE, la modification s'applique à toutes les lignes. Toujours préciser et vérifier le WHERE.",
     },
+    {
+      q: "Une table unique inscription(nom, telephone, activite, tarif) où le tarif du Judo est recopié sur chaque ligne d'inscrit au Judo souffre d'abord…",
+      choices: [
+        "de redondance : la même information est écrite plusieurs fois, source d'incohérences",
+        "d'un manque de lignes",
+        "d'une erreur de syntaxe SQL",
+        "d'un problème de chiffrement",
+      ],
+      answer: 0,
+      explain:
+        "C'est un schéma « malade » : changer le tarif oblige à modifier toutes les lignes concernées (anomalie de mise à jour). Le remède : découper en plusieurs tables reliées par des clés étrangères.",
+    },
+    {
+      q: "Sur la table eleve du cours (Ada 18.5, Alan 16.0, Grace 14.5, Linus 9.5), combien de lignes renvoie SELECT nom FROM eleve WHERE moyenne >= 14.5 ;",
+      choices: ["1", "2", "3", "4"],
+      answer: 2,
+      explain: "Ada (18.5), Alan (16.0) et Grace (14.5, car >= inclut l'égalité) passent le filtre ; Linus (9.5) non. Résultat : 3 lignes.",
+    },
+    {
+      q: "Que fait le mot-clé DISTINCT dans SELECT DISTINCT id_classe FROM eleve ;",
+      choices: [
+        "il trie les id_classe",
+        "il compte les id_classe",
+        "il ne garde que les élèves distingués",
+        "il élimine les doublons : chaque id_classe n'apparaît qu'une fois",
+      ],
+      answer: 3,
+      explain: "DISTINCT supprime les lignes identiques du résultat : on obtient la liste des classes réellement présentes, une fois chacune.",
+    },
   ],
 
   "term-langages": [
@@ -193,6 +265,49 @@ const QUIZZES = {
       answer: 1,
       explain: "Turing (1936) a démontré qu'aucun programme ne peut décider, pour tout programme et toute entrée, s'il s'arrête.",
     },
+    {
+      q: "Que renvoie f(\"NSI\") ? — def f(s): return \"\" if s == \"\" else f(s[1:]) + s[0]",
+      choices: ["\"NSI\"", "\"ISN\"", "\"NNN\"", "une erreur RecursionError"],
+      answer: 1,
+      explain:
+        "Déroulé : f(\"NSI\") = f(\"SI\") + \"N\" = (f(\"I\") + \"S\") + \"N\" = ((f(\"\") + \"I\") + \"S\") + \"N\" = \"ISN\". La fonction renverse la chaîne.",
+    },
+    {
+      q: "def ajouter(x, resultats=[]): resultats.append(x); return resultats — pourquoi est-ce un piège ?",
+      choices: [
+        "append n'existe pas sur une liste",
+        "la liste par défaut est créée UNE seule fois : elle est partagée entre tous les appels",
+        "x ne peut pas être un entier",
+        "return est interdit après append",
+      ],
+      answer: 1,
+      explain:
+        "La valeur par défaut est évaluée à la DÉFINITION de la fonction, pas à chaque appel : ajouter(1) puis ajouter(2) renvoie [1, 2] ! La forme sûre : resultats=None puis if resultats is None: resultats = [].",
+    },
+    {
+      q: "exec(programme) où programme est une chaîne de caractères illustre l'idée fondamentale que…",
+      choices: [
+        "Python est plus rapide que C",
+        "les chaînes sont immuables",
+        "un programme est aussi une donnée (on peut le stocker, le transmettre, l'exécuter)",
+        "exec remplace les fonctions",
+      ],
+      answer: 2,
+      explain:
+        "Le code source n'est qu'un texte : donnée ET programme à la fois. C'est le cœur de l'architecture de von Neumann et le point de départ du problème de l'arrêt.",
+    },
+    {
+      q: "La calculabilité d'un problème dépend-elle du langage de programmation choisi ?",
+      choices: [
+        "Non : tous les langages « raisonnables » ont la même puissance de calcul (thèse de Church-Turing)",
+        "Oui : Python calcule plus de choses que C",
+        "Oui : seuls les langages compilés calculent tout",
+        "Non, sauf pour les langages inventés après 2000",
+      ],
+      answer: 0,
+      explain:
+        "Ce qui est calculable en Python l'est en C, en Java ou sur une machine de Turing, et réciproquement. Le problème de l'arrêt reste indécidable dans TOUS les langages.",
+    },
   ],
 
   "term-algo": [
@@ -247,6 +362,36 @@ const QUIZZES = {
       answer: 1,
       explain: "On regarde les k exemples les plus proches (par la distance) et on prend l'étiquette la plus fréquente.",
     },
+    {
+      q: "L'algorithme de Boyer-Moore (règle du mauvais caractère) compare le motif au texte…",
+      choices: [
+        "de gauche à droite, en se décalant toujours d'une position",
+        "dans un ordre aléatoire",
+        "de droite à gauche, et saute plusieurs positions d'un coup en cas d'échec",
+        "uniquement sur la première lettre",
+      ],
+      answer: 2,
+      explain:
+        "On compare depuis la FIN du motif ; en cas d'échec, la table du dernier indice du « mauvais caractère » permet de décaler le motif de plusieurs positions : on lit une fraction du texte seulement.",
+    },
+    {
+      q: "Que renvoie mystere(4) ? — def mystere(n): return 1 if n == 0 else 2 * mystere(n - 1)",
+      choices: ["8", "4", "24", "16"],
+      answer: 3,
+      explain: "Déroulé : mystere(4) = 2×mystere(3) = 2×2×mystere(2) = … = 2⁴ × mystere(0) = 16 × 1 = 16. La fonction calcule 2 puissance n.",
+    },
+    {
+      q: "Quel est le coût de ce fragment ? — for i in range(n): for j in range(n): total += t[i] * t[j]",
+      choices: ["O(1)", "O(n²)", "O(n)", "O(log n)"],
+      answer: 1,
+      explain: "Deux boucles imbriquées de n tours chacune : n × n = n² opérations → coût quadratique O(n²).",
+    },
+    {
+      q: "Une recherche dichotomique dans un tableau trié de 1024 éléments effectue au plus environ…",
+      choices: ["1024 comparaisons", "512 comparaisons", "10 comparaisons", "2 comparaisons"],
+      answer: 2,
+      explain: "On divise l'intervalle par 2 à chaque étape : il faut log₂(1024) = 10 étapes pour tomber à un seul élément.",
+    },
   ],
 
   "term-histoire": [
@@ -300,6 +445,44 @@ const QUIZZES = {
       ],
       answer: 1,
       explain: "Internet = les « tuyaux » mondiaux ; le Web = un service (pages liées) parmi d'autres (mail, visio…).",
+    },
+    {
+      q: "Grace Hopper a marqué l'histoire de l'informatique en…",
+      choices: [
+        "inventant le Web",
+        "concevant le premier microprocesseur",
+        "fondant la théorie de l'information",
+        "inventant l'idée de compilateur et en contribuant à COBOL",
+      ],
+      answer: 3,
+      explain:
+        "Grace Hopper a eu l'idée de traduire un langage proche de l'humain en langage machine (compilateur) et a contribué à COBOL. On lui doit aussi la popularisation du mot « bug ».",
+    },
+    {
+      q: "En 1948, Claude Shannon définit l'unité de mesure de l'information :",
+      choices: ["l'octet", "le bit", "le pixel", "le hertz"],
+      answer: 1,
+      explain:
+        "La théorie de l'information de Shannon définit le bit : il faut log₂(N) bits pour distinguer N possibilités équiprobables (8 bits pour 256).",
+    },
+    {
+      q: "L'Intel 4004 (1971) est resté célèbre comme…",
+      choices: [
+        "le premier microprocesseur : tout un processeur gravé sur une seule puce",
+        "le premier ordinateur électronique",
+        "la première carte perforée",
+        "le premier téléphone mobile",
+      ],
+      answer: 0,
+      explain:
+        "Graver le processeur entier sur une puce lance la micro-informatique — et ouvre la voie aux SoC actuels, qui intègrent l'ordinateur complet sur quelques mm².",
+    },
+    {
+      q: "Classe dans l'ordre chronologique : (a) ENIAC, (b) machine analytique de Babbage, (c) IBM PC, (d) TCP/IP.",
+      choices: ["a, b, c, d", "b, a, d, c", "b, d, a, c", "a, c, b, d"],
+      answer: 1,
+      explain:
+        "Machine analytique (XIXᵉ siècle) → ENIAC (1945) → TCP/IP (années 1970) → IBM PC (1981).",
     },
   ],
 
@@ -364,6 +547,49 @@ const QUIZZES = {
       ],
       answer: 1,
       explain: "On chiffre avec la clé publique du destinataire ; seule sa clé privée déchiffre. Plus besoin de partager un secret au préalable.",
+    },
+    {
+      q: "Dans un smartphone, CPU, GPU, mémoire, modem radio et contrôleurs d'entrées/sorties sont…",
+      choices: [
+        "des cartes séparées enfichées sur une carte mère",
+        "répartis entre le téléphone et le cloud",
+        "intégrés sur une seule puce : un système sur puce (SoC)",
+        "remplacés par un unique composant appelé BIOS",
+      ],
+      answer: 2,
+      explain:
+        "Un SoC (System on a Chip) grave tous ces blocs fonctionnels sur quelques mm² de silicium — c'est l'architecture des smartphones, tablettes et nano-ordinateurs (Raspberry Pi).",
+    },
+    {
+      q: "Quel couple (avantage, limite) décrit correctement un SoC par rapport à un PC classique ?",
+      choices: [
+        "avantage : consommation réduite ; limite : rien n'est évolutif (RAM et GPU gravés une fois pour toutes)",
+        "avantage : on peut changer chaque composant ; limite : très encombrant",
+        "avantage : refroidissement facile ; limite : consommation énorme",
+        "avantage : plus puissant qu'un PC ; limite : ne peut pas se connecter à Internet",
+      ],
+      answer: 0,
+      explain:
+        "Les données circulent sur quelques millimètres : moins d'énergie, format de poche. En contrepartie, impossible d'ajouter de la RAM ou de changer le GPU, et la chaleur est difficile à dissiper (throttling).",
+    },
+    {
+      q: "Sur un même réseau, RIP et OSPF peuvent choisir des routes différentes parce que…",
+      choices: [
+        "RIP ne fonctionne que la nuit",
+        "RIP minimise le nombre de sauts alors qu'OSPF minimise la somme des coûts des liens (liés au débit)",
+        "OSPF choisit toujours la route la plus longue",
+        "RIP chiffre les paquets, pas OSPF",
+      ],
+      answer: 1,
+      explain:
+        "RIP compte les routeurs traversés ; OSPF additionne des coûts ∝ 1/débit (via Dijkstra). Un chemin de 3 liaisons rapides peut battre un chemin de 2 liaisons lentes : mêmes réseaux, routes différentes.",
+    },
+    {
+      q: "Sous Linux, quelle commande affiche les processus avec leur PID et le PID de leur parent (PPID) ?",
+      choices: ["chmod", "cat", "mkdir", "ps -ef"],
+      answer: 3,
+      explain:
+        "ps -ef liste tous les processus (PID, PPID…) ; pstree dessine l'arbre parent → fils. Tout processus est créé par un parent, d'où un arbre dont la racine est le processus n°1 (init/systemd).",
     },
   ],
 };

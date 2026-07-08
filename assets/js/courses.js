@@ -217,7 +217,14 @@ print(2 ** 100)`,
         html: `
         <p>Pour les nombres « à virgule » (3,14 ; 0,5 ; …), l'ordinateur utilise le type <strong>flottant</strong> (<code>float</code>). L'idée importante à retenir n'est <em>pas</em> le détail technique du codage, mais une <strong>conséquence pratique</strong> :</p>
         <p class="warnbox">🔑 Les flottants sont des <strong>approximations</strong>. La mémoire étant finie, beaucoup de nombres décimaux n'ont pas d'écriture binaire <em>exacte</em> — exactement comme 1/3 = 0,3333… n'a pas d'écriture décimale finie. Résultat : <code>0.1 + 0.2</code> ne vaut pas exactement <code>0.3</code> en machine.</p>
-        <p>Ce n'est pas un bug de Python : c'est une limite de <em>tous</em> les ordinateurs. La règle d'or qui en découle : <strong>on ne teste jamais l'égalité stricte (<code>==</code>) entre deux flottants</strong>. On vérifie plutôt qu'ils sont <em>proches</em>, à une petite tolérance près.</p>`,
+        <p>Ce n'est pas un bug de Python : c'est une limite de <em>tous</em> les ordinateurs. La règle d'or qui en découle : <strong>on ne teste jamais l'égalité stricte (<code>==</code>) entre deux flottants</strong>. On vérifie plutôt qu'ils sont <em>proches</em>, à une petite tolérance près.</p>
+        <p><strong>Pourquoi ? Le binaire à virgule, à la main.</strong> Après la virgule, les positions valent des <em>puissances négatives</em> de 2 : ½ = 0,5 ; ¼ = 0,25 ; ⅛ = 0,125… Certains nombres tombent juste :</p>
+        <ul>
+          <li>0,5 = ½ = <code>0,1</code> en binaire (exact) ;</li>
+          <li>0,25 = ¼ = <code>0,01</code> en binaire (exact) ;</li>
+          <li>0,75 = ½ + ¼ = <code>0,11</code> en binaire (exact).</li>
+        </ul>
+        <p>Mais <strong>0,1 n'a pas d'écriture binaire finie</strong> : aucune somme finie de ½, ¼, ⅛… ne donne exactement 1/10 (on obtient <code>0,0001100110011…</code> avec le motif <code>0011</code> qui se répète à l'infini). La machine doit donc <em>tronquer</em> : elle stocke une valeur très proche de 0,1 mais pas égale — d'où <code>0.1 + 0.2 ≠ 0.3</code>.</p>`,
         code: `print(0.1 + 0.2)             # 0.30000000000000004 (!)
 print(0.1 + 0.2 == 0.3)      # False : surprenant mais normal
 
@@ -527,7 +534,8 @@ print(grille)`,
         <p>Un <strong>dictionnaire</strong> (<code>dict</code>) associe à chaque <strong>clé</strong> une <strong>valeur</strong> — des paires <em>clé : valeur</em> écrites entre accolades <code>{ }</code>. Changement de logique par rapport à la liste : on n'accède plus par une <strong>position</strong> (0, 1, 2…) mais par un <strong>nom</strong> de clé.</p>
         <p>Compare : <code>eleve[2]</code> (qu'est-ce que l'indice 2 ?) contre <code>eleve["moyenne"]</code> (limpide !). Le dictionnaire est parfait pour décrire un <strong>objet à champs nommés</strong> — une fiche, un répertoire (nom → téléphone), un dictionnaire de langue (mot → définition).</p>
         <p><strong>Étape 1 — créer et lire.</strong> On lit une valeur avec <code>d["clé"]</code>. Mais attention : si la clé <strong>n'existe pas</strong>, Python lève une <code>KeyError</code>. Pour lire sans risque, on utilise <code>d.get("clé", défaut)</code>, et on teste une clé avec <code>"clé" in d</code>.</p>
-        <p class="warnbox">⚠️ Une <strong>clé doit être unique et immuable</strong> : on peut utiliser une chaîne, un entier ou un <em>tuple</em> comme clé, mais <strong>pas une liste</strong> (cela lève une <code>TypeError</code>). La <em>valeur</em>, elle, peut être n'importe quoi.</p>`,
+        <p class="warnbox">⚠️ Une <strong>clé doit être unique et immuable</strong> : on peut utiliser une chaîne, un entier ou un <em>tuple</em> comme clé, mais <strong>pas une liste</strong> (cela lève une <code>TypeError</code>). La <em>valeur</em>, elle, peut être n'importe quoi.</p>
+        <p class="note">📖 <strong>Vocabulaire BO : le p-uplet nommé.</strong> Le programme officiel parle de « <strong>p-uplet nommé</strong> » pour désigner un enregistrement dont on accède aux champs <em>par leur nom</em>. En Python, on le réalise tout simplement avec un <strong>dictionnaire à clés fixes</strong> : <code>{"nom": "Lovelace", "prenom": "Ada", "moyenne": 17.5}</code> est un p-uplet nommé à 3 champs. Si un sujet d'exercice parle de « p-uplet nommé », pense « dictionnaire dont les clés sont les noms des champs ».</p>`,
         code: `# Créer : des paires clé: valeur
 eleve = {"nom": "Lovelace", "prenom": "Ada", "moyenne": 17.5}
 
@@ -643,7 +651,7 @@ for pays, nom in inscriptions:
 print(dict(par_pays))`,
       },
       {
-        title: "Les ensembles (set) : une collection sans doublon",
+        title: "Les ensembles (set) — pour aller plus loin",
         html: `
         <p>Un <strong>ensemble</strong> (<code>set</code>) s'écrit entre accolades comme un dictionnaire, mais <strong>sans les « : »</strong>. C'est une collection <strong>non ordonnée</strong> et <strong>sans doublon</strong>, très pratique pour <strong>dédoublonner</strong> une liste ou <strong>comparer</strong> deux groupes.</p>
         <ul>
@@ -700,7 +708,7 @@ print("a inchangé :", a)        # {'x': 99}`,
         title: "Choisir la bonne structure (synthèse)",
         html: `
         <p>La compétence visée n'est pas de connaître la syntaxe par cœur, mais de <strong>choisir</strong> la structure adaptée — au bon <strong>coût</strong>.</p>
-        <p class="note">⚡ <strong>Atout majeur du dictionnaire (et de l'ensemble)</strong> : retrouver une clé est <strong>quasi immédiat</strong>, presque sans dépendre du nombre d'éléments (grâce à une <em>table de hachage</em> interne) — alors que <code>x in liste</code> doit <strong>parcourir</strong> toute la liste. Réflexe : si l'on cherche ou associe <em>souvent</em>, un <code>dict</code>/<code>set</code> est bien plus rapide qu'une liste. <em>(En <strong>Terminale</strong>, on formalisera cette intuition avec la notion de <strong>coût</strong> et la notation O(1) / O(n).)</em></p>
+        <p class="note">⚡ <strong>Atout majeur du dictionnaire (et de l'ensemble)</strong> : retrouver une clé est <strong>quasi immédiat</strong>, presque sans dépendre du nombre d'éléments (grâce à une <em>table de hachage</em> interne) — alors que <code>x in liste</code> doit <strong>parcourir</strong> toute la liste. Réflexe : si l'on cherche ou associe <em>souvent</em>, un <code>dict</code>/<code>set</code> est bien plus rapide qu'une liste. <em>(Cette intuition se formalise avec la notion de <strong>coût</strong> et la notation O(1) / O(n) — voir le thème <strong>Algorithmique</strong> de Première.)</em></p>
         <p>Petit guide de décision :</p>
         <table>
           <tr><th>Le besoin</th><th>La structure</th><th>Exemple</th></tr>
@@ -795,6 +803,41 @@ for ligne in table:
 # Attention : naissance est une CHAÎNE. Pour calculer, on convertit :
 plus_vieux = min(table, key=lambda l: int(l["naissance"]))
 print("Le plus ancien :", plus_vieux["nom"])`,
+      },
+      {
+        title: "Vérifier la cohérence d'une table",
+        html: `
+        <p>Un fichier CSV « du monde réel » est rarement parfait : lignes en <strong>double</strong>, valeurs <strong>manquantes</strong>, nombres mal saisis (<code>"dix-sept"</code> dans une colonne d'entiers)… Avant tout traitement, le BO demande de savoir <strong>vérifier la cohérence</strong> de la table. Trois contrôles simples :</p>
+        <ul>
+          <li><strong>doublons</strong> : on transforme chaque ligne en <em>tuple</em> (immuable) et on les range dans un <strong>ensemble</strong> (<code>set</code>, thème 3) — si l'ensemble est plus petit que la table, il y a des doublons ;</li>
+          <li><strong>types</strong> : une valeur censée être un nombre doit se convertir sans erreur — on essaie <code>int(...)</code> dans un <code>try</code> ;</li>
+          <li><strong>valeurs manquantes</strong> : une case vide (<code>""</code>) ou absente doit être repérée avant de calculer.</li>
+        </ul>`,
+        code: `table = [
+    {"nom": "Turing",   "naissance": "1912", "pays": "UK"},
+    {"nom": "Lovelace", "naissance": "1815", "pays": "UK"},
+    {"nom": "Turing",   "naissance": "1912", "pays": "UK"},     # doublon !
+    {"nom": "Hopper",   "naissance": "mil neuf cent six", "pays": "USA"},
+    {"nom": "Hamilton", "naissance": "1936", "pays": ""},       # pays manquant
+]
+
+# 1) Doublons : un set de tuples élimine les répétitions
+lignes = {tuple(l.values()) for l in table}
+if len(lignes) < len(table):
+    print("⚠️", len(table) - len(lignes), "ligne(s) en double")
+
+# 2) Types : la colonne 'naissance' doit contenir des entiers
+for l in table:
+    try:
+        int(l["naissance"])
+    except ValueError:
+        print("⚠️ valeur non numérique :", l["nom"], "->", l["naissance"])
+
+# 3) Valeurs manquantes : une case vide
+for l in table:
+    for cle, val in l.items():
+        if val == "":
+            print("⚠️ valeur manquante :", l["nom"], "-> colonne", cle)`,
       },
       {
         title: "Rechercher : filtrer des lignes",
@@ -1719,6 +1762,8 @@ div p { background-color: pink; }
         </table>
         <p>Dans une URL, les paramètres GET suivent le <code>?</code>, sous forme de paires <code>clé=valeur</code> séparées par <code>&amp;</code> :</p>
         <pre><code>recherche?ville=Beyrouth&amp;jour=lundi&amp;age=15</code></pre>
+        <p><strong>HTTP vs HTTPS : quand et pourquoi chiffrer.</strong> En HTTP « nu », tout circule <strong>en clair</strong> : sur un <strong>wifi public</strong> (café, gare, aéroport), n'importe qui d'équipé peut lire les requêtes qui passent — y compris un mot de passe envoyé en POST ! <strong>HTTPS</strong> (le S = <em>secure</em>) résout cela en <strong>chiffrant</strong> tout l'échange entre ton navigateur et le serveur : un intercepteur ne voit qu'un flux illisible. Le <strong>cadenas 🔒</strong> dans la barre d'adresse signale une connexion HTTPS ; il garantit aussi (via un <em>certificat</em>) que tu parles bien au vrai serveur et pas à un imposteur.</p>
+        <p class="warnbox">⚠️ Réflexe : ne jamais saisir un mot de passe ou des données personnelles sur une page en HTTP simple — a fortiori sur un réseau public. Attention aussi : le cadenas dit « la connexion est chiffrée », pas « le site est honnête » — un site frauduleux peut très bien être en HTTPS.</p>
         <p>On peut écrire en Python un petit « analyseur » qui retrouve ces paramètres — c'est exactement ce que fait le serveur en recevant la requête :</p>`,
         code: `# Décomposer les paramètres d'une URL (style GET)
 url = "recherche?ville=Beyrouth&jour=lundi&age=15"
@@ -2764,7 +2809,10 @@ e.afficher();                                 // Ada : 1050 euros
       "Comment un ordinateur est-il fait, et qu'est-ce qui le pilote ? On découvre le modèle de von Neumann, les portes logiques, le rôle du système d'exploitation et les commandes de base.",
     capacites: [
       "Décrire le modèle d'architecture de von Neumann (UC, UAL, mémoire, E/S).",
+      "Dérouler l'exécution d'une séquence d'instructions simples du type langage machine.",
       "Réaliser des opérations logiques de base avec des portes logiques.",
+      "Identifier le rôle des capteurs et actionneurs.",
+      "Réaliser par programmation une IHM répondant à un cahier des charges donné.",
       "Identifier les rôles d'un système d'exploitation.",
       "Utiliser des commandes de base en ligne de commande.",
       "Gérer les droits et permissions d'accès aux fichiers.",
@@ -2798,6 +2846,58 @@ e.afficher();                                 // Ada : 1050 euros
         <p>Le processeur répète sans cesse un cycle à trois temps :</p>
         <p style="text-align:center"><strong>charger</strong> (lire l'instruction en mémoire) → <strong>décoder</strong> (comprendre) → <strong>exécuter</strong> → (recommencer)</p>
         <p class="warnbox">⚠️ Distinction fréquemment demandée : l'<strong>UC</strong> <em>commande/décode</em>, l'<strong>UAL</strong> <em>calcule</em>. Ne pas confondre.</p>`,
+      },
+      {
+        title: "Dérouler un programme en langage machine",
+        html: `
+        <p>Le processeur ne comprend ni Python ni français : il exécute des <strong>instructions machine</strong>, très élémentaires. Pour <em>sentir</em> le cycle charger → décoder → exécuter, déroulons à la main un mini-programme sur une machine imaginaire à <strong>accumulateur</strong> (un registre unique, noté <strong>ACC</strong>, où se font tous les calculs) :</p>
+        <table>
+          <tr><th>Instruction</th><th>Effet</th></tr>
+          <tr><td><code>LOAD adr</code></td><td>copie la case mémoire <code>adr</code> dans l'accumulateur (ACC ← mem[adr])</td></tr>
+          <tr><td><code>ADD adr</code></td><td>additionne la case <code>adr</code> à l'accumulateur (ACC ← ACC + mem[adr])</td></tr>
+          <tr><td><code>STORE adr</code></td><td>range l'accumulateur dans la case <code>adr</code> (mem[adr] ← ACC)</td></tr>
+          <tr><td><code>HALT</code></td><td>arrête le programme</td></tr>
+        </table>
+        <p class="warnbox">📖 Le BO n'impose <strong>aucun langage machine particulier</strong> : ce jeu d'instructions est un exemple <em>simplifié</em>, choisi pour être déroulé à la main. Les vrais processeurs (x86, ARM…) ont des centaines d'instructions, mais le principe est identique.</p>
+        <p><strong>Déroulé à la main.</strong> On veut calculer <code>mem[2] = mem[0] + mem[1]</code>, avec au départ mem[0] = 7 et mem[1] = 5. Le programme : <code>LOAD 0 ; ADD 1 ; STORE 2 ; HALT</code>. Le compteur de programme (<strong>PC</strong>) indique l'instruction en cours :</p>
+        <table>
+          <tr><th>PC</th><th>Instruction</th><th>ACC après</th><th>Mémoire [0, 1, 2]</th></tr>
+          <tr><td>0</td><td><code>LOAD 0</code></td><td>7</td><td>[7, 5, 0]</td></tr>
+          <tr><td>1</td><td><code>ADD 1</code></td><td>12</td><td>[7, 5, 0]</td></tr>
+          <tr><td>2</td><td><code>STORE 2</code></td><td>12</td><td>[7, 5, <strong>12</strong>]</td></tr>
+          <tr><td>3</td><td><code>HALT</code></td><td>12</td><td>[7, 5, 12]</td></tr>
+        </table>
+        <p>C'est exactement le cycle de von Neumann : à chaque tour, on <strong>charge</strong> l'instruction pointée par PC, on la <strong>décode</strong>, on l'<strong>exécute</strong>, et PC avance. Programmons ce simulateur — la boucle <em>fetch-décode-exécute</em> tient en quelques lignes :</p>`,
+        code: `# Mini-simulateur d'une machine à accumulateur
+# Une instruction = un tuple ("NOM", adresse) — HALT n'a pas d'adresse.
+programme = [
+    ("LOAD", 0),    # ACC <- mem[0]
+    ("ADD", 1),     # ACC <- ACC + mem[1]
+    ("STORE", 2),   # mem[2] <- ACC
+    ("HALT",),
+]
+mem = [7, 5, 0]     # la mémoire de données
+acc = 0             # l'accumulateur
+pc = 0              # le compteur de programme
+
+print(f"{'PC':>2} | {'instruction':<12} | {'ACC':>4} | mémoire")
+while True:
+    instr = programme[pc]              # 1. CHARGER (fetch)
+    nom = instr[0]                     # 2. DÉCODER (decode)
+    if nom == "HALT":                  # 3. EXÉCUTER (execute)
+        print(f"{pc:>2} | {'HALT':<12} | {acc:>4} | {mem}")
+        break
+    adr = instr[1]
+    if nom == "LOAD":
+        acc = mem[adr]
+    elif nom == "ADD":
+        acc = acc + mem[adr]
+    elif nom == "STORE":
+        mem[adr] = acc
+    print(f"{pc:>2} | {nom + ' ' + str(adr):<12} | {acc:>4} | {mem}")
+    pc += 1                            # l'instruction suivante
+
+print("Résultat : mem[2] =", mem[2])`,
       },
       {
         title: "Du transistor à la porte logique",
@@ -2855,6 +2955,36 @@ for a in (0, 1):
         </ul>
         <p class="note">💡 Les OS <strong>libres</strong> comme <strong>GNU/Linux</strong> (code source ouvert, gratuit) sont partout : serveurs du Web, box Internet, Android, supercalculateurs. Un même OS pilote des matériels très différents grâce aux pilotes.</p>
         <p class="warnbox">⚠️ L'OS <em>pilote</em> le matériel ; il ne le <em>fabrique</em> pas. C'est un logiciel, pas un composant physique.</p>`,
+      },
+      {
+        title: "Périphériques, capteurs et actionneurs — l'IHM",
+        html: `
+        <p>L'ordinateur dialogue avec le monde extérieur par ses <strong>périphériques</strong> : d'<strong>entrée</strong> (clavier, souris, micro, caméra, écran tactile) et de <strong>sortie</strong> (écran, haut-parleurs, imprimante). L'ensemble des moyens par lesquels un humain interagit avec une machine s'appelle l'<strong>IHM</strong> (interface homme-machine).</p>
+        <p>Mais les machines n'interagissent pas qu'avec des humains : les <strong>objets connectés</strong> (smartphone, voiture, montre, thermostat…) perçoivent et agissent sur leur environnement grâce à une chaîne en trois temps :</p>
+        <p style="text-align:center"><strong>capteur</strong> (mesurer) → <strong>traitement</strong> (programme qui décide) → <strong>actionneur</strong> (agir)</p>
+        <table>
+          <tr><th>Capteur</th><th>Traitement (décision)</th><th>Actionneur</th></tr>
+          <tr><td>accéléromètre du téléphone</td><td>l'appareil est-il penché ?</td><td>rotation de l'écran</td></tr>
+          <tr><td>radar de la voiture</td><td>obstacle trop proche ?</td><td>freinage d'urgence</td></tr>
+          <tr><td>sonde de température</td><td>plus froid que la consigne ?</td><td>mise en route du chauffage</td></tr>
+        </table>
+        <p>Un <strong>capteur</strong> convertit une grandeur physique (température, lumière, accélération) en valeur numérique ; un <strong>actionneur</strong> fait l'inverse : il transforme une commande numérique en action physique (moteur, relais, LED). Des cartes programmables comme <strong>micro:bit</strong> ou <strong>Arduino</strong> permettent de manipuler concrètement cette chaîne en classe : on lit un capteur, on décide en Python (ou MicroPython), on pilote un actionneur.</p>
+        <p>Simulons un <strong>thermostat</strong> : le capteur fournit une suite de températures, le programme décide, l'actionneur (le chauffage) obéit :</p>
+        <p class="note">🔗 <strong>Lien avec le thème Web.</strong> La capacité du BO « réaliser par programmation une IHM répondant à un cahier des charges donné » se travaille dans le thème <strong>« Interactions homme-machine sur le Web »</strong> : formulaires, boutons, événements JavaScript — c'est exactement construire une IHM à partir d'un cahier des charges.</p>`,
+        code: `# Simulation d'un thermostat : capteur -> traitement -> actionneur
+CONSIGNE = 19.0          # température souhaitée (°C)
+
+# Le "capteur" : les températures mesurées au fil du temps
+mesures = [21.5, 20.0, 18.9, 17.4, 18.2, 19.6, 20.3]
+
+chauffage = False        # état de l'actionneur
+for t in mesures:
+    if t < CONSIGNE:
+        chauffage = True     # décision : trop froid -> on chauffe
+    else:
+        chauffage = False    # assez chaud -> on coupe
+    etat = "🔥 chauffage ALLUMÉ" if chauffage else "❄️ chauffage éteint"
+    print(f"capteur : {t:>5} °C | consigne : {CONSIGNE} °C -> {etat}")`,
       },
       {
         title: "Le système de fichiers arborescent",
@@ -3226,12 +3356,15 @@ print(nb_pairs([1, 2, 3, 4, 5, 6]))   # 3`,
           <li>la <strong>signature</strong> : le nom, les paramètres (et idéalement leurs types) ;</li>
           <li>une <strong>docstring</strong> : une phrase décrivant le rôle (entre triples guillemets) ;</li>
           <li>les <strong>préconditions</strong> : ce qu'on suppose vrai en entrée (ex. « liste non vide ») ;</li>
+          <li>les <strong>postconditions</strong> : ce que la fonction <em>garantit</em> en sortie si les préconditions sont respectées (ex. « le résultat est compris entre le min et le max des notes ») ;</li>
           <li>un <strong>jeu de tests</strong> avec <code>assert</code> : des exemples « entrée → résultat attendu ».</li>
         </ul>
+        <p>Précondition et postcondition forment les deux moitiés du <strong>contrat</strong> : « si <em>tu</em> (l'appelant) respectes la précondition, alors <em>moi</em> (la fonction) je garantis la postcondition ».</p>
         <p><code>assert condition</code> ne fait <em>rien</em> si la condition est vraie, mais <strong>lève une erreur</strong> si elle est fausse. C'est le moyen le plus simple de vérifier qu'une fonction fait ce qu'on attend.</p>`,
         code: `def moyenne(notes):
     """Renvoie la moyenne d'une liste de notes (float).
     Précondition : notes est une liste non vide de nombres.
+    Postcondition : min(notes) <= résultat <= max(notes).
     """
     return sum(notes) / len(notes)
 
@@ -3336,6 +3469,7 @@ print("dé :", random.randint(1, 6))`,
       "Mettre en œuvre un algorithme glouton (ex. rendu de monnaie).",
       "Comparer le coût (nombre d'opérations) de deux algorithmes.",
       "Justifier la terminaison d'un algorithme (variant de boucle).",
+      "Décrire un invariant de boucle qui prouve la correction des tris par insertion et par sélection.",
       "Classer des données avec les k plus proches voisins (kNN).",
     ],
     sections: [
@@ -3416,7 +3550,8 @@ print("indice de 17 :", dichotomie(t, 17))   # -1 (absent)`,
         html: `
         <p>Trier, c'est ranger les éléments dans l'ordre. Première méthode, le <strong>tri par sélection</strong> : on cherche le <strong>plus petit</strong> élément et on le place en première position, puis le plus petit du <em>reste</em> en deuxième position, et ainsi de suite.</p>
         <p>Sur <code>[5, 2, 9, 1, 7]</code> : on trouve 1 → on l'échange avec le 5 → <code>[1, 2, 9, 5, 7]</code> ; puis le plus petit du reste est 2 (déjà en place) ; puis 5 ↔ 9 → <code>[1, 2, 5, 9, 7]</code> ; puis 7 ↔ 9 → <code>[1, 2, 5, 7, 9]</code>.</p>
-        <p>Deux boucles imbriquées (une pour la position à remplir, une pour chercher le minimum) : son coût est de l'ordre de <strong>n²</strong> (quadratique).</p>`,
+        <p>Deux boucles imbriquées (une pour la position à remplir, une pour chercher le minimum) : son coût est de l'ordre de <strong>n²</strong> (quadratique).</p>
+        <p><strong>Correction : l'invariant de boucle.</strong> Comment être sûr que l'algorithme donne un tableau trié ? On exhibe un <strong>invariant</strong> : une propriété <em>vraie au début de chaque tour</em> de la boucle. Ici : « au début du tour <code>i</code>, la tranche <code>tab[0..i-1]</code> est <strong>triée</strong> ET contient les <strong>i plus petits éléments</strong> du tableau — ils sont à leur <strong>place définitive</strong> ». Vraie au départ (tranche vide), elle est <em>conservée</em> à chaque tour (on ajoute le minimum du reste, forcément ≥ à tout ce qui précède). À la fin (<code>i = n</code>), l'invariant dit : <code>tab[0..n-1]</code> est trié — c'est exactement ce qu'on voulait prouver.</p>`,
         code: `def tri_selection(tab):
     n = len(tab)
     for i in range(n):
@@ -3433,7 +3568,8 @@ print(tri_selection([5, 2, 9, 1, 7, 3]))`,
         title: "Le tri par insertion",
         html: `
         <p>Deuxième méthode, le <strong>tri par insertion</strong> : c'est exactement la façon dont on trie un <strong>jeu de cartes</strong> à la main. On prend les cartes une par une et on <em>insère</em> chacune à sa bonne place parmi celles déjà triées.</p>
-        <p>La partie gauche du tableau est maintenue triée ; pour chaque nouvel élément, on le décale vers la gauche tant qu'il est plus petit que son voisin. Coût également de l'ordre de <strong>n²</strong>, mais très efficace si le tableau est <em>presque</em> trié.</p>`,
+        <p>La partie gauche du tableau est maintenue triée ; pour chaque nouvel élément, on le décale vers la gauche tant qu'il est plus petit que son voisin. Coût également de l'ordre de <strong>n²</strong>, mais très efficace si le tableau est <em>presque</em> trié.</p>
+        <p><strong>L'invariant de boucle, version insertion.</strong> Ici : « au début du tour <code>i</code>, la tranche <code>tab[0..i-1]</code> est <strong>triée</strong> » — mais, contrairement au tri par sélection, elle est seulement triée <em>entre ses éléments</em> : ce ne sont <strong>pas forcément les plus petits</strong> du tableau, et ils ne sont <strong>pas à leur place définitive</strong> (une carte plus petite peut encore arriver et tout décaler). Comparer ces deux invariants est un excellent exercice : même conclusion finale (tableau trié), mais deux « garanties intermédiaires » différentes.</p>`,
         code: `def tri_insertion(tab):
     for i in range(1, len(tab)):
         cle = tab[i]            # la carte à insérer
@@ -3471,7 +3607,7 @@ print("Glouton sur [1,3,4] pour 6 :", rendu_monnaie(6, [1, 3, 4]))  # 4+1+1`,
       {
         title: "Les k plus proches voisins (kNN)",
         html: `
-        <p class="note">⭐ <strong>Bonus — anticipation Terminale.</strong> Le kNN n'est pas au programme de Première (il relève de l'algorithmique de Terminale), mais c'est une belle ouverture, accessible avec les outils déjà vus.</p>
+        <p class="note">🎯 <strong>Au programme de Première.</strong> Capacité attendue du BO : « écrire un algorithme qui prédit la classe d'un élément en fonction de la classe majoritaire de ses k plus proches voisins ». C'est un premier exemple d'algorithme d'<strong>apprentissage</strong>.</p>
         <p>Comment une machine peut-elle <strong>classer</strong> automatiquement un objet ? L'algorithme des <strong>k plus proches voisins</strong> (kNN) compare l'objet inconnu à des exemples déjà étiquetés : il regarde ses <em>k</em> voisins les plus proches et lui attribue la <strong>classe majoritaire</strong>.</p>
         <ol>
           <li>Calculer la <strong>distance</strong> entre le point inconnu et chaque exemple.</li>
@@ -3533,7 +3669,7 @@ for taille in [10, 1000, 1000000]:
           <li>dans la <strong>dichotomie</strong>, la quantité <code>droite − gauche</code> diminue à chaque tour : c'est un variant ;</li>
           <li>dans <code>while n &gt; 1: n = n // 2</code>, la valeur de <code>n</code> décroît : variant.</li>
         </ul>
-        <p class="note">À distinguer : le <strong>variant</strong> prouve qu'une boucle <em>se termine</em> ; un <strong>invariant</strong> (vu plus tard) sert à prouver qu'elle est <em>correcte</em>.</p>`,
+        <p class="note">À distinguer : le <strong>variant</strong> prouve qu'une boucle <em>se termine</em> ; un <strong>invariant</strong> (vu dans les sections sur les tris) sert à prouver qu'elle est <em>correcte</em>.</p>`,
       },
       {
         title: "Synthèse : choisir et comparer",
@@ -3748,7 +3884,6 @@ print("\\nNombre d'événements :", len(frise))`,
     id: "reseaux",
     num: 9,
     emoji: "📡",
-    anticipation: "Bonus — anticipation de la Terminale (hors programme de Première)",
     title: "Réseaux : protocoles, paquets et routage",
     intro:
       "Comment deux machines échangent-elles des données à distance ? On découvre l'idée de protocole, le découpage des messages en paquets, le routage, et ce qui se passe quand un paquet est perdu ou arrive dans le désordre.",
@@ -3758,6 +3893,8 @@ print("\\nNombre d'événements :", len(frise))`,
       "Décrire simplement le routage des paquets sur un réseau.",
       "Reconstituer un message dont les paquets arrivent dans le désordre.",
       "Comprendre les conséquences d'une perte ou d'un doublon de paquet.",
+      "Mettre en évidence l'intérêt du découpage des données en paquets et de leur encapsulation.",
+      "Dérouler le fonctionnement d'un protocole simple de récupération de perte de paquets (bit alterné).",
     ],
     sections: [
       {
@@ -3783,11 +3920,25 @@ print("\\nNombre d'événements :", len(frise))`,
           <li>si un paquet est perdu, on ne renvoie <strong>que celui-là</strong>, pas tout le message ;</li>
           <li>le destinataire <strong>réordonne</strong> les paquets grâce à leur numéro, même s'ils arrivent dans le désordre.</li>
         </ul>
-        <p>Le numéro est donc essentiel : c'est lui qui permet de recoller le message. Programmons ce découpage et cette reconstruction (un paquet = un dictionnaire <code>{num, data}</code>, vu au thème 3) :</p>`,
-        code: `# Découper un message en paquets numérotés
+        <p><strong>Anatomie d'un paquet : l'en-tête.</strong> Un paquet, ce n'est pas seulement un morceau de données. Il transporte aussi un <strong>en-tête</strong> (<em>header</em>) : les <strong>adresses source et destination</strong>, le <strong>numéro d'ordre</strong>, la taille… C'est comme une enveloppe : le contenu (les données) + les informations de livraison écrites dessus.</p>
+        <p><strong>L'encapsulation : des enveloppes emboîtées.</strong> En réalité, chaque couche de protocoles ajoute <em>sa propre</em> enveloppe autour de la précédente — on parle d'<strong>encapsulation</strong> :</p>
+        <pre><code>┌─ Trame (Ethernet / Wi-Fi) ────────────────────────────────┐
+│ en-tête   ┌─ Paquet IP ────────────────────────────────┐  │
+│ trame     │ en-tête IP    ┌─ Segment TCP ────────────┐ │  │
+│           │ (src → dst)   │ en-tête TCP  [ données ] │ │  │
+│           │               │ (numéro)                 │ │  │
+│           │               └──────────────────────────┘ │  │
+│           └────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────┘</code></pre>
+        <p>Les <strong>données</strong> sont glissées dans un <strong>segment TCP</strong> (qui ajoute le numéro d'ordre), lui-même glissé dans un <strong>paquet IP</strong> (qui ajoute les adresses source/destination), lui-même glissé dans une <strong>trame</strong> pour voyager sur le câble ou le Wi-Fi. À l'arrivée, on ouvre les enveloppes une à une, dans l'ordre inverse.</p>
+        <p>Le numéro est donc essentiel : c'est lui qui permet de recoller le message. Programmons ce découpage et cette reconstruction (un paquet = un dictionnaire <code>{src, dst, num, data}</code>, vu au thème 3) :</p>`,
+        code: `# Découper un message en paquets numérotés, avec en-tête (src, dst, num)
 message = "Bonjour le monde"
 mots = message.split(" ")
-paquets = [{"num": i + 1, "data": m} for i, m in enumerate(mots)]
+paquets = [
+    {"src": "192.168.1.10", "dst": "172.16.0.3", "num": i + 1, "data": m}
+    for i, m in enumerate(mots)
+]
 for p in paquets:
     print(p)
 
@@ -3801,7 +3952,8 @@ print("Message reçu :", recompose)`,
         <p>Entre l'expéditeur et le destinataire, un paquet ne saute pas directement : il traverse une succession d'équipements appelés <strong>routeurs</strong> (ta box Internet en est un). À chaque étape, le routeur regarde l'adresse de destination et choisit vers quel voisin transmettre le paquet pour s'<em>en rapprocher</em> : c'est le <strong>routage</strong>, un peu comme passer de ville en ville vers sa destination.</p>
         <pre><code>[Toi] → routeur A → routeur C → routeur D → [Serveur]
                   ↘ routeur B ↗   (autre chemin possible)</code></pre>
-        <p>S'il existe plusieurs chemins, le réseau peut en choisir un plus court, ou <strong>contourner une panne</strong> : si le routeur C tombe, les paquets passent par B. C'est cette souplesse qui rend Internet <strong>robuste</strong> — il a d'ailleurs été conçu pour résister à la perte de certains nœuds.</p>`,
+        <p>S'il existe plusieurs chemins, le réseau peut en choisir un plus court, ou <strong>contourner une panne</strong> : si le routeur C tombe, les paquets passent par B. C'est cette souplesse qui rend Internet <strong>robuste</strong> — il a d'ailleurs été conçu pour résister à la perte de certains nœuds.</p>
+        <p class="note">🔭 <strong>Terminale.</strong> En Première, on comprend l'<em>idée</em> du routage (de proche en proche, plusieurs chemins possibles). L'étude détaillée des <strong>protocoles de routage</strong> (RIP, OSPF) — comment les routeurs construisent leurs tables — relève du programme de <strong>Terminale</strong>.</p>`,
       },
       {
         title: "Désordre, perte et doublon",
@@ -3831,6 +3983,77 @@ paquets = [
     {"num": 2, "data": "le"},
 ]
 print(reconstruire(paquets))`,
+      },
+      {
+        title: "Le protocole du bit alterné : récupérer une perte",
+        html: `
+        <p>On sait <em>détecter</em> une perte (un numéro manque) — mais comment la <em>réparer</em> automatiquement ? Le <strong>protocole du bit alterné</strong> est le plus simple des protocoles de récupération. Il fait dialoguer un <strong>émetteur</strong> et un <strong>récepteur</strong> avec trois idées :</p>
+        <ul>
+          <li>chaque paquet porte un <strong>bit de contrôle</strong> qui <strong>alterne</strong> : 0, puis 1, puis 0, puis 1… ;</li>
+          <li>le récepteur confirme chaque paquet reçu par un <strong>accusé de réception</strong> (<strong>ACK</strong>) portant le même bit ;</li>
+          <li>l'émetteur arme une <strong>temporisation</strong> (<em>timeout</em>) : s'il n'a pas reçu l'ACK attendu à temps, il <strong>retransmet</strong> le même paquet, avec le même bit.</li>
+        </ul>
+        <p><strong>Cas nominal</strong> — tout se passe bien, le bit alterne à chaque succès :</p>
+        <pre><code>Émetteur                    Récepteur
+   │ ── paquet A [bit=0] ──→ │   reçu, bit attendu ✔
+   │ ←──── ACK 0 ─────────── │
+   │ ── paquet B [bit=1] ──→ │   reçu, bit attendu ✔
+   │ ←──── ACK 1 ─────────── │</code></pre>
+        <p><strong>Paquet perdu</strong> — pas d'ACK, la temporisation expire, on retransmet :</p>
+        <pre><code>Émetteur                    Récepteur
+   │ ── paquet A [bit=0] ─✗  │   (perdu en route !)
+   │   … timeout ⏱ …         │
+   │ ── paquet A [bit=0] ──→ │   reçu, bit attendu ✔
+   │ ←──── ACK 0 ─────────── │</code></pre>
+        <p><strong>ACK perdu</strong> — le paquet était bien arrivé, mais l'émetteur ne le sait pas : il retransmet. Le récepteur voit arriver un <strong>doublon</strong>… et le reconnaît grâce au bit (il attendait 1, il reçoit encore 0) : il l'<strong>ignore</strong> mais renvoie l'ACK.</p>
+        <pre><code>Émetteur                    Récepteur
+   │ ── paquet A [bit=0] ──→ │   reçu, bit attendu ✔
+   │  ✗─── ACK 0 ─────────── │   (l'ACK se perd !)
+   │   … timeout ⏱ …         │
+   │ ── paquet A [bit=0] ──→ │   bit 0 déjà vu → DOUBLON ignoré
+   │ ←──── ACK 0 ─────────── │   (mais on ré-accuse réception)</code></pre>
+        <p>Le bit alterné garantit donc qu'aucun paquet n'est perdu <em>ni</em> compté deux fois — au prix d'une lenteur certaine (un seul paquet « en vol » à la fois). TCP reprend exactement ces idées (accusés de réception, temporisation, retransmission) avec de vrais numéros de séquence. Simulons un scénario complet :</p>`,
+        code: `# Simulation DÉTERMINISTE du protocole du bit alterné.
+# Scénario : pour chaque tentative d'envoi, on scénarise ce qui se passe :
+#   "ok"          -> paquet et ACK passent
+#   "paquet_perdu"-> le paquet n'arrive jamais
+#   "ack_perdu"   -> le paquet arrive, mais l'ACK se perd
+scenario = ["ok", "paquet_perdu", "ok", "ack_perdu", "ok", "ok"]
+
+message = ["Bonjour", "le", "monde"]
+bit_emetteur = 0     # bit du prochain paquet à envoyer
+bit_attendu = 0      # bit que le récepteur attend
+recu = []            # données acceptées par le récepteur
+i = 0                # indice du mot en cours d'envoi
+
+for evenement in scenario:
+    if i >= len(message):
+        break
+    mot = message[i]
+    print(f"ENVOI [bit={bit_emetteur}] : {mot!r}")
+
+    if evenement == "paquet_perdu":
+        print("  ✗ PAQUET PERDU en route")
+        print("  ⏱ TIMEOUT → RETRANSMISSION")
+        continue                       # on renverra le même mot, même bit
+
+    # Le paquet arrive chez le récepteur
+    if bit_emetteur == bit_attendu:
+        recu.append(mot)               # nouveau paquet : accepté
+        bit_attendu = 1 - bit_attendu  # le récepteur attend l'autre bit
+    else:
+        print("  ↺ DOUBLON reconnu (bit déjà vu) → ignoré")
+
+    if evenement == "ack_perdu":
+        print("  ✗ ACK PERDU au retour")
+        print("  ⏱ TIMEOUT → RETRANSMISSION")
+        continue                       # l'émetteur renvoie le même paquet
+
+    print(f"  ✔ ACK {bit_emetteur} reçu → bit passe à {1 - bit_emetteur}")
+    bit_emetteur = 1 - bit_emetteur    # on alterne, mot suivant
+    i += 1
+
+print("Message reçu :", " ".join(recu))`,
       },
       {
         title: "Deux protocoles complémentaires : IP et TCP",
