@@ -1334,7 +1334,7 @@ except Exception:
       if (nbRep > 0 && nbRep >= qcmAnswered(progress[themeId])) {
         progress[themeId] = { answered: nbRep, correct: nbOk, total: questions.length };
         saveProgress(progress);
-        P.recordQcm(themeId, nbRep, nbOk, questions.length);
+        P.recordQcm(themeId, nbRep, nbOk, questions.length, correct.map((ok, i) => (answered[i] ? (ok ? 1 : 0) : null)));
         updateGlobalProgress();
       }
       if (nbRep === questions.length) {
@@ -3210,6 +3210,7 @@ except Exception:
 
   /* ---------------- Espace « Ma classe » (prof) ---------------- */
   let selectedClassId = null;
+  let selectedDiagTheme = ""; // thème choisi dans le diagnostic par question (conservé au re-render)
   function renderClasse(isLiveRefresh) {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
@@ -3341,6 +3342,100 @@ except Exception:
       });
       bCsv.style.marginTop = ".8rem";
       viewTheme.appendChild(bCsv);
+
+      // 📊 Matrice de réussite par thème : 1 ligne par élève, 1 colonne par thème.
+      const themesTri = COURSES.slice().sort((a, b) => a.num - b.num);
+      const matBlock = el("div", "extra-block classe-matrix-block");
+      matBlock.appendChild(el("h2", null, "📊 Réussite par thème"));
+      const pctCell = (pct, title) => {
+        const cl = pct >= 66 ? "cell-good" : pct >= 33 ? "cell-mid" : "cell-bad";
+        return `<td class="${cl}"${title ? ` title="${escapeHtml(title)}"` : ""}>${pct} %</td>`;
+      };
+      const matHead =
+        `<tr><th>Élève</th>` +
+        themesTri.map((c) => `<th title="${escapeHtml(c.title)}">${c.emoji} ${c.num}</th>`).join("") +
+        `</tr>`;
+      const matRows = students
+        .map((st) => {
+          const qcm = P.getProgress(st.uid).qcm || {};
+          const cells = themesTri
+            .map((c) => {
+              const q = qcm[c.id];
+              const ans = qcmAnswered(q);
+              if (!q || !(ans > 0)) return `<td class="cell-none">—</td>`;
+              const pct = Math.round((qcmCorrect(q) / ans) * 100);
+              return pctCell(pct, ans + " question(s) répondue(s)");
+            })
+            .join("");
+          return `<tr><td class="mat-name">${escapeHtml(st.name)}</td>${cells}</tr>`;
+        })
+        .join("");
+      const mat = el("div", "classe-matrix");
+      mat.innerHTML = `<table>${matHead}${matRows}</table>`;
+      matBlock.appendChild(mat);
+      viewTheme.appendChild(matBlock);
+
+      // 🔬 Diagnostic par question : taux de réussite de la classe question par question
+      // (à partir du détail enregistré quand les élèves (re)font les QCM).
+      const diagBlock = el("div", "extra-block classe-diag");
+      diagBlock.appendChild(el("h2", null, "🔬 Diagnostic par question"));
+      const sel = el("select", "diag-select");
+      sel.innerHTML =
+        `<option value="">— Choisir un thème —</option>` +
+        themesTri.map((c) => `<option value="${escapeHtml(c.id)}">${c.emoji} ${escapeHtml(c.title)}</option>`).join("");
+      const diagOut = el("div", "diag-out");
+      function renderDiag(themeId) {
+        diagOut.innerHTML = "";
+        if (!themeId) return;
+        const qs = QUIZZES[themeId] || [];
+        // Un « detail » par élève : tableau aligné sur les questions (1 = juste, 0 = faux, null = non répondue).
+        const details = students
+          .map((st) => (((P.getProgress(st.uid).qcm || {})[themeId] || {}).detail))
+          .filter((d) => Array.isArray(d));
+        if (!details.length) {
+          diagOut.appendChild(el("p", "muted-text", "Pas encore de détail par question — il se remplit à mesure que les élèves (re)font les QCM."));
+          return;
+        }
+        const rows = qs
+          .map((q, i) => {
+            let rep = 0, ok = 0;
+            details.forEach((d) => {
+              if (i >= d.length || d[i] == null) return; // quiz agrandi depuis : on ignore cet élève
+              rep++;
+              if (d[i] === 1) ok++;
+            });
+            const txt = String(q.q).replace(/<[^>]*>/g, "");
+            const court = txt.length > 90 ? txt.slice(0, 90) + "…" : txt;
+            let cell = `<td class="cell-none">—</td>`;
+            let alerte = false;
+            if (rep > 0) {
+              const pct = Math.round((ok / rep) * 100);
+              cell = pctCell(pct);
+              alerte = pct < 50; // notion à retravailler en classe
+            }
+            return (
+              `<tr${alerte ? ' class="row-alert"' : ""}>` +
+              `<td class="num">Q${i + 1}</td><td>${escapeHtml(court)}</td>${cell}` +
+              `<td class="num">${rep}/${students.length}</td></tr>`
+            );
+          })
+          .join("");
+        const tblDiag = el("div", "classe-table classe-diag-table");
+        tblDiag.innerHTML = `<table><tr><th>N°</th><th>Question</th><th>% de réussite</th><th>Répondu par</th></tr>${rows}</table>`;
+        diagOut.appendChild(tblDiag);
+        diagOut.appendChild(el("p", "muted-text", "Les lignes surlignées (réussite < 50 %) sont les notions à retravailler en classe."));
+      }
+      sel.addEventListener("change", () => {
+        selectedDiagTheme = sel.value;
+        renderDiag(sel.value);
+      });
+      diagBlock.appendChild(sel);
+      diagBlock.appendChild(diagOut);
+      viewTheme.appendChild(diagBlock);
+      if (selectedDiagTheme && QUIZZES[selectedDiagTheme]) {
+        sel.value = selectedDiagTheme;
+        renderDiag(selectedDiagTheme);
+      }
     }
     if (!isLiveRefresh) scrollTop();
   }

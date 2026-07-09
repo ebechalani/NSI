@@ -1,0 +1,48 @@
+rules_version = '2';
+// Règles de sécurité Firestore — site NSI (projet nsieddy-dd82c).
+// À PUBLIER : console Firebase → Firestore Database → Règles → coller → Publier.
+// (Copie de référence versionnée ; la copie commentée est dans SETUP-FIREBASE.md.)
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn()      { return request.auth != null; }
+    // Prof = compte e-mail/mot de passe (les élèves sont en auth ANONYME, sans e-mail).
+    function isTeacherAuth() { return signedIn() && request.auth.token.email != null; }
+    function isAdmin()       { return isTeacherAuth() && request.auth.token.email == 'ebechalani@gmail.com'; }
+
+    match /users/{uid} {
+      allow read, write: if signedIn() && uid == request.auth.uid;
+    }
+
+    // Classes : lecture pour tout connecté (l'élève résout sa classe par code,
+    // et écoute pushedCorr en temps réel). Écriture réservée au prof propriétaire.
+    match /classes/{cid} {
+      allow read: if signedIn();
+      allow create: if isTeacherAuth() && request.resource.data.teacherUid == request.auth.uid;
+      allow update, delete: if isTeacherAuth() && resource.data.teacherUid == request.auth.uid;
+    }
+
+    // Students : le prof propriétaire gère tout. L'élève anonyme a deux droits :
+    //  (a) rattacher SA fiche (écrire uniquement linkedUid = son uid) ;
+    //  (b) sa progression (uniquement qcm / exos / activite) si la fiche lui est rattachée.
+    match /students/{sid} {
+      allow read: if signedIn();
+      allow create: if isTeacherAuth() && request.resource.data.teacherUid == request.auth.uid;
+      allow delete: if isTeacherAuth() && resource.data.teacherUid == request.auth.uid;
+      allow update: if
+           (isTeacherAuth() && resource.data.teacherUid == request.auth.uid)
+        || (signedIn()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['linkedUid'])
+            && request.resource.data.linkedUid == request.auth.uid)
+        || (signedIn()
+            && resource.data.linkedUid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['qcm', 'exos', 'activite']));
+    }
+
+    // Comptes professeurs : chacun crée SA demande ; seul l'admin valide/refuse.
+    match /teachers/{uid} {
+      allow read:   if signedIn();
+      allow create: if signedIn() && uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+  }
+}

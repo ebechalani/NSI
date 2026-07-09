@@ -206,7 +206,7 @@
       .then(function (q) { return q.empty ? doSeed() : false; })
       .catch(function () { return false; });
   }
-  function recordQcm(themeId, answered, correct, total) {
+  function recordQcm(themeId, answered, correct, total, detail) {
     if (!isStudent()) return;
     var s = studentByUid(cache.session.uid); if (!s) return;
     // Ne jamais dégrader un meilleur résultat déjà enregistré : un 10/10 ne doit pas
@@ -214,6 +214,8 @@
     var prev = s.qcm && s.qcm[themeId];
     if (prev && !(answered > (prev.answered || 0) || (answered === prev.answered && correct > (prev.correct || 0)))) return;
     var data = { answered: answered, correct: correct, total: total };
+    // Détail par question (diagnostic prof) : 1 = juste, 0 = faux, null = non répondue.
+    if (detail && detail.length) data.detail = detail;
     s.qcm = s.qcm || {}; s.qcm[themeId] = data;
     persistLocal(); fbUpdatePath("students", s.uid, ["qcm", themeId], data);
   }

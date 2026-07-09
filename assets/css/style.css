@@ -939,6 +939,33 @@ html[data-theme="dark"] .prof-note { background: #2a2410; border-color: #b45309;
 /* ---------- Élève en difficulté (tableau de classe) ---------- */
 .classe-table tr.row-alert td { background: var(--bad-soft); }
 
+/* ---------- Vue prof : matrice de réussite par thème + diagnostic par question ---------- */
+/* Cellules colorées selon le taux de réussite (texte AA sur fonds légers).
+   Pas de variable --warn-soft dans le thème → fond rgba léger, lisible clair/sombre. */
+td.cell-good, td.cell-mid, td.cell-bad { text-align: center; font-weight: 700; white-space: nowrap; }
+td.cell-good { background: var(--ok-soft); color: var(--ok-text); }
+td.cell-mid { background: rgba(217, 119, 6, .16); color: var(--warn-text); }
+td.cell-bad { background: var(--bad-soft); color: var(--bad-text); }
+td.cell-none { text-align: center; color: var(--text-soft); }
+/* Dans le diagnostic, une ligne .row-alert garde la couleur de sa cellule de % */
+.classe-table tr.row-alert td.cell-good { background: var(--ok-soft); }
+.classe-table tr.row-alert td.cell-mid { background: rgba(217, 119, 6, .16); }
+.classe-table tr.row-alert td.cell-bad { background: var(--bad-soft); }
+
+.classe-matrix { overflow-x: auto; margin-top: .6rem; }
+.classe-matrix table { border-collapse: collapse; font-size: .8rem; }
+.classe-matrix th, .classe-matrix td { border: 1px solid var(--border); padding: .3rem .55rem; text-align: center; white-space: nowrap; }
+.classe-matrix th { background: var(--bg-soft); cursor: help; }
+.classe-matrix td.mat-name { text-align: left; font-weight: 600; white-space: nowrap; }
+
+.classe-diag .diag-select {
+  font-family: var(--sans); font-size: .9rem; padding: .45rem .7rem; margin: .3rem 0 .8rem;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--bg-elev); color: var(--text);
+  max-width: 100%;
+}
+.classe-diag-table table { font-size: .84rem; }
+.classe-diag-table tr.row-alert td { font-weight: 600; }
+
 /* ---------- Accessibilité : animations réduites ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
