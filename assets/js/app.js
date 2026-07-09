@@ -539,6 +539,10 @@
     // Déroulé de séance (réservé au prof, masqué hors mode professeur)
     if (c.seance) viewTheme.appendChild(makeSeance(c.seance));
 
+    // Déroulé heure par heure du thème (réservé au prof)
+    const hourPlan = makeThemePlan(c.id);
+    if (hourPlan) viewTheme.appendChild(hourPlan);
+
     // Sommaire cliquable pour les thèmes longs (8 sections ou plus)
     if (c.sections.length >= 8) {
       const toc = el("details", "theme-toc");
@@ -615,6 +619,61 @@
     const d = el("div", "prof-note teacher-block");
     d.innerHTML = `<div class="prof-note-head">👩‍🏫 Pour le prof</div>` + html;
     return d;
+  }
+
+  // Déroulé heure par heure du thème (prof) : quoi faire de chaque séance avec
+  // le contenu du site (sections, exercices, TP, quiz), et ce que le professeur
+  // doit préparer/ajouter lui-même. Données : THEME_PLANS (resources.js).
+  function makeThemePlan(themeId) {
+    const plan = (typeof THEME_PLANS !== "undefined" ? THEME_PLANS : {})[themeId];
+    if (!plan) return null;
+    const det = el("details", "theme-plan teacher-block");
+    det.appendChild(el("summary", null, "📅 Déroulé heure par heure (prof) — " + plan.heures));
+    const body = el("div", "theme-plan-body");
+    if (plan.resume) body.appendChild(el("p", "extra-hint", plan.resume));
+    const tools = el("div", "tp-print-group");
+    const bP = el("button", "btn secondary", "🖨️ Imprimer le déroulé");
+    bP.addEventListener("click", () => printThemePlan(plan, themeId));
+    tools.appendChild(bP);
+    body.appendChild(tools);
+    plan.seances.forEach((s) => {
+      const card = el("div", "plan-seance");
+      card.appendChild(el("h4", null, `${s.titre} <span class="plan-duree">· ${s.duree}</span>`));
+      if (s.objectif) card.appendChild(el("p", "plan-objectif", s.objectif));
+      const grid = el("div", "plan-grid");
+      [["📖 Sur le site", s.surLeSite], ["🧑‍🏫 En classe", s.enClasse], ["🧰 À préparer toi-même", s.aPreparer]].forEach(([t, items]) => {
+        const col = el("div", "plan-col");
+        col.appendChild(el("div", "plan-col-head", t));
+        const ul = el("ul");
+        (items && items.length ? items : ["—"]).forEach((it) => {
+          const li = el("li");
+          li.innerHTML = it;
+          ul.appendChild(li);
+        });
+        col.appendChild(ul);
+        grid.appendChild(col);
+      });
+      card.appendChild(grid);
+      body.appendChild(card);
+    });
+    det.appendChild(body);
+    return det;
+  }
+
+  function printThemePlan(plan, themeId) {
+    const c = COURSES.find((x) => x.id === themeId);
+    const rows = plan.seances.map((s) =>
+      `<tr><td><strong>${s.titre}</strong><br>${s.duree}${s.objectif ? "<br><em>" + s.objectif + "</em>" : ""}</td>` +
+      `<td><ul>${(s.surLeSite || []).map((i) => "<li>" + i + "</li>").join("")}</ul></td>` +
+      `<td><ul>${(s.enClasse || []).map((i) => "<li>" + i + "</li>").join("")}</ul></td>` +
+      `<td><ul>${(s.aPreparer || []).map((i) => "<li>" + i + "</li>").join("")}</ul></td></tr>`
+    ).join("");
+    openPrint(
+      `Déroulé — ${c ? c.title : themeId}`,
+      `<h1>📅 Déroulé heure par heure — ${c ? c.title : themeId} (${plan.heures})</h1>` +
+        (plan.resume ? `<p class="intro">${plan.resume}</p>` : "") +
+        `<table><tr><th>Séance</th><th>Sur le site</th><th>En classe</th><th>À préparer</th></tr>${rows}</table>`
+    );
   }
 
   // Déroulé de séance (prof) — bloc dépliable, réservé au mode professeur

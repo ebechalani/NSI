@@ -278,6 +278,23 @@ details.tp-inline[open] > summary { border-bottom: 1px solid var(--border); }
 .ext-link:hover { background: var(--bg-elev); color: var(--accent); }
 .ext-link .ext-arrow { margin-left: auto; color: var(--text-soft); font-size: .85rem; }
 
+/* Déroulé heure par heure d'un thème (prof) */
+details.theme-plan { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); margin: 1rem 0; overflow: hidden; }
+details.theme-plan > summary { cursor: pointer; font-weight: 700; padding: .75rem 1rem; color: var(--accent); list-style: none; }
+details.theme-plan > summary::-webkit-details-marker { display: none; }
+details.theme-plan > summary::before { content: "▸ "; color: var(--text-soft); }
+details.theme-plan[open] > summary::before { content: "▾ "; }
+.theme-plan-body { padding: .3rem 1rem 1rem; }
+.plan-seance { border: 1px solid var(--border); border-radius: 10px; padding: .7rem .9rem; margin: .7rem 0; background: var(--bg-soft); }
+.plan-seance h4 { margin: 0 0 .3rem; }
+.plan-duree { font-weight: 400; color: var(--text-soft); font-size: .85em; }
+.plan-objectif { margin: .1rem 0 .5rem; color: var(--text-soft); font-style: italic; font-size: .92rem; }
+.plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+.plan-col-head { font-size: .78rem; font-weight: 700; color: var(--text-soft); margin-bottom: .25rem; }
+.plan-col ul { margin: 0; padding-left: 1.1rem; font-size: .88rem; }
+.plan-col li { margin: .18rem 0; }
+@media (max-width: 860px) { .plan-grid { grid-template-columns: 1fr; } }
+
 /* Bandeau d'échec de synchronisation Firestore */
 .sync-error-banner {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: 1rem;

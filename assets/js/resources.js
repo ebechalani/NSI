@@ -602,6 +602,1419 @@ const PROGRESSION = [
   },
 ];
 
+/* ---------------- Déroulés heure par heure (prof) ----------------
+   Pour chaque thème : séances de 2 h — quoi faire avec le contenu du site,
+   déroulé minuté en classe, et ce que le professeur prépare lui-même.
+   Rendu par makeThemePlan (app.js), bloc prof dépliable + impression. */
+const THEME_PLANS = {
+  "langages-prog": {
+    "heures": "≈ 24 h (12 séances de 2 h, semaines S1–S6 sanctuarisées de la PROGRESSION)",
+    "resume": "Démarrage grands débutants : les séances 1–2 suivent la « Séquence 0 » clé en main du site, puis chaque notion (conditions, for, while, fonctions, spécification, bibliothèques) est vue en 3 temps — débranché, texte à trous, écriture libre en cellule vide. Deux évaluations existent sur le site : TP noté « Programmation » (mi-parcours) et DS n°1 (fin de thème).",
+    "seances": [
+      {
+        "titre": "Séance 1 — Séquence 0 (1/2) : « l'ordinateur ne comprend que ce qu'on lui dit »",
+        "duree": "2 h",
+        "objectif": "Comprendre ce qu'est un programme, exécuter et casser son premier print, découvrir l'affectation — et ne plus avoir peur des messages d'erreur.",
+        "surLeSite": [
+          "Fiche « 🚀 Séquence 0 — les 2 premières séances clé en main (grands débutants) » (rubrique Didactique prof, partie 4 « Mettre en œuvre en classe ») : le déroulé minuté complet de cette séance y est déjà rédigé",
+          "Section 1 « Programmer, c'est donner des instructions précises » (première cellule ▶ à faire manipuler : print puis calculs)",
+          "Activité débranchée « Programmer un robot humain » (fiche 30–40 min, à utiliser en variante du « prof-robot » de la fiche)"
+        ],
+        "enClasse": [
+          "0–15 min : accueil, présentation de l'année (les thèmes du menu, la progression du site), création/connexion des comptes élèves (code de classe + nom)",
+          "15–40 min : débranché « le prof-robot » (fiche Séquence 0) : les îlots écrivent la recette du carré/de la tartine, le prof exécute <strong>littéralement</strong> — leçon : la machine fait ce qu'on dit, pas ce qu'on veut dire",
+          "40–55 min : institutionnalisation (trace écrite : programme, langage, Python 1991)",
+          "55–85 min : sur le site, section 1 : exécuter la cellule ▶ « print », puis la <strong>modifier</strong> (prénom, deux print, un calcul) — 3 affichages différents par élève",
+          "85–100 min : « cassez votre programme » : provoquer SyntaxError et NameError, lire les messages ENSEMBLE au vidéoprojecteur",
+          "100–115 min : variables sur ardoise (x = 5 ; x = x + 3 ; x = x * 2, « = range dans la boîte ») puis vérification sur machine",
+          "115–120 min : bilan oral en 3 questions (reprises en rituel de la séance 2)"
+        ],
+        "aPreparer": [
+          "Matériel du prof-robot : plaquette de beurre + pain (ou craie et grand tableau pour le carré)",
+          "Ardoises ou feuilles A5 par élève",
+          "Codes de classe créés à l'avance sur le site ; vidéoprojecteur testé",
+          "Trace écrite « programme / langage / erreur » à faire coller"
+        ]
+      },
+      {
+        "titre": "Séance 2 — Séquence 0 (2/2) : « des boîtes qui se souviennent, des programmes qui décident »",
+        "duree": "2 h",
+        "objectif": "Connaître les 4 types de base (int, float, str, bool), utiliser type(), et découvrir if/else par le jeu.",
+        "surLeSite": [
+          "Fiche « 🚀 Séquence 0 » (séance 2) : déroulé minuté complet déjà rédigé",
+          "Section 2 « Variables, affectation et types » (cellule ▶ à faire manipuler)",
+          "TP guidé « TP Python — Variables et types » : les 4 étapes (types fondamentaux, opérateurs, conversions, texte à trous « calculatrice de moyenne »)",
+          "QCM du thème (12 questions) : en extraire 4–5 pour le mini-QCM de fin de séance",
+          "Exercice 2 (facile) : prédire x après trois affectations"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — les 3 questions du bilan S1 sur ardoises levées, ré-expliquées par un élève",
+          "10–30 min : le piège fondateur : faire parier les îlots sur 3 + 4 puis « 3 » + « 4 », vérifier sur machine ; trace int/float/str/bool et type()",
+          "30–60 min : TP guidé « Variables et types », étapes 1 à 4, en binômes pilote/copilote (échange des rôles à mi-parcours)",
+          "60–75 min : conditions en débranché : jeu de la règle cachée (« si la note ≥ 10 je dis Reçu ») que les îlots doivent deviner",
+          "75–105 min : écrire ensemble mention(note) pas à pas (if/else puis elif) ; les rapides font un exercice défi et deviennent tuteurs ; corrigés poussés en fin de phase",
+          "105–120 min : mini-QCM auto-corrigé (remonte dans « Ma classe ») + annonce : « et si on veut répéter 100 fois ? »"
+        ],
+        "aPreparer": [
+          "Ardoises ; constitution des binômes pilote/copilote",
+          "Sélection des 4–5 questions de QCM (le site permet de refaire le QCM complet plus tard)",
+          "Cartes « notes » (8, 12, 15, 17…) pour le jeu de la règle cachée"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Les instructions conditionnelles",
+        "duree": "2 h",
+        "objectif": "Écrire un if/elif/else correctement indenté et comprendre que l'ordre des conditions compte.",
+        "surLeSite": [
+          "Section 3 « Les instructions conditionnelles » (cellule ▶ mention(note) + organigramme, avec la question « combien de conditions testées ? » et le point de vigilance sur l'ordre des elif)",
+          "TP guidé « TP Python — Les conditions », étapes 1 à 3 (if/else et indentation, ordre des conditions, texte à trous « valider la note »)",
+          "Exercice 1 (facile, texte à trou est_pair)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise — prédire la sortie d'un if simple",
+          "10–30 min : débranché : « trier les humains » — chaque élève reçoit une carte-note, se place dans la zone TB/B/AB/P selon les règles affichées ; que se passe-t-il si on teste ≥ 14 avant ≥ 16 ?",
+          "30–50 min : lecture guidée section 3 + manipulation de la cellule ▶ : changer la note, inverser deux elif, observer",
+          "50–85 min : TP guidé « Les conditions » étapes 1–3 en binômes",
+          "85–110 min : exercice 1 en autonomie (cellule) ; les rapides inventent une fonction à seuils pour l'îlot voisin",
+          "110–120 min : institutionnalisation (deux-points, indentation = « la phrase appartient au si ») ; le prof pousse les corrigés"
+        ],
+        "aPreparer": [
+          "Cartes-notes plastifiées + affiches de zones pour le débranché",
+          "Trace écrite if/elif/else à coller",
+          "Grille d'observation des binômes (qui bloque sur l'indentation ?)"
+        ]
+      },
+      {
+        "titre": "Séance 4 — Conditions : écriture libre",
+        "duree": "2 h",
+        "objectif": "Écrire seul, dans une cellule vide, une fonction conditionnelle complète ; lire du code pour prédire sa sortie.",
+        "surLeSite": [
+          "Exercices 2 et 3 (faciles : prédiction d'affectations, est_pair en écriture libre)",
+          "Exercice 8 (défi : mention(note) avec jeu de tests assert) pour les plus rapides",
+          "Bloc « Erreurs fréquentes » du thème (deux-points oubliés, range, print/return, while infinie) et fiche-résumé"
+        ],
+        "enClasse": [
+          "0–15 min : rituel — dictée de code : le prof écrit 3 mini-programmes au tableau, les élèves prédisent la sortie sur ardoise",
+          "15–35 min : lecture collective des « Erreurs fréquentes » du thème ; chaque îlot met en scène une erreur au tableau",
+          "35–75 min : exercices 2 puis 3 en cellule vide (l'élève écrit TOUT le code) ; entraide dans l'îlot avant d'appeler le prof",
+          "75–100 min : différenciation : exercice 8 (défi) pour les rapides, reprise guidée du TP « Les conditions » pour les fragiles",
+          "100–120 min : mise en commun, corrigés poussés, trace « mes 3 erreurs à moi » (métacognition)"
+        ],
+        "aPreparer": [
+          "Les 3 mini-programmes de la dictée de code",
+          "Fiche « mes 3 erreurs à moi » à photocopier",
+          "Exercices supplémentaires pour très rapides (variante : année bissextile)"
+        ]
+      },
+      {
+        "titre": "Séance 5 — La boucle for",
+        "duree": "2 h",
+        "objectif": "Utiliser for et range pour répéter, et installer le motif de l'accumulation.",
+        "surLeSite": [
+          "Section 4 « Les boucles bornées (for) » (cellule ▶ table de multiplication de 7 à faire modifier)",
+          "TP guidé « TP Python — Les boucles », étape 1 « Boucle for avec range() »",
+          "Exercices 4 (table de 9) et 5 (somme des entiers de 1 à 100, accumulation)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise (un if à prédire)",
+          "10–35 min : débranché : retour du « robot humain » sur quadrillage — programme long, puis raccourci avec « répète 3 fois (avance) » : la boucle naît du besoin",
+          "35–55 min : section 4 : exécuter la cellule ▶, changer range(1, 11), tester range(0, 20, 2) ; verbaliser « range(n) s'arrête à n−1 »",
+          "55–80 min : TP « Les boucles » étape 1, puis exercice 4 en cellule vide",
+          "80–105 min : exercice 5 : d'abord tableau de suivi de la variable total sur ardoise (débranché), puis code",
+          "105–120 min : institutionnalisation (bornes de range, motif d'accumulation) + corrigés poussés"
+        ],
+        "aPreparer": [
+          "Quadrillage au sol (scotch de masquage) + obstacles + cible",
+          "Tableau de suivi de variables imprimé (colonnes k / total)",
+          "Trace écrite range + accumulation"
+        ]
+      },
+      {
+        "titre": "Séance 6 — Consolidation 1 + TP noté n°1",
+        "duree": "2 h",
+        "objectif": "Stabiliser variables/conditions/for et passer la première évaluation sur poste (diagnostic bienveillant, cf. PROGRESSION fin S3).",
+        "surLeSite": [
+          "Exercice 9 (défi : trouver le bug range(n) dans somme) en chasse au bug collective",
+          "QCM du thème : questions portant sur variables, conditions, for",
+          "Évaluation : sujet « TP noté — Programmation » (1 h sur poste, /20) de la rubrique Évaluations — à restreindre aux notions vues (pas encore while/fonctions)"
+        ],
+        "enClasse": [
+          "0–15 min : rituel + chasse au bug : l'exercice 9 est projeté, les îlots cherchent pourquoi somme(5) affiche 10 et pas 15",
+          "15–45 min : parcours de révision en îlots : refaire les textes à trous des TP « Variables et types » et « Les conditions » (rotation d'ateliers)",
+          "45–60 min : QCM partiel en autonomie — le prof observe la matrice « Ma classe » pendant ce temps",
+          "60–120 min : TP noté n°1 sur poste (1 h), barème bienveillant : l'objectif est le diagnostic"
+        ],
+        "aPreparer": [
+          "Adapter le sujet « TP noté — Programmation » aux seules notions vues et l'imprimer (bouton 🖨️) ou le distribuer via Capytale",
+          "Vérifier les postes / la salle info à l'avance",
+          "Barème et grille de compétences (déclaré diagnostic aux élèves)"
+        ]
+      },
+      {
+        "titre": "Séance 7 — La boucle while",
+        "duree": "2 h",
+        "objectif": "Écrire une boucle non bornée avec un motif d'arrêt correct et savoir éviter la boucle infinie.",
+        "surLeSite": [
+          "Section 5 « Les boucles non bornées (while) » (cellule ▶ « combien de divisions de 1000 par 2 » à faire manipuler)",
+          "TP guidé « TP Python — Les boucles », étapes 2 « Boucle while (motif d'arrêt) » et 3 « Le jeu du nombre deviné »",
+          "Exercice 6 (moyen : compte_a_rebours avec while)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — retour rapide sur le TP noté (2 erreurs anonymées commentées)",
+          "10–30 min : débranché : « tant que le gobelet n'est pas vide, bois une gorgée » — un élève-robot exécute ; puis le prof donne une règle dont la condition ne devient jamais fausse : la classe mime la boucle infinie et cherche le garde-fou",
+          "30–55 min : section 5 : cellule ▶ manipulée (changer 1000, changer la condition)",
+          "55–90 min : TP « Les boucles » étapes 2–3 : le jeu du nombre deviné se joue d'abord en binôme humain, puis on lit/lance le code",
+          "90–110 min : exercice 6 en cellule vide",
+          "110–120 min : trace « for si on connaît le nombre de tours, while sinon » + corrigés poussés"
+        ],
+        "aPreparer": [
+          "Gobelets/jetons pour le débranché",
+          "Affiche « garde-fou anti-boucle infinie : la condition doit pouvoir devenir fausse »",
+          "Trace comparatif for/while"
+        ]
+      },
+      {
+        "titre": "Séance 8 — for ou while ? + mission « Devine le nombre »",
+        "duree": "2 h",
+        "objectif": "Choisir la bonne boucle, réinvestir le motif du « meilleur vu », et compter des essais (première intuition du coût).",
+        "surLeSite": [
+          "Exercice 7 (moyen : maximum(tab) sans max())",
+          "Mission-défi du thème « Devine le nombre » : compter les essais d'une recherche par dichotomie entre 1 et 100",
+          "Bloc « Erreurs fréquentes » (boucle while infinie) en rappel"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise (prédire une boucle while courte)",
+          "10–30 min : débranché : jeu du devine-le-nombre en îlot — manche 1 dans l'ordre, manche 2 en coupant en deux ; on note les essais sur la feuille de score",
+          "30–70 min : exercice 7 : schéma « le plus grand vu jusqu'ici » sur ardoise, puis code en cellule vide, puis test sur une liste inventée par le voisin",
+          "70–105 min : mission « Devine le nombre » en îlot (le prof circule, indices gradués)",
+          "105–120 min : mise en commun : ~7 essais pour 100 nombres, pourquoi ? Corrigés poussés"
+        ],
+        "aPreparer": [
+          "Feuilles de score par îlot + post-its 1–100",
+          "Indices gradués (coup de pouce 1, 2, 3) pour la mission",
+          "Corrigé rédigé de la mission (le site ne fournit que l'énoncé)"
+        ]
+      },
+      {
+        "titre": "Séance 9 — Les fonctions",
+        "duree": "2 h",
+        "objectif": "Définir une fonction avec def, paramètres et return ; distinguer return (renvoie) et print (affiche).",
+        "surLeSite": [
+          "Section 6 « Les fonctions » (cellule ▶ est_pair à faire manipuler)",
+          "Réécriture en fonctions des exercices 4 et 5 déjà faits (table(n), somme(n)) en cellule vide",
+          "Mini-projet « PGCD (algorithme d'Euclide) » (rubrique mini-projets du thème) en amorce pour les rapides"
+        ],
+        "enClasse": [
+          "0–10 min : rituel",
+          "10–30 min : débranché : la « machine à fonctions » — une boîte en carton, un élève-fonction dedans ; on donne une carte-paramètre, il rend une carte-résultat ; que se passe-t-il s'il crie le résultat (print) au lieu de le rendre (return) ?",
+          "30–55 min : section 6 : cellule ▶ + démonstration du piège : une fonction qui print mais ne return pas, qu'on essaie d'additionner",
+          "55–90 min : réécrire table(n) et somme(n) sous forme de fonctions, appels multiples ; corrigés en différé",
+          "90–115 min : amorce du mini-projet « PGCD » (les rapides) / consolidation guidée (les autres)",
+          "115–120 min : bilan + trace def/paramètres/return"
+        ],
+        "aPreparer": [
+          "Boîte « machine à fonctions » + cartes entrées/sorties",
+          "Trace écrite fonctions",
+          "Répartition différenciée (qui part sur le PGCD ?)"
+        ]
+      },
+      {
+        "titre": "Séance 10 — Spécifier et tester",
+        "duree": "2 h",
+        "objectif": "Spécifier une fonction (docstring, préconditions) et la tester avec assert ; lire un traceback.",
+        "surLeSite": [
+          "Section 7 « Spécifier une fonction » (cellule ▶ moyenne avec docstring, précondition, postcondition)",
+          "Section 8 « Tester et mettre au point (débogage) » (cellule ▶ « ce code contient un bug de LOGIQUE : trouve-le »)",
+          "Exercice 10 (défi : spécifier et écrire est_premier avec assert) ; exercice 8 (mention + assert) si non traité en séance 4"
+        ],
+        "enClasse": [
+          "0–10 min : rituel",
+          "10–30 min : section 7 : spécifier en français d'abord (« que promet la fonction ? que suppose-t-elle ? »), chaque îlot spécifie une fonction du quotidien (distributeur, ascenseur)",
+          "30–55 min : section 8 : chasse au bug collective sur la cellule ▶ + lecture d'un traceback au vidéoprojecteur (« 3 questions : où ? quoi ? pourquoi ? »)",
+          "55–95 min : exercice 10 en binôme : spécifier AVANT de coder, écrire les assert AVANT le corps",
+          "95–115 min : échange de fonctions entre îlots : chacun fait tourner les assert des autres",
+          "115–120 min : trace docstring + assert ; corrigés poussés"
+        ],
+        "aPreparer": [
+          "Affiche « lire un traceback en 3 questions »",
+          "2–3 fonctions buguées supplémentaires à distribuer aux rapides",
+          "Trace écrite spécification/tests"
+        ]
+      },
+      {
+        "titre": "Séance 11 — Bibliothèques, documentation, autres langages + vrai environnement",
+        "duree": "2 h",
+        "objectif": "Importer et documenter (import, help), comparer des langages, et coder pour la première fois hors du site (Capytale/Thonny).",
+        "surLeSite": [
+          "Section 9 « Utiliser une bibliothèque et sa documentation » (cellule ▶ math/random, help)",
+          "Section 10 « Comparer plusieurs langages » (activité en îlot : repérer variables, condition, boucle dans les 4 exemples de langages)",
+          "Fiches + du thème : « Interprétation vs compilation » et « Le typage : fort/faible, statique/dynamique » (lecture prof/appui)",
+          "Mini-projet « Le Pendu » (utilise random) en ouverture"
+        ],
+        "enClasse": [
+          "0–10 min : rituel",
+          "10–35 min : section 9 : cellule ▶, puis jeu « devine ce que fait cette fonction » en lisant seulement son help",
+          "35–60 min : bascule sur Capytale/Thonny : recopier est_premier de la séance 10, l'exécuter, la sauvegarder — premier fichier .py réel (cf. encart « Coder pour de vrai » du site)",
+          "60–95 min : début du mini-projet « Le Pendu » sur Capytale (random.choice, boucle while, condition)",
+          "95–115 min : section 10 en îlots : chaque îlot présente une construction repérée dans les 4 langages",
+          "115–120 min : annonce et plan de révision du DS n°1"
+        ],
+        "aPreparer": [
+          "Activité Capytale créée et testée (ou Thonny installé sur les postes)",
+          "Fichier squelette du Pendu à distribuer",
+          "Feuille de révision DS n°1 (à partir du résumé et des erreurs fréquentes du site)"
+        ]
+      },
+      {
+        "titre": "Séance 12 — Consolidation, QCM, remédiation, DS n°1",
+        "duree": "2 h",
+        "objectif": "Boucler le thème : auto-évaluation par QCM, remédiation ciblée, puis DS n°1 sur table.",
+        "surLeSite": [
+          "Fiche-résumé du thème (5 points) et « Erreurs fréquentes » (4 pièges) pour la carte mentale",
+          "QCM complet du thème (12 questions) en autonomie",
+          "Côté prof : « Ma classe » — matrice par thème + diagnostic par question pour constituer les groupes de remédiation",
+          "Évaluation : sujet « DS n°1 — Langages et programmation » (55 min, /20) de la rubrique Évaluations"
+        ],
+        "enClasse": [
+          "0–20 min : consolidation : carte mentale collective du thème construite à partir de la fiche-résumé (un rameau par îlot)",
+          "20–40 min : QCM 12 questions en autonomie sur le site (résultats remontés en direct)",
+          "40–60 min : remédiation : le prof lit la matrice/diagnostic par question et regroupe par besoin ; les élèves solides deviennent tuteurs",
+          "60–115 min : DS n°1 sur table (55 min) — inclut de la lecture de code « que fait ce programme ? », pas seulement de l'écriture",
+          "115–120 min : ramassage + teaser du thème suivant (représentation des données)"
+        ],
+        "aPreparer": [
+          "Imprimer le sujet « DS n°1 — Langages et programmation » (bouton 🖨️ de la rubrique Évaluations) + copies",
+          "Grand format pour la carte mentale (A3 ou tableau)",
+          "Plan de regroupement de remédiation (préparé à partir des QCM précédents)"
+        ]
+      }
+    ]
+  },
+  "histoire-informatique": {
+    "heures": "≈ 4 h fil rouge (2 séances de 2 h + rituels de 10 min répartis sur l'année)",
+    "resume": "Le thème est un fil rouge : deux séances posées (l'une en période 1 après la Séquence 0, l'autre en période 3–4) encadrent des rituels de 10 min répartis toute l'année — à chaque nouveau thème, on épingle sur la frise murale le repère historique correspondant (Leibniz→binaire, Turing→algorithmique, ARPANET→réseaux…), sur la trame de l'exercice 2 du site (« relie chaque notion à son origine »). L'évaluation existe sur le site : DS de 40 min.",
+    "seances": [
+      {
+        "titre": "Séance 1 — Des racines de l'algorithme aux premiers ordinateurs",
+        "duree": "2 h",
+        "objectif": "Construire une première frise (Antiquité → 1970) et rencontrer les figures fondatrices (Pascal, Babbage, Lovelace, Turing) — en codant aussi, même en histoire.",
+        "surLeSite": [
+          "Section « 🃏 Jeu : la frise à reconstituer » (jeu interactif du thème, à jouer d'abord en version cartes papier)",
+          "Sections 2 à 7 : « Pourquoi une histoire de l'informatique ? », « Aux racines : l'algorithme et la logique », « Des premières machines à calculer », « Babbage et Lovelace », « Les fondements théoriques (1850–1945) », « Les premiers ordinateurs (1940–1970) »",
+          "Exercice 1 (facile : ordonner Web, transistor, Pascaline, machine de Turing) et exercice 4 (facile : dictionnaire {inventeur: invention}, cellule ▶ à compléter)",
+          "Glossaire du thème (Pascaline, machine analytique, machine de Turing, transistor…)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel d'entrée — « à votre avis, l'informatique commence quand ? » (votes, on y répondra en fin d'heure)",
+          "10–35 min : débranché : frise à reconstituer en îlots avec cartes imprimées (événements et dates séparés), puis vérification en jouant le jeu du site au vidéoprojecteur",
+          "35–70 min : îlots-experts : chaque îlot lit UNE section (2 à 7) et la présente en 2 min avec un objet/mime ; le prof recolle le récit",
+          "70–85 min : exercice 1 à l'ardoise (chronologie) — retour sur le vote initial : l'informatique précède l'ordinateur",
+          "85–110 min : exercice 4 en cellule ▶ : compléter et interroger le dictionnaire des inventeurs (on réinvestit les dictionnaires en histoire)",
+          "110–120 min : institutionnalisation : lancement de la frise murale de classe (les cartes validées y sont épinglées)"
+        ],
+        "aPreparer": [
+          "Cartes-événements imprimées et plastifiées (dates séparées des événements), un jeu par îlot",
+          "Frise murale : ficelle + pinces à linge + étiquettes, qui restera affichée toute l'année pour les rituels",
+          "Trace écrite (frise simplifiée à coller) ; vidéoprojecteur"
+        ]
+      },
+      {
+        "titre": "Séance 2 — Du microprocesseur à l'IA + évaluation",
+        "duree": "2 h",
+        "objectif": "Compléter la frise jusqu'à aujourd'hui (micro-informatique, Internet ≠ Web, IA, métiers), la manipuler en Python, et évaluer le fil rouge.",
+        "surLeSite": [
+          "Sections 8 à 12 : « Micro-informatique, logiciel et réseaux (1970–1990) », « Le Web, le mobile et aujourd'hui (1990 →) », « L'intelligence artificielle : une longue histoire », « L'évolution du stockage des données », « Et demain ? Métiers et études de l'informatique »",
+          "Section « Construire et trier une frise chronologique » (cellule ▶ : la frise comme liste de dictionnaires)",
+          "Exercices 5 (moyen : Internet ≠ Web), 3 (défi : trier la frise avec sorted) et 7 (défi : compréhension filtrant le XXᵉ siècle) ; exercice 6 (dichotomie sur la frise triée) pour les rapides",
+          "Jeu « 🔓 Bonus — Jeu d'évasion : la salle des machines »",
+          "QCM du thème (6 questions) en autonomie ; côté prof : matrice/diagnostic « Ma classe »",
+          "Évaluation : sujet « DS — Histoire de l'informatique » (40 min, /20) de la rubrique Évaluations"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — quiz-éclair sur la frise murale (ardoises)",
+          "10–35 min : îlots-experts sur les sections 8 à 12 + mini-débat tranché par l'exercice 5 : « Internet et le Web, deux choses différentes ? » (dates, inventeurs, une phrase chacun)",
+          "35–60 min : codage : cellule ▶ de la section « Construire et trier une frise » puis exercices 3 et 7 (réinvestissement du tri et des compréhensions vus dans les autres thèmes)",
+          "60–75 min : jeu d'évasion « la salle des machines » en îlots (chronométré)",
+          "75–80 min : QCM 6 questions en autonomie — le prof lit la matrice pour la remédiation orale immédiate",
+          "80–120 min : DS sur table (40 min) puis ramassage"
+        ],
+        "aPreparer": [
+          "Imprimer le sujet « DS — Histoire de l'informatique » (bouton 🖨️) + copies",
+          "Nouvelles cartes pour compléter la frise murale (1971 → aujourd'hui)",
+          "Chronomètre/gong pour l'escape game ; prévoir les rituels de 10 min suivants (1 repère historique à épingler à l'ouverture de chaque nouveau thème, trame = exercice 2 du site)"
+        ]
+      }
+    ]
+  },
+  "donnees-base": {
+    "heures": "≈ 12 h (6 séances de 2 h, période S7–S9 de la PROGRESSION)",
+    "resume": "Du concret vers l'abstrait : cartes binaires en îlots, puis conversions dans les deux sens, hexadécimal, complément à deux, débordement, flottants, booléens et codage des caractères — chaque section du cours a sa cellule ▶ de vérification. Deux évaluations existent sur le site : TP noté sur poste (séance 5) et DS n°2 (séance 6).",
+    "seances": [
+      {
+        "titre": "Séance 1 — Le coffre binaire : coder avec des 0 et des 1",
+        "duree": "2 h",
+        "objectif": "Comprendre le bit comme un interrupteur, l'octet, et LA formule du thème : n bits → 2ⁿ valeurs.",
+        "surLeSite": [
+          "Activité débranchée « Le coffre binaire (cartes) » (fiche complète 30–40 min : déroulé, variante ASCII, note prof — bouton 🖨️)",
+          "Sections 1 « Pourquoi tout est-il codé en 0 et 1 ? » et 2 « Le bit, l'octet et les puissances de 2 » (cellule ▶ : table des puissances de 2 à faire manipuler)",
+          "Exercices 1 (facile, texte à trou 2 ** bits) et 3 (facile : valeurs codables sur 5 puis 12 bits)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel fil rouge histoire — Leibniz et le binaire (à épingler sur la frise murale)",
+          "10–50 min : débranché « Le coffre binaire » en îlots : 5 cartes 16-8-4-2-1, former 13, lire des configurations du prof, puis LA question : combien de nombres différents avec 5 cartes ?",
+          "50–70 min : institutionnalisation : sections 1–2, cellule ▶ des puissances de 2 exécutée et modifiée (jusqu'à 2¹⁰), piège bit/octet (100 Mb/s ≈ 12,5 Mo/s)",
+          "70–95 min : exercices 1 et 3 en cellule (texte à trous puis écriture)",
+          "95–110 min : variante de la fiche : coder son initiale ASCII sur 8 cartes, échanger des messages binaires entre îlots",
+          "110–120 min : trace bit/octet/2ⁿ à coller + corrigés poussés"
+        ],
+        "aPreparer": [
+          "Fabriquer 5 cartes à points par îlot (16, 8, 4, 2, 1) + jeux de 8 cartes pour la variante ASCII",
+          "Imprimer la fiche débranchée (bouton 🖨️ de la rubrique Activités débranchées)",
+          "Trace écrite ; carte « Leibniz » pour la frise"
+        ]
+      },
+      {
+        "titre": "Séance 2 — Convertir dans les deux sens",
+        "duree": "2 h",
+        "objectif": "Convertir binaire → décimal (poids) et décimal → binaire (divisions successives), à la main puis en Python.",
+        "surLeSite": [
+          "Sections 3 « Comprendre une base : le rôle de la position », 4 « Convertir : binaire → décimal » (cellule ▶ algorithme de Horner) et 5 « Convertir : décimal → binaire » (cellule ▶ dec_vers_bin)",
+          "Exercices 2 (facile : 1011 en décimal, vérification 0b1011), 4 (facile : 38 par divisions successives, vérification bin(38)) et 5 (moyen : fonction nb_bits(v))"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise — lire une configuration de cartes binaires",
+          "10–30 min : section 3 : décortiquer 2025 en base 10 (poids des positions), puis transférer le principe à la base 2",
+          "30–55 min : débranché : batterie de conversions à l'ardoise dans les deux sens (tableau des poids / tableau des restes), vérifications avec les cellules ▶ des sections 4–5",
+          "55–85 min : exercices 2 et 4 : TOUJOURS papier d'abord, Python ensuite pour vérifier",
+          "85–110 min : exercice 5 en binômes (première fonction du thème, réinvestit while)",
+          "110–120 min : trace des deux méthodes + corrigés poussés"
+        ],
+        "aPreparer": [
+          "Ardoises ; tableau des poids (…| 16 | 8 | 4 | 2 | 1) imprimé",
+          "Batterie de conversions différenciées (3 niveaux)",
+          "Trace écrite méthodes de conversion"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Hexadécimal et entiers relatifs",
+        "duree": "2 h",
+        "objectif": "Lire/écrire de l'hexadécimal (1 chiffre = 4 bits) et coder un entier négatif en complément à deux.",
+        "surLeSite": [
+          "Section 6 « L'hexadécimal (base 16) : le binaire compact » (cellule ▶ : Python jongle entre les trois bases)",
+          "Section 7 « Coder les entiers négatifs : le complément à deux » (cellule ▶ complement_a_deux)",
+          "Exercices 6 (moyen : octet 11001010 → hexa CA par quartets) et 7 (moyen : décomposer la couleur #1E90FF en R, V, B)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel conversion à l'ardoise",
+          "10–30 min : débranché : découper des octets en deux quartets sur ardoise, construire ensemble la table 0–F",
+          "30–55 min : section 6 + cellule ▶, puis exercice 6 en cellule",
+          "55–75 min : exercice 7 : ouvrir une pipette de couleurs au vidéoprojecteur, décoder #1E90FF — l'hexa sert à quelque chose de visible",
+          "75–105 min : section 7 : complément à deux pas à pas avec les cartes (le poids fort devient −128), cellule ▶ manipulée, plage −128..+127 découverte en îlot",
+          "105–120 min : trace + corrigés poussés"
+        ],
+        "aPreparer": [
+          "Jeu de cartes −128 / 64 / 32 / … / 1 par îlot pour le complément à deux",
+          "Pipette de couleurs (outil du navigateur) prête à projeter ; nuancier imprimé",
+          "Trace écrite hexa + complément à deux"
+        ]
+      },
+      {
+        "titre": "Séance 4 — Débordement, flottants, booléens",
+        "duree": "2 h",
+        "objectif": "Observer le débordement, comprendre pourquoi 0.1 + 0.2 ≠ 0.3, et construire les tables de vérité de et/ou/non.",
+        "surLeSite": [
+          "Section 8 « Le débordement (overflow) » (cellule ▶ : simuler un octet avec le modulo 256)",
+          "Section 9 « Les nombres à virgule : les flottants » (cellule ▶ : print(0.1 + 0.2))",
+          "Section 10 « Les booléens et l'algèbre de Boole » (cellule ▶ : tables de vérité de and/or)",
+          "Exercices 8 (défi : add8 et le débordement de 250 + 10) et 9 (défi : fonction proche(a, b) au lieu de ==)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel",
+          "10–35 min : section 8 : image du compteur kilométrique qui « tourne », cellule ▶ puis exercice 8 (prédire add8(255, 1) avant d'exécuter)",
+          "35–65 min : section 9 : faire PARIER la classe sur 0.1 + 0.2 == 0.3, exécuter, expliquer l'approximation ; exercice 9 en cellule",
+          "65–95 min : section 10 en débranché d'abord : tables de vérité jouées debout/assis (deux élèves = deux entrées, l'îlot vote la sortie), puis cellule ▶ pour vérifier",
+          "95–115 min : mini-parcours de 4 questions type DS sur ardoise (une par section du jour)",
+          "115–120 min : trace + corrigés poussés"
+        ],
+        "aPreparer": [
+          "Image de compteur kilométrique (ou anecdote du bug d'Ariane 5) à projeter",
+          "Cartons Vrai/Faux par élève pour les tables de vérité",
+          "Les 4 questions type DS ; trace écrite"
+        ]
+      },
+      {
+        "titre": "Séance 5 — Coder les caractères + TP noté",
+        "duree": "2 h",
+        "objectif": "Utiliser ord/chr, distinguer ASCII/Unicode/UTF-8, puis passer le TP noté sur poste.",
+        "surLeSite": [
+          "Section 11 « Le codage des caractères : ASCII, Unicode, UTF-8 » (cellule ▶ ord/chr) et section 12 « Comment UTF-8 code un caractère (1 à 4 octets) » (cellule ▶ sur le mot « été »)",
+          "Mission-défi du thème « Le décodeur secret » (décoder [72, 73, 32, 78, 83, 73])",
+          "Exercice 10 (défi : chiffre de César avec ord et chr) ou mini-projet « Chiffre de César » pour les rapides",
+          "Évaluation : sujet « TP noté — Représentation des données » (1 h sur poste, /20) de la rubrique Évaluations"
+        ],
+        "enClasse": [
+          "0–10 min : rituel",
+          "10–30 min : sections 11–12 : cellules ▶ manipulées ; chaque îlot code un mot en ASCII binaire sur cartes, l'îlot voisin le décode (réinvestit la séance 1)",
+          "30–55 min : mission « Le décodeur secret » en cellule ; les rapides attaquent le César (exercice 10)",
+          "55–60 min : consignes et installation du TP noté",
+          "60–120 min : TP noté sur poste (1 h) — idéalement sur Capytale pour ramasser les fichiers"
+        ],
+        "aPreparer": [
+          "Table ASCII imprimée par îlot",
+          "Sujet « TP noté — Représentation des données » prêt (activité Capytale créée, ou impression 🖨️) ; postes vérifiés",
+          "Cartes binaires de la séance 1 ressorties pour les messages secrets"
+        ]
+      },
+      {
+        "titre": "Séance 6 — Consolidation, QCM, remédiation, DS n°2",
+        "duree": "2 h",
+        "objectif": "Boucler le thème : synthèse, auto-évaluation par QCM, remédiation ciblée, puis DS n°2 sur table.",
+        "surLeSite": [
+          "Fiche-résumé du thème (5 points) et « Erreurs fréquentes » (bit/octet, 2⁴ = 16, flottants et ==) pour le quiz-relais",
+          "QCM complet du thème (18 questions) en autonomie",
+          "Pour les rapides pendant la remédiation : projet en îlot « Le coffre binaire » ou mini-projet « Conversion de bases » (mini-projet « Chiffre de Vigenère » en bonus)",
+          "Côté prof : « Ma classe » — matrice par thème + diagnostic par question",
+          "Évaluation : sujet « DS n°2 — Représentation des données » (55 min, /20) de la rubrique Évaluations"
+        ],
+        "enClasse": [
+          "0–20 min : consolidation : quiz-relais en îlots construit sur la fiche-résumé et les erreurs fréquentes (chaque îlot rédige 2 questions pour les autres)",
+          "20–45 min : QCM 18 questions en autonomie sur le site (résultats remontés dans « Ma classe »)",
+          "45–60 min : remédiation : groupes de besoin constitués à partir de la matrice/diagnostic par question ; les solides avancent sur le mini-projet « Conversion de bases »",
+          "60–115 min : DS n°2 sur table (55 min)",
+          "115–120 min : ramassage + teaser du thème suivant (types construits)"
+        ],
+        "aPreparer": [
+          "Imprimer le sujet « DS n°2 — Représentation des données » (bouton 🖨️) + copies",
+          "Cartons/gabarit du quiz-relais",
+          "Groupes de remédiation pré-esquissés à partir des QCM des séances précédentes"
+        ]
+      }
+    ]
+  },
+  "types-construits": {
+    "heures": "≈ 12 h (6 séances de 2 h)",
+    "resume": "Progression tuples → listes → compréhensions/matrices → dictionnaires → ensembles, chaque structure étant vécue en débranché avant d'être codée dans les cellules ▶ du site. Le projet en îlot « Organiser les groupes du camp robotique » réinvestit tout en séance 5, avant la séance bilan (QCM 10 questions + TP noté du site).",
+    "seances": [
+      {
+        "titre": "Séance 1 — Pourquoi des types construits ? Tuples et premières listes",
+        "duree": "2 h",
+        "objectif": "Comprendre le besoin de regrouper des valeurs ; manipuler un tuple (immuable, déballage) et lire une liste par ses indices (premier = 0, dernier = len-1 ou -1).",
+        "surLeSite": [
+          "Sections 1 à 3 : « Pourquoi des types “construits” ? », « Les p-uplets (tuples) », « Les listes : créer et accéder aux éléments » (2 cellules ▶ à faire manipuler : tuple/déballage/TypeError, indices/tranches/IndexError)",
+          "Activité d'ouverture en îlot de la section 1 : modéliser son groupe sur papier (quelle structure pour quels besoins ?)",
+          "Exercices 1, 2 et 4 (facile) : texte à trou append/dernier, lecture de t[0], t[-1], len, t[1:3], déballage du point (4, 7)",
+          "Exercice 8 (facile, texte à trou) : échanger a et b sans variable temporaire"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — retour sur les types de base ; question flash : « comment stocker les 30 moyennes de la classe avec ce qu'on sait ? » (impasse volontaire).",
+          "10–30 min : <strong>débranché</strong> — activité d'ouverture de la section 1 en îlot (papier), puis jeu des casiers : 5 enveloppes numérotées 0 à 4 alignées au tableau, on « lit » enveloppe 0, enveloppe -1, la tranche 1:3 ; verbaliser « le premier indice est 0 ».",
+          "30–55 min : <strong>manipulation</strong> — sections 2 et 3 projetées, les élèves exécutent les cellules ▶ : provoquer exprès l'erreur point[0] = 9 (tuple immuable) puis notes[5] (IndexError) et LIRE les messages ensemble.",
+          "55–70 min : <strong>institutionnalisation</strong> — coller la trace écrite : tableau des 3 structures (tuple/liste/dictionnaire) de la section 1 + règle « dernier indice = len(t)-1 ».",
+          "70–105 min : <strong>pratique</strong> — exercices 1, 2, 4 puis 8 : prédire par écrit AVANT d'exécuter, puis vérifier dans la cellule.",
+          "105–120 min : le prof pousse les corrigés des 4 exercices ; bilan éclair sur les erreurs fréquentes n°1 et 2 du site (indices, tuple immuable)."
+        ],
+        "aPreparer": [
+          "5 enveloppes/boîtes numérotées 0–4 avec des cartes-valeurs à l'intérieur (débranché des indices)",
+          "Trace écrite à coller (tableau des 3 structures — reprendre celui de la section 1, bouton 🖨️ du site)",
+          "Vidéoprojecteur + comptes élèves prêts (les cellules ▶ tournent dans le navigateur, prévoir Capytale en secours)",
+          "Impression des exercices 1, 2, 4, 8 pour les élèves sans poste"
+        ]
+      },
+      {
+        "titre": "Séance 2 — Modifier, parcourir, construire par compréhension",
+        "duree": "2 h",
+        "objectif": "Modifier une liste (append, t[i]=v, remove), la parcourir par éléments puis par indices, et lire/écrire une compréhension simple.",
+        "surLeSite": [
+          "Sections 4 à 6 : « Modifier une liste », « Parcourir une liste », « La construction par compréhension » (cellules ▶ à faire manipuler)",
+          "TP guidé « TP Python — Séquences : listes, slicing, complexité », exercices 1 à 3 (participants, planning/slicing, durées/compréhensions)",
+          "Exercices 3, 5 et 6 : carrés de 1 à 5 par compréhension (facile), moyenne par accumulation sans sum (moyen), fonction nb_pairs (moyen)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise — 4 questions flash sur la séance 1 (t[0] ?, t[-1] ?, len ?, tranche ?).",
+          "10–25 min : <strong>débranché</strong> — la « file humaine » : 6 élèves alignés sont la liste ; on joue append (un élève arrive en bout), t[2] = v (remplacement), remove ; la classe prédit l'état après chaque opération.",
+          "25–50 min : <strong>manipulation</strong> — sections 4 et 5 : cellules ▶ exécutées par les élèves, distinguer parcours « par éléments » et « par indices ».",
+          "50–65 min : <strong>institutionnalisation</strong> — section 6 : lire une compréhension à voix haute (« la liste des n·n POUR n allant de… SI… ») ; gabarit [expr for x in iterable if cond] dans le cahier.",
+          "65–105 min : <strong>pratique</strong> — TP guidé « Séquences » exercices 1 à 3 en binômes, puis exercices 3, 5 et 6 seuls en cellule vide.",
+          "105–120 min : corrigés poussés par le prof ; minute méthodo « accumulation : initialiser AVANT la boucle »."
+        ],
+        "aPreparer": [
+          "6 cartes-valeurs grand format pour la file humaine (débranché)",
+          "Ardoises + feutres pour le rituel",
+          "Impression du TP guidé « Séquences » exercices 1–3 (bouton 🖨️) pour travailler cahier fermé",
+          "Trace écrite : gabarit de la compréhension + les 3 opérations de modification"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Matrices et le piège des alias",
+        "duree": "2 h",
+        "objectif": "Manipuler une liste de listes avec la double indexation m[ligne][colonne] et la double boucle ; comprendre copie vs référence (piège [[0]*3]*2).",
+        "surLeSite": [
+          "Section 7 : « Tableaux de tableaux (matrices) » (cellule ▶ à faire manipuler)",
+          "Fiche + « Valeur vs référence (le piège des alias) » (rubrique TP/fiches du thème)",
+          "TP guidé « TP Python — Fonctions & structures de données », étapes 1–2 (fonctions ; listes : slicing, copie vs référence)",
+          "TP guidé « Séquences », exercices 4 et 5 (tuples & unpacking ; défi : mesurer un coût)",
+          "Exercice 11 (défi) : matrice 3×3 avec des 1 sur la diagonale",
+          "Mini-projet « Morpion — détection du gagnant » pour les plus rapides"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — corriger 2 compréhensions fausses écrites au tableau (chasse à l'erreur).",
+          "10–30 min : <strong>débranché</strong> — bataille navale sur papier quadrillé : donner des « coups » m[ligne][colonne], puis faire écrire par l'îlot la double boucle en pseudo-code qui balaie toute la grille.",
+          "30–55 min : <strong>manipulation</strong> — section 7 : cellules ▶ exécutées ; démonstration spectaculaire du piège des alias ([[0]*3]*2 : on modifie une case, deux lignes changent !).",
+          "55–70 min : <strong>institutionnalisation</strong> — fiche + « Valeur vs référence » lue ensemble, vérification pas à pas avec le bouton « 🔎 Pas à pas » (Python Tutor) ; règle : matrice par compréhension imbriquée, jamais par multiplication.",
+          "70–105 min : <strong>pratique</strong> — TP guidé « Fonctions & structures » étapes 1–2 puis exercice 11 en cellule vide ; les rapides basculent sur le mini-projet Morpion.",
+          "105–120 min : corrigés poussés ; devoir : TP guidé « Séquences » exercices 4–5 à terminer."
+        ],
+        "aPreparer": [
+          "Feuilles quadrillées + grilles de bataille navale (débranché matrices)",
+          "Vidéoprojecteur pour la démonstration Python Tutor du piège des alias",
+          "Impression de la fiche + « Valeur vs référence » à coller dans le cahier (🖨️)",
+          "Cahier des charges d'une page pour le Morpion (différenciation des rapides)"
+        ]
+      },
+      {
+        "titre": "Séance 4 — Le dictionnaire : la clé plutôt que la position",
+        "duree": "2 h",
+        "objectif": "Créer, lire, modifier et parcourir un dictionnaire ; utiliser .get pour compter sans KeyError.",
+        "surLeSite": [
+          "Sections 8 à 12 : « Le dictionnaire : associer une clé à une valeur », « ajouter, modifier, supprimer », « Parcourir un dictionnaire », « par compréhension », « Compter avec un dictionnaire » (cellules ▶ à faire manipuler)",
+          "Section 15 : « Pièges fréquents avec les dictionnaires »",
+          "TP guidé « TP Python — Dictionnaires », exercices 1 à 3 (annuaire, comptage avec Counter, compréhension)",
+          "Exercices 7, 9 et 10 : dictionnaire élève + clé mention (moyen), inventaire du jeu avec .get (moyen), occurrences de « mississippi » (défi)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise — liste ou tuple ? 4 situations à trancher.",
+          "10–30 min : <strong>débranché</strong> — la « carte d'identité » : chaque îlot reçoit des étiquettes clé (nom, classe, moyenne) et des étiquettes valeur à apparier ; comparer avec la liste : « pourquoi chercher par CLÉ est plus lisible que par position ? ».",
+          "30–60 min : <strong>manipulation</strong> — sections 8 à 10 : cellules ▶ exécutées (accès d[clé], ajout, .items()) ; provoquer un KeyError et le lire ensemble.",
+          "60–75 min : <strong>institutionnalisation</strong> — trace écrite : d[clé], d[clé] = v, .get(clé, defaut), parcours .items() ; motif du comptage de la section 12.",
+          "75–110 min : <strong>pratique</strong> — TP guidé « Dictionnaires » exercices 1 à 3 en binômes, puis exercices 7, 9 seuls et défi 10 (mississippi).",
+          "110–120 min : corrigés poussés ; lecture rapide de la section 15 (pièges) en sortie de classe."
+        ],
+        "aPreparer": [
+          "Jeux d'étiquettes clé/valeur cartonnées par îlot (débranché dictionnaire)",
+          "Impression du TP guidé « Dictionnaires » ex 1–3 (🖨️)",
+          "Trace écrite dictionnaire à faire coller (les 4 gestes : lire, écrire, .get, .items)",
+          "Prévoir le motif de comptage écrit en A3 au mur (occ[c] = occ.get(c, 0) + 1)"
+        ]
+      },
+      {
+        "titre": "Séance 5 — Ensembles, synthèse et projet en îlot « Groupes du camp »",
+        "duree": "2 h",
+        "objectif": "Découvrir les ensembles (dédoublonner, ET/OU/SANS), choisir la bonne structure selon le besoin, et réinvestir tout le thème dans le projet en îlot.",
+        "surLeSite": [
+          "Sections 14 et 16 : « Les ensembles (set) — pour aller plus loin » et « Choisir la bonne structure (synthèse) » (cellule ▶) ; section 13 (Counter/defaultdict) signalée aux rapides",
+          "Exercices 13 et 14 (set des notes différentes ; foot & théâtre) et exercice 12 (défi — meilleure moyenne sans sorted)",
+          "Projet îlot « Organiser les groupes du camp robotique » : phases 1 à 5 (code de départ former_groupes, tests, bonus âges moyens)",
+          "Défi du thème « Mission : carnet de classe » (donné en devoir)",
+          "TP guidé « Dictionnaires » exercice 4 (ensembles) pour les rapides"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — question flash dictionnaire (.get) au vidéoprojecteur.",
+          "10–25 min : <strong>manipulation</strong> — section 14 (sets) : cellule ▶ puis exercices 13 et 14 en direct.",
+          "25–40 min : <strong>institutionnalisation</strong> — section 16 : jeu de l'ardoise « quelle structure pour… ? » (coordonnées GPS, inventaire, notes de la classe, invités sans doublon).",
+          "40–55 min : <strong>projet, phases 1–2</strong> — en îlot sur papier : définir 2–3 règles d'équilibre, décrire la stratégie gloutonne « distribuer comme des cartes ».",
+          "55–105 min : <strong>projet, phases 3–4</strong> — coder former_groupes(eleves, nb_groupes) à partir du code de départ du site, puis dérouler les 3 tests fournis (chacun placé une fois, tailles proches, niveaux mélangés).",
+          "105–120 min : <strong>phase 5</strong> — présentation éclair (2 min/îlot) : justifier les règles ; le prof remplit la grille d'évaluation de projet ; exercice 12 et défi « carnet de classe » donnés en devoir."
+        ],
+        "aPreparer": [
+          "Grille d'évaluation du projet (critères : règles justifiées, code qui tourne, tests passés, oral) — le site fournit phases et tests mais pas la grille",
+          "Fiches élèves fictives supplémentaires (passer de 6 à 12 inscrits pour corser)",
+          "Feuilles A3 + feutres pour les phases papier",
+          "Chronomètre visible pour les présentations éclair"
+        ]
+      },
+      {
+        "titre": "Séance 6 — Consolidation, QCM, remédiation et TP noté",
+        "duree": "2 h",
+        "objectif": "Stabiliser les 4 structures, diagnostiquer les fragilités par le QCM, remédier en groupes de besoin, puis évaluer sur poste.",
+        "surLeSite": [
+          "Fiche résumé du thème (6 points) et erreurs fréquentes (3) — rubrique exercices",
+          "QCM du thème (10 questions) en autonomie",
+          "Côté prof : matrice de suivi par thème + diagnostic par question pour constituer les groupes de remédiation",
+          "Sujet EVALUATIONS « TP noté — Types construits » (1 h sur poste, /20, corrigé fourni) ; le « DS — Types construits » (50 min) reste en réserve pour une évaluation papier ultérieure"
+        ],
+        "enClasse": [
+          "0–15 min : rituel bilan — relecture guidée du résumé (6 points) et des 3 erreurs fréquentes ; 3 questions flash ardoise.",
+          "15–35 min : <strong>QCM en autonomie</strong> — les 10 questions du site, chacun note son score ; le prof relève les questions les plus ratées (diagnostic par question).",
+          "35–55 min : <strong>remédiation</strong> — groupes de besoin d'après le diagnostic : indices → refaire exercice 2 ; compréhension → exercice 3 ; dictionnaires → exercice 10 ; les solides aident ou avancent sur le Morpion.",
+          "55–115 min : <strong>TP noté sur poste</strong> (1 h) — sujet « TP noté — Types construits » du site : max/min sans fonctions, moyenne, compréhension, dictionnaire bilan, bonus occurrences.",
+          "115–120 min : ramassage des fichiers + teaser du thème suivant : « et si la liste contenait des dictionnaires ? » (pont vers les tables)."
+        ],
+        "aPreparer": [
+          "Imprimer le sujet du TP noté (bouton 🖨️ de la rubrique Évaluations) + fichier de départ notes = [12, 8, 15, 17, 6, 14, 11] déposé sur Capytale/Thonny",
+          "Feuille de score QCM à remplir par élève (alimente la matrice de suivi)",
+          "Parcours de remédiation écrits au tableau (qui refait quel exercice)",
+          "Clé USB / procédure de ramassage des .py"
+        ]
+      }
+    ]
+  },
+  "donnees-tables": {
+    "heures": "≈ 12 h (6 séances de 2 h)",
+    "resume": "On suit la chaîne de traitement du site : table = liste de dictionnaires → lire un CSV (et convertir !) → filtrer/trier → statistiques et jointure, adossée pas à pas au TP guidé « Une table de A à Z (csv) ». La séance 5 est le projet îlot « Enquête sur un fichier CSV », la séance 6 le bilan (QCM 8 questions + TP noté du site).",
+    "seances": [
+      {
+        "titre": "Séance 1 — La notion de table : liste de dictionnaires",
+        "duree": "2 h",
+        "objectif": "Acquérir le vocabulaire (table, enregistrement, descripteur) et représenter une table en Python comme liste de dictionnaires.",
+        "surLeSite": [
+          "Sections 1 et 2 : « Des données partout : la notion de table » et « Représenter une table en Python » (cellule ▶ à faire manipuler)",
+          "TP guidé « TP Python — Une table de A à Z (csv) », étape 1 : « Une table = une liste de dictionnaires » (cellule ▶)",
+          "Exercice 3 (facile) : afficher le nombre de lignes et la liste des colonnes",
+          "Réactivation : exercice 12 du thème « types construits » (liste de dictionnaires, meilleure moyenne)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — réactivation dictionnaires (ardoise : lire e[\"nom\"], ajouter une clé).",
+          "10–35 min : <strong>débranché</strong> — chaque îlot reçoit 5 fiches cartonnées « élève » (nom, classe, note) en désordre : reconstituer le tableau au sol, nommer les colonnes ; introduire les mots <strong>enregistrement</strong> (une fiche) et <strong>descripteur</strong> (un nom de colonne).",
+          "35–60 min : <strong>manipulation</strong> — sections 1–2 : cellule ▶ exécutée ; faire le lien fiche ↔ dictionnaire, pile de fiches ↔ liste.",
+          "60–75 min : <strong>institutionnalisation</strong> — trace écrite : table = liste de dictionnaires ; 1 ligne = 1 dict ; colonnes = clés de la première ligne.",
+          "75–105 min : <strong>pratique</strong> — TP guidé étape 1 en binômes puis exercice 3 seul en cellule vide ; défi rapide : ajouter un 6ᵉ enregistrement à la table.",
+          "105–120 min : corrigés poussés + question de sortie sur papier (« qu'est-ce qu'un descripteur ? »)."
+        ],
+        "aPreparer": [
+          "Jeux de 5 fiches cartonnées « élève » par îlot (le site n'a pas d'activité débranchée pour ce thème : matériel à fabriquer)",
+          "Trace écrite à coller (vocabulaire + schéma fiche↔dictionnaire)",
+          "Billets de sortie (petits papiers pour la question finale)",
+          "Vidéoprojecteur + postes avec accès au site"
+        ]
+      },
+      {
+        "titre": "Séance 2 — Lire un fichier CSV (et convertir les nombres !)",
+        "duree": "2 h",
+        "objectif": "Lire un CSV avec csv.DictReader, comprendre séparateur et ligne d'en-tête, et convertir systématiquement les valeurs numériques (tout est chaîne !).",
+        "surLeSite": [
+          "Sections 3 et 4 : « Le format CSV : lire un fichier de données » et « Vérifier la cohérence d'une table » (cellules ▶ à faire manipuler)",
+          "TP guidé « Une table de A à Z », étape 2 : « Lire un CSV avec csv.DictReader (et convertir les nombres !) »",
+          "Exercices 5 et 6 (moyen) : charger un mini-CSV avec DictReader ; moyenne avec conversion int(...)",
+          "Erreur fréquente n°1 du thème : « les valeurs lues dans un CSV sont des chaînes »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — 3 questions flash sur la séance 1.",
+          "10–30 min : <strong>observation guidée</strong> — le MÊME fichier eleves.csv ouvert dans le Bloc-notes (texte brut : séparateurs, en-tête) puis dans un tableur : « le tableur n'est qu'un habillage » ; repérer le point-virgule.",
+          "30–55 min : <strong>manipulation</strong> — sections 3–4 : cellules ▶ exécutées ; piège mis en scène : \"17\" + 1 explose → il faut int() ; vérifier la cohérence (même nombre de colonnes partout).",
+          "55–70 min : <strong>institutionnalisation</strong> — gabarit DictReader dans le cahier + règle en rouge : « un CSV ne livre QUE des chaînes ».",
+          "70–105 min : <strong>pratique</strong> — TP guidé étape 2 en binômes, puis exercices 5 et 6 seuls en cellule vide.",
+          "105–120 min : corrigés poussés ; question de sortie : « pourquoi int(l[\"note\"]) ? »."
+        ],
+        "aPreparer": [
+          "Un vrai fichier eleves.csv (à créer) déposé sur les postes + version imprimée du contenu brut",
+          "Tableur installé (LibreOffice/Excel) pour la comparaison bloc-notes/tableur",
+          "Trace écrite : gabarit de lecture CSV",
+          "Prévoir un CSV volontairement incohérent (colonne manquante) pour la section 4"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Filtrer et trier une table",
+        "duree": "2 h",
+        "objectif": "Filtrer par compréhension avec condition et trier avec sorted(..., key=lambda ...), sans détruire la table d'origine.",
+        "surLeSite": [
+          "Sections 5 et 6 : « Rechercher : filtrer des lignes » et « Trier selon une colonne » (cellules ▶ à faire manipuler)",
+          "TP guidé « Une table de A à Z », étapes 3 et 4 (filtrer par compréhension ; trier avec sorted et key)",
+          "Exercices 1 (texte à trou — filtrer les élèves ayant la moyenne), 2 (nés avant 1910), 4 (tri par année) et 7 (meilleure note avec max et key)",
+          "Erreur fréquente n°2 : « trier sans key »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise — lire un DictReader, convertir une note.",
+          "10–30 min : <strong>débranché</strong> — avec les fiches cartonnées de la séance 1 : chaque îlot exécute à la main « garde les notes ≥ 10 » (filtre : on écarte des fiches) puis « range par note décroissante » (tri : on réordonne TOUTES les fiches) ; verbaliser la différence filtre/tri.",
+          "30–55 min : <strong>manipulation</strong> — sections 5–6 : cellules ▶ exécutées ; montrer l'erreur du tri sans key.",
+          "55–70 min : <strong>institutionnalisation</strong> — les 2 gabarits au cahier : [l for l in table if ...] et sorted(table, key=lambda l: ..., reverse=True) ; règle : on construit une NOUVELLE table.",
+          "70–105 min : <strong>pratique</strong> — TP guidé étapes 3–4 en binômes puis exercices 1, 2, 4 et 7 seuls en cellule.",
+          "105–120 min : corrigés poussés + chasse à l'erreur collective (un tri sans key à réparer)."
+        ],
+        "aPreparer": [
+          "Les jeux de fiches cartonnées de la séance 1 (réutilisés pour filtre/tri à la main)",
+          "Affiche A3 des deux gabarits filtrer/trier pour le mur",
+          "Impression des exercices 1, 2, 4, 7 (🖨️) pour préparation cahier fermé",
+          "Ardoises pour le rituel"
+        ]
+      },
+      {
+        "titre": "Séance 4 — Statistiques et jointure : la chaîne de traitement complète",
+        "duree": "2 h",
+        "objectif": "Calculer des statistiques sur une colonne, fusionner deux tables par une clé commune, et enchaîner charger → filtrer → trier → calculer.",
+        "surLeSite": [
+          "Sections 7, 8 et 9 : « Calculer des statistiques sur une colonne », « Fusionner deux tables (jointure) », « Synthèse : la chaîne de traitement » (cellules ▶)",
+          "TP guidé « Une table de A à Z », étapes 5 et 6 (statistiques ; défi — jointure de deux tables sur une clé)",
+          "Exercices 8, 9 et 10 (défis) : année de naissance moyenne, jointure {classe → prof}, pipeline complet filtrer→trier→classer"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — filtre et tri à écrire sur ardoise (gabarits de la séance 3).",
+          "10–25 min : <strong>débranché</strong> — jointure physique : deux paquets de fiches (élèves / affichette classe→prof) ; chaque îlot apparie par la colonne commune et « enrichit » ses fiches au crayon.",
+          "25–50 min : <strong>manipulation</strong> — sections 7–8 : cellules ▶ exécutées (moyenne, min/max, jointure par dictionnaire).",
+          "50–65 min : <strong>institutionnalisation</strong> — section 9 : schéma de la chaîne charger → vérifier → filtrer/trier/calculer collé dans le cahier ; chaque étape produit une NOUVELLE table.",
+          "65–110 min : <strong>pratique</strong> — TP guidé étapes 5–6 en binômes, puis défis 8, 9, 10 en autonomie (le 10 est le pipeline bilan : le pousser chez tous).",
+          "110–120 min : corrigés poussés ; annonce du projet « Enquête sur un fichier CSV » pour la prochaine séance."
+        ],
+        "aPreparer": [
+          "Deuxième paquet de fiches « classe → professeur » pour la jointure débranchée",
+          "Schéma A4 de la chaîne de traitement à coller (reprendre la section 9, 🖨️)",
+          "Différenciation : coup de pouce écrit pour le défi 9 (copier la ligne avec dict(e))",
+          "Constituer les îlots du projet de la séance 5"
+        ]
+      },
+      {
+        "titre": "Séance 5 — Projet en îlot « Enquête sur un fichier CSV »",
+        "duree": "2 h",
+        "objectif": "Mener une enquête complète sur un CSV réel : poser des questions, choisir filtre/tri/calcul, coder, tester et restituer comme un rapport.",
+        "surLeSite": [
+          "Projet îlot « Enquête sur un fichier CSV » : phases 1 à 5, code de départ (CSV simulé 6 lignes), 3 tests fournis, bonus jointure {classe → professeur}",
+          "Défi du thème « Mission : enquête express » (échauffement)",
+          "Section 9 « Synthèse : la chaîne de traitement » en appui au tableau"
+        ],
+        "enClasse": [
+          "0–10 min : lancement — rôles dans l'îlot (pilote clavier, vérificateur, rapporteur) ; défi « Mission : enquête express » en échauffement collectif.",
+          "10–25 min : <strong>phase 1</strong> — chaque îlot rédige ses 4 questions d'enquête sur papier (ex. « qui en 1NSI ? », « moyenne des notes ? »).",
+          "25–40 min : <strong>phase 2</strong> — pour chaque question, écrire s'il s'agit d'un filtre, d'un tri ou d'un calcul, et sur quelle colonne (validation prof avant de coder).",
+          "40–90 min : <strong>phase 3</strong> — codage à partir du code de départ du site (DictReader, filtre 1NSI, classement, moyenne) ; le prof circule avec la section 9 comme carte.",
+          "90–105 min : <strong>phase 4</strong> — tests fournis : len(table) == 6, le filtre 1NSI renvoie 4 élèves, Grace première ; bonus jointure pour les rapides.",
+          "105–120 min : <strong>phase 5</strong> — « rapport d'enquête » oral de 2 min par îlot ; le prof évalue avec la grille de projet."
+        ],
+        "aPreparer": [
+          "Grille d'évaluation du projet (démarche, code, tests, restitution) — non fournie par le site",
+          "Optionnel mais fort : un CSV réel plus gros (open data, liste anonymisée de la classe) pour remplacer le CSV simulé",
+          "Feuilles « rapport d'enquête » à compléter (questions / méthode / réponse)",
+          "Badges ou cartes de rôles pour les îlots"
+        ]
+      },
+      {
+        "titre": "Séance 6 — Consolidation, QCM, remédiation et TP noté",
+        "duree": "2 h",
+        "objectif": "Consolider la chaîne de traitement, diagnostiquer par le QCM, remédier en groupes de besoin, puis évaluer sur poste (TP noté n°3).",
+        "surLeSite": [
+          "Fiche résumé du thème (4 points) et erreurs fréquentes (3) — rubrique exercices",
+          "QCM du thème (8 questions) en autonomie",
+          "Côté prof : matrice de suivi par thème + diagnostic par question",
+          "Sujet EVALUATIONS « TP noté — Traitement de données en tables » (1 h sur poste, /20, corrigé et barème fournis) ; le « DS — Traitement de données en tables » (50 min) reste en réserve"
+        ],
+        "enClasse": [
+          "0–15 min : rituel bilan — relecture du résumé et des erreurs fréquentes ; questions flash : enregistrement ? descripteur ? pourquoi int() ?",
+          "15–35 min : <strong>QCM en autonomie</strong> — 8 questions ; chacun note son score, le prof relève les questions ratées (diagnostic par question).",
+          "35–55 min : <strong>remédiation</strong> — groupes de besoin : filtre → refaire exercice 1 ; conversion CSV → exercice 5 ; jointure → exercice 9 ; les solides terminent le bonus du projet.",
+          "55–115 min : <strong>TP noté sur poste</strong> (1 h) — sujet « TP noté — Traitement de données en tables » : nombre d'élèves et colonnes, filtre 1NSI, moyenne, classement décroissant, reçus, bonus major.",
+          "115–120 min : ramassage des .py + teaser du thème suivant (« et si on AFFICHAIT ces données dans une page web ? »)."
+        ],
+        "aPreparer": [
+          "Imprimer le sujet du TP noté (🖨️) + fichier de départ avec la table eleves déposé sur Capytale/Thonny",
+          "Feuille de score QCM par élève (alimente la matrice de suivi)",
+          "Parcours de remédiation affichés au tableau",
+          "Procédure de ramassage des fichiers rendus"
+        ]
+      }
+    ]
+  },
+  "ihm-web": {
+    "heures": "≈ 12 h (6 séances de 2 h)",
+    "resume": "Déroulé HTML → CSS → formulaires/HTTP → JavaScript/DOM en s'appuyant massivement sur les démos et exercices interactifs 🏆 du thème (cssexo, domexo, exercice guidé du formulaire en 13 étapes). La maquette papier faite dès la séance 1 devient le projet « Mini-site d'inscription », codé en séances 5–6 et évalué, avec le gros QCM (25 questions) en clôture.",
+    "seances": [
+      {
+        "titre": "Séance 1 — Le Web, le dialogue client-serveur et le HTML",
+        "duree": "2 h",
+        "objectif": "Comprendre requête/réponse entre client et serveur, distinguer les rôles des 3 langages, et écrire le squelette d'une page HTML.",
+        "surLeSite": [
+          "Sections 1 à 4 : « Le Web : un dialogue client-serveur », « Les trois langages du Web », « Structure d'un document HTML », « Attributs et détails à connaître » (démos HTML interactives à faire modifier)",
+          "Défi du thème « Mission : maquette de page club » (en îlot, sur papier)",
+          "Exercices 1 et 3 (facile) : HTML, CSS ou JS ? ; page minimale « Club NSI » sur papier"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — afficher le code source d'un site connu au vidéoprojecteur : « quelqu'un a ÉCRIT tout ça ».",
+          "10–35 min : <strong>débranché</strong> — jeu de rôle client/serveur : un élève « navigateur » écrit une requête sur papier (URL), un élève « serveur » pioche la bonne fiche-réponse et la renvoie ; introduire requête/réponse, puis les 3 langages (structure/habillage/interaction) avec l'analogie de la maison.",
+          "35–55 min : <strong>manipulation</strong> — sections 3–4 : chaque élève modifie les démos interactives (changer le titre, ajouter un paragraphe, une image, un lien).",
+          "55–70 min : <strong>institutionnalisation</strong> — squelette HTML au cahier + tableau des 3 langages.",
+          "70–100 min : <strong>îlots</strong> — défi « Mission : maquette de page club » : dessiner la page d'accueil du club NSI (titre, image, menu, bouton d'inscription) en annotant chaque zone HTML/CSS/JS. <strong>Conserver ces maquettes : elles servent au projet !</strong>",
+          "100–115 min : exercices 1 et 3 sur papier, puis vérification dans une démo du site.",
+          "115–120 min : corrigés + bilan."
+        ],
+        "aPreparer": [
+          "Fiches-réponses papier pour le jeu client/serveur (le site n'a pas d'activité débranchée pour ce thème : à fabriquer)",
+          "Feuilles A3 + feutres pour les maquettes ; pochette pour les archiver jusqu'au projet",
+          "Trace écrite : squelette HTML + tableau des 3 langages",
+          "Vidéoprojecteur (code source d'un site réel)"
+        ]
+      },
+      {
+        "titre": "Séance 2 — CSS : sélecteurs, couleurs et modèle de boîte",
+        "duree": "2 h",
+        "objectif": "Mettre en forme avec CSS : sélecteurs élément/.classe/#id, couleurs et unités, modèle de boîte (margin/border/padding).",
+        "surLeSite": [
+          "Sections 5 à 9 : « La mise en forme avec CSS », « Les sélecteurs CSS en profondeur », « Couleurs, valeurs et unités », « Où placer le CSS, et le modèle de boîte », « Bloc ou en ligne ? » (démos interactives)",
+          "Exercices interactifs 🏆 « mets en forme une page avec du CSS » et « s'entraîner aux sélecteurs CSS » (éditeurs CSS intégrés)",
+          "Exercice interactif 🏆 « styliser une carte (modèle de boîte) » pour les rapides",
+          "Exercice 2 (facile) : que ciblent .menu et #menu ?"
+        ],
+        "enClasse": [
+          "0–10 min : rituel ardoise — HTML, CSS ou JS ? (réactivation exercice 1).",
+          "10–25 min : <strong>débranché</strong> — « relooking papier » : sur la maquette de la séance 1, surligner en deux couleurs ce qui relève du contenu (HTML) et de l'habillage (CSS) ; discuter « même contenu, deux habillages ».",
+          "25–55 min : <strong>manipulation</strong> — sections 5 à 7 : modifier les démos (changer une couleur, cibler .menu puis #titre) ; section 8 : schéma du modèle de boîte.",
+          "55–70 min : <strong>institutionnalisation</strong> — les 3 sélecteurs (p / .classe / #id) + le modèle de boîte au cahier.",
+          "70–105 min : <strong>pratique</strong> — exercices interactifs 🏆 « mets en forme une page » puis « sélecteurs CSS » en binômes ; rapides : 🏆 « styliser une carte ».",
+          "105–120 min : exercice 2 sur papier + corrigés poussés."
+        ],
+        "aPreparer": [
+          "Surligneurs 2 couleurs par îlot + les maquettes de la séance 1",
+          "Schéma A4 du modèle de boîte à coller",
+          "Nuancier imprimé de quelques couleurs hexadécimales (pont avec le thème données de base)",
+          "Casque anti-frustration : prévoir les solutions des exos 🏆 à pousser en fin d'heure"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Cascade, formulaires et protocole HTTP (GET/POST)",
+        "duree": "2 h",
+        "objectif": "Comprendre qui l'emporte en CSS (cascade), construire un formulaire complet, et distinguer GET (URL) et POST (corps de la requête).",
+        "surLeSite": [
+          "Sections 10 et 11 : « La cascade, la spécificité et l'héritage », « Responsive : media queries » + exercice interactif 🏆 « la cascade — quelle couleur l'emporte ? »",
+          "Sections 18 à 20 : « Client et serveur : qui exécute quoi ? », « Créer un formulaire HTML » (démo), « Le protocole HTTP : GET et POST »",
+          "Exercice guidé 🏆 « un formulaire d'inscription (étape par étape) » : les 13 étapes, code final assemblé à la dernière",
+          "Exercices 4, 5 et 6 (moyen) : URL → dictionnaire Python, GET ou POST pour un mot de passe, formulaire sur papier"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — 3 sélecteurs à décoder sur ardoise.",
+          "10–30 min : <strong>manipulation</strong> — sections 10–11 + exo 🏆 « la cascade » : parier sur la couleur gagnante avant de vérifier.",
+          "30–45 min : <strong>débranché</strong> — chaque élève écrit une URL à paramètres sur ardoise (recherche?q=…&tri=…), le voisin la décompose en chemin + paramètres ; section 20 projetée en appui.",
+          "45–60 min : <strong>institutionnalisation</strong> — GET = paramètres visibles dans l'URL, POST = corps de la requête ; règle en rouge : jamais un mot de passe en GET (erreur fréquente n°3 du thème).",
+          "60–100 min : <strong>pratique</strong> — exercice guidé du formulaire, étapes 1 à 13 en binômes (un div par champ, label relié à l'input, types email/password/date/radio) ; exécuter le code final assemblé.",
+          "100–115 min : exercices 4, 5, 6 (le 4 se code en Python dans une cellule ; les 5 et 6 sur papier).",
+          "115–120 min : corrigés poussés."
+        ],
+        "aPreparer": [
+          "Ardoises pour le débranché des URL",
+          "Impression de l'exercice guidé du formulaire (🖨️) comme fiche de route des binômes",
+          "Trace écrite GET/POST (tableau comparatif)",
+          "Ressource complémentaire éventuelle : PDF « Client / serveur » du cours DIU lié au thème (rubrique ressources)"
+        ]
+      },
+      {
+        "titre": "Séance 4 — JavaScript : les bases, les événements et le DOM",
+        "duree": "2 h",
+        "objectif": "Transposer ses acquis Python en JavaScript, réagir à un clic avec addEventListener, et lire/modifier la page avec getElementById.",
+        "surLeSite": [
+          "Sections « JavaScript : le 3ᵉ pilier », « Les bases du langage : variables, types, opérateurs », « Conditions, boucles et fonctions » (mini-éditeurs JS intégrés à faire manipuler)",
+          "Exercice interactif 🏆 « un petit programme (moyenne) »",
+          "Sections « Réagir à un événement (JavaScript) » et « Manipuler le DOM : sélectionner, lire, modifier » (démos interactives)",
+          "Exercices interactifs 🏆 « lire et modifier le contenu » et « style et classes »",
+          "Exercice 8 (défi) : au clic sur le bouton d'id b, écrire « Bonjour » dans le paragraphe d'id msg"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — retour éclair sur le formulaire (label/for, required).",
+          "10–25 min : <strong>pont Python → JS</strong> — construire ensemble au tableau le tableau de correspondance (variable, if, for, def/function, print/console.log) ; rassurer : « vous savez déjà programmer ».",
+          "25–50 min : <strong>manipulation</strong> — sections bases JS dans les mini-éditeurs (variables, condition, fonction) puis exo 🏆 « moyenne ».",
+          "50–65 min : <strong>institutionnalisation</strong> — le trio magique au cahier : getElementById, addEventListener(\"click\", …), textContent.",
+          "65–105 min : <strong>pratique</strong> — démos « Réagir à un événement » et « Manipuler le DOM » modifiées par les élèves, puis exos 🏆 « lire et modifier le contenu » et « style et classes » en binômes.",
+          "105–115 min : exercice 8 : écrire le code sur papier PUIS le tester dans une démo.",
+          "115–120 min : corrigés poussés + annonce du projet."
+        ],
+        "aPreparer": [
+          "Affiche A3 du tableau de correspondance Python ↔ JavaScript (à fabriquer, très structurant pour des débutants)",
+          "Trace écrite du trio getElementById / addEventListener / textContent",
+          "Coups de pouce imprimés pour l'exercice 8 (code à trous)",
+          "Vérifier que les postes ont un navigateur récent"
+        ]
+      },
+      {
+        "titre": "Séance 5 — Valider un formulaire + projet « Mini-site d'inscription » (1/2)",
+        "duree": "2 h",
+        "objectif": "Comprendre la validation côté client (confort) vs côté serveur (sécurité), puis démarrer le vrai site : maquette finalisée et codage HTML/CSS dans un éditeur réel.",
+        "surLeSite": [
+          "Section « Valider un formulaire en JavaScript » (démo complète avec preventDefault) et section « Cookies, traces et vie privée »",
+          "Erreurs fréquentes du thème (n°1 : « la validation JavaScript suffit » — faux)",
+          "Exercices 7 et 9 (défis) : compter les paramètres d'une URL en Python ; pourquoi la validation JS ne suffit pas",
+          "Projet îlot « Mini-site d'inscription » : phases 1 à 3, code de départ HTML/JS fourni (formulaire + écouteur submit)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — le trio JS sur ardoise.",
+          "10–30 min : <strong>manipulation</strong> — section « Valider un formulaire » : lire la démo ensemble, repérer preventDefault et le test du champ vide ; débat oral sur l'exercice 9 (contourner le JS ? → le serveur revérifie TOUJOURS).",
+          "30–40 min : <strong>culture</strong> — section « Cookies, traces et vie privée » (10 min, lien EMC/RGPD).",
+          "40–55 min : <strong>projet, phases 1–2</strong> — ressortir les maquettes de la séance 1 ; chaque îlot arrête sa liste de champs et ses vérifications.",
+          "55–115 min : <strong>projet, phase 3 (partie 1)</strong> — coder le vrai fichier .html dans un éditeur (VS Code / Bloc-notes) et l'ouvrir dans le navigateur : structure HTML + formulaire d'abord, CSS ensuite, en s'appuyant sur le code de départ du site ; exercice 7 en Python pour les îlots en avance.",
+          "115–120 min : sauvegarde des fichiers + point d'étape par îlot."
+        ],
+        "aPreparer": [
+          "Éditeur de texte installé sur les postes (VS Code conseillé) + procédure « enregistrer en .html et ouvrir dans le navigateur »",
+          "Les maquettes A3 de la séance 1",
+          "Dossier réseau/clé par îlot pour sauvegarder le site entre les deux séances",
+          "Check-list papier de la phase 3 (formulaire, labels reliés, CSS appliqué)"
+        ]
+      },
+      {
+        "titre": "Séance 6 — Projet (2/2), QCM, remédiation et évaluation",
+        "duree": "2 h",
+        "objectif": "Terminer la validation JavaScript, tester, présenter le mini-site (évaluation de projet), puis diagnostiquer avec le grand QCM et remédier.",
+        "surLeSite": [
+          "Projet « Mini-site d'inscription » phases 4 et 5 : tests fournis (champ vide → erreur, champ rempli → succès, pas de rechargement) et bonus (longueur ≥ 2, message rouge/vert)",
+          "QCM du thème (25 questions) en autonomie",
+          "Exercice 🏆 « Exercice bilan : écris une page complète » et exo « sélecteurs CSS » comme supports de remédiation",
+          "Côté prof : matrice de suivi + diagnostic par question ; sujets EVALUATIONS « DS — Interactions homme-machine sur le Web » (45 min) et « TP noté — Page web d'inscription » (1 h 30) prêts à l'emploi"
+        ],
+        "enClasse": [
+          "0–10 min : rituel — rappel des critères d'évaluation du projet affichés.",
+          "10–45 min : <strong>projet, phase 4</strong> — finaliser le script de validation puis tests croisés : chaque îlot teste le site d'un autre avec la liste du site (champ vide, preventDefault, message de succès) ; bonus pour les rapides.",
+          "45–70 min : <strong>phase 5, évaluation</strong> — présentation de 3 min par îlot : démo + expliquer GET/POST et pourquoi le serveur doit revérifier ; le prof note avec la grille (projet web évalué, conforme à la progression).",
+          "70–95 min : <strong>QCM en autonomie</strong> — les 25 questions du thème ; scores relevés pour le diagnostic par question.",
+          "95–110 min : <strong>remédiation</strong> — groupes de besoin d'après le diagnostic : sélecteurs → exo 🏆 sélecteurs ; JS/DOM → exo 🏆 « lire et modifier le contenu » ; structure → 🏆 « exercice bilan : page complète ».",
+          "110–120 min : bilan du thème + annonce : le « DS — IHM Web » (45 min) du site sera donné sur table à la séance suivante (ou le TP noté « Page web d'inscription » d'1 h 30 selon le choix)."
+        ],
+        "aPreparer": [
+          "Grille d'évaluation du projet (HTML correct, CSS, validation JS, oral GET/POST/sécurité) — non fournie par le site",
+          "Fiche de tests croisés à cocher entre îlots",
+          "Imprimer le sujet du « DS — Interactions homme-machine sur le Web » (🖨️) pour l'évaluation sur table qui suit",
+          "Feuille de score QCM alimentant la matrice de suivi"
+        ]
+      }
+    ]
+  },
+  "architecture-os": {
+    "heures": "≈ 12 h (6 séances de 2 h) — S19–S21 de la PROGRESSION (Mars, Période 4)",
+    "resume": "On descend puis on remonte la pile : composants et von Neumann, langage machine déroulé à la main, portes logiques et demi-additionneur, puis le système d'exploitation, l'arborescence, la ligne de commande (3 TP guidés Linux du site + projet « Mission terminal ») et les droits. Dernière séance : consolidation, QCM en autonomie et TP noté « Permissions et portes logiques » du site.",
+    "seances": [
+      {
+        "titre": "Séance 1 — Qu'y a-t-il dans un ordinateur ? Le modèle de von Neumann",
+        "duree": "2 h",
+        "objectif": "Identifier les composants (CPU, RAM, stockage, E/S) et décrire le modèle de von Neumann (UC, UAL, mémoire, E/S ; programme enregistré ; cycle charger → décoder → exécuter).",
+        "surLeSite": [
+          "Sections 1–2 du cours : « Qu'y a-t-il dans un ordinateur ? » (tableau composants/analogie du bureau) et « Le modèle de von Neumann » (warnbox UC ≠ UAL)",
+          "Exercice 1 (facile) — qui calcule, l'UC ou l'UAL ?",
+          "Exercice 8 (défi) — associer 4 actions au bon composant matériel",
+          "QCM du thème (8 questions) : projeter les questions 1–2 (UAL, programme enregistré) en bilan"
+        ],
+        "enClasse": [
+          "0–15 min : rituel + accroche débranchée : une vieille tour ouverte circule d'îlot en îlot ; chaque îlot nomme ce qu'il reconnaît sur une ardoise (RAM, disque, ventilateur du CPU…).",
+          "15–40 min : mise en commun sur le vrai matériel, puis lecture guidée de la Section 1 au vidéoprojecteur ; les élèves remplissent le tableau composant/rôle/analogie sur leur fiche.",
+          "40–70 min : institutionnalisation Section 2 : schéma de von Neumann au tableau (UC, UAL, mémoire, E/S) ; insister sur la warnbox « l'UC décode, l'UAL calcule » et sur l'idée révolutionnaire du programme enregistré.",
+          "70–95 min : sur postes, en binômes : Exercice 1 (facile) puis Exercice 8 (défi) — réponses argumentées à l'écrit avant de déplier la solution.",
+          "95–110 min : jeu de tri débranché : cartes « RAM / disque / UC / UAL / capteur / écran » à classer en volatile/permanent, entrée/sortie, calcule/commande.",
+          "110–120 min : trace écrite collée (schéma von Neumann + tableau composants) ; le prof pousse les corrigés des exercices ; annonce : « la semaine prochaine, on devient le processeur »."
+        ],
+        "aPreparer": [
+          "Une vieille unité centrale ouverte (ou barrette de RAM, disque dur, CPU déclipsé) — le site ne fournit que le tableau, pas le matériel réel",
+          "Ardoises + jeu de cartes composants à fabriquer (une planche par îlot)",
+          "Trace écrite à trous (schéma von Neumann à légender) à photocopier",
+          "Vidéoprojecteur pour projeter les Sections 1–2 du site"
+        ]
+      },
+      {
+        "titre": "Séance 2 — Dérouler un programme en langage machine",
+        "duree": "2 h",
+        "objectif": "Dérouler à la main une séquence LOAD/ADD/STORE/HALT sur machine à accumulateur (PC, ACC, mémoire) et relier ce déroulé au cycle de von Neumann, puis l'exécuter sur le simulateur Python du site.",
+        "surLeSite": [
+          "Section 3 « Dérouler un programme en langage machine » : tableau du jeu d'instructions, déroulé PC/ACC/mémoire, puis cellule ▶ du mini-simulateur Python (boucle fetch-décode-exécute) à faire manipuler",
+          "Exercice 11 (moyen) — dérouler À LA MAIN LOAD 0 / ADD 1 / STORE 2 / HALT avec mem = [7, 5, 0], puis vérifier en cellule ▶",
+          "QCM question « Avec mem = [7, 5], que vaut l'accumulateur après LOAD 0 puis ADD 1 ? »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : 3 questions flash sur von Neumann (ardoise) — qui décode ? qui calcule ? où est rangé le programme ?",
+          "10–35 min : débranché « je suis le processeur » : au tableau, 3 cases mémoire dessinées + une boîte ACC + un curseur PC ; un élève-UC lit l'instruction, un élève-UAL calcule, la classe suit l'état. Dérouler LOAD 0 ; ADD 1 ; STORE 2 ; HALT.",
+          "35–55 min : institutionnalisation : le tableau PC/instruction/ACC/mémoire de la Section 3 est recopié comme trace écrite ; lien explicite avec charger → décoder → exécuter.",
+          "55–85 min : sur postes : les élèves exécutent la cellule ▶ du simulateur, puis la MODIFIENT : changer mem, ajouter une instruction ADD, faire calculer mem[2] = mem[0] + mem[1] + mem[1].",
+          "85–110 min : Exercice 11 (moyen) en autonomie : déroulé à la main sur la fiche AVANT vérification par le code ; les rapides inventent un programme de 5 instructions et le donnent à dérouler au voisin.",
+          "110–120 min : bilan : question QCM projetée + le prof pousse le corrigé de l'exercice 11 ; préciser (warnbox du site) que le BO n'impose aucun langage machine particulier."
+        ],
+        "aPreparer": [
+          "Fiche « tableau de déroulé » vierge (colonnes PC / instruction / ACC / mémoire) à photocopier — le site montre le tableau rempli, pas la version à compléter",
+          "Étiquettes géantes LOAD/ADD/STORE/HALT + 3 boîtes « mémoire » pour le théâtre du processeur",
+          "Prévoir la même activité sur Capytale (copier le code du simulateur) pour les élèves qui veulent le garder"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Du transistor aux portes logiques : le demi-additionneur",
+        "duree": "2 h",
+        "objectif": "Réaliser des opérations logiques de base avec des portes ET/OU/NON/XOR et construire un demi-additionneur (somme = XOR, retenue = ET), en Python puis en simulation de circuit.",
+        "surLeSite": [
+          "Sections 4–5 : « Du transistor à la porte logique » (tableau des 4 portes) et « Construire un circuit : le demi-additionneur » avec cellule ▶ (fonctions ET/OU/NON/XOR) à faire manipuler",
+          "Exercice 5 (moyen) — que valent somme et retenue pour a=1, b=1 ? (cellule fournie)",
+          "Défi du thème « Mission : demi-additionneur » (code de départ fourni)",
+          "Rubrique Logisim Evolution du thème : circuits fournis « Additionneurs & soustracteur » (Addition.circ) et « UAL » (ALU.circ), + PDF « 4 — Logique combinatoire »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : rappel algèbre de Boole (thème « Représentation des données ») : tables de ET, OU, NON sur ardoise.",
+          "10–35 min : débranché « portes humaines » : deux élèves-entrées lèvent (1) ou baissent (0) le bras, un élève-porte applique sa règle ; la classe prédit la sortie. Enchaîner ET, OU, XOR.",
+          "35–55 min : institutionnalisation Section 4 (transistor = interrupteur, milliards par processeur) puis Section 5 : construire ensemble la table 1+1 → somme 0, retenue 1 ; faire RECONNAÎTRE que somme = XOR et retenue = ET.",
+          "55–85 min : sur postes : cellule ▶ du demi-additionneur exécutée puis modifiée ; Exercice 5 (moyen) ; les élèves écrivent ensuite XOR uniquement avec ET/OU/NON dans une cellule vide.",
+          "85–110 min : défi « Mission : demi-additionneur » en îlots ; les plus rapides ouvrent Logisim Evolution avec le fichier Addition.circ du site et câblent le demi-additionneur graphiquement.",
+          "110–120 min : bilan : projection du circuit Logisim qui fonctionne ; le prof pousse les corrigés ; trace écrite : les 4 portes + le demi-additionneur."
+        ],
+        "aPreparer": [
+          "Installer Logisim Evolution sur les postes et télécharger les .circ depuis la page du thème (le site fournit les fichiers, pas l'installation)",
+          "Cartons 0/1 pour l'activité « portes humaines »",
+          "Imprimer le PDF « 4 — Logique combinatoire » du site comme support pour les îlots avancés",
+          "Trace écrite : tables de vérité à compléter puis coller"
+        ]
+      },
+      {
+        "titre": "Séance 4 — L'OS, capteurs/actionneurs et l'arborescence de fichiers",
+        "duree": "2 h",
+        "objectif": "Identifier les rôles du système d'exploitation, la chaîne capteur → traitement → actionneur, et savoir écrire un chemin absolu ou relatif dans une arborescence.",
+        "surLeSite": [
+          "Sections 6–8 : « Le rôle du système d'exploitation », « Périphériques, capteurs et actionneurs — l'IHM » avec cellule ▶ du thermostat à faire manipuler, « Le système de fichiers arborescent » avec l'exercice intégré « Entraîne-toi : trouve le chemin relatif » (4 questions, corrigé dans l'onglet prof)",
+          "Exercice 10 (facile) — classer capteur/actionneur ; Exercice 3 (facile) — chemin relatif ../photos",
+          "QCM questions « rôle de l'OS » et « un capteur est un périphérique… »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : « citez 3 OS » — recueil au tableau (Windows, Android, Linux…), faire émerger que le smartphone en a un aussi.",
+          "10–30 min : institutionnalisation Section 6 : les 5 missions de l'OS (processus, mémoire, fichiers, périphériques, sécurité) ; warnbox « l'OS pilote le matériel, il ne le fabrique pas ».",
+          "30–55 min : Section 7 : tableau capteur/traitement/actionneur complété en îlot avec 3 nouveaux exemples par îlot ; puis sur postes, cellule ▶ du thermostat : exécuter, changer la CONSIGNE, ajouter une hystérésis simple. Exercice 10 (facile) en autonomie.",
+          "55–80 min : débranché arborescence : l'arbre /home/ada du cours reproduit en ficelle + étiquettes au sol (ou au tableau) ; un élève-curseur se déplace physiquement : « où t'emmène ../photos ? ».",
+          "80–105 min : Section 8 sur postes : les 4 questions « trouve le chemin relatif » sur le cahier AVANT mise en commun (corrigé dans l'onglet prof du site) ; Exercice 3 (facile) ; les rapides inventent une arborescence piège pour le voisin.",
+          "105–120 min : bilan : 2 questions du QCM projetées ; trace écrite : arbre + définitions chemin absolu/relatif, . et .. ; annonce du terminal pour la prochaine séance."
+        ],
+        "aPreparer": [
+          "Ficelle + étiquettes cartonnées (/​, home, ada, photos, cours, nsi.py) pour l'arbre au sol — le site fournit le schéma, pas le matériel",
+          "Si disponible : une carte micro:bit pour montrer un vrai capteur/actionneur (citée par le cours, non fournie)",
+          "Trace écrite à photocopier : arbre à légender + tableau des 5 missions de l'OS"
+        ]
+      },
+      {
+        "titre": "Séance 5 — La ligne de commande : TP Linux et « Mission terminal »",
+        "duree": "2 h",
+        "objectif": "Utiliser pwd, ls, cd, mkdir, cat, cp, mv, rm dans un vrai terminal ; naviguer en chemins absolus et relatifs ; réinvestir dans le projet îlot « Mission terminal ».",
+        "surLeSite": [
+          "Section 9 « La ligne de commande » avec la « Session type — à toi de prédire » (6 commandes, corrigé dans l'onglet prof)",
+          "Mémo — commandes Linux essentielles (tableau des 12 commandes, à imprimer via le bouton 🖨️)",
+          "TP guidé « TP — Se repérer dans l'arborescence » étapes 1–3 (pwd/ls, chemins, mkdir -p) puis TP guidé « TP — Manipuler des fichiers » étapes 1–2 (touch/cat/wc, cp/mv) — corrigés masqués à déplier en fin de séance",
+          "Projet îlot « Mission terminal » (niveau facile, 1 séance) : phases 1–5 + simulateur Python fourni ; Exercice 9 (défi) y renvoie"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : projeter la « Session type » de la Section 9 ; chaque élève prédit sur ardoise ce qu'affichent les 6 commandes (départ /home/ada) ; correction avec l'onglet prof.",
+          "10–20 min : distribution du Mémo Linux imprimé ; démonstration au vidéoprojecteur d'un vrai terminal : pwd, ls, cd, l'invite, la casse.",
+          "20–55 min : TP guidé « Se repérer dans l'arborescence » étapes 1–3 en binômes sur vrai terminal ; le prof circule ; verbaliser « où suis-je ? » avant chaque commande.",
+          "55–80 min : TP guidé « Manipuler des fichiers » étapes 1–2 (création du fichier eleves.txt, cp/mv/renommage) ; avertir : mv écrase, rm est irréversible.",
+          "80–110 min : projet « Mission terminal » en îlots : phase 1 (dessiner l'arborescence), phase 2 (suite de commandes sur papier), phases 3–4 (simulateur Python du site : retrouver secret.txt), phase 5 éclair (expliquer .. à l'oral).",
+          "110–120 min : mise en commun : chemin absolu /serveur/prive/secret.txt au tableau ; le prof déplie les corrigés masqués des TP guidés et pousse celui du projet."
+        ],
+        "aPreparer": [
+          "Un VRAI terminal par poste : Linux du lycée, WSL, ou terminal en ligne — les TP guidés du site sont en bash, le site ne fournit pas l'environnement",
+          "Imprimer le Mémo Linux (bouton 🖨️ du site), un par élève",
+          "Feuilles blanches pour dessiner l'arborescence du projet (phase 1)",
+          "Prévoir le simulateur « Mission terminal » copié sur Capytale en secours si les terminaux réels manquent"
+        ]
+      },
+      {
+        "titre": "Séance 6 — Droits et permissions, consolidation et évaluation",
+        "duree": "2 h",
+        "objectif": "Lire et modifier des permissions Unix (rwx / octal, chmod) ; consolider tout le thème ; QCM en autonomie avec remédiation, puis TP noté.",
+        "surLeSite": [
+          "Section 10 « Droits et permissions » avec cellule ▶ permissions_vers_octal ; Section 11 « Synthèse : du transistor à l'utilisateur »",
+          "TP guidé « TP — Droits et permissions » étapes 1–2 (lire, modifier) ; étape 3 « premier script bash » en bonus pour les rapides",
+          "Exercices 2 (facile, rwxr-x--- → 750), 4 (moyen, vers_octal) et 7 (défi, octal_vers_droits)",
+          "Résumé du thème (6 points) et « erreurs fréquentes » (3 pièges) à relire ; QCM du thème (8 questions) en autonomie",
+          "Évaluation : TP noté « Permissions et portes logiques » (EVALUATIONS du site, 1 h sur poste, /20, corrigé prof fourni)"
+        ],
+        "enClasse": [
+          "0–25 min : rituel puis Section 10 : décoder rwxr-x--- ensemble, règle r=4/w=2/x=1 ; TP guidé « Droits et permissions » étapes 1–2 sur terminal ; Exercice 2 en ardoise.",
+          "25–40 min : sur postes : cellule ▶ permissions_vers_octal exécutée et modifiée ; Exercices 4 puis 7 en cellule vide (les rapides font l'étape 3 bonus du TP : script bash).",
+          "40–50 min : consolidation : relire le résumé (6 points) et les 3 erreurs fréquentes du site ; Section 11 projetée : la pile transistors → portes → processeur → OS → applications.",
+          "50–65 min : QCM du thème (8 questions) en autonomie individuelle sur le site.",
+          "65–80 min : remédiation : le prof ouvre la matrice de suivi / le diagnostic par question côté enseignant, repère les questions échouées (UC/UAL et octal en général) et reprend en mini-groupe pendant que les autres refont les exercices ratés.",
+          "80–120 min : évaluation : TP noté « Permissions et portes logiques » du site, 1 h sur poste, individuel."
+        ],
+        "aPreparer": [
+          "Imprimer le sujet du TP noté « Permissions et portes logiques » (bouton 🖨️ de la rubrique EVALUATIONS) + préparer les postes (terminal + Python)",
+          "Programmer le DS sur table de 50 min « DS — Architectures et systèmes d'exploitation » (sujet + corrigé fournis dans EVALUATIONS — c'est le DS n°3 de la progression) sur un créneau ultérieur",
+          "Fiche de remédiation : liste des exercices du site à refaire selon la question de QCM échouée",
+          "Trace écrite finale : la pyramide « du transistor à l'utilisateur » à coller"
+        ]
+      }
+    ]
+  },
+  "algorithmique": {
+    "heures": "≈ 16 h (8 séances de 2 h) — S22–S25 de la PROGRESSION (Avr.–Mai, Période 5)",
+    "resume": "Chaque famille d'algorithmes suit le cycle débranché → manipulation des cellules ▶ → institutionnalisation → écriture en cellule vide : parcours, dichotomie (avec le projet « Recherche séquentielle vs dichotomique »), les deux tris et leurs invariants, coût et terminaison, glouton, puis kNN en projet. Dernière séance : QCM, remédiation par la matrice et TP noté du site ; le DS n°4 (1 h) se place sur un créneau suivant.",
+    "seances": [
+      {
+        "titre": "Séance 1 — Qu'est-ce qu'un algorithme ? Le parcours séquentiel",
+        "duree": "2 h",
+        "objectif": "Distinguer algorithme et programme ; écrire les parcours fondamentaux d'un tableau : recherche (convention −1), maximum, somme — tous linéaires.",
+        "surLeSite": [
+          "Sections 1–2 : « Qu'est-ce qu'un algorithme ? » et « Parcours séquentiel d'un tableau » avec cellule ▶ (recherche + maximum) à faire manipuler",
+          "Exercice 2 (facile) — recherche séquentielle renvoyant l'indice ou −1 ; Exercice 4 (facile) — somme(tab) sans sum",
+          "Résumé du thème, point 1 : « Parcours séquentiel : recherche, max, somme en O(n) »"
+        ],
+        "enClasse": [
+          "0–15 min : rituel + accroche : « dictez-moi la recette pour trouver le plus grand nombre d'une liste que je lis à voix haute » — le prof exécute LITTÉRALEMENT ce que disent les élèves, les ambiguïtés sautent aux yeux.",
+          "15–35 min : institutionnalisation Section 1 : algorithme (l'idée, en français) vs programme (la traduction Python) ; correct + se termine ; la démarche îlot du site : toujours écrire l'algorithme en étapes numérotées AVANT de coder.",
+          "35–60 min : débranché : chaque îlot reçoit 8 cartes-nombres faces cachées ; retourner une carte à la fois et tenir « le plus grand vu » sur ardoise — c'est maximum() joué à la main ; même chose pour la somme.",
+          "60–90 min : sur postes : cellule ▶ de la Section 2 exécutée puis modifiée (chercher une valeur absente → −1) ; puis Exercices 2 et 4 en cellule vide (l'algorithme en français d'abord, sur le cahier).",
+          "90–110 min : différenciation : les rapides écrivent compter_pairs(tab) et minimum(tab) sans aide ; les autres refont maximum() en le déroulant sur la fiche trace.",
+          "110–120 min : bilan : « combien d'opérations pour un tableau de n éléments ? » → faire dire « environ n » (linéaire) ; le prof pousse les corrigés ; trace écrite : les 4 schémas de parcours."
+        ],
+        "aPreparer": [
+          "Jeux de 8 cartes-nombres par îlot (à fabriquer) + ardoises",
+          "Fiche trace « les 4 schémas de parcours » (rechercher/compter/accumuler/max) à photocopier — la fiche méthode du site « Parcourir un tableau : les 4 schémas » peut servir de source, à imprimer",
+          "Vidéoprojecteur ; prévoir la reprise des exercices sur Capytale pour l'entraînement maison"
+        ]
+      },
+      {
+        "titre": "Séance 2 — La recherche dichotomique",
+        "duree": "2 h",
+        "objectif": "Mettre en œuvre la recherche dichotomique dans un tableau trié et ressentir l'écart O(n) / O(log n) par le jeu du nombre.",
+        "surLeSite": [
+          "Activité débranchée « Recherche : au hasard vs dichotomie » (20–30 min, déroulé complet + variante annuaire + notes prof fournis)",
+          "Section 3 « La recherche dichotomique » : exemple pas à pas sur [2, 5, 8, …, 91], warnbox « tableau déjà trié », cellule ▶ dichotomie() à faire manipuler",
+          "Exercice 1 (facile, texte à trou) — le calcul du milieu avec // ; Exercice 3 (facile) — indices milieux successifs à la main ; Exercice 5 (moyen) — implémenter la dichotomie"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : refaire une recherche séquentielle de tête sur 5 valeurs ; rappeler la convention −1.",
+          "10–40 min : débranché « Recherche : au hasard vs dichotomie » : manche 1 deviner dans l'ordre (compter les essais), manche 2 en coupant en deux ; comparer ~50 contre ~7 ; faire émerger POURQUOI il faut que ce soit trié.",
+          "40–65 min : institutionnalisation Section 3 : dérouler au tableau l'exemple du cours (chercher 23) avec les deux bornes gauche/droite matérialisées par deux aimants ; noter la warnbox.",
+          "65–90 min : sur postes : Exercice 1 (texte à trou // ) puis cellule ▶ dichotomie() exécutée et instrumentée (ajouter un print(gauche, milieu, droite) à chaque tour) ; Exercice 3 sur le cahier.",
+          "90–110 min : Exercice 5 (moyen) en cellule vide : réécrire la dichotomie sans modèle, tester une valeur présente et une absente ; les rapides comptent les comparaisons.",
+          "110–120 min : bilan : la note du cours « 1 000 000 d'éléments → ≈ 20 comparaisons » ; le prof pousse les corrigés ; annonce du duel de la prochaine séance."
+        ],
+        "aPreparer": [
+          "Un annuaire papier ou une liste triée imprimée pour la variante de l'activité débranchée (matériel non fourni)",
+          "Deux aimants/étiquettes « gauche » et « droite » pour le tableau",
+          "Trace écrite : l'algorithme de dichotomie en français à coller"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Projet îlot : « Recherche séquentielle vs dichotomique »",
+        "duree": "2 h",
+        "objectif": "Comparer expérimentalement deux algorithmes en comptant les comparaisons : produire le tableau n = 10, 1000, 1 000 000 et conclure O(n) vs O(log n).",
+        "surLeSite": [
+          "Projet îlot « Recherche séquentielle vs dichotomique » (niveau moyen, 1 à 2 séances) : les 5 phases, le code de départ (recherche_seq et dichotomie renvoyant (indice, nb_etapes)), les 3 tests attendus, le bonus (tailles 10 → 10000) et le corrigé prof",
+          "Exercice 6 (moyen) — recherche séquentielle qui COMPTE les comparaisons (échauffement)",
+          "Défi du thème « Mission : duel d'algorithmes » (même conclusion attendue, pour les rapides)",
+          "Fiche îlot du site « Avant de coder : réfléchir en îlot » (rôles et grille projet)"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : constitution des îlots et distribution des rôles (la fiche îlot du site : pilote, codeur, testeur, rapporteur).",
+          "10–25 min : échauffement individuel : Exercice 6 (moyen) en cellule vide — instrumenter une fonction avec un compteur.",
+          "25–45 min : phases 1–2 du projet : rejouer rapidement « devine le nombre » puis écrire les DEUX algorithmes en français sur l'affiche d'îlot.",
+          "45–85 min : phase 3 (codage) : reprendre le code de départ du projet, le compléter, exécuter ; phase 4 (tests) : vérifier les 3 tests du site (même indice, ≤ 9 étapes pour 500 éléments, −1 si absent).",
+          "85–105 min : bonus du projet : boucle sur n = 10, 100, 1000, 10000 et tableau des étapes ; les îlots avancés font le défi « Mission : duel d'algorithmes » jusqu'à n = 1 000 000.",
+          "105–120 min : phase 5 : chaque rapporteur présente son tableau en 1 min ; conclusion collective « séquentiel ~ n, dichotomie ~ log₂ n » ; le prof pousse le corrigé du projet."
+        ],
+        "aPreparer": [
+          "Affiches A3 + feutres pour les algorithmes en français (phase 2)",
+          "Imprimer la grille d'évaluation de projet du site (PROJECT_GRILLE) pour noter la présentation",
+          "Faire faire le projet sur Capytale/Thonny plutôt que sur le site si l'on veut ramasser les fichiers"
+        ]
+      },
+      {
+        "titre": "Séance 4 — Les tris par sélection et par insertion",
+        "duree": "2 h",
+        "objectif": "Exécuter à la main puis programmer les tris par sélection et par insertion ; compter les comparaisons pour pressentir le coût quadratique.",
+        "surLeSite": [
+          "Activité débranchée « Trier à la main & compter le coût » (30–45 min : jeu de cartes, jetons-comparaisons, les deux tris ; déroulé et notes prof fournis)",
+          "Sections 4–5 : « Le tri par sélection » et « Le tri par insertion » avec leurs cellules ▶ (tri_selection, tri_insertion) à faire manipuler",
+          "Exercice 9 (défi) — implémenter le tri par sélection sur [5, 2, 9, 1, 7]",
+          "Erreur fréquente du site : « oublier l'échange tab[i], tab[i_min] = tab[i_min], tab[i] »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : « comment trieriez-vous une main de cartes ? » — faire verbaliser sans le savoir le tri par insertion.",
+          "10–45 min : débranché « Trier à la main & compter le coût » : chaque îlot trie 7 cartes par sélection en posant un jeton par comparaison, puis recommence le MÊME paquet par insertion ; comparer les tas de jetons ; question du site : « et avec 100 cartes ? ».",
+          "45–70 min : institutionnalisation Sections 4–5 : dérouler [5, 2, 9, 1, 7] au tableau pour les deux tris (l'exemple du cours) ; deux boucles imbriquées → coût en n².",
+          "70–95 min : sur postes : cellules ▶ tri_selection et tri_insertion exécutées puis instrumentées (print du tableau à chaque tour i) ; observer la partie gauche qui grandit.",
+          "95–115 min : Exercice 9 (défi) en cellule vide : réécrire le tri par sélection sans modèle ; les rapides ajoutent un compteur de comparaisons et vérifient ~n²/2.",
+          "115–120 min : bilan : quelle méthode pour un paquet PRESQUE trié ? (insertion) ; le prof pousse les corrigés."
+        ],
+        "aPreparer": [
+          "Un jeu de 6–8 cartes numérotées par îlot + une réserve de jetons (matériel de l'activité débranchée, non fourni par le site)",
+          "Trace écrite : les deux tris en français + un déroulé de [5, 2, 9, 1, 7] à compléter",
+          "Prévoir des cartes grand format aimantées pour le déroulé au tableau"
+        ]
+      },
+      {
+        "titre": "Séance 5 — Prouver : coût, terminaison (variant), correction (invariant)",
+        "duree": "2 h",
+        "objectif": "Comparer les coûts O(1)/O(log n)/O(n)/O(n²) ; justifier la terminaison par un variant ; décrire les invariants qui prouvent la correction des deux tris.",
+        "surLeSite": [
+          "Section 8 « Coût d'un algorithme (complexité) » : tableau des 4 coûts avec la colonne n = 1 000 000, cellule ▶ (cout_sequentiel vs cout_dichotomie) à faire manipuler",
+          "Section 9 « Terminaison : le variant de boucle » ; retour sur les paragraphes « invariant » des Sections 4 et 5 (sélection : tranche triée ET éléments à leur place définitive ; insertion : tranche seulement triée)",
+          "Exercice 7 (moyen) — donner le variant de while n > 1: n = n // 2",
+          "QCM questions « coût du tri par sélection » et « pour prouver qu'une boucle se termine… »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : classer 4 situations (accès tab[i], parcours, dichotomie, tri) de la plus rapide à la plus lente, sur ardoise.",
+          "10–35 min : institutionnalisation Section 8 : le tableau des coûts recopié ; commenter la ligne n² = 10¹² « énorme » ; sur postes, cellule ▶ des coûts exécutée pour n = 10, 1000, 1 000 000.",
+          "35–60 min : Section 9 : définition du variant (entier, positif, strictement décroissant) ; Exercice 7 rédigé individuellement puis confronté en binôme ; chercher le variant de la dichotomie (droite − gauche).",
+          "60–90 min : débranché argumentation : chaque îlot reçoit l'invariant d'UN des deux tris (texte des Sections 4/5 imprimé) et doit l'expliquer à un îlot voisin avec 5 cartes en main ; faire toucher la différence « place définitive ou pas ».",
+          "90–110 min : écrit type bac : rédiger en 5 lignes « pourquoi le tri par sélection est correct » (invariant) et « pourquoi la dichotomie se termine » (variant) ; correction guidée.",
+          "110–120 min : bilan : distinguer variant (terminaison) / invariant (correction) — la note du cours ; 2 questions du QCM projetées ; corrigés poussés."
+        ],
+        "aPreparer": [
+          "Imprimer les paragraphes « invariant » des Sections 4 et 5 (un par îlot) — le bouton 🖨️ du cours permet de sortir la page",
+          "Prévoir un modèle de rédaction type bac (le site n'en fournit pas) : structure « propriété / vraie au départ / conservée / conclusion »",
+          "Cartes à jouer pour l'argumentation par îlot"
+        ]
+      },
+      {
+        "titre": "Séance 6 — Les algorithmes gloutons",
+        "duree": "2 h",
+        "objectif": "Mettre en œuvre un algorithme glouton (rendu de monnaie) et découvrir qu'il n'est pas toujours optimal (système [1, 3, 4]).",
+        "surLeSite": [
+          "Section 6 « Les algorithmes gloutons » : rendu de 67 centimes, warnbox système truqué [1, 3, 4], cellule ▶ rendu_monnaie() à faire manipuler",
+          "Exercice 8 (défi) — coder rendu(somme, pieces) et exhiber un cas non optimal",
+          "QCM question « un algorithme glouton… » ; erreur fréquente du site « croire que le glouton donne toujours l'optimum »",
+          "Mini-projets du thème en prolongement pour les rapides : « Crible d'Ératosthène », « Mastermind », « Approximation de π (Monte-Carlo) »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : rendu de monnaie réel : « rendez-moi 67 centimes avec le moins de pièces » avec la monnaie factice — tout le monde fait du glouton sans le savoir.",
+          "10–30 min : formalisation Section 6 : « à chaque étape le meilleur choix local, sans retour arrière » ; dérouler 67 = 50 + 10 + 5 + 2 au tableau.",
+          "30–50 min : débranché contre-exemple : les îlots doivent rendre 6 avec des pièces [1, 3, 4] ; laisser le glouton échouer (4+1+1) puis trouver 3+3 ; discussion : quand le glouton se trompe-t-il ?",
+          "50–80 min : sur postes : cellule ▶ rendu_monnaie() exécutée, puis Exercice 8 (défi) en cellule vide avec les deux systèmes de pièces ; verbaliser la boucle « while somme >= p ».",
+          "80–110 min : différenciation : les rapides démarrent un mini-projet du thème (« Crible d'Ératosthène » ou « Mastermind ») ; les autres refont le glouton sur un problème d'emploi du temps simple donné par le prof.",
+          "110–120 min : bilan : rapide + intuitif MAIS pas toujours optimal ; question QCM ; corrigés poussés ; annonce du kNN."
+        ],
+        "aPreparer": [
+          "Monnaie factice (pièces 1, 2, 5, 10, 20, 50 + jetons marqués 1, 3, 4) — non fournie par le site",
+          "Un petit problème glouton supplémentaire rédigé par le prof pour la remédiation (ex. remplir un sac de poids maximal)",
+          "Repérer à l'avance les mini-projets du site à proposer aux rapides"
+        ]
+      },
+      {
+        "titre": "Séance 7 — Les k plus proches voisins (kNN) en projet",
+        "duree": "2 h",
+        "objectif": "Écrire l'algorithme qui prédit la classe d'un élément selon la classe majoritaire de ses k plus proches voisins (capacité BO), du papier millimétré au code.",
+        "surLeSite": [
+          "Section 7 « Les k plus proches voisins (kNN) » : les 3 étapes (distance, k plus proches, vote), note sur le choix de k, cellule ▶ knn() à faire manipuler",
+          "Projet îlot « Classer des objets avec les k plus proches voisins » (niveau défi, 2 à 3 séances — ici resserré) : phases 1–4, code de départ (6 fruits), tests, bonus 3e catégorie, corrigé avec asserts",
+          "Exercice 10 (défi) — coder distance et knn pour le fruit mystère",
+          "QCM : aucune question kNN — prévenir que le DS n°4 du site, lui, en contient"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : « comment votre appli photo reconnaît-elle un chien ? » — recueillir, introduire l'idée d'apprentissage à partir d'exemples étiquetés.",
+          "10–35 min : phase 1 du projet, débranchée : chaque îlot place les 6 fruits du code de départ sur une grille papier millimétré, pose le point mystère (5.2, 4.0), entoure les 3 voisins À LA RÈGLE et vote.",
+          "35–55 min : institutionnalisation Section 7 : les 3 étapes de l'algorithme au tableau ; pourquoi k impair ; k trop petit = bruit, trop grand = mélange.",
+          "55–90 min : phases 2–3 : algorithme en français sur l'affiche, puis codage sur postes à partir du code du projet : distance() d'abord (testée seule), puis le tri par distance, puis le vote ; cellule ▶ du cours en secours pour les bloqués.",
+          "90–110 min : phase 4 : tests du site (point près des pommes → pomme ; k = 1 et k = 3) ; bonus pour les rapides : 3e catégorie « citron » et point frontière ; Exercice 10 en autonomie pour les autres.",
+          "110–120 min : mini-présentations : « que se passe-t-il si k est trop grand ? » ; le prof pousse le corrigé (asserts) et annonce la séance bilan + TP noté."
+        ],
+        "aPreparer": [
+          "Papier millimétré + règles (une feuille par îlot) — le site fournit les données, pas le support de la phase papier",
+          "Affiches pour la phase 2 ; grille d'évaluation de projet du site imprimée",
+          "Réviser pour soi la question de l'égalité de vote (k pair) souvent posée par les élèves"
+        ]
+      },
+      {
+        "titre": "Séance 8 — Consolidation, QCM, remédiation et TP noté",
+        "duree": "2 h",
+        "objectif": "Stabiliser la boîte à outils du thème (quel algorithme pour quel problème, à quel coût), diagnostiquer les fragilités, puis évaluer sur poste.",
+        "surLeSite": [
+          "Section 10 « Synthèse : choisir et comparer » (tableau problème/algorithme/coût) ; résumé du thème (6 points) et les 4 erreurs fréquentes",
+          "QCM du thème (6 questions) en autonomie",
+          "Matrice de suivi / diagnostic par question (côté enseignant) pour cibler la remédiation",
+          "Évaluation : TP noté — Algorithmique (EVALUATIONS du site, 1 h sur poste, /20, corrigé prof) ; le DS n°4 — Algorithmique (1 h, sujet fourni) à programmer sur un créneau suivant"
+        ],
+        "enClasse": [
+          "0–15 min : rituel bilan : le tableau de la Section 10 projeté COLONNES MASQUÉES ; les élèves complètent algorithme et coût sur ardoise, ligne par ligne.",
+          "15–30 min : relecture active du résumé et des 4 erreurs fréquentes ; chaque élève écrit SA question restante sur un post-it (mur des questions, traité à l'oral).",
+          "30–45 min : QCM du thème (6 questions) en autonomie individuelle sur le site.",
+          "45–60 min : remédiation ciblée : via la matrice/diagnostic par question, le prof constitue 2 groupes (souvent : dichotomie sur non-trié, glouton « toujours optimal ») et fait refaire les exercices 3, 5 ou 8 du site ; les autres s'échauffent sur le défi « Mission : duel d'algorithmes ».",
+          "60–120 min : évaluation : TP noté — Algorithmique du site, 1 h sur poste, individuel, documents du site fermés."
+        ],
+        "aPreparer": [
+          "Imprimer le sujet du TP noté — Algorithmique (bouton 🖨️) et préparer l'environnement (Capytale/Thonny) pour ramasser les fichiers",
+          "Programmer le DS n°4 — Algorithmique (1 h sur table, sujet et corrigé dans EVALUATIONS) sur le créneau suivant",
+          "Post-its pour le mur des questions ; fiche de remédiation exercice ↔ question de QCM",
+          "Tableau de synthèse vierge à coller comme trace écrite finale"
+        ]
+      }
+    ]
+  },
+  "reseaux": {
+    "heures": "≈ 8 h (4 séances de 2 h) — S26–S27 de la PROGRESSION (Mai, Période 5)",
+    "resume": "Un thème court et très incarné : le « réseau vivant » débranché ouvre la première séance, puis chaque idée (paquets, routage, désordre/perte/doublon, bit alterné) est manipulée dans les cellules ▶ avant d'être institutionnalisée ; le projet « Simulation de paquets réseau » court sur les séances 3 et 4 ; la dernière séance ajoute QCM, remédiation et une évaluation courte à rédiger (pas de sujet EVALUATIONS pour ce thème).",
+    "seances": [
+      {
+        "titre": "Séance 1 — Protocole, adresse IP et paquets : le réseau vivant",
+        "duree": "2 h",
+        "objectif": "Expliquer le rôle d'un protocole, comprendre le découpage d'un message en paquets numérotés avec en-tête, et découvrir l'encapsulation.",
+        "surLeSite": [
+          "Activité débranchée « Le réseau vivant (paquets) » (25–35 min : cartes-paquets, routeurs humains, désordre/perte/doublon ; déroulé, variante et notes prof fournis)",
+          "Sections 1–3 : « Relier les machines », « Réseau, protocole et adresse IP » (analogie postale), « Découper un message en paquets » avec le schéma d'encapsulation et la cellule ▶ découpage/reconstruction à faire manipuler",
+          "Exercices 1 à 3 (faciles) : rôle du numéro, recoller 3 paquets, vrai/faux « un seul bloc »",
+          "QCM questions « à quoi sert un protocole » et « pourquoi découper en paquets »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel + accroche : « quand tu envoies ce message, part-il d'un seul bloc ? » — vote à main levée, on y répondra en fin de séance.",
+          "10–45 min : débranché « Le réseau vivant » : phrase découpée en 5 cartes-paquets numérotées, élèves-routeurs, arrivée en désordre, retri par numéro ; le prof RETIRE une carte (perte détectée et redemandée) puis glisse un doublon (ignoré).",
+          "45–70 min : institutionnalisation Sections 1–2 : protocole = règles communes (analogie de la lettre), adresse IP = adresse postale de la machine ; puis Section 3 : l'en-tête (src, dst, num) et le schéma des enveloppes emboîtées (encapsulation) recopié.",
+          "70–95 min : sur postes : cellule ▶ de la Section 3 : exécuter le découpage de « Bonjour le monde », changer le message, observer les dictionnaires-paquets ; puis la reconstruction triée par numéro.",
+          "95–115 min : Exercices 1 à 3 (faciles) en autonomie, réponse rédigée avant de déplier la solution ; les rapides ajoutent un champ « taille » à l'en-tête.",
+          "115–120 min : bilan : retour au vote de départ (c'était faux !) ; le prof pousse les corrigés ; trace écrite : paquet = en-tête + données."
+        ],
+        "aPreparer": [
+          "Cartes-paquets à fabriquer (n° + un mot au feutre, 5 par message, 2 jeux) — le site donne le déroulé, pas le matériel",
+          "Plan de classe dégagé pour la chaîne de routeurs humains",
+          "Trace écrite : schéma d'encapsulation à compléter, à photocopier",
+          "Vidéoprojecteur pour la cellule ▶ en correction collective"
+        ]
+      },
+      {
+        "titre": "Séance 2 — Routage, désordre, perte et doublon",
+        "duree": "2 h",
+        "objectif": "Décrire le routage de proche en proche et sa robustesse ; détecter et traiter les trois incidents (désordre → retri, perte → numéro manquant, doublon → ignoré) en Python.",
+        "surLeSite": [
+          "Sections 4–5 : « Le routage : trouver le chemin » (schéma routeurs A/B/C/D, note « Terminale » sur RIP/OSPF) et « Désordre, perte et doublon » (tableau des 3 incidents) avec cellule ▶ reconstruire() à faire manipuler",
+          "Exercices 4 et 5 (moyens) — découper « Vive la NSI » en compréhension ; détecter les manquants dans 1, 2, 4, 5",
+          "Exercices 7 et 8 (défis) — reconstruire() avec dictionnaire {num: data} puis version qui SIGNALE les perdus ; Exercice 9 (défi) — pourquoi le routage rend Internet robuste",
+          "QCM questions « que fait un routeur » et « paquets dans le désordre »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : re-dicter les 3 incidents et leur remède, sur ardoise (le tableau de la Section 5 en autocontrôle).",
+          "10–30 min : débranché routage : la variante « panne » de l'activité réseau vivant : un élève-routeur « tombe en panne », les cartes passent par un autre chemin ; relier au schéma A/B/C/D de la Section 4 ; Exercice 9 traité à l'oral.",
+          "30–50 min : institutionnalisation Section 4 : routage de proche en proche, plusieurs chemins, robustesse (conçu pour ça) ; bien poser la limite du programme : les protocoles de routage (RIP/OSPF), c'est la Terminale.",
+          "50–80 min : sur postes : Section 5, cellule ▶ reconstruire() exécutée sur le cas désordre + doublon ; les élèves cassent le jeu de paquets (retirer le n°2) et observent le message d'alerte ; Exercices 4 puis 5 en cellule vide.",
+          "80–110 min : Exercices 7 puis 8 (défis) en binômes : la version dictionnaire, puis la version qui signale les perdus ; faire VERBALISER pourquoi une clé de dictionnaire élimine le doublon.",
+          "110–120 min : bilan : le tableau des 3 incidents complété de mémoire en trace écrite ; le prof pousse les corrigés ; teaser : « et comment RÉPARER une perte automatiquement ? »."
+        ],
+        "aPreparer": [
+          "Réutiliser les cartes-paquets de la séance 1 + un badge « EN PANNE » pour le routeur",
+          "Trace écrite : tableau des 3 incidents vierge à photocopier",
+          "Préparer sur Capytale un jeu de paquets « mystère » (avec perte et doublon cachés) à faire diagnostiquer en devoir maison"
+        ]
+      },
+      {
+        "titre": "Séance 3 — Le bit alterné, IP & TCP ; lancement du projet",
+        "duree": "2 h",
+        "objectif": "Dérouler le protocole du bit alterné dans ses trois scénarios (nominal, paquet perdu, ACK perdu) ; distinguer les rôles d'IP et de TCP ; démarrer le projet « Simulation de paquets réseau ».",
+        "surLeSite": [
+          "Section 6 « Le protocole du bit alterné » : les 3 chronogrammes (cas nominal, paquet perdu, ACK perdu) et la cellule ▶ de simulation DÉTERMINISTE (scénario ok / paquet_perdu / ack_perdu) à faire manipuler ; Section 7 « Deux protocoles complémentaires : IP et TCP »",
+          "Exercice 10 (moyen) — dérouler l'échange complet Alice/Bob avec le 1er envoi de P2 perdu ; Exercice 6 (moyen) — IP vs TCP en une phrase ; Exercice 11 (défi) — coder l'émetteur bit alterné (pour les rapides)",
+          "Projet îlot « Simulation de paquets réseau » (niveau défi, 2 séances) : phases 1–3 et code de départ",
+          "QCM questions « rôle de l'ACK » et « pourquoi l'alternance 0/1 distingue un doublon »"
+        ],
+        "enClasse": [
+          "0–10 min : rituel : rejouer sur ardoise la détection d'une perte (numéro manquant) — « détecter, oui ; mais réparer ? ».",
+          "10–35 min : débranché bit alterné : deux élèves jouent Alice et Bob avec des cartes « paquet bit 0/1 » et « ACK 0/1 » ; le prof intercepte tantôt un paquet, tantôt un ACK ; la classe suit le chronogramme au tableau (les 3 scénarios de la Section 6).",
+          "35–55 min : institutionnalisation : les 3 règles (bit qui alterne, ACK, timeout/retransmission) ; pourquoi le bit démasque le doublon quand c'est l'ACK qui s'est perdu ; Section 7 : IP achemine sans garantie, TCP fiabilise — Exercice 6 rédigé en une phrase.",
+          "55–80 min : sur postes : cellule ▶ de la simulation déterministe : exécuter, puis MODIFIER le scénario (mettre deux paquet_perdu de suite, déplacer l'ack_perdu) et prédire la sortie avant chaque exécution ; Exercice 10 sur papier ensuite.",
+          "80–115 min : lancement du projet en îlots : phase 1 (pourquoi découper ? qu'exige la remise en ordre ?), phase 2 (algorithme papier), début phase 3 (codage de reconstruire() à partir du code de départ) ; les rapides attaquent l'Exercice 11.",
+          "115–120 min : point d'étape des îlots (où en est chacun) ; le prof pousse les corrigés des exercices 6 et 10 ; le projet reste ouvert pour la séance 4."
+        ],
+        "aPreparer": [
+          "Cartes « paquet bit 0 / bit 1 » et « ACK 0 / ACK 1 » à fabriquer + un sablier ou minuteur pour matérialiser le timeout",
+          "Affiches d'îlot pour la phase 2 du projet",
+          "Imprimer la grille d'évaluation de projet du site pour annoncer les critères dès le lancement"
+        ]
+      },
+      {
+        "titre": "Séance 4 — Fin du projet, consolidation, QCM et évaluation",
+        "duree": "2 h",
+        "objectif": "Terminer et présenter la simulation robuste (désordre + perte + doublon) ; consolider tout le thème ; QCM en autonomie, remédiation puis évaluation courte.",
+        "surLeSite": [
+          "Projet « Simulation de paquets réseau » phases 4–5 : les 3 tests du site (« Bonjour le monde ! », doublon sans répétition, détection du manquant), le bonus perte + doublon affichés, le corrigé reconstruire_robuste avec assert",
+          "Section 8 « Synthèse et mise en pratique » ; résumé du thème (5 points) et les 3 erreurs fréquentes",
+          "QCM du thème (9 questions) en autonomie ; matrice de suivi / diagnostic par question côté prof pour la remédiation",
+          "Défi du thème « Mission : le réseau vivant » en remédiation débranchée si besoin"
+        ],
+        "enClasse": [
+          "0–35 min : reprise du projet : finir la phase 3, puis phase 4 (passer les 3 tests du site, ajouter le bonus détection perte + doublon) ; le prof circule avec la grille d'évaluation.",
+          "35–55 min : phase 5 : chaque îlot présente en 2 min « que se passe-t-il si un paquet est perdu ? » avec démonstration à l'écran ; le prof pousse le corrigé reconstruire_robuste.",
+          "55–70 min : consolidation : Section 8 projetée, résumé (5 points) et 3 erreurs fréquentes relus ; carte mentale collective au tableau : protocole / paquets / routage / incidents / bit alterné / IP-TCP.",
+          "70–85 min : QCM du thème (9 questions) en autonomie individuelle sur le site.",
+          "85–100 min : remédiation ciblée via la matrice/diagnostic par question : groupe « bit alterné » rejoue le débranché cartes/ACK avec le prof ; groupe « incidents » refait les exercices 5 et 7 ; les autres tentent l'Exercice 11 (émetteur bit alterné).",
+          "100–120 min : évaluation écrite courte (20 min) sur table : pas de sujet dans EVALUATIONS pour ce thème → à rédiger par le prof en s'inspirant du QCM (9 questions) et des exercices 1, 5, 6 et 10 (numéro de paquet, manquants, IP vs TCP, déroulé bit alterné), conformément à la progression du site (« QCM + TP court »)."
+        ],
+        "aPreparer": [
+          "Rédiger l'évaluation courte (aucun sujet EVALUATIONS pour « reseaux » sur le site) : 4–5 questions calquées sur le QCM et les exercices 1, 5, 6, 10 + un déroulé de bit alterné ; prévoir le barème /10 ou /20",
+          "Imprimer la grille d'évaluation de projet et les sujets de l'évaluation",
+          "Garder les cartes paquet/ACK sous la main pour la remédiation débranchée",
+          "Ramasser les fichiers du projet via Capytale si le codage s'y est fait"
+        ]
+      }
+    ]
+  }
+};
+
 /* ---------------- Encart « coder pour de vrai » ---------------- */
 const CODER_REEL = {
   titre: "💻 Coder pour de vrai (au-delà du site)",
