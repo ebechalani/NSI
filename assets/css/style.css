@@ -278,6 +278,19 @@ details.tp-inline[open] > summary { border-bottom: 1px solid var(--border); }
 .ext-link:hover { background: var(--bg-elev); color: var(--accent); }
 .ext-link .ext-arrow { margin-left: auto; color: var(--text-soft); font-size: .85rem; }
 
+/* Bandeau d'échec de synchronisation Firestore */
+.sync-error-banner {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 1rem;
+  max-width: min(92vw, 640px); z-index: 60;
+  background: var(--bad-soft, #fee2e2); color: var(--bad-text, #b91c1c);
+  border: 1px solid var(--bad-text, #b91c1c); border-radius: 10px;
+  padding: .6rem 2.2rem .6rem .9rem; font-size: .88rem; box-shadow: var(--shadow);
+}
+.sync-error-close {
+  position: absolute; top: .35rem; right: .45rem; background: none; border: 0;
+  color: inherit; font-size: .9rem; cursor: pointer; padding: .15rem .3rem;
+}
+
 /* Explication révélée d'un exercice « cascade » */
 .cascade-explain { margin-top: .6rem; padding: .6rem .9rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-soft); }
 .cascade-explain table { width: 100%; border-collapse: collapse; margin: .4rem 0; }

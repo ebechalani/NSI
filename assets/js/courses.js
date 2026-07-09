@@ -1204,7 +1204,45 @@ p  { font-size: 16px; line-height: 1.5; }
           <tr><td><code>rem</code></td><td>relatif à la police de la racine <code>&lt;html&gt;</code> : changer <strong>un seul</strong> endroit redimensionne tout le site</td></tr>
           <tr><td><code>vw</code> / <code>vh</code></td><td>1 % de la <strong>largeur</strong> / <strong>hauteur</strong> de la fenêtre (<em>viewport</em>)</td></tr>
         </table>
-        <p class="note">🎯 Pour un site qui s'adapte, on préfère les unités <strong>relatives</strong> (<code>rem</code>, <code>%</code>, <code>vw</code>) aux <code>px</code> fixes — on le verra avec le responsive.</p>`,
+        <p class="note">🎯 Pour un site qui s'adapte, on préfère les unités <strong>relatives</strong> (<code>rem</code>, <code>%</code>, <code>vw</code>) aux <code>px</code> fixes — on le verra avec le responsive.</p>
+        <p class="note">🖥️ <strong>Essaie toi-même</strong> : les 3 boîtes ci-dessous utilisent les 3 notations de couleur (nom, hexadécimal, rgba) et 3 unités de largeur (px, %, vw). Change l'alpha de la boîte 3 (0.15, 0.5, 1) et regarde les rayures du fond apparaître ou disparaître ; remplace <code>200px</code> par <code>50%</code> ou <code>30vw</code> et redimensionne l'aperçu.</p>`,
+        htmldemo: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8">
+<style>
+  body { font-family: sans-serif; }
+
+  /* Fond rayé : parfait pour VOIR la transparence de la boîte 3 */
+  .fond {
+    background: repeating-linear-gradient(45deg,
+      #e5e7eb 0, #e5e7eb 12px, white 12px, white 24px);
+    padding: 12px;
+  }
+
+  .boite { padding: 12px; margin: 8px 0; border: 2px solid #333; color: #111; }
+
+  .b1 {
+    background-color: tomato;                 /* nom anglais */
+    width: 200px;                             /* px : largeur FIXE */
+  }
+  .b2 {
+    background-color: #3498db;                /* hexadécimal #RRGGBB */
+    width: 60%;                               /* % : relatif au parent */
+  }
+  .b3 {
+    background-color: rgba(46, 204, 113, 0.5);/* rgba : alpha = 0.5 */
+    width: 40vw;                              /* vw : relatif à la fenêtre */
+  }
+</style>
+</head>
+<body>
+  <div class="fond">
+    <div class="boite b1">1 — tomato · 200px</div>
+    <div class="boite b2">2 — #3498db · 60%</div>
+    <div class="boite b3">3 — rgba(46, 204, 113, 0.5) · 40vw : les rayures se voient à travers !</div>
+  </div>
+</body>
+</html>`,
       },
       {
         title: "Où placer le CSS, et le modèle de boîte",
@@ -3002,7 +3040,26 @@ for t in mesures:
           <li><strong>chemin relatif</strong> — depuis le dossier où l'on se trouve : si je suis dans <code>/home/ada</code>, alors <code>cours/nsi.py</code> suffit ;</li>
           <li>deux raccourcis essentiels : <code>.</code> = le dossier courant, <code>..</code> = le dossier parent (remonter d'un cran).</li>
         </ul>
-        <p>Exemple : depuis <code>/home/ada/cours</code>, le chemin relatif <code>../photos</code> mène à <code>/home/ada/photos</code> (on remonte avec <code>..</code> puis on descend dans photos).</p>`,
+        <p>Exemple : depuis <code>/home/ada/cours</code>, le chemin relatif <code>../photos</code> mène à <code>/home/ada/photos</code> (on remonte avec <code>..</code> puis on descend dans photos).</p>
+        <h3>Entraîne-toi : trouve le chemin relatif</h3>
+        <p>Toujours dans l'arborescence ci-dessus : pour chaque ligne, écris le chemin relatif sur ton cahier <em>avant</em> la mise en commun (correction faite en classe) :</p>
+        <table>
+          <tr><th>#</th><th>Je suis dans…</th><th>Je veux atteindre…</th><th>Chemin relatif ?</th></tr>
+          <tr><td>1</td><td><code>/home/ada</code></td><td>le fichier <code>nsi.py</code></td><td>à toi !</td></tr>
+          <tr><td>2</td><td><code>/home/ada/photos</code></td><td>le fichier <code>nsi.py</code></td><td>à toi !</td></tr>
+          <tr><td>3</td><td><code>/home/ada/cours</code></td><td>le dossier <code>photos</code></td><td>à toi !</td></tr>
+          <tr><td>4</td><td><code>/home/ada/cours</code></td><td>la racine <code>/</code></td><td>à toi !</td></tr>
+        </table>
+        <p class="note">🧪 <strong>Vérifie tes réponses en pratiquant</strong> : le TP guidé « TP — Se repérer dans l'arborescence » se fait directement <strong>plus bas dans cette page</strong> (rubrique <strong>🧪 TP guidés de ce thème</strong>), puis le projet <strong>« Mission terminal »</strong> te fait naviguer pour de vrai.</p>`,
+        prof: `
+        <p><strong>Réponses de l'exercice des chemins relatifs</strong> (à donner après recherche individuelle) :</p>
+        <ol>
+          <li><code>cours/nsi.py</code> — on descend simplement.</li>
+          <li><code>../cours/nsi.py</code> — on remonte d'un cran puis on redescend.</li>
+          <li><code>../photos</code> — c'est l'exemple du cours.</li>
+          <li><code>../../..</code> — trois crans à remonter (<code>cours</code> → <code>ada</code> → <code>home</code> → <code>/</code>).</li>
+        </ol>
+        <p><strong>Erreur d'élève classique</strong> : commencer un chemin relatif par <code>/</code> (ce qui en fait un chemin absolu), ou oublier qu'un <code>..</code> ne remonte que d'UN cran.</p>`,
       },
       {
         title: "La ligne de commande",
@@ -3025,7 +3082,29 @@ $ cd home/ada/cours
 $ ls
 nsi.py
 $ cat nsi.py</code></pre>
-        <p class="note">🎮 Le <strong>projet « Mission terminal »</strong> propose un simulateur pour t'entraîner à naviguer et retrouver un fichier caché.</p>`,
+        <h3>Session type — à toi de prédire</h3>
+        <p>On repart de l'arborescence du cours, en démarrant dans <code>/home/ada</code>. Les commandes s'enchaînent (chaque ligne part de l'état laissé par la précédente). Pour chacune, prédis <em>de tête</em> ce qui s'affiche ou ce qui change — la correction se fait en classe, puis en TP :</p>
+        <table>
+          <tr><th>#</th><th>Commande</th><th>Que se passe-t-il ?</th></tr>
+          <tr><td>1</td><td><code>pwd</code></td><td>à toi !</td></tr>
+          <tr><td>2</td><td><code>ls</code></td><td>à toi !</td></tr>
+          <tr><td>3</td><td><code>cd cours</code> puis <code>pwd</code></td><td>à toi !</td></tr>
+          <tr><td>4</td><td><code>mkdir tp1</code> puis <code>ls</code></td><td>à toi !</td></tr>
+          <tr><td>5</td><td><code>cd ..</code> puis <code>pwd</code></td><td>à toi !</td></tr>
+          <tr><td>6</td><td><code>cat cours/nsi.py</code></td><td>à toi !</td></tr>
+        </table>
+        <p class="note">🧪 <strong>Passe à la pratique, directement dans cette page</strong> : la rubrique <strong>🧪 TP guidés de ce thème</strong> (plus bas) propose « TP — Se repérer dans l'arborescence », « TP — Manipuler des fichiers » et « TP — Droits et permissions », à faire pas à pas. Ensuite, le <strong>projet « Mission terminal »</strong> te met aux commandes d'un simulateur de terminal pour retrouver un fichier caché.</p>`,
+        prof: `
+        <p><strong>Réponses de la « session type »</strong> (départ : <code>/home/ada</code>, qui contient <code>photos</code> et <code>cours</code>) :</p>
+        <ol>
+          <li><code>/home/ada</code> — le répertoire courant.</li>
+          <li><code>photos  cours</code> — le contenu du home d'ada.</li>
+          <li><code>/home/ada/cours</code> — on est descendu d'un cran.</li>
+          <li>crée le dossier <code>tp1</code> ; <code>ls</code> affiche <code>nsi.py  tp1</code>.</li>
+          <li><code>/home/ada</code> — <code>..</code> remonte au parent.</li>
+          <li>affiche le contenu du fichier <code>nsi.py</code> (chemin relatif depuis <code>/home/ada</code>).</li>
+        </ol>
+        <p><strong>Exploitation</strong> : faire verbaliser l'état courant (« où suis-je ? ») avant chaque commande — c'est exactement le réflexe travaillé ensuite dans les TP guidés et « Mission terminal ».</p>`,
       },
       {
         title: "Droits et permissions",

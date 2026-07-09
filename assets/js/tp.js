@@ -823,6 +823,202 @@ print(f"liste : {t_liste:.4f} s")` },
       },
     ],
   },
+
+  /* ===================== Données en tables — thème donnees-tables ===================== */
+  {
+    id: "tp-table-csv",
+    theme: "donnees-tables",
+    lang: "python",
+    titre: "TP Python — Une table de A à Z (csv)",
+    intro: "Fil rouge : les notes d'une classe de Première. On construit une table (liste de dictionnaires), on la relit depuis un CSV, puis on filtre, on trie, on calcule des statistiques et on fusionne deux tables — tout le thème en un TP. Exécute chaque étape (▶), observe, puis réponds aux questions.",
+    steps: [
+      {
+        num: "1", titre: "Une table = une liste de dictionnaires", run: true,
+        code: `# Chaque LIGNE est un dictionnaire ; les CLÉS sont les noms de colonnes.
+eleves = [
+    {"nom": "Awa",   "classe": "1G1", "note": 15},
+    {"nom": "Bilal", "classe": "1G2", "note": 12},
+    {"nom": "Clara", "classe": "1G1", "note": 17},
+]
+print(len(eleves), "lignes")
+print(eleves[0])              # la 1re ligne (un dictionnaire complet)
+print(eleves[0]["nom"])       # UNE cellule : ligne 0, colonne 'nom'
+
+# Parcourir la table = parcourir la liste
+for e in eleves:
+    print(e["nom"], "->", e["note"])`,
+        questions: [
+          "Quelle expression donne la note de Clara ?",
+          "Que représentent eleves[1] et eleves[1][\"classe\"] ?",
+        ],
+        correction: [
+          "eleves[2][\"note\"] → 17 : on donne d'abord l'indice de LIGNE (2), puis le nom de COLONNE ('note').",
+          "eleves[1] est la ligne entière de Bilal (un dictionnaire) ; eleves[1][\"classe\"] est la cellule '1G2'. Ligne = dict, cellule = valeur associée à une clé.",
+        ],
+      },
+      {
+        num: "2", titre: "Lire un CSV avec csv.DictReader (et convertir les nombres !)", run: true,
+        code: `import csv, io
+
+# En vrai on ouvrirait un fichier ; ici le CSV est dans une chaîne,
+# et io.StringIO la fait passer pour un fichier ouvert.
+donnees = """nom,classe,note
+Awa,1G1,15
+Bilal,1G2,12
+Clara,1G1,17
+Dan,1G2,9
+Elsa,1G1,14"""
+
+lecteur = csv.DictReader(io.StringIO(donnees))
+table = [dict(ligne) for ligne in lecteur]
+print(table[0])
+print(table[0]["note"] + table[1]["note"])   # surprise !
+
+# Un CSV ne contient QUE du texte : on convertit la colonne note
+for ligne in table:
+    ligne["note"] = int(ligne["note"])
+print(table[0]["note"] + table[1]["note"])   # cette fois c'est bon`,
+        questions: [
+          "Pourquoi le premier print des notes affiche-t-il 1512 et pas 27 ?",
+          "Quel rôle joue la 1re ligne du CSV (nom,classe,note) pour DictReader ?",
+        ],
+        correction: [
+          "Dans un fichier CSV, TOUT est du texte : '15' + '12' concatène les chaînes → '1512'. Il faut convertir avec int() (ou float()) avant de calculer — c'est l'oubli classique du thème.",
+          "C'est la ligne d'en-tête : DictReader s'en sert comme CLÉS des dictionnaires. Chaque ligne suivante devient {'nom': …, 'classe': …, 'note': …}.",
+        ],
+      },
+      {
+        num: "3", titre: "Filtrer les lignes (compréhension de liste)", run: true,
+        code: `eleves = [
+    {"nom": "Awa",   "classe": "1G1", "note": 15},
+    {"nom": "Bilal", "classe": "1G2", "note": 12},
+    {"nom": "Clara", "classe": "1G1", "note": 17},
+    {"nom": "Dan",   "classe": "1G2", "note": 9},
+    {"nom": "Elsa",  "classe": "1G1", "note": 14},
+]
+
+# Filtrer = garder les lignes qui vérifient une condition
+admis = [e for e in eleves if e["note"] >= 10]
+print(len(admis), "admis sur", len(eleves))
+
+# Filtrer + ne garder qu'une colonne (projection)
+noms_1g1 = [e["nom"] for e in eleves if e["classe"] == "1G1"]
+print("en 1G1 :", noms_1g1)`,
+        questions: [
+          "Écris la compréhension qui garde les élèves de 1G2 ayant au moins 10.",
+          "Quelle différence entre [e for e in eleves if …] et [e[\"nom\"] for e in eleves if …] ?",
+        ],
+        correction: [
+          "[e for e in eleves if e[\"classe\"] == \"1G2\" and e[\"note\"] >= 10] → seule la ligne de Bilal. On combine les conditions avec and.",
+          "La 1re renvoie des LIGNES entières (une sous-table) ; la 2e ne renvoie que la colonne 'nom' (une liste de chaînes) : filtre + projection.",
+        ],
+      },
+      {
+        num: "4", titre: "Trier avec sorted et key", run: true,
+        code: `eleves = [
+    {"nom": "Awa",   "classe": "1G1", "note": 15},
+    {"nom": "Bilal", "classe": "1G2", "note": 12},
+    {"nom": "Clara", "classe": "1G1", "note": 17},
+    {"nom": "Dan",   "classe": "1G2", "note": 9},
+    {"nom": "Elsa",  "classe": "1G1", "note": 14},
+]
+
+# sorted(table, key=...) : key dit SUR QUELLE colonne trier
+par_note = sorted(eleves, key=lambda e: e["note"], reverse=True)
+for e in par_note:
+    print(e["note"], e["nom"])
+
+par_nom = sorted(eleves, key=lambda e: e["nom"])
+print([e["nom"] for e in par_nom])
+print(eleves[0]["nom"])   # la table d'origine n'a pas bougé`,
+        questions: [
+          "Pourquoi sorted(eleves) tout court provoquerait-il une erreur ?",
+          "Que fait reverse=True ? Et quelle différence entre sorted(eleves, key=…) et eleves.sort(key=…) ?",
+        ],
+        correction: [
+          "Les lignes sont des dictionnaires : Python ne sait pas comparer deux dicts entre eux. Le paramètre key donne LA valeur à comparer pour chaque ligne (ici sa note) — souvent via une fonction lambda.",
+          "reverse=True trie du plus grand au plus petit (classement). sorted renvoie une NOUVELLE liste triée (l'original est intact) ; .sort() trie la liste SUR PLACE et renvoie None.",
+        ],
+      },
+      {
+        num: "5", titre: "Statistiques sur une colonne", run: true,
+        code: `eleves = [
+    {"nom": "Awa",   "classe": "1G1", "note": 15},
+    {"nom": "Bilal", "classe": "1G2", "note": 12},
+    {"nom": "Clara", "classe": "1G1", "note": 17},
+    {"nom": "Dan",   "classe": "1G2", "note": 9},
+    {"nom": "Elsa",  "classe": "1G1", "note": 14},
+]
+
+# 1) extraire la colonne, 2) calculer
+notes = [e["note"] for e in eleves]
+moyenne = sum(notes) / len(notes)
+print(f"moyenne : {moyenne:.2f}")
+print("min :", min(notes), "| max :", max(notes))
+
+# Moyenne d'une seule classe : on filtre D'ABORD
+notes_1g1 = [e["note"] for e in eleves if e["classe"] == "1G1"]
+print(f"moyenne 1G1 : {sum(notes_1g1) / len(notes_1g1):.2f}")`,
+        questions: [
+          "Calcule la moyenne de la classe 1G2. Est-elle au-dessus ou en dessous de la moyenne générale ?",
+          "Que se passerait-il si on calculait la moyenne d'une classe qui n'existe pas (liste vide) ?",
+        ],
+        correction: [
+          "notes_1g2 = [e[\"note\"] for e in eleves if e[\"classe\"] == \"1G2\"] → [12, 9], moyenne 10.5, en dessous de la moyenne générale (13.4).",
+          "len(liste_vide) vaut 0 → ZeroDivisionError. Un programme robuste teste if len(notes) > 0 avant de diviser.",
+        ],
+      },
+      {
+        num: "6", titre: "Défi — jointure de deux tables sur une clé",
+        code: `# Deux tables qui partagent la colonne 'classe' (la CLÉ de jointure)
+eleves = [
+    {"nom": "Awa",   "classe": "1G1", "note": 15},
+    {"nom": "Bilal", "classe": "1G2", "note": 12},
+    {"nom": "Clara", "classe": "1G1", "note": 17},
+]
+salles = [
+    {"classe": "1G1", "salle": "B204", "prof": "M. Turing"},
+    {"classe": "1G2", "salle": "A112", "prof": "Mme Hopper"},
+]
+
+# À toi de jouer (consignes ci-dessous), puis ▶ Exécuter
+`,
+        run: true,
+        questions: [
+          "Construis la table fusion : chaque élève enrichi de sa salle et de son prof (jointure sur la colonne 'classe').",
+          "Affiche « Awa -> B204 (M. Turing) » pour chaque élève.",
+          "Bonus : pourquoi passer par un dictionnaire {classe: ligne} est-il plus efficace qu'une double boucle quand les tables grossissent ?",
+        ],
+        correction: [
+          "Idée de la jointure : pour chaque ligne d'élève, retrouver dans l'autre table LA ligne qui a la même valeur de clé, puis fusionner les deux dictionnaires. L'index {classe: ligne} évite de re-parcourir salles à chaque élève : une double boucle fait n×m comparaisons, l'accès au dictionnaire est direct — c'est l'écart liste/dict déjà vu au TP dictionnaires.",
+          { text: "Corrigé :" },
+          { code: `eleves = [
+    {"nom": "Awa",   "classe": "1G1", "note": 15},
+    {"nom": "Bilal", "classe": "1G2", "note": 12},
+    {"nom": "Clara", "classe": "1G1", "note": 17},
+]
+salles = [
+    {"classe": "1G1", "salle": "B204", "prof": "M. Turing"},
+    {"classe": "1G2", "salle": "A112", "prof": "Mme Hopper"},
+]
+
+# 1) index : classe -> ligne de la table salles
+index = {s["classe"]: s for s in salles}
+
+# 2) jointure : on fusionne chaque élève avec la ligne correspondante
+fusion = []
+for e in eleves:
+    ligne = dict(e)                    # copie (ne pas modifier l'original)
+    ligne["salle"] = index[e["classe"]]["salle"]
+    ligne["prof"]  = index[e["classe"]]["prof"]
+    fusion.append(ligne)
+
+for l in fusion:
+    print(f"{l['nom']} -> {l['salle']} ({l['prof']})")` },
+        ],
+      },
+    ],
+  },
 ];
 
 /* ---------------- Fiches « pour aller plus loin » ---------------- */

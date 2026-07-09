@@ -40,7 +40,12 @@
     document.documentElement.setAttribute("data-theme", t);
     $("#themeToggle").textContent = t === "dark" ? "☀️" : "🌙";
   }
-  applyTheme(localStorage.getItem(THEME_KEY) || "light");
+  // Premier chargement : respecter la préférence système (clair/sombre) ;
+  // le choix manuel (toggle 🌙) reste prioritaire une fois enregistré.
+  applyTheme(
+    localStorage.getItem(THEME_KEY) ||
+      (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+  );
   $("#themeToggle").addEventListener("click", () => {
     const next =
       document.documentElement.getAttribute("data-theme") === "dark"
@@ -3777,7 +3782,12 @@ except Exception:
   function buildSearchIndex() {
     const idx = [];
     COURSES.forEach((c) => {
-      const txt = c.title + " " + c.intro + " " + c.sections.map((s) => s.title).join(" ");
+      // Plein texte : titres ET corps des sections (HTML débalisé) — un mot présent
+      // uniquement dans le cours (« slice », « mutabilité »…) doit remonter.
+      const bodies = c.sections
+        .map((s) => (s.html ? String(s.html).replace(/<[^>]+>/g, " ") : ""))
+        .join(" ");
+      const txt = c.title + " " + c.intro + " " + c.sections.map((s) => s.title).join(" ") + " " + bodies;
       idx.push({ type: "Thème", icon: c.emoji, label: c.title, target: c.id, hay: norm(txt) });
     });
     PROJECTS.forEach((p) => {
@@ -3998,7 +4008,27 @@ except Exception:
   }
 
   // Rafraîchissement temps réel (snapshots Firebase) : met à jour l'UI.
+  // Bandeau persistant si une écriture Firestore a été refusée (règles/réseau) :
+  // sans lui, le prof croit que ses notes/corrigés se synchronisent alors que non.
+  function checkSyncBanner() {
+    let b = document.getElementById("syncErrorBanner");
+    if (!window.fbWriteError) { if (b) b.remove(); return; }
+    if (b) return;
+    b = el("div", "sync-error-banner");
+    b.id = "syncErrorBanner";
+    b.setAttribute("role", "alert");
+    b.innerHTML =
+      "⚠️ <strong>Synchronisation refusée</strong> — une écriture n'a pas pu être enregistrée " +
+      "(règles Firestore ou connexion). Les dernières modifications sont peut-être perdues.";
+    const close = el("button", "sync-error-close", "✕");
+    close.addEventListener("click", () => { window.fbWriteError = false; b.remove(); });
+    b.appendChild(close);
+    document.body.appendChild(b);
+  }
+  setInterval(checkSyncBanner, 8000);
+
   function handlePlatformData() {
+    checkSyncBanner();
     if (!P.getSession()) return;
     applyRole(); // pour l'élève : révèle/masque les corrigés poussés en direct
     refreshExoCorrections(); // corrigés d'exercices poussés/retirés en temps réel
