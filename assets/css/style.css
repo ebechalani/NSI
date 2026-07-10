@@ -295,6 +295,12 @@ details.theme-plan[open] > summary::before { content: "▾ "; }
 .plan-col li { margin: .18rem 0; }
 @media (max-width: 860px) { .plan-grid { grid-template-columns: 1fr; } }
 
+/* Kit de préparation (prof) */
+.theme-kit > summary { color: var(--ok-text, #15803d); }
+.kit-files { margin: .2rem 0 .6rem; padding-left: 1.2rem; font-size: .92rem; }
+.kit-files li { margin: .25rem 0; }
+.theme-plan-body h4 { margin: .9rem 0 .35rem; }
+
 /* Bandeau d'échec de synchronisation Firestore */
 .sync-error-banner {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: 1rem;

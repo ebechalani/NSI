@@ -543,6 +543,10 @@
     const hourPlan = makeThemePlan(c.id);
     if (hourPlan) viewTheme.appendChild(hourPlan);
 
+    // Kit de préparation : matériel imprimable, fichiers Capytale, évaluations (prof)
+    const kit = makeThemeKit(c.id);
+    if (kit) viewTheme.appendChild(kit);
+
     // Sommaire cliquable pour les thèmes longs (8 sections ou plus)
     if (c.sections.length >= 8) {
       const toc = el("details", "theme-toc");
@@ -674,6 +678,47 @@
         (plan.resume ? `<p class="intro">${plan.resume}</p>` : "") +
         `<table><tr><th>Séance</th><th>Sur le site</th><th>En classe</th><th>À préparer</th></tr>${rows}</table>`
     );
+  }
+
+  // Kit de préparation du thème (prof) : la 3e colonne du déroulé, FOURNIE —
+  // matériel débranché imprimable, fichiers réels (Capytale/Thonny), évaluations.
+  // Données : THEME_KITS (resources.js).
+  function makeThemeKit(themeId) {
+    const kit = (typeof THEME_KITS !== "undefined" ? THEME_KITS : {})[themeId];
+    if (!kit) return null;
+    const det = el("details", "theme-plan theme-kit teacher-block");
+    det.appendChild(el("summary", null, "🧰 Kit de préparation (prof) — matériel, fichiers, évaluations"));
+    const body = el("div", "theme-plan-body");
+    if (kit.intro) body.appendChild(el("p", "extra-hint", kit.intro));
+    if (kit.imprimables && kit.imprimables.length) {
+      body.appendChild(el("h4", null, "🖨️ Matériel débranché — prêt à imprimer"));
+      const row = el("div", "tp-print-group");
+      kit.imprimables.forEach((im) => {
+        const b = el("button", "btn secondary", "🖨️ " + im.titre);
+        b.addEventListener("click", () => openPrint(im.titre, im.html));
+        row.appendChild(b);
+      });
+      body.appendChild(row);
+    }
+    if (kit.fichiers && kit.fichiers.length) {
+      body.appendChild(el("h4", null, "📁 Fichiers réels — à déposer sur Capytale (ou distribuer pour Thonny)"));
+      const ul = el("ul", "kit-files");
+      kit.fichiers.forEach((f) => {
+        const li = el("li");
+        li.innerHTML = `<a href="${f.chemin}" download>📄 ${f.nom}</a> — ${f.desc}`;
+        ul.appendChild(li);
+      });
+      body.appendChild(ul);
+      body.appendChild(el("p", "extra-hint", "Les fichiers « _corrige » sont pour toi — ne les distribue pas."));
+    }
+    if (kit.evals && kit.evals.length) {
+      body.appendChild(el("h4", null, "📝 Évaluations sur table"));
+      const ul = el("ul");
+      kit.evals.forEach((e) => { const li = el("li"); li.innerHTML = e; ul.appendChild(li); });
+      body.appendChild(ul);
+    }
+    det.appendChild(body);
+    return det;
   }
 
   // Déroulé de séance (prof) — bloc dépliable, réservé au mode professeur
