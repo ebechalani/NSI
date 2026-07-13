@@ -1591,24 +1591,24 @@ except Exception:
       // 18 événements clés, du plus ancien au plus récent.
       // L'indice (clue) ne donne JAMAIS l'année : c'est aux élèves de raisonner.
       events: [
-        { year: 820, icon: "📜", title: "Le mot « algorithme »", clue: "Un savant perse, Al-Khwârizmî, rédige un traité de calcul ; son nom latinisé donnera le mot « algorithme »." },
-        { year: 1642, icon: "🧮", title: "La Pascaline", clue: "Blaise Pascal construit une machine à additionner à roues dentées pour aider son père." },
-        { year: 1703, icon: "🔢", title: "L'arithmétique binaire", clue: "Leibniz publie le calcul en base 2 (uniquement des 0 et des 1)." },
-        { year: 1801, icon: "🧵", title: "Le métier Jacquard", clue: "Un métier à tisser est piloté par des cartes perforées : première « machine programmée »." },
-        { year: 1843, icon: "👩‍💻", title: "Le premier algorithme (Ada Lovelace)", clue: "Ada Lovelace écrit un programme destiné à la machine analytique de Babbage." },
-        { year: 1854, icon: "🔣", title: "L'algèbre de Boole", clue: "George Boole formalise une algèbre du vrai/faux (et, ou, non)." },
-        { year: 1936, icon: "🧠", title: "La machine de Turing", clue: "Alan Turing décrit une machine abstraite qui définit ce qu'est « calculer »." },
-        { year: 1945, icon: "🖥️", title: "ENIAC & von Neumann", clue: "Un énorme calculateur électronique ; von Neumann formalise le « programme enregistré »." },
-        { year: 1947, icon: "🔌", title: "Le transistor", clue: "Aux Bell Labs, un minuscule composant remplace les encombrants tubes à vide." },
-        { year: 1958, icon: "🪙", title: "Le circuit intégré", clue: "De nombreux transistors sont gravés ensemble sur une même puce de silicium." },
-        { year: 1969, icon: "🌐", title: "ARPANET", clue: "Le réseau ancêtre d'Internet relie ses tout premiers ordinateurs." },
-        { year: 1971, icon: "🔳", title: "Le microprocesseur (Intel 4004)", clue: "Tout un processeur tient désormais sur une seule puce." },
-        { year: 1977, icon: "💻", title: "L'ordinateur personnel", clue: "L'Apple II popularise l'ordinateur individuel à la maison." },
-        { year: 1983, icon: "📡", title: "Internet (TCP/IP)", clue: "Le réseau adopte les protocoles TCP/IP : Internet tel qu'on le connaît démarre." },
-        { year: 1989, icon: "🕸️", title: "Le World Wide Web", clue: "Tim Berners-Lee invente le Web au CERN (HTML, HTTP, URL)." },
-        { year: 1991, icon: "🐧", title: "Le noyau Linux", clue: "Linus Torvalds publie un système d'exploitation libre et gratuit." },
-        { year: 2007, icon: "📱", title: "Le smartphone", clue: "L'iPhone rend l'informatique mobile, tactile et grand public." },
-        { year: 2012, icon: "🤖", title: "L'essor de l'IA", clue: "L'apprentissage profond fait bondir la reconnaissance d'images : l'IA moderne décolle." },
+        { year: 820, icon: "📜", title: "Le mot « algorithme »", clue: "Un savant perse, Al-Khwârizmî, rédige un traité de calcul ; son nom latinisé donnera le mot « algorithme ».", explain: "Al-Khwârizmî décrit des <strong>méthodes de calcul pas à pas</strong>, si précises qu'on peut les appliquer sans réfléchir — exactement ce qu'on demande aujourd'hui à un ordinateur. Son nom, latinisé en <em>Algoritmi</em>, a donné notre mot « algorithme » : l'idée est donc <strong>mille ans plus vieille</strong> que les machines !" },
+        { year: 1642, icon: "🧮", title: "La Pascaline", clue: "Blaise Pascal construit une machine à additionner à roues dentées pour aider son père.", explain: "À 19 ans, Pascal fabrique une machine à roues dentées qui <strong>additionne toute seule</strong>, retenues comprises, pour aider son père collecteur d'impôts. C'est la preuve qu'un <strong>mécanisme peut calculer</strong> à la place d'un humain — le point de départ de toute la lignée des calculateurs." },
+        { year: 1703, icon: "🔢", title: "L'arithmétique binaire", clue: "Leibniz publie le calcul en base 2 (uniquement des 0 et des 1).", explain: "Leibniz montre qu'on peut <strong>tout compter avec seulement 0 et 1</strong>. Deux symboles, c'est exactement ce qu'une machine sait distinguer facilement (courant / pas de courant) : trois siècles plus tard, <strong>tout ton téléphone fonctionne dans cette base 2</strong> (thème « Représentation des données »)." },
+        { year: 1801, icon: "🧵", title: "Le métier Jacquard", clue: "Un métier à tisser est piloté par des cartes perforées : première « machine programmée ».", explain: "Le métier de Jacquard tisse des motifs différents selon les <strong>cartes perforées</strong> qu'on lui donne : la machine ne change pas, <strong>le programme change</strong>. C'est la première fois qu'on sépare la machine de ses instructions — l'idée même de « programmer »." },
+        { year: 1843, icon: "👩‍💻", title: "Le premier algorithme (Ada Lovelace)", clue: "Ada Lovelace écrit un programme destiné à la machine analytique de Babbage.", explain: "Ada Lovelace écrit, pour la machine analytique de Babbage (jamais construite !), une <strong>suite d'instructions</strong> pour calculer des nombres — le <strong>premier programme de l'histoire</strong>. Elle a aussi l'intuition géniale qu'une telle machine pourrait manipuler <em>autre chose</em> que des nombres : de la musique, des lettres… tout ce qui se code." },
+        { year: 1854, icon: "🔣", title: "L'algèbre de Boole", clue: "George Boole formalise une algèbre du vrai/faux (et, ou, non).", explain: "Boole invente une <strong>algèbre du vrai et du faux</strong> : ET, OU, NON. Un siècle plus tard, on découvre que ces opérations se câblent avec des interrupteurs — ce sont les <strong>portes logiques</strong> gravées par milliards dans ton processeur (thème « Architectures »). Tes <code>if</code> en Python, c'est du Boole !" },
+        { year: 1936, icon: "🧠", title: "La machine de Turing", clue: "Alan Turing décrit une machine abstraite qui définit ce qu'est « calculer ».", explain: "Turing imagine une machine abstraite ultra-simple (un ruban, une tête de lecture) et prouve qu'elle peut exécuter <strong>n'importe quel calcul</strong>… et qu'il existe des problèmes qu'<strong>aucune machine ne résoudra jamais</strong>. Il définit ainsi ce que « calculer » veut dire — avant même l'existence des ordinateurs." },
+        { year: 1945, icon: "🖥️", title: "ENIAC & von Neumann", clue: "Un énorme calculateur électronique ; von Neumann formalise le « programme enregistré ».", explain: "L'ENIAC, 30 tonnes, calcule mille fois plus vite qu'un humain — mais pour changer de programme, il faut le <strong>recâbler</strong> ! Von Neumann propose alors de <strong>ranger le programme dans la mémoire</strong>, comme les données. Ton ordinateur actuel suit toujours exactement cette architecture (thème « Architectures »)." },
+        { year: 1947, icon: "🔌", title: "Le transistor", clue: "Aux Bell Labs, un minuscule composant remplace les encombrants tubes à vide.", explain: "Trois chercheurs des Bell Labs inventent un composant minuscule qui <strong>laisse passer ou bloque le courant</strong> : l'interrupteur parfait pour le binaire. Fini les tubes à vide qui chauffent et grillent — ton processeur en contient aujourd'hui <strong>des milliards</strong>." },
+        { year: 1958, icon: "🪙", title: "Le circuit intégré", clue: "De nombreux transistors sont gravés ensemble sur une même puce de silicium.", explain: "Kilby a l'idée de graver <strong>plusieurs transistors ensemble</strong> sur une même plaque de silicium, au lieu de les câbler un à un. Les circuits deviennent plus petits, plus fiables, moins chers — la <strong>miniaturisation</strong> qui mènera du calculateur d'une pièce entière à la puce de ta montre." },
+        { year: 1969, icon: "🌐", title: "ARPANET", clue: "Le réseau ancêtre d'Internet relie ses tout premiers ordinateurs.", explain: "Deux ordinateurs, l'un à Los Angeles, l'autre à Stanford, échangent leur premier message (le réseau plante après deux lettres : « LO » !). ARPANET introduit l'idée révolutionnaire de découper les messages en <strong>paquets</strong> qui voyagent indépendamment — exactement ce que tu étudies au thème « Réseaux »." },
+        { year: 1971, icon: "🔳", title: "Le microprocesseur (Intel 4004)", clue: "Tout un processeur tient désormais sur une seule puce.", explain: "Intel grave <strong>tout un processeur sur une seule puce</strong> de 4 mm : le 4004, conçu au départ… pour une calculatrice ! Le cerveau de l'ordinateur devient un composant qu'on achète — la porte s'ouvre vers l'ordinateur pour tous." },
+        { year: 1977, icon: "💻", title: "L'ordinateur personnel", clue: "L'Apple II popularise l'ordinateur individuel à la maison.", explain: "L'Apple II arrive <strong>prêt à l'emploi</strong> : un clavier, un écran, et c'est parti. L'ordinateur quitte les laboratoires et entre <strong>à la maison et à l'école</strong> — une génération entière apprend à programmer dessus." },
+        { year: 1983, icon: "📡", title: "Internet (TCP/IP)", clue: "Le réseau adopte les protocoles TCP/IP : Internet tel qu'on le connaît démarre.", explain: "Tous les réseaux adoptent le même « langage » commun : <strong>TCP/IP</strong>. Des réseaux différents peuvent enfin se parler entre eux — c'est la naissance d'<strong>Internet</strong> (littéralement : « entre les réseaux »). À ne pas confondre avec le Web, qui n'existe pas encore !" },
+        { year: 1989, icon: "🕸️", title: "Le World Wide Web", clue: "Tim Berners-Lee invente le Web au CERN (HTML, HTTP, URL).", explain: "Au CERN, Tim Berners-Lee veut aider les chercheurs à <strong>partager leurs documents</strong> : il invente les pages reliées par des <strong>liens</strong> (HTML), leur adresse (URL) et leur protocole (HTTP) — tout ce que tu utilises au thème « Web ». Il offre son invention au monde, <strong>sans brevet</strong>." },
+        { year: 1991, icon: "🐧", title: "Le noyau Linux", clue: "Linus Torvalds publie un système d'exploitation libre et gratuit.", explain: "Un étudiant finlandais de 21 ans publie le cœur d'un système d'exploitation et invite la planète à l'améliorer : c'est le <strong>logiciel libre</strong> en action. Aujourd'hui, Linux fait tourner les serveurs du Web, les supercalculateurs… et Android dans ta poche (thème « Architectures & OS »)." },
+        { year: 2007, icon: "📱", title: "Le smartphone", clue: "L'iPhone rend l'informatique mobile, tactile et grand public.", explain: "L'iPhone réunit téléphone, écran tactile et vrai navigateur web : l'ordinateur devient un objet qu'on garde <strong>sur soi, tout le temps</strong>. En dix ans, plus de la moitié de l'humanité se connecte — et l'informatique change la vie quotidienne." },
+        { year: 2012, icon: "🤖", title: "L'essor de l'IA", clue: "L'apprentissage profond fait bondir la reconnaissance d'images : l'IA moderne décolle.", explain: "Une intelligence artificielle apprend à <strong>reconnaître des images</strong> bien mieux que tout ce qui existait, grâce à l'<strong>apprentissage profond</strong> (des réseaux de neurones nourris de millions d'exemples). C'est le déclic de l'IA moderne — jusqu'aux assistants qui écrivent et dessinent. Ton kNN du thème « Algorithmique » est un petit cousin de cette famille !" },
       ],
     },
   };
@@ -1818,9 +1818,12 @@ except Exception:
     const toolbar = el("div", "frise-toolbar");
     const bShuffle = el("button", "btn secondary", "🔀 Mélanger");
     const bCheck = el("button", "btn", "✅ Vérifier la frise");
+    const bExplain = el("button", "btn secondary frise-explain-btn", "📖 Correction expliquée");
+    bExplain.style.display = "none"; // n'apparaît qu'après une première vérification
     const bPrint = el("button", "btn secondary", "🖨️ Imprimer les cartes");
     toolbar.appendChild(bShuffle);
     toolbar.appendChild(bCheck);
+    toolbar.appendChild(bExplain);
     toolbar.appendChild(bPrint);
     wrap.appendChild(toolbar);
 
@@ -1829,6 +1832,72 @@ except Exception:
 
     const result = el("div", "frise-result");
     wrap.appendChild(result);
+
+    // Correction interactive : la frise dans l'ordre, chaque événement se déplie
+    // avec son explication ; ✓/✗ selon le dernier placement de l'élève.
+    const corrWrap = el("div", "frise-correction");
+    wrap.appendChild(corrWrap);
+    let lastPlacement = null; // year -> bien placé ? (rempli par verify)
+
+    function buildCorrection() {
+      corrWrap.innerHTML = "";
+      corrWrap.classList.add("show");
+      const chrono = [...events].sort((a, b) => a.year - b.year);
+      const seen = new Set();
+
+      const head = el("div", "frise-corr-head");
+      head.innerHTML =
+        `<strong>📖 La frise expliquée.</strong> Dans l'ordre cette fois ! ` +
+        `Clique chaque événement pour découvrir <strong>pourquoi il compte</strong> ` +
+        `(✓ = tu l'avais bien placé, ✗ = à retenir pour la prochaine fois).`;
+      const prog = el("span", "frise-corr-prog", `0 / ${chrono.length} explorés`);
+      head.appendChild(prog);
+      corrWrap.appendChild(head);
+
+      const list = el("div", "frise-corr-list");
+      chrono.forEach((ev) => {
+        const ok = lastPlacement ? lastPlacement[ev.year] : null;
+        const item = el("details", "frise-corr-item" + (ok === true ? " was-good" : ok === false ? " was-bad" : ""));
+        const sum = el("summary");
+        sum.innerHTML =
+          `<span class="fcc-year">${ev.year}</span><span class="fcc-icon">${ev.icon}</span>` +
+          `<span class="fcc-title">${ev.title}</span>` +
+          (ok === true ? `<span class="fcc-mark good" title="Tu l'avais bien placé">✓</span>` :
+           ok === false ? `<span class="fcc-mark bad" title="Mal placé lors de ta dernière vérification">✗</span>` : "");
+        item.appendChild(sum);
+        const body = el("div", "fcc-body");
+        body.innerHTML =
+          `<p class="fcc-clue">🃏 <em>${ev.clue}</em></p>` +
+          (ev.explain ? `<p class="fcc-explain">${ev.explain}</p>` : "");
+        item.appendChild(body);
+        item.addEventListener("toggle", () => {
+          if (item.open && !seen.has(ev.year)) {
+            seen.add(ev.year);
+            item.classList.add("seen");
+            prog.textContent = seen.size === chrono.length
+              ? "🎉 Frise maîtrisée — les " + chrono.length + " événements explorés !"
+              : `${seen.size} / ${chrono.length} explorés`;
+            if (seen.size === chrono.length) prog.classList.add("done");
+            if (P.isStudent() && currentThemeId) noteActivity(currentThemeId);
+          }
+        });
+        list.appendChild(item);
+      });
+      corrWrap.appendChild(list);
+
+      const tools = el("div", "frise-corr-tools");
+      const bAll = el("button", "btn secondary", "📖 Tout déplier");
+      bAll.addEventListener("click", () => {
+        list.querySelectorAll("details").forEach((d) => { d.open = true; });
+      });
+      const bClose = el("button", "btn secondary", "🙈 Refermer la correction");
+      bClose.addEventListener("click", () => { corrWrap.innerHTML = ""; corrWrap.classList.remove("show"); });
+      tools.appendChild(bAll);
+      tools.appendChild(bClose);
+      corrWrap.appendChild(tools);
+      corrWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    bExplain.addEventListener("click", buildCorrection);
 
     function clearMarks() {
       board.querySelectorAll(".frise-card").forEach((c) => {
@@ -1911,14 +1980,17 @@ except Exception:
         (a, b) => Number(a.dataset.year) - Number(b.dataset.year)
       );
       let wellPlaced = 0;
+      lastPlacement = {};
       order.forEach((card, i) => {
         const ok = card === sorted[i];
+        lastPlacement[Number(card.dataset.year)] = ok;
         card.classList.add("revealed");
         card.classList.toggle("good", ok);
         card.classList.toggle("bad", !ok);
         card.querySelector(".fc-year").textContent = card.dataset.year;
         if (ok) wellPlaced++;
       });
+      bExplain.style.display = ""; // la correction expliquée devient disponible
       let pairs = 0;
       for (let i = 0; i < order.length - 1; i++) {
         if (Number(order[i].dataset.year) <= Number(order[i + 1].dataset.year))

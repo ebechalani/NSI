@@ -301,6 +301,29 @@ details.theme-plan[open] > summary::before { content: "▾ "; }
 .kit-files li { margin: .25rem 0; }
 .theme-plan-body h4 { margin: .9rem 0 .35rem; }
 
+/* Correction expliquée de la frise (histoire) */
+.frise-correction { display: none; margin-top: 1rem; }
+.frise-correction.show { display: block; }
+.frise-corr-head { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; padding: .7rem .9rem; font-size: .92rem; }
+.frise-corr-prog { display: inline-block; margin-left: .6rem; font-weight: 700; color: var(--accent); }
+.frise-corr-prog.done { color: var(--ok-text, #15803d); }
+.frise-corr-list { margin: .7rem 0 .4rem; border-left: 3px solid var(--accent); padding-left: .8rem; }
+.frise-corr-item { border: 1px solid var(--border); border-radius: 10px; background: var(--bg-elev); margin: .45rem 0; overflow: hidden; }
+.frise-corr-item > summary { display: flex; align-items: center; gap: .6rem; cursor: pointer; padding: .55rem .75rem; list-style: none; }
+.frise-corr-item > summary::-webkit-details-marker { display: none; }
+.frise-corr-item.seen > summary .fcc-title { color: var(--accent); }
+.fcc-year { flex: 0 0 auto; font-family: var(--mono); font-weight: 800; font-size: .85rem; background: var(--accent); color: #fff; border-radius: 999px; padding: .15rem .6rem; }
+.fcc-icon { font-size: 1.15rem; }
+.fcc-title { font-weight: 700; }
+.fcc-mark { margin-left: auto; font-weight: 800; }
+.fcc-mark.good { color: var(--ok-text, #15803d); }
+.fcc-mark.bad { color: var(--bad-text, #b91c1c); }
+.frise-corr-item.was-bad { border-color: var(--bad-text, #b91c1c); }
+.fcc-body { padding: 0 .85rem .7rem; font-size: .92rem; }
+.fcc-clue { color: var(--text-soft); margin: .2rem 0 .4rem; }
+.fcc-explain { margin: 0; line-height: 1.55; }
+.frise-corr-tools { display: flex; gap: .5rem; flex-wrap: wrap; margin: .5rem 0 0; }
+
 /* Bandeau d'échec de synchronisation Firestore */
 .sync-error-banner {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: 1rem;
