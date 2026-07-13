@@ -301,6 +301,9 @@ details.theme-plan[open] > summary::before { content: "▾ "; }
 .kit-files li { margin: .25rem 0; }
 .theme-plan-body h4 { margin: .9rem 0 .35rem; }
 
+/* Explication affichée à la résolution d'une énigme (escape game) */
+.esc-explain { margin-top: .5rem; padding: .55rem .75rem; background: var(--bg-soft); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; font-size: .9rem; line-height: 1.5; font-style: normal; }
+
 /* Correction expliquée de la frise (histoire) */
 .frise-correction { display: none; margin-top: 1rem; }
 .frise-correction.show { display: block; }

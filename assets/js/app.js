@@ -1543,6 +1543,7 @@ except Exception:
           answers: ["10", "10b", "0b10"],
           hint: "Comme 9+1 passe à « 10 » en base 10, ici on dépasse le chiffre 1 : on pose 0 et on retient 1.",
           fact: "À 19 ans, Pascal construit la Pascaline pour aider son père à calculer les impôts.",
+          explain: "La Pascaline prouve qu'un <strong>mécanisme peut calculer</strong> à la place d'un humain — roues dentées, retenues automatiques. C'est l'ancêtre de ta calculatrice… et la retenue que tu viens de poser en binaire est <strong>exactement</strong> celle que gère l'additionneur gravé dans ton processeur (thème « Architectures »).",
         },
         {
           id: "jacquard",
@@ -1555,6 +1556,7 @@ except Exception:
           answers: ["50", "cinquante"],
           hint: "Additionne les puissances de 2 des bits à 1 : 32 + 16 + 2.",
           fact: "Les cartes perforées de Jacquard inspireront Babbage, puis les premiers ordinateurs.",
+          explain: "Avec ses cartes perforées, Jacquard sépare pour la première fois <strong>la machine</strong> de <strong>ses instructions</strong> : le métier ne change pas, le motif si. C'est l'idée fondatrice du <strong>programme</strong> — et trou/pas-de-trou, c'est déjà du binaire, celui que tu viens de décoder.",
         },
         {
           id: "turing",
@@ -1568,6 +1570,7 @@ except Exception:
           answers: ["8", "huit", "8 bits"],
           hint: "Cherche n tel que 2ⁿ = 256 : 2¹=2, 2²=4, 2³=8 … continue.",
           fact: "En 1936, Turing définit ce qu'une machine peut calculer ; en 1940, il aide à percer Enigma.",
+          explain: "Avec sa machine abstraite (un simple ruban et une tête de lecture), Turing définit <strong>ce que « calculer » veut dire</strong> — avant même l'existence des ordinateurs — et prouve qu'il existe des problèmes qu'<strong>aucune machine ne résoudra jamais</strong>. Et ton calcul 2⁸ = 256, c'est pour ça qu'un octet compte 8 bits (thème « Représentation des données »).",
         },
         {
           id: "web",
@@ -1581,6 +1584,7 @@ except Exception:
           answers: ["42", "quarante-deux", "quarante deux"],
           hint: "2A = 2×16 + A, et le symbole A vaut 10 en base 16.",
           fact: "En 1989, au CERN, Tim Berners-Lee propose le Web : HTML, HTTP et les URL.",
+          explain: "Berners-Lee voulait juste aider les chercheurs du CERN à <strong>partager leurs documents</strong> : pages en HTML, adresses (URL), protocole HTTP — tout ce que tu retrouveras au thème « Web ». Il offre son invention au monde <strong>sans brevet</strong>… et l'hexadécimal que tu viens de convertir sert encore à coder chaque couleur CSS.",
         },
       ],
     },
@@ -1609,6 +1613,29 @@ except Exception:
         { year: 1991, icon: "🐧", title: "Le noyau Linux", clue: "Linus Torvalds publie un système d'exploitation libre et gratuit.", explain: "Un étudiant finlandais de 21 ans publie le cœur d'un système d'exploitation et invite la planète à l'améliorer : c'est le <strong>logiciel libre</strong> en action. Aujourd'hui, Linux fait tourner les serveurs du Web, les supercalculateurs… et Android dans ta poche (thème « Architectures & OS »)." },
         { year: 2007, icon: "📱", title: "Le smartphone", clue: "L'iPhone rend l'informatique mobile, tactile et grand public.", explain: "L'iPhone réunit téléphone, écran tactile et vrai navigateur web : l'ordinateur devient un objet qu'on garde <strong>sur soi, tout le temps</strong>. En dix ans, plus de la moitié de l'humanité se connecte — et l'informatique change la vie quotidienne." },
         { year: 2012, icon: "🤖", title: "L'essor de l'IA", clue: "L'apprentissage profond fait bondir la reconnaissance d'images : l'IA moderne décolle.", explain: "Une intelligence artificielle apprend à <strong>reconnaître des images</strong> bien mieux que tout ce qui existait, grâce à l'<strong>apprentissage profond</strong> (des réseaux de neurones nourris de millions d'exemples). C'est le déclic de l'IA moderne — jusqu'aux assistants qui écrivent et dessinent. Ton kNN du thème « Algorithmique » est un petit cousin de cette famille !" },
+      ],
+    },
+
+    // Frise de TERMINALE : l'histoire du logiciel, des données et des réseaux —
+    // chaque explication renvoie vers un thème du programme de Terminale.
+    "histoire-frise-term": {
+      kind: "timeline",
+      bestKey: "nsi-frise-term-best",
+      events: [
+        { year: 1936, icon: "🧠", title: "La machine de Turing", clue: "Une machine abstraite (ruban + tête de lecture) définit ce que « calculer » veut dire — et ses limites.", explain: "Turing prouve qu'il existe des problèmes qu'<strong>aucun programme ne résoudra jamais</strong> — comme le fameux <em>problème de l'arrêt</em>. C'est exactement la section « calculabilité et décidabilité » de ton thème « Langages » : les limites du calcul étaient connues avant le premier ordinateur !" },
+        { year: 1945, icon: "🖥️", title: "L'architecture de von Neumann", clue: "Le programme est rangé dans la mémoire, comme les données : plus besoin de recâbler la machine.", explain: "Ranger le <strong>programme dans la mémoire</strong> change tout : un programme devient une <strong>donnée</strong> qu'on peut charger, copier… ou compiler. Ton ordinateur suit toujours ce plan — et l'idée « programme = donnée » revient dans la calculabilité (thème « Langages »)." },
+        { year: 1948, icon: "📶", title: "La théorie de l'information", clue: "Claude Shannon quantifie l'information et montre comment la transmettre malgré le bruit.", explain: "Shannon invente le <strong>bit</strong> comme unité d'information et fonde tout ce qui permet à un message de survivre à un canal imparfait. La récupération de pertes de paquets (bit alterné, TCP) de ton thème « Réseaux » descend en droite ligne de ses travaux." },
+        { year: 1952, icon: "⚙️", title: "Le premier compilateur", clue: "Grace Hopper écrit un programme qui traduit un langage lisible… en instructions machine.", explain: "L'idée révolutionnaire de Grace Hopper : <strong>faire écrire la traduction par la machine elle-même</strong>. Sans compilateur ni interpréteur, pas de Python ! C'est le pont entre tes programmes et le processeur — et un jalon du thème « Langages » (paradigmes, traduction)." },
+        { year: 1957, icon: "📐", title: "FORTRAN", clue: "Le premier grand langage de haut niveau : on écrit des formules, plus des instructions machine.", explain: "Avec FORTRAN, on décrit <strong>le problème</strong> (des formules) plutôt que la machine. Naissent alors les <strong>langages de haut niveau</strong>, leurs paradigmes et leurs compromis — la matière même de ton thème « Langages et programmation »." },
+        { year: 1965, icon: "📈", title: "La loi de Moore", clue: "Un ingénieur prédit que le nombre de transistors par puce doublera régulièrement.", explain: "Cette « loi » (une observation, en réalité) a tenu 50 ans : la puissance double, les prix chutent, et l'informatique envahit tout — jusqu'aux <strong>SoC</strong> de ton thème « Architectures ». Elle explique pourquoi ton téléphone bat le superordinateur d'hier." },
+        { year: 1969, icon: "🐚", title: "UNIX", clue: "Deux chercheurs de Bell Labs écrivent un système d'exploitation simple, portable et multi-utilisateurs.", explain: "UNIX invente l'essentiel de ce que tu utilises au thème « Architectures & OS » : <strong>processus</strong>, fichiers, droits, petit outils qu'on <strong>combine</strong>. Linux, macOS, Android en descendent — et tes commandes <code>ls</code>, <code>ps</code>, <code>chmod</code> viennent de là." },
+        { year: 1970, icon: "🗄️", title: "Le modèle relationnel", clue: "Edgar Codd propose de ranger les données en tables reliées par des clés.", explain: "L'idée de Codd — des <strong>tables</strong>, des <strong>clés primaires et étrangères</strong>, des requêtes déclaratives — est LE fondement de ton thème « Bases de données ». SQL naît quelques années plus tard, et la quasi-totalité des données du monde vit encore dans ce modèle." },
+        { year: 1977, icon: "🔐", title: "Le chiffrement RSA", clue: "Trois chercheurs inventent un chiffrement où la clé de chiffrement est… publique.", explain: "RSA rend possible le <strong>chiffrement asymétrique</strong> : tout le monde peut te chiffrer un message, toi seul peux le lire. C'est la base du <strong>HTTPS</strong> et de la sécurisation des communications — la fin de ton thème « Architectures & réseaux »." },
+        { year: 1983, icon: "📡", title: "Internet adopte TCP/IP", clue: "Tous les réseaux basculent sur les mêmes protocoles : ils peuvent enfin se parler.", explain: "TCP/IP fait d'un patchwork de réseaux <strong>un seul Internet</strong>. Le routage (RIP, OSPF), les paquets, les acquittements de ton thème « Réseaux » : tout fonctionne au-dessus de cette pile — inchangée dans son principe depuis 40 ans." },
+        { year: 1989, icon: "🕸️", title: "Le World Wide Web", clue: "Au CERN, on relie les documents entre eux par des liens : HTML, HTTP, URL.", explain: "Le Web n'est PAS Internet : c'est une <strong>application</strong> construite dessus (documents + liens). Retiens la nuance — un grand classique d'épreuve écrite. Et son modèle client-serveur structure tout le développement web moderne." },
+        { year: 1998, icon: "🔎", title: "Google et le PageRank", clue: "Deux étudiants classent les pages web en analysant les liens qui pointent vers elles.", explain: "PageRank modélise le Web comme un <strong>graphe</strong> : les pages sont des sommets, les liens des arcs, et un parcours savant mesure l'importance de chaque page. Tes <strong>graphes</strong> et leurs parcours (thème « Structures de données ») valent des milliards !" },
+        { year: 2012, icon: "🤖", title: "L'apprentissage profond décolle", clue: "Des réseaux de neurones nourris de millions d'images écrasent tous les records de reconnaissance.", explain: "Le deep learning s'impose grâce à trois ingrédients : des <strong>données massives</strong>, des <strong>GPU</strong> (thème « Architectures ») et de vieux algorithmes enfin exploitables. L'IA moderne est née — et avec elle, de nouveaux enjeux de société à discuter au Grand oral." },
+        { year: 2022, icon: "💬", title: "L'IA générative grand public", clue: "Des assistants capables d'écrire, coder et dessiner arrivent dans toutes les mains.", explain: "Les grands modèles de langage mettent l'IA dans la poche de tous — y compris la tienne. Excellente matière à <strong>Grand oral</strong> : biais, sources, énergie, travail… et une certitude : comprendre l'informatique (ce que tu fais en NSI) n'a jamais été aussi utile pour garder l'esprit critique." },
       ],
     },
   };
@@ -1742,7 +1769,8 @@ except Exception:
       const fact = el(
         "div",
         "esc-fact hidden",
-        `🔑 Chiffre obtenu : <strong>${en.digit}</strong> — <em>${en.fact}</em>`
+        `🔑 Chiffre obtenu : <strong>${en.digit}</strong> — <em>${en.fact}</em>` +
+          (en.explain ? `<div class="esc-explain">📖 ${en.explain}</div>` : "")
       );
 
       function markSolved() {

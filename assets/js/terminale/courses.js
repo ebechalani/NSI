@@ -26,6 +26,13 @@ const COURSES = [
     ],
     sections: [
       {
+        title: "🃏 Jeu : la frise de la Terminale",
+        html: `
+        <p>Quatorze événements qui ont façonné <strong>ton programme de Terminale</strong> — du problème de l'arrêt au PageRank, du modèle relationnel au chiffrement RSA. Classe-les du plus ancien au plus récent, vérifie… puis explore la <strong>correction expliquée</strong> : chaque événement y est relié au thème du programme qu'il a fait naître.</p>
+        <p class="note">🎲 Idéal en début d'année (diagnostic ludique) ou en révision : la frise trace la carte de tout ce que tu vas étudier.</p>`,
+        game: "histoire-frise-term",
+      },
+      {
         title: "Avant l'ordinateur : calculer et automatiser",
         html: `
         <p>L'informatique a une longue préhistoire : celle des machines à <strong>calculer</strong> et des machines <strong>programmables</strong>. Deux idées vont peu à peu se rejoindre.</p>
