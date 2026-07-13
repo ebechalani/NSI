@@ -1,0 +1,44 @@
+name: Vérification du site
+
+# Filet de sécurité : un push avec une erreur de syntaxe JS = site blanc
+# pour toutes les classes. Ce workflow vérifie chaque fichier avant.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntaxe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: node --check sur tous les JS du site
+        run: |
+          set -e
+          for f in $(find assets/js -name '*.js'); do
+            node --check "$f"
+            echo "OK  $f"
+          done
+      - name: Cohérence de la version de cache (?v=)
+        run: |
+          V=$(grep -oE 'var v = "[0-9]+"' index.html | grep -oE '[0-9]+')
+          N=$(grep -oE "\?v=$V" index.html | wc -l)
+          echo "version v=$V présente sur $N balises"
+          test "$N" -ge 1
+      - name: Les globals attendus se chargent (Première et Terminale)
+        run: |
+          node -e "
+            const fs = require('fs');
+            for (const dir of ['assets/js', 'assets/js/terminale']) {
+              const ctx = {};
+              const files = ['courses.js','quizzes.js','exercises.js','projects.js','glossary.js','resources.js','tp.js']
+                .map(f => dir + '/' + f).filter(f => fs.existsSync(f));
+              const src = files.map(f => fs.readFileSync(f, 'utf8')).join('\n;\n');
+              new Function(src + '; this.ok = typeof COURSES !== \"undefined\" && COURSES.length > 0;').call(ctx);
+              if (!ctx.ok) throw new Error('COURSES vide pour ' + dir);
+              console.log('OK ', dir);
+            }
+          "

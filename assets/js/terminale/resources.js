@@ -175,6 +175,20 @@ const PROGRESSION = [
     activites: "Simulations et activités débranchées (réseau, routage).",
     evaluation: "DS bilan. Préparation du Grand oral.",
   },
+  {
+    periode: "Mai — Période 6", semaines: "S22–S25", heures: "≈ 24 h",
+    theme: "Révisions croisées — tous les thèmes", themeId: null,
+    objectifs: "Consolider les notions les plus tombées à l'écrit (arbres, graphes, SQL, récursivité, réseaux…) ; automatiser le format de l'épreuve écrite (3 exercices en 3 h 30) et de l'épreuve pratique ; finaliser les deux questions du Grand oral.",
+    activites: "Chaque semaine : 1 thème dominant revu (cours + QCM + fiches méthode du site) + 1 sujet d'annale complet en temps limité (3 h 30, code au stylo) + 1 épreuve pratique chronométrée (1 h, sujets de la banque officielle).",
+    evaluation: "Bac blanc n°3 (écrit type bac, 3 h 30) ; EP blanches notées ; validation des questions du Grand oral avec la grille d'auto-évaluation.",
+  },
+  {
+    periode: "Juin — Période 6", semaines: "S26–S27", heures: "≈ 12 h",
+    theme: "Derniers entraînements & épreuves", themeId: null,
+    objectifs: "Arriver aux épreuves confiant et organisé : derniers réflexes d'épreuve pratique, aisance à l'oral, gestion du stress et logistique du jour J.",
+    activites: "EP express (1 exercice en 25 min, correction immédiate) ; oraux blancs du Grand oral en conditions réelles (20 min de préparation + 10 min d'exposé + 10 min d'entretien, jury de 2) ; check-list logistique (convocation, pièce d'identité, horaires, matériel autorisé) ; relecture ciblée des fiches méthode et des erreurs types relevées en mai.",
+    evaluation: "Oral blanc évalué avec la grille du Grand oral (retour individuel) ; plus aucun DS nouveau — place aux épreuves.",
+  },
 ];
 
 /* ---------------- Déroulés heure par heure (prof) ----------------
@@ -1616,6 +1630,135 @@ const METHODES = [
       <p class="note">🎯 Entraînement : les deux sujets « Bac blanc écrit » de la rubrique <strong>Évaluations</strong> reproduisent
       ce format (3 exercices croisés). Fais-les en temps limité, sans document, code au stylo — comme le jour J.</p>`,
   },
+  {
+    titre: "📚 S'entraîner sur les annales",
+    html: `
+      <p>Rien ne prépare mieux à l'épreuve écrite que les <strong>vrais sujets</strong> : mêmes notions, mêmes formulations,
+      même barème. Les sujets tombent chaque année dans plusieurs centres (Métropole, Amérique du Nord, Asie, Polynésie,
+      Centres étrangers…) : cela fait des <strong>dizaines de sujets complets</strong> à ta disposition.</p>
+      <h3>Où trouver les sujets officiels</h3>
+      <ul>
+        <li><a href="https://eduscol.education.gouv.fr/5199/annales-des-epreuves-du-baccalaureat-des-voies-generale-et-technologique" target="_blank" rel="noopener">Éduscol
+        — annales des épreuves du baccalauréat</a> : la page <strong>officielle</strong> du ministère, avec les
+        <strong>sujets zéro</strong>, les spécimens et les sujets des sessions précédentes.</li>
+        <li><a href="https://www.sujetdebac.fr/annales/specialites/spe-numerique-informatique/" target="_blank" rel="noopener">sujetdebac.fr
+        — spécialité NSI</a> : tous les sujets NSI <strong>archivés session par session</strong> (Métropole, Antilles-Guyane,
+        Amérique du Nord, Asie…), avec des corrigés.</li>
+        <li><a href="https://glassus.github.io/terminale_nsi/T6_Annales/epreuve_bac/" target="_blank" rel="noopener">Site
+        de G. Lassus — annales de l'épreuve écrite</a> : les sujets classés et commentés par un professeur de NSI.</li>
+        <li>Pour l'épreuve <strong>pratique</strong> : la <a href="https://eduscol.education.fr/2661/banque-des-epreuves-pratiques-de-specialite-nsi" target="_blank" rel="noopener">banque
+        officielle des sujets (Éduscol)</a>, publiée chaque année.</li>
+      </ul>
+      <h3>Travailler une annale en conditions réelles</h3>
+      <ol>
+        <li><strong>Avant</strong> — choisis un sujet <em>complet</em> (3 exercices, notés sur 20) et bloque
+        <strong>3 h 30</strong> sans téléphone : code au stylo, aucun document, comme le jour J.</li>
+        <li><strong>Pendant</strong> — applique la fiche « Réussir l'épreuve écrite » : 10 min de lecture,
+        ≈ 1 h par exercice en commençant par le plus confortable, 20 min de relecture. Ne laisse <em>aucune</em>
+        première question vide.</li>
+        <li><strong>Après</strong> — corrige-toi <strong>au barème</strong>, note ta note sur 20, et surtout tiens une
+        <strong>fiche d'erreurs</strong> : pour chaque point perdu, la notion en cause et la page du site où la revoir.
+        Une semaine plus tard, <strong>refais</strong> les questions ratées : c'est là que tu progresses vraiment.</li>
+      </ol>
+      <h3>Les 10 notions qui tombent le plus à l'écrit — et où les réviser ici</h3>
+      <table>
+        <tr><th>Notion (très fréquente dans les sujets)</th><th>Où réviser sur le site</th></tr>
+        <tr><td>Arbres binaires, ABR, parcours (infixe, préfixe, suffixe)</td><td><a href="#term-structures">Structures de données</a></td></tr>
+        <tr><td>Graphes : représentations, BFS/DFS, plus court chemin</td><td><a href="#term-structures">Structures de données</a> puis <a href="#term-algo">Algorithmique</a> (Dijkstra)</td></tr>
+        <tr><td>SQL : SELECT, jointures, agrégats, UPDATE/INSERT</td><td><a href="#term-bdd">Bases de données</a></td></tr>
+        <tr><td>POO : classes, attributs, méthodes, self</td><td><a href="#term-langages">Langages et programmation</a></td></tr>
+        <tr><td>Récursivité (écrire, dérouler, arbre des appels)</td><td><a href="#term-langages">Langages et programmation</a></td></tr>
+        <tr><td>Listes chaînées, piles, files (interface vs implémentation)</td><td><a href="#term-structures">Structures de données</a></td></tr>
+        <tr><td>Routage : tables, RIP (sauts) vs OSPF (coût)</td><td><a href="#term-archi-reseaux">Architectures, systèmes &amp; réseaux</a></td></tr>
+        <tr><td>Processus : états, ordonnancement, interblocage</td><td><a href="#term-archi-reseaux">Architectures, systèmes &amp; réseaux</a></td></tr>
+        <tr><td>Dichotomie, tri fusion, diviser pour régner, coûts</td><td><a href="#term-algo">Algorithmique</a></td></tr>
+        <tr><td>Programmation dynamique et mémoïsation</td><td><a href="#term-langages">Langages</a> puis <a href="#term-algo">Algorithmique</a></td></tr>
+      </table>
+      <p class="note">💡 Rythme conseillé en période de révisions : <strong>1 annale complète par semaine</strong> en temps
+      limité + les QCM du site sur le thème dominant de la semaine. Les bac blancs de la rubrique Évaluations complètent
+      ce que les annales ne couvrent pas encore.</p>`,
+  },
+  {
+    titre: "🎤 Réussir le Grand oral",
+    html: `
+      <p>Le <strong>Grand oral</strong> est l'épreuve au plus gros coefficient du bac général : <strong>coefficient 10</strong>.
+      Il se prépare toute l'année — pas dans les quinze derniers jours. Bonne nouvelle : la NSI regorge de questions
+      passionnantes à défendre.</p>
+      <h3>Le format officiel (en vigueur depuis la session 2024)</h3>
+      <ul>
+        <li><strong>20 minutes de préparation</strong> — le jury choisit <strong>une</strong> de tes deux questions ;
+        tu peux préparer un support (schéma, mots-clés) que tu remets au jury, mais il n'est <strong>pas évalué</strong>.</li>
+        <li><strong>10 minutes d'exposé</strong> — <strong>debout, sans notes</strong> : tu expliques pourquoi tu as choisi
+        cette question, puis tu y réponds de façon construite.</li>
+        <li><strong>10 minutes d'entretien</strong> — le jury (2 examinateurs) rebondit sur ton exposé pour te faire
+        approfondir et préciser.</li>
+      </ul>
+      <p class="warnbox">⚠️ Depuis 2024, il n'y a <strong>plus</strong> de temps dédié au projet d'orientation : toute
+      l'épreuve porte sur ta question et son contenu. L'exposé dure 10 minutes (et non plus 5) : il faut du fond.</p>
+      <h3>Ce que le jury évalue vraiment</h3>
+      <ul>
+        <li><strong>La qualité orale</strong> : voix posée et audible, regard vers le jury, débit maîtrisé — pas de récitation.</li>
+        <li><strong>La prise de parole en continu</strong> : tenir 10 minutes structurées (accroche → développement → réponse à la question).</li>
+        <li><strong>Les connaissances</strong> : des notions NSI <em>exactes</em>, illustrées par un exemple concret que tu maîtrises (un algorithme déroulé, une expérience menée en TP…).</li>
+        <li><strong>L'interaction</strong> : écouter la question, répondre honnêtement — un « je ne sais pas, mais je peux raisonner ainsi… » vaut mieux qu'un bluff.</li>
+        <li><strong>L'argumentation</strong> : un vrai cheminement (pourquoi cette question, quelles limites, quelle réponse nuancée), pas un exposé de cours.</li>
+      </ul>
+      <h3>Construire ta question en 4 étapes</h3>
+      <ol>
+        <li><strong>Pars d'un thème du programme qui te plaît</strong> — celui où tu as pris du plaisir en TP :
+        graphes, chiffrement, bases de données, récursivité…</li>
+        <li><strong>Croise-le avec un angle</strong> : société (vie privée, réseaux sociaux), histoire (Turing, Ada Lovelace),
+        éthique (algorithmes de recommandation), ou ton projet (un programme que tu as réellement écrit).</li>
+        <li><strong>Formule une vraie question</strong>, débattable, à laquelle un non-spécialiste a envie qu'on réponde —
+        pas un titre de chapitre. « Comment fonctionne Dijkstra ? » est un cours ; « Un GPS peut-il se tromper ? » est une question.</li>
+        <li><strong>Teste-la</strong> : peux-tu l'expliquer 10 minutes à quelqu'un qui ne fait pas NSI, avec au moins une
+        notion du programme déroulée en profondeur et un exemple personnel ? Sinon, resserre ou change d'angle.</li>
+      </ol>
+      <h3>16 exemples de questions NSI réalistes</h3>
+      <table>
+        <tr><th>Question possible</th><th>Notions à mobiliser — où réviser</th></tr>
+        <tr><td>« Peut-on tout calculer ? »</td><td>Calculabilité, problème de l'arrêt — <a href="#term-langages">Langages</a></td></tr>
+        <tr><td>« Le chiffrement protège-t-il vraiment ma vie privée ? »</td><td>Chiffrement symétrique/asymétrique, RSA, HTTPS — <a href="#term-archi-reseaux">Archi &amp; réseaux</a></td></tr>
+        <tr><td>« Comment Google classe-t-il les pages du Web ? »</td><td>Graphes, parcours, idée du PageRank — <a href="#term-structures">Structures</a> et <a href="#term-histoire">Histoire</a></td></tr>
+        <tr><td>« Les données ont-elles besoin d'être rangées ? »</td><td>Modèle relationnel, clés, anomalies — <a href="#term-bdd">Bases de données</a></td></tr>
+        <tr><td>« Un GPS peut-il se tromper ? »</td><td>Graphes pondérés, Dijkstra — <a href="#term-algo">Algorithmique</a></td></tr>
+        <tr><td>« Une machine peut-elle apprendre ? »</td><td>k plus proches voisins, données d'entraînement — <a href="#term-algo">Algorithmique</a></td></tr>
+        <tr><td>« Comment mon ordinateur fait-il plusieurs choses à la fois ? »</td><td>Processus, ordonnancement — <a href="#term-archi-reseaux">Archi &amp; réseaux</a></td></tr>
+        <tr><td>« Internet peut-il tomber en panne ? »</td><td>Routage, RIP/OSPF, résilience — <a href="#term-archi-reseaux">Archi &amp; réseaux</a></td></tr>
+        <tr><td>« Faut-il se méfier des algorithmes de recommandation ? »</td><td>Graphes (réseaux sociaux), enjeux de société — <a href="#term-structures">Structures</a></td></tr>
+        <tr><td>« Comment Ctrl-F trouve-t-il un mot en un éclair ? »</td><td>Recherche textuelle, Boyer-Moore — <a href="#term-algo">Algorithmique</a></td></tr>
+        <tr><td>« Pourquoi un bon mot de passe doit-il être long ? »</td><td>Force brute, coût exponentiel, chiffrement — <a href="#term-archi-reseaux">Archi &amp; réseaux</a></td></tr>
+        <tr><td>« Ada Lovelace a-t-elle écrit le premier programme de l'histoire ? »</td><td>Histoire de l'informatique, notion de programme — <a href="#term-histoire">Histoire</a></td></tr>
+        <tr><td>« Peut-on prouver qu'un programme n'a aucun bug ? »</td><td>Tests, assertions, limites de la calculabilité — <a href="#term-langages">Langages</a></td></tr>
+        <tr><td>« Le glouton a-t-il toujours raison ? »</td><td>Rendu de monnaie, programmation dynamique — <a href="#term-langages">Langages</a> et <a href="#term-algo">Algorithmique</a></td></tr>
+        <tr><td>« Trier ses données, est-ce gagner du temps ? »</td><td>Tris, dichotomie, coûts comparés — <a href="#term-algo">Algorithmique</a></td></tr>
+        <tr><td>« Pourquoi l'informatique voit-elle des arbres partout ? »</td><td>Arbres (fichiers, ABR, arbres des appels) — <a href="#term-structures">Structures</a></td></tr>
+      </table>
+      <h3>Grille d'auto-évaluation (entraînement)</h3>
+      <table>
+        <tr><th>Critère</th><th>À travailler</th><th>Presque</th><th>Acquis</th></tr>
+        <tr><td>Je tiens 10 minutes debout, sans notes, sans réciter</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>Mon exposé a un fil clair : accroche → développement → réponse</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>J'explique au moins une notion NSI en profondeur, avec un exemple à moi</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>Ma voix porte, je regarde le jury, mon débit est posé</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>En entretien, j'écoute la question avant de répondre, et je sais dire « je ne sais pas »</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>Je sais dire pourquoi <em>moi</em> j'ai choisi cette question</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      </table>
+      <h3>Le calendrier de l'année</h3>
+      <ul>
+        <li><strong>Septembre → décembre</strong> — au fil des thèmes, note dans un carnet 2 ou 3 sujets qui t'accrochent.</li>
+        <li><strong>Janvier → février</strong> — formule tes <strong>deux questions</strong> (thème × angle) et fais-les
+        valider par ton professeur : contenu NSI solide, question réellement débattable.</li>
+        <li><strong>Mars → avril</strong> — dépôt officiel : tes deux questions sont récapitulées sur un document signé
+        par ton professeur et ton établissement, transmis au jury (au plus tard à la date fixée par ton lycée).</li>
+        <li><strong>Avril → mai</strong> — un <strong>oral blanc par mois</strong> : chronomètre-toi, filme-toi si possible,
+        remplis la grille d'auto-évaluation, travaille l'entretien avec des questions imprévues.</li>
+        <li><strong>Juin</strong> — derniers oraux blancs en conditions réelles (20 min + 10 min + 10 min), puis l'épreuve,
+        fin juin, après les écrits. La veille : on relit son plan, on dort.</li>
+      </ul>
+      <p class="note">💡 Le meilleur entraînement : expliquer ta question à quelqu'un qui n'y connaît rien (famille, ami).
+      S'il a compris <em>et</em> appris quelque chose, ton Grand oral est sur de bons rails.</p>`,
+  },
 ];
 
 /* ---------------- Évaluations — préparation aux épreuves du bac ----------------
@@ -2030,5 +2173,182 @@ WHERE SEANCE.jour = 'samedi';</code></pre>
       découpage (on divise la liste par 2 à chaque niveau : log₂ n niveaux), et chaque niveau coûte O(n) en fusions.</p>
       <p><strong>f)</strong> La <strong>recherche dichotomique</strong> (dans un tableau trié) — ou la rotation
       d'images par quadrants, autre exemple de « diviser pour régner ».</p>`,
+  },
+
+  {
+    id: "term-bac-blanc-3",
+    titre: "Bac blanc n°3 — écrit type bac (recherche textuelle · BDD avancées · routage & bit alterné)",
+    type: "DS", themeId: null,
+    duree: "3 h 30", total: 20,
+    enonce: `
+      <p><em>Épreuve écrite type bac : 3 exercices indépendants, à traiter dans l'ordre de votre choix.
+      Calculatrice et documents interdits. Le code s'écrit au stylo, indentation soignée.</em></p>
+
+      <h4>Exercice 1 — Recherche textuelle : naïve et Boyer-Moore (7 pts)</h4>
+      <p>On cherche le motif <code>DAB</code> dans le texte <code>ABRACADABRA</code> (les positions sont numérotées
+      à partir de 0).</p>
+      <ol type="a">
+        <li>Dérouler la <strong>recherche naïve</strong> : pour chaque position d'essai du motif (0, 1, 2, …), indiquer
+        le nombre de comparaisons de caractères effectuées avant l'échec ou le succès. Donner la position de la première
+        occurrence et le <strong>nombre total</strong> de comparaisons. (1,5 pts)</li>
+        <li>Écrire une fonction <code>recherche_naive(texte, motif)</code> qui renvoie la <strong>liste</strong> des
+        positions de toutes les occurrences de <code>motif</code> dans <code>texte</code> (liste vide si aucune). (2 pts)</li>
+        <li>L'algorithme de <strong>Boyer-Moore</strong> (règle du mauvais caractère) compare le motif <strong>de la
+        droite vers la gauche</strong> et utilise la table des <strong>dernières occurrences</strong> de chaque caractère
+        du motif. Donner cette table pour le motif <code>DAB</code>. (1 pt)</li>
+        <li>Dérouler Boyer-Moore sur le même exemple : pour chaque position d'essai, indiquer le caractère du texte
+        comparé en premier, le décalage appliqué en cas d'échec (rappel : décalage = indice du mismatch dans le motif −
+        indice de dernière occurrence du caractère lu, valeur −1 si le caractère est absent du motif, décalage minimal 1),
+        et le nombre total de comparaisons. Comparer avec la question a. (1,5 pts)</li>
+        <li>Donner le coût de la recherche naïve dans le <strong>pire cas</strong> pour un texte de taille n et un motif
+        de taille m, et exhiber un exemple de texte et de motif réalisant ce pire cas. Pourquoi Boyer-Moore est-il
+        souvent bien plus rapide en pratique ? (1 pt)</li>
+      </ol>
+
+      <h4>Exercice 2 — Base de données d'un festival (7 pts)</h4>
+      <p>Un festival de musique stocke d'abord tout dans une <strong>table unique</strong> :</p>
+      <pre><code>CONCERT_TOUT(nom_artiste, pays, nom_scene, capacite, jour, heure)</code></pre>
+      <ol type="a">
+        <li>Chaque artiste donne plusieurs concerts et chaque scène en accueille des dizaines : citer <strong>deux
+        anomalies</strong> que provoque ce schéma (penser à la redondance, aux mises à jour, aux suppressions), puis
+        expliquer en quoi le schéma relationnel ci-dessous y remédie. (1,5 pts)</li>
+      </ol>
+      <p>Le festival adopte donc le schéma suivant (clés primaires <u>soulignées</u>, clés étrangères précédées de #) :</p>
+      <pre><code>ARTISTE(<u>id_artiste</u>, nom, pays)
+SCENE  (<u>id_scene</u>, nom, capacite)
+CONCERT(<u>id_concert</u>, #id_artiste, #id_scene, jour, heure, duree)</code></pre>
+      <ol type="a" start="2">
+        <li>Écrire la requête donnant le nom des artistes et le nom de la scène pour tous les concerts du samedi
+        (<strong>double jointure</strong>), triés par heure croissante. (1,5 pts)</li>
+        <li>Écrire la requête donnant la <strong>durée moyenne</strong> des concerts ayant lieu sur la scène
+        n°2. (1 pt)</li>
+        <li>Écrire la requête comptant le nombre de concerts donnés par des artistes dont le pays est
+        <code>'France'</code> (jointure + agrégat). (1 pt)</li>
+        <li>L'artiste « Nova » (pays « Liban ») rejoint la programmation : écrire la requête qui l'insère dans
+        <code>ARTISTE</code> avec l'identifiant 42. (1 pt)</li>
+        <li>Le concert n°12 est décalé à 21 h : écrire la requête de mise à jour. (0,5 pt)</li>
+        <li>On tente d'insérer dans <code>CONCERT</code> une ligne avec <code>id_artiste = 99</code>, identifiant
+        absent de la table <code>ARTISTE</code> : que fait le SGBD, et quelle contrainte est en jeu ? (0,5 pt)</li>
+      </ol>
+
+      <h4>Exercice 3 — Routage et fiabilité de la transmission (6 pts)</h4>
+      <p>Un réseau relie cinq routeurs. Liaisons (avec le coût OSPF, lié au débit — plus le lien est rapide, plus le
+      coût est faible) : R1–R2 en fibre (coût 1), R2–R3 en fibre (coût 1), R3–R5 en fibre (coût 1),
+      R1–R4 en liaison lente (coût 10), R4–R5 en liaison lente (coût 10).</p>
+      <ol type="a">
+        <li>Le protocole <strong>RIP</strong> minimise le <strong>nombre de sauts</strong>. Donner la table de routage
+        de R1 obtenue avec RIP, sous la forme : destination / prochain saut / nombre de sauts (destinations R2, R3, R4,
+        R5). (2 pts)</li>
+        <li>Le protocole <strong>OSPF</strong> minimise le <strong>coût total</strong> du chemin. Donner la route
+        R1 → R5 choisie par OSPF et son coût, et la comparer à celle de RIP. (1,5 pts)</li>
+        <li>La liaison R4–R5 tombe en panne : que devient la route R1 → R5 avec RIP ? Qu'est-ce que cela illustre sur
+        le routage d'Internet ? (0,5 pt)</li>
+        <li>Pour fiabiliser une transmission entre deux machines A et B, on utilise le <strong>protocole du bit
+        alterné</strong> : chaque trame porte un bit (0 ou 1), alterné à chaque nouvelle trame, et B renvoie un
+        acquittement portant le bit reçu ; sans acquittement avant l'expiration d'un délai, A <strong>réémet</strong>
+        la trame. Dérouler l'échange suivant en indiquant, à chaque étape, ce que fait A et ce que fait B :
+        A envoie la trame T0 (bit 0) ; l'acquittement ACK 0 revient ; A envoie T1 (bit 1) ; <strong>ACK 1 est
+        perdu</strong>. Que fait A à l'expiration du délai ? B reçoit alors une seconde fois T1 : comment détecte-t-il
+        le doublon, et que doit-il faire ? (2 pts)</li>
+      </ol>`,
+    corrige: `
+      <h4>Exercice 1</h4>
+      <p><strong>a)</strong> Déroulé naïf de <code>DAB</code> dans <code>ABRACADABRA</code> (comparaison de gauche à
+      droite, motif glissé d'une position à chaque échec) :</p>
+      <table>
+        <tr><th>Position d'essai</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+        <tr><td>Fenêtre du texte</td><td>ABR</td><td>BRA</td><td>RAC</td><td>ACA</td><td>CAD</td><td>ADA</td><td>DAB</td></tr>
+        <tr><td>Comparaisons</td><td>1 (A≠D)</td><td>1 (B≠D)</td><td>1 (R≠D)</td><td>1 (A≠D)</td><td>1 (C≠D)</td><td>1 (A≠D)</td><td>3 (succès)</td></tr>
+      </table>
+      <p>Première occurrence à la position <strong>6</strong> ; total : 6 × 1 + 3 = <strong>9 comparaisons</strong>.</p>
+      <p><strong>b)</strong></p>
+      <pre><code>def recherche_naive(texte, motif):
+    positions = []
+    n = len(texte)
+    m = len(motif)
+    for i in range(n - m + 1):        # chaque position d'essai
+        j = 0
+        while j < m and texte[i + j] == motif[j]:
+            j = j + 1
+        if j == m:                    # tout le motif a coïncidé
+            positions.append(i)
+    return positions</code></pre>
+      <p><strong>Barème :</strong> boucle sur les positions avec la bonne borne n − m + 1 (0,5 pt) ; comparaison
+      caractère par caractère (1 pt) ; accumulation dans une liste renvoyée (0,5 pt).</p>
+      <p><strong>c)</strong> Table des dernières occurrences de <code>DAB</code> : D → 0, A → 1, B → 2
+      (soit le dictionnaire <code>{"D": 0, "A": 1, "B": 2}</code>).</p>
+      <p><strong>d)</strong> Boyer-Moore compare d'abord le caractère du texte aligné avec la <em>fin</em> du motif
+      (indice 2) :</p>
+      <table>
+        <tr><th>Essai (position)</th><th>Caractère lu</th><th>Résultat</th><th>Décalage</th></tr>
+        <tr><td>0</td><td>texte[2] = R</td><td>R ≠ B, R absent du motif</td><td>2 − (−1) = 3</td></tr>
+        <tr><td>3</td><td>texte[5] = A</td><td>A ≠ B, dernière occ. de A = 1</td><td>2 − 1 = 1</td></tr>
+        <tr><td>4</td><td>texte[6] = D</td><td>D ≠ B, dernière occ. de D = 0</td><td>2 − 0 = 2</td></tr>
+        <tr><td>6</td><td>texte[8] = B, puis A, puis D</td><td>3 comparaisons : succès</td><td>—</td></tr>
+      </table>
+      <p>Total : 1 + 1 + 1 + 3 = <strong>6 comparaisons</strong> contre 9 pour la naïve — et l'écart se creuse très vite
+      sur des textes longs, car les caractères absents du motif font sauter des positions entières.</p>
+      <p><strong>e)</strong> Pire cas de la naïve : <strong>O(n × m)</strong> — exemple : texte
+      <code>AAAAAAAAA</code> et motif <code>AAB</code> : à chaque position, on compare presque tout le motif avant
+      d'échouer. Boyer-Moore est rapide en pratique car, en lisant d'abord le caractère de droite, un caractère absent
+      du motif permet de <strong>sauter m positions d'un coup</strong> : sur un texte ordinaire, on ne lit qu'une
+      fraction des caractères.</p>
+
+      <h4>Exercice 2</h4>
+      <p><strong>a)</strong> Anomalies de la table unique : <strong>redondance</strong> — le pays d'un artiste et la
+      capacité d'une scène sont recopiés à chaque concert ; une <strong>mise à jour</strong> (la capacité d'une scène
+      change) doit être répétée sur des dizaines de lignes, avec risque d'<strong>incohérence</strong> si on en oublie ;
+      une <strong>suppression</strong> (annuler le dernier concert d'un artiste) fait disparaître toute information sur
+      cet artiste. Le schéma en trois relations stocke chaque fait <strong>une seule fois</strong> (l'artiste dans
+      ARTISTE, la scène dans SCENE) et les relie par des clés étrangères : plus de duplication, donc plus d'anomalies.</p>
+      <p><strong>b)</strong></p>
+      <pre><code>SELECT ARTISTE.nom, SCENE.nom
+FROM CONCERT
+JOIN ARTISTE ON CONCERT.id_artiste = ARTISTE.id_artiste
+JOIN SCENE   ON CONCERT.id_scene   = SCENE.id_scene
+WHERE CONCERT.jour = 'samedi'
+ORDER BY CONCERT.heure;</code></pre>
+      <p><strong>Barème :</strong> 0,5 pt par jointure correcte, 0,5 pt pour WHERE + ORDER BY.</p>
+      <p><strong>c)</strong> <code>SELECT AVG(duree) FROM CONCERT WHERE id_scene = 2;</code></p>
+      <p><strong>d)</strong></p>
+      <pre><code>SELECT COUNT(*)
+FROM CONCERT
+JOIN ARTISTE ON CONCERT.id_artiste = ARTISTE.id_artiste
+WHERE ARTISTE.pays = 'France';</code></pre>
+      <p><strong>e)</strong> <code>INSERT INTO ARTISTE VALUES (42, 'Nova', 'Liban');</code>
+      (accepter la forme avec liste de colonnes explicite.)</p>
+      <p><strong>f)</strong> <code>UPDATE CONCERT SET heure = '21:00' WHERE id_concert = 12;</code></p>
+      <p><strong>g)</strong> Le SGBD <strong>refuse l'insertion</strong> : la contrainte de <strong>référence</strong>
+      (clé étrangère) impose que toute valeur de <code>CONCERT.id_artiste</code> existe dans
+      <code>ARTISTE.id_artiste</code> — pas de concert « orphelin ».</p>
+
+      <h4>Exercice 3</h4>
+      <p><strong>a)</strong> Table de routage de R1 avec RIP (nombre de sauts minimal) :</p>
+      <table>
+        <tr><th>Destination</th><th>Prochain saut</th><th>Nb de sauts</th></tr>
+        <tr><td>R2</td><td>R2</td><td>1</td></tr>
+        <tr><td>R3</td><td>R2</td><td>2</td></tr>
+        <tr><td>R4</td><td>R4</td><td>1</td></tr>
+        <tr><td>R5</td><td>R4</td><td>2 (via R4, contre 3 via R2–R3)</td></tr>
+      </table>
+      <p><strong>b)</strong> OSPF compare les coûts totaux vers R5 : R1–R4–R5 = 10 + 10 = 20 ;
+      R1–R2–R3–R5 = 1 + 1 + 1 = <strong>3</strong>. OSPF choisit <strong>R1 → R2 → R3 → R5</strong> (coût 3, prochain
+      saut R2) : plus de routeurs traversés que RIP, mais des liaisons bien plus rapides — c'est tout l'intérêt d'un
+      protocole à coût.</p>
+      <p><strong>c)</strong> RIP bascule sur la route restante R1–R2–R3–R5 (3 sauts) après mise à jour des tables :
+      le réseau <strong>s'auto-répare</strong>. C'est la résilience d'Internet : le routage recalcule les chemins quand
+      une liaison disparaît.</p>
+      <p><strong>d)</strong> Déroulé du bit alterné :</p>
+      <ol>
+        <li>A envoie T0 (bit 0) et arme un délai ; B reçoit T0, la traite et renvoie ACK 0.</li>
+        <li>A reçoit ACK 0 : il passe au bit 1 et envoie T1 ; B reçoit T1, la traite et renvoie ACK 1.</li>
+        <li>ACK 1 est perdu : A n'a rien reçu à l'expiration du délai, donc il <strong>réémet T1</strong> (toujours
+        avec le bit 1).</li>
+        <li>B reçoit une trame portant le bit 1 alors qu'il <strong>attend le bit 0</strong> : c'est un
+        <strong>doublon</strong>. Il ne la traite pas une seconde fois, mais <strong>renvoie quand même ACK 1</strong>
+        pour débloquer A, qui peut alors passer à la trame suivante (bit 0).</li>
+      </ol>
+      <p><strong>Barème :</strong> réémission sur expiration du délai (1 pt) ; détection du doublon par le bit et
+      renvoi de l'acquittement sans retraitement (1 pt).</p>`,
   },
 ];

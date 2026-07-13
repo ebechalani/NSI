@@ -263,21 +263,29 @@
 
   // ---- Corrigés poussés PAR EXERCICE (clé = "themeId:exo:i") ----
   // Stockés sur le doc classe : pushedCorr = { cle: true }.
-  function isCorrPushed(key) {
+  // classId optionnel côté prof : état/poussée pour UNE classe précise.
+  function isCorrPushed(key, classId) {
     if (cache.session && cache.session.role === "student") {
       var c = getClass(cache.session.classId);
       return !!(c && c.pushedCorr && c.pushedCorr[key]);
     }
-    // prof : poussé si AU MOINS une de ses classes l'a
     var uid = cache.session && cache.session.fbUid;
+    if (classId) {
+      var cl = getClass(classId);
+      return !!(cl && cl.teacherUid === uid && cl.pushedCorr && cl.pushedCorr[key]);
+    }
+    // sans classe précisée : poussé si AU MOINS une de ses classes l'a
     return cache.classes.some(function (c) {
       return c.teacherUid === uid && c.pushedCorr && c.pushedCorr[key];
     });
   }
-  // Le prof pousse / retire le corrigé d'un exercice pour TOUTES ses classes.
-  function setCorrPushed(key, val) {
+  // Le prof pousse / retire le corrigé d'un exercice.
+  // classId optionnel : une classe précise ; sinon TOUTES ses classes.
+  function setCorrPushed(key, val, classId) {
     var uid = cache.session && cache.session.fbUid;
-    cache.classes.filter(function (c) { return c.teacherUid === uid; }).forEach(function (c) {
+    cache.classes.filter(function (c) {
+      return c.teacherUid === uid && (!classId || c.id === classId);
+    }).forEach(function (c) {
       c.pushedCorr = c.pushedCorr || {};
       if (val) c.pushedCorr[key] = true; else delete c.pushedCorr[key];
       if (FB && db) {
@@ -288,6 +296,91 @@
       }
     });
     persistLocal(); notify();
+  }
+
+  // ---- Cahier de textes : état des séances des déroulés (par classe) ----
+  // Doc classe : seances = { "themeId:i": { faite, date, note } }.
+  function getSeanceEtat(classId, key) {
+    var c = getClass(classId);
+    return (c && c.seances && c.seances[key]) || null;
+  }
+  function setSeanceEtat(classId, key, data) {
+    var uid = cache.session && cache.session.fbUid;
+    var c = getClass(classId);
+    if (!c || c.teacherUid !== uid) return;
+    c.seances = c.seances || {};
+    if (data) c.seances[key] = data; else delete c.seances[key];
+    if (FB && db) {
+      try {
+        var fv = data ? data : firebase.firestore.FieldValue.delete();
+        db.collection("classes").doc(c.id).update(new firebase.firestore.FieldPath("seances", key), fv).catch(fbErr);
+      } catch (e) {}
+    }
+    persistLocal(); notify();
+  }
+
+  // ---- « Reprendre où j'en étais » (élève) ----
+  function setLastTheme(themeId) {
+    try { localStorage.setItem("nsi-last-theme", themeId); } catch (e) {}
+    if (!isStudent()) return;
+    var s = studentByUid(cache.session.uid); if (!s) return;
+    s.lastTheme = themeId;
+    fbSet("students", s.uid, { lastTheme: themeId });
+  }
+  function getLastTheme() {
+    if (isStudent()) {
+      var s = studentByUid(cache.session.uid);
+      if (s && s.lastTheme) return s.lastTheme;
+    }
+    try { return localStorage.getItem("nsi-last-theme"); } catch (e) { return null; }
+  }
+
+  // ---- Sauvegarde / restauration complètes (prof) ----
+  function exportData() {
+    var uid = cache.session && cache.session.fbUid;
+    return {
+      format: "nsi-backup-1",
+      classes: cache.classes.filter(function (c) { return c.teacherUid === uid; }),
+      students: cache.students,
+    };
+  }
+  function importData(data) {
+    if (!data || data.format !== "nsi-backup-1") throw new Error("format de sauvegarde inconnu");
+    var uid = cache.session && cache.session.fbUid;
+    (data.classes || []).forEach(function (c) {
+      var copy = Object.assign({}, c, { teacherUid: uid });
+      var id = copy.id; delete copy.id;
+      fbSet("classes", id, copy);
+    });
+    (data.students || []).forEach(function (s) {
+      var copy = Object.assign({}, s, { teacherUid: uid });
+      var id = copy.uid; delete copy.uid;
+      fbSet("students", id, copy);
+    });
+    return (data.classes || []).length + (data.students || []).length;
+  }
+
+  // ---- Corrigés d'évaluations (collection `corriges`, lisible profs uniquement) ----
+  // Doc : corriges/{niveau:evalId} = { titre, corrige, niveau }. Étape 1 de la
+  // mise à l'abri des corrigés : une fois sauvegardés ici, ils pourront être
+  // retirés du JS public.
+  function saveCorriges(list) {
+    if (!FB || !db || !isTeacher()) return Promise.reject(new Error("réservé aux professeurs connectés (mode Firebase)"));
+    var batch = db.batch(), n = 0;
+    (list || []).forEach(function (ev) {
+      if (!ev.corrige || !ev.id) return;
+      batch.set(db.collection("corriges").doc(ev.niveau + ":" + ev.id), {
+        titre: ev.titre || "", corrige: ev.corrige, niveau: ev.niveau || "",
+      });
+      n++;
+    });
+    return batch.commit().then(function () { return n; });
+  }
+  function fetchCorrige(niveau, id) {
+    if (!FB || !db || !isTeacher()) return Promise.resolve(null);
+    return db.collection("corriges").doc(niveau + ":" + id).get()
+      .then(function (d) { return d.exists ? (d.data() || {}).corrige || null : null; })
+      .catch(function () { return null; });
   }
 
   // ---- Écoutes temps réel (Firebase) ----
@@ -483,6 +576,10 @@
     setCapacite: setCapacite, setNote: setNote, studentSummary: studentSummary,
     isCorrectionsPushed: isCorrectionsPushed, setCorrectionsPushed: setCorrectionsPushed,
     isCorrPushed: isCorrPushed, setCorrPushed: setCorrPushed,
+    getSeanceEtat: getSeanceEtat, setSeanceEtat: setSeanceEtat,
+    setLastTheme: setLastTheme, getLastTheme: getLastTheme,
+    exportData: exportData, importData: importData,
+    saveCorriges: saveCorriges, fetchCorrige: fetchCorrige,
   };
 
   function isAdmin() { return !!(cache.session && cache.session.admin); }

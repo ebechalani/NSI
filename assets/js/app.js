@@ -190,6 +190,12 @@
   function themePct(p) { return qcmTotal(p) ? Math.round((qcmAnswered(p) / p.total) * 100) : 0; } // complétion
   function themeReussite(p) { return qcmAnswered(p) ? Math.round((qcmCorrect(p) / qcmAnswered(p)) * 100) : 0; }
   function themePerfait(p) { return qcmTotal(p) > 0 && qcmAnswered(p) === p.total && qcmCorrect(p) === p.total; }
+  // « Validé » (✓) = QCM complet avec ≥ 80 % de réussite — atteignable par tous ;
+  // « maîtrisé » (⭐, themePerfait) = 100 %. Un élève sérieux n'a plus zéro badge.
+  function themeValide(p) {
+    return qcmTotal(p) > 0 && qcmAnswered(p) === p.total && qcmCorrect(p) / p.total >= 0.8;
+  }
+  function themeCommence(p) { return qcmAnswered(p) > 0; }
 
   // Recharge la progression de l'élève connecté depuis la plateforme (Firestore),
   // pour que les barres, badges et ✓ du sommaire le suivent d'un poste à l'autre.
@@ -223,6 +229,7 @@
     $("#globalProgress").style.width = pct + "%";
     $("#globalProgressLabel").textContent = pct + " %";
     $("#globalProgressLabel").title = done + " / " + tot + " activités faites";
+    checkBadgeUnlocks(); // toast au moment où un badge est gagné
   }
 
   // Barres « de ce thème » : complétion (QCM répondu) + taux de réussite.
@@ -274,14 +281,16 @@
 
     COURSES.forEach((c) => {
       const li = el("li");
-      const done = themePerfait(progress[c.id]);
+      const p = progress[c.id];
+      // ⭐ maîtrisé (100 %) · ✓ validé (QCM complet ≥ 80 %) · ◐ commencé
+      const mark = themePerfait(p) ? "⭐" : themeValide(p) ? "✓" : themeCommence(p) ? "◐" : "";
       const link = el(
         "a",
         "nav-link",
         `<span class="nav-num">${c.num}</span>` +
           `<span class="nav-emoji">${c.emoji}</span>` +
           `<span class="nav-text">${c.title}</span>` +
-          (done ? `<span class="nav-check">✓</span>` : ``)
+          (mark ? `<span class="nav-check${mark === "◐" ? " nav-started" : ""}">${mark}</span>` : ``)
       );
       link.dataset.target = c.id;
       link.href = "#" + c.id;
@@ -296,6 +305,7 @@
     const extraLinks = [
       { target: "classe", num: "🏫", emoji: "", text: "Ma classe", prof: true },
       { target: "profs", num: "👤", emoji: "", text: "Comptes profs", admin: true },
+      { target: "reviser", num: "🎯", emoji: "", text: "Réviser", eleve: true },
       { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
       { target: "debranche", num: "🎲", emoji: "", text: "Activités débranchées" },
       { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
@@ -305,9 +315,10 @@
       { target: "didactique", num: "📚", emoji: "", text: "Enseigner la NSI (prof)", prof: true },
       { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)", prof: true },
       { target: "bo", num: "✅", emoji: "", text: "Conformité au BO", prof: true },
+      { target: "apropos", num: "ℹ️", emoji: "", text: "À propos & données" },
     ];
     extraLinks
-      .filter((x) => (!x.prof || P.isTeacher()) && (!x.admin || P.isAdmin()))
+      .filter((x) => (!x.prof || P.isTeacher()) && (!x.admin || P.isAdmin()) && (!x.eleve || P.isStudent()))
       .forEach((x) => {
       const li = el("li");
       const link = el(
@@ -367,21 +378,52 @@
       "info-callout",
       `💡 <strong>Comment l'utiliser ?</strong> Choisis un thème ci-dessous. Dans chaque cours,
        clique sur <strong>▶ Exécuter</strong> pour lancer le code Python (modifie-le, expérimente !),
-       puis réponds au QCM en bas de page. Ta progression est enregistrée dans ce navigateur.`
+       puis réponds au QCM en bas de page. Ta progression est enregistrée sur ton compte :
+       tu la retrouves depuis n'importe quel ordinateur.`
     );
     viewHome.appendChild(info);
+
+    // « Reprendre où j'en étais » : l'élève qui revient sait immédiatement quoi faire.
+    if (P.isStudent()) {
+      const lastId = P.getLastTheme && P.getLastTheme();
+      const lastTheme = lastId && COURSES.find((c) => c.id === lastId);
+      if (lastTheme) {
+        const p = progress[lastTheme.id];
+        const pct = themePct(p);
+        const resume = el("button", "resume-hero");
+        resume.innerHTML =
+          `<span class="resume-icon">▶</span>` +
+          `<span class="resume-body"><strong>Reprendre là où tu t'es arrêté·e</strong>` +
+          `<span class="resume-sub">${lastTheme.emoji} Thème ${lastTheme.num} — ${lastTheme.title}` +
+          `${qcmTotal(p) ? ` · QCM ${pct} %` : ""}</span></span><span class="resume-go">→</span>`;
+        resume.addEventListener("click", () => navigate(lastTheme.id));
+        viewHome.appendChild(resume);
+      }
+    }
 
     const grid = el("div", "card-grid");
     COURSES.forEach((c) => {
       const nbQ = (QUIZZES[c.id] || []).length;
       const card = el("button", "theme-card");
+      // État personnel de l'élève : badge de statut (en-tête) + barre de complétion
+      let badge = "", barre = "";
+      if (P.isStudent()) {
+        const p = progress[c.id];
+        const pct = themePct(p);
+        const mark = themePerfait(p) ? "⭐ maîtrisé" : themeValide(p) ? "✓ validé"
+          : themeCommence(p) ? pct + " %" : "";
+        if (mark) badge = `<span class="tc-etat${themeValide(p) ? " good" : ""}">${mark}</span>`;
+        if (themeCommence(p)) barre = `<div class="tc-progress"><div class="tc-progress-bar" style="width:${pct}%"></div></div>`;
+      }
       card.innerHTML = `
         <div class="tc-top">
           <span class="tc-emoji">${c.emoji}</span>
           <span class="tc-num">Thème ${c.num}</span>
+          ${badge}
         </div>
         <h3>${c.title}</h3>
         <p>${c.intro}</p>
+        ${barre}
         <div class="tc-foot"><span>${c.sections.length} parties</span><span>${nbQ} questions →</span></div>
       `;
       card.addEventListener("click", () => navigate(c.id));
@@ -500,9 +542,11 @@
 
   /* ---------------- Vue Thème ---------------- */
   let currentThemeId = null; // thème affiché (pour rattacher l'activité de l'élève)
+  let corrTargetClassId = null; // classe visée par la poussée des corrigés (null = toutes)
   function renderTheme(c) {
     currentThemeId = c.id;
     exoCorrMap.clear(); // les corrigés référencés appartiennent au thème affiché
+    if (P.isStudent() && P.setLastTheme) P.setLastTheme(c.id); // « Reprendre où j'en étais »
     viewTheme.innerHTML = "";
 
     const header = el("div", "theme-header");
@@ -640,10 +684,78 @@
     bP.addEventListener("click", () => printThemePlan(plan, themeId));
     tools.appendChild(bP);
     body.appendChild(tools);
-    plan.seances.forEach((s) => {
+    // Cahier de textes : choisir une classe pour cocher les séances faites.
+    const myClasses = (P.getClasses ? P.getClasses() : []).filter(
+      (c) => c.teacherUid === (P.getSession() || {}).fbUid
+    );
+    let cahierClassId = myClasses.length === 1 ? myClasses[0].id : null;
+    if (myClasses.length) {
+      const row = el("div", "cahier-picker");
+      row.appendChild(el("span", null, "📓 Cahier de textes :"));
+      const sel = el("select", "corr-target");
+      sel.innerHTML =
+        `<option value="">— choisir une classe —</option>` +
+        myClasses.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+      if (cahierClassId) sel.value = cahierClassId;
+      sel.addEventListener("change", () => {
+        cahierClassId = sel.value || null;
+        syncSeances();
+      });
+      row.appendChild(sel);
+      row.appendChild(el("span", "extra-hint", "coche chaque séance faite : la date et tes notes sont gardées."));
+      body.appendChild(row);
+    }
+    const seanceSyncs = [];
+    function syncSeances() { seanceSyncs.forEach((f) => f()); }
+    plan.seances.forEach((s, sIdx) => {
       const card = el("div", "plan-seance");
       card.appendChild(el("h4", null, `${s.titre} <span class="plan-duree">· ${s.duree}</span>`));
       if (s.objectif) card.appendChild(el("p", "plan-objectif", s.objectif));
+      if (myClasses.length && P.getSeanceEtat) {
+        const key = themeId + ":" + sIdx;
+        const bar = el("div", "cahier-seance");
+        const lab = el("label", "cahier-faite");
+        const cb = el("input");
+        cb.type = "checkbox";
+        lab.appendChild(cb);
+        lab.appendChild(el("span", null, " Séance faite"));
+        const dateEl = el("span", "cahier-date");
+        const noteIn = el("input", "cahier-note");
+        noteIn.type = "text";
+        noteIn.placeholder = "note rapide (où on s'est arrêté, à reprendre…)";
+        bar.appendChild(lab);
+        bar.appendChild(dateEl);
+        bar.appendChild(noteIn);
+        const sync = () => {
+          const etat = cahierClassId ? P.getSeanceEtat(cahierClassId, key) : null;
+          bar.classList.toggle("off", !cahierClassId);
+          cb.disabled = !cahierClassId;
+          noteIn.disabled = !cahierClassId;
+          cb.checked = !!(etat && etat.faite);
+          dateEl.textContent = etat && etat.date ? "le " + etat.date : "";
+          if (document.activeElement !== noteIn) noteIn.value = (etat && etat.note) || "";
+          bar.classList.toggle("done", !!(etat && etat.faite));
+        };
+        const save = () => {
+          if (!cahierClassId) return;
+          const prev = P.getSeanceEtat(cahierClassId, key) || {};
+          if (!cb.checked && !noteIn.value.trim()) {
+            P.setSeanceEtat(cahierClassId, key, null);
+          } else {
+            P.setSeanceEtat(cahierClassId, key, {
+              faite: cb.checked,
+              date: cb.checked ? (prev.faite && prev.date ? prev.date : new Date().toLocaleDateString("fr-FR")) : "",
+              note: noteIn.value.trim(),
+            });
+          }
+          sync();
+        };
+        cb.addEventListener("change", save);
+        noteIn.addEventListener("change", save);
+        sync();
+        seanceSyncs.push(sync);
+        card.appendChild(bar);
+      }
       const grid = el("div", "plan-grid");
       [["📖 Sur le site", s.surLeSite], ["🧑‍🏫 En classe", s.enClasse], ["🧰 À préparer toi-même", s.aPreparer]].forEach(([t, items]) => {
         const col = el("div", "plan-col");
@@ -2126,15 +2238,32 @@ except Exception:
     const pushSyncFns = []; // resynchronise l'état des boutons « pousser » individuels
     if (teacher) {
       const bulk = el("div", "proj-tools");
+      // Cible de la poussée : une classe précise, ou toutes (groupes à des rythmes différents).
+      const myClasses = (P.getClasses ? P.getClasses() : []).filter(
+        (c) => c.teacherUid === (P.getSession() || {}).fbUid
+      );
+      if (myClasses.length > 1) {
+        const sel = el("select", "corr-target");
+        sel.title = "Vers quelle classe pousser les corrigés ?";
+        sel.innerHTML =
+          `<option value="">📤 vers : toutes mes classes</option>` +
+          myClasses.map((c) => `<option value="${c.id}">📤 vers : ${escapeHtml(c.name)}</option>`).join("");
+        sel.value = corrTargetClassId || "";
+        sel.addEventListener("change", () => {
+          corrTargetClassId = sel.value || null;
+          pushSyncFns.forEach((f) => f());
+        });
+        bulk.appendChild(sel);
+      }
       const bAll = el("button", "btn secondary exo-push-btn", "📤 Pousser tout le thème");
       bAll.addEventListener("click", () => {
-        themeCorrKeys.forEach((k) => P.setCorrPushed(k, true));
+        themeCorrKeys.forEach((k) => P.setCorrPushed(k, true, corrTargetClassId));
         pushSyncFns.forEach((f) => f());
         refreshExoCorrections();
       });
       const bNone = el("button", "btn secondary exo-push-btn", "📥 Tout retirer");
       bNone.addEventListener("click", () => {
-        themeCorrKeys.forEach((k) => P.setCorrPushed(k, false));
+        themeCorrKeys.forEach((k) => P.setCorrPushed(k, false, corrTargetClassId));
         pushSyncFns.forEach((f) => f());
         refreshExoCorrections();
       });
@@ -2185,13 +2314,16 @@ except Exception:
       if (teacher) {
         const pushBtn = el("button", "btn secondary exo-push-btn");
         const sync = () => {
-          const on = P.isCorrPushed(exoKey);
+          const on = P.isCorrPushed(exoKey, corrTargetClassId);
           pushBtn.textContent = on ? "📥 Retirer le corrigé des élèves" : "📤 Pousser le corrigé aux élèves";
           pushBtn.classList.toggle("on", on);
         };
         sync();
         pushSyncFns.push(sync);
-        pushBtn.addEventListener("click", () => { P.setCorrPushed(exoKey, !P.isCorrPushed(exoKey)); sync(); });
+        pushBtn.addEventListener("click", () => {
+          P.setCorrPushed(exoKey, !P.isCorrPushed(exoKey, corrTargetClassId), corrTargetClassId);
+          sync();
+        });
         box.appendChild(pushBtn);
       }
 
@@ -2309,22 +2441,35 @@ except Exception:
   }
 
   /* ---------------- Badges de progression ---------------- */
+  // Badges : « validé » = QCM complet ≥ 80 % (atteignable), « maîtrisé » = 100 %.
+  // S'y ajoutent des badges d'EFFORT (exercices, activité) : un élève qui
+  // travaille sérieusement est récompensé même sans score parfait.
+  function badgeDefs() {
+    const valides = COURSES.filter((c) => themeValide(progress[c.id])).length;
+    const parfaits = COURSES.filter((c) => themePerfait(progress[c.id])).length;
+    const anyQuiz = Object.keys(progress).length > 0;
+    const nbExos = Object.keys(exosDone || {}).length;
+    let activites = 0;
+    if (P.isStudent()) {
+      const pp = P.getProgress(P.getSession().uid);
+      Object.keys(pp.activite || {}).forEach((t) => { activites += pp.activite[t] || 0; });
+    }
+    return [
+      { id: "start", ok: anyQuiz, emoji: "🚀", label: "Premiers pas", desc: "Un premier QCM tenté" },
+      { id: "code10", ok: activites >= 10, emoji: "⚡", label: "Les mains dans le code", desc: "10 activités faites (code exécuté, exercices…)" },
+      { id: "exos10", ok: nbExos >= 10, emoji: "💪", label: "Bosseur·se", desc: "10 exercices réussis" },
+      { id: "val1", ok: valides >= 1, emoji: "✅", label: "Premier thème validé", desc: "1 QCM complet à 80 % ou plus" },
+      { id: "val3", ok: valides >= 3, emoji: "🔥", label: "Sur la lancée", desc: "3 thèmes validés" },
+      { id: "val5", ok: valides >= 5, emoji: "🧠", label: "Expert·e en herbe", desc: "5 thèmes validés" },
+      { id: "star1", ok: parfaits >= 1, emoji: "⭐", label: "Sans faute", desc: "1 thème maîtrisé à 100 %" },
+      { id: "all", ok: valides >= COURSES.length, emoji: "🏆", label: "Programme bouclé", desc: "Tous les thèmes validés" },
+    ];
+  }
   function renderBadges() {
     const wrap = el("div", "badges-block");
     wrap.appendChild(el("h2", "home-h2", "🏅 Tes badges"));
-    const done = COURSES.filter((c) => {
-      return themePerfait(progress[c.id]);
-    }).length;
-    const anyQuiz = Object.keys(progress).length > 0;
-    const defs = [
-      { ok: anyQuiz, emoji: "🚀", label: "Premiers pas", desc: "Un premier QCM tenté" },
-      { ok: done >= 1, emoji: "✅", label: "Premier thème validé", desc: "1 thème au score parfait" },
-      { ok: done >= 3, emoji: "🔥", label: "Sur la lancée", desc: "3 thèmes validés" },
-      { ok: done >= 5, emoji: "🧠", label: "Expert·e en herbe", desc: "5 thèmes validés" },
-      { ok: done >= COURSES.length, emoji: "🏆", label: "Programme bouclé", desc: "Tous les thèmes validés" },
-    ];
     const row = el("div", "badges-row");
-    defs.forEach((b) => {
+    badgeDefs().forEach((b) => {
       const item = el("div", "badge-item" + (b.ok ? " earned" : " locked"));
       item.innerHTML = `<span class="badge-emoji">${b.ok ? b.emoji : "🔒"}</span>` +
         `<span class="badge-label">${b.label}</span>` +
@@ -2333,6 +2478,21 @@ except Exception:
     });
     wrap.appendChild(row);
     return wrap;
+  }
+  // Toast « badge débloqué » au moment où il est gagné (pas seulement à l'accueil).
+  function checkBadgeUnlocks() {
+    if (!P.isStudent()) return;
+    let seen = [];
+    try { seen = JSON.parse(localStorage.getItem("nsi-badges-vus")) || []; } catch (e) {}
+    const now = badgeDefs().filter((b) => b.ok).map((b) => b.id);
+    const fresh = now.filter((id) => !seen.includes(id));
+    if (fresh.length && seen.length) { // pas de toast à la toute première synchro
+      const b = badgeDefs().find((x) => x.id === fresh[0]);
+      if (b) toast(`🏅 Badge débloqué : ${b.emoji} ${b.label} !`);
+    }
+    if (fresh.length || seen.length === 0) {
+      try { localStorage.setItem("nsi-badges-vus", JSON.stringify(now)); } catch (e) {}
+    }
   }
 
   /* ---------------- Vue : Projets en îlots (liste) ---------------- */
@@ -2729,6 +2889,185 @@ except Exception:
     );
   }
 
+  /* ---------------- Vue : À propos, mentions légales, données ---------------- */
+  function renderApropos() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("button", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "ℹ️ À propos du site"));
+    viewTheme.appendChild(header);
+
+    const s1 = el("div", "section");
+    s1.innerHTML = `
+      <h2>Le site et son auteur</h2>
+      <p><strong>NSI — Cours interactif Première &amp; Terminale</strong> est une plateforme pédagogique
+      pour la spécialité NSI, conforme aux programmes officiels, créée et maintenue par
+      <strong>Eddy Bachaalany</strong>, professeur d'informatique au <strong>Lycée Montaigne (Liban)</strong>.</p>
+      <p>Démarche : apprendre en <em>pratiquant</em> — du débranché en îlots vers le code exécuté
+      dans le navigateur, avec un suivi de progression pour accompagner chaque élève vers la réussite.</p>`;
+    viewTheme.appendChild(s1);
+
+    const s2 = el("div", "section");
+    s2.innerHTML = `
+      <h2>Mentions légales</h2>
+      <table>
+        <tr><th>Éditeur</th><td>Eddy Bachaalany — professeur d'informatique, Lycée Montaigne (Liban)</td></tr>
+        <tr><th>Contact</th><td><a href="mailto:ebechalani@gmail.com">ebechalani@gmail.com</a> · +961 78 859 898</td></tr>
+        <tr><th>Hébergement du site</th><td>GitHub Pages — GitHub Inc., 88 Colin P. Kelly Jr St, San Francisco, CA 94107, USA</td></tr>
+        <tr><th>Hébergement des données de classe</th><td>Google Firebase (Firestore) — Google Ireland Ltd, Gordon House, Barrow Street, Dublin 4, Irlande</td></tr>
+        <tr><th>Licences</th><td>Code : MIT · Contenus pédagogiques : CC BY-NC-SA 4.0 (voir le dépôt)</td></tr>
+      </table>`;
+    viewTheme.appendChild(s2);
+
+    const s3 = el("div", "section");
+    s3.innerHTML = `
+      <h2>🔒 Données personnelles</h2>
+      <p>Ce site est utilisé dans un cadre scolaire. Voici, en toute transparence, ce qu'il enregistre :</p>
+      <table>
+        <tr><th>Quelles données ?</th><td>Le <strong>nom saisi par le professeur</strong> (conseil appliqué : prénom + initiale),
+          la classe, et la <strong>progression pédagogique</strong> (réponses aux QCM, exercices cochés, activité sur le site,
+          appréciation du professeur). <strong>Aucun</strong> e-mail, mot de passe, photo ou donnée sensible d'élève.</td></tr>
+        <tr><th>Pour quoi faire ?</th><td>Uniquement le <strong>suivi pédagogique</strong> : permettre à l'élève de retrouver
+          sa progression et au professeur d'adapter son enseignement.</td></tr>
+        <tr><th>Qui y accède ?</th><td>L'élève (sa propre progression) et <strong>son professeur uniquement</strong> —
+          des règles de sécurité techniques (Firestore) empêchent tout autre accès en écriture.</td></tr>
+        <tr><th>Combien de temps ?</th><td>L'<strong>année scolaire</strong> : les classes sont purgées à chaque rentrée.</td></tr>
+        <tr><th>Tes droits</th><td>Accès, rectification et effacement : sur simple demande à ton professeur ou à
+          <a href="mailto:ebechalani@gmail.com">ebechalani@gmail.com</a> — la suppression est immédiate.</td></tr>
+      </table>
+      <p class="note">👪 <strong>Parents :</strong> pour toute question sur les données de votre enfant,
+      contactez le professeur à l'adresse ci-dessus.</p>`;
+    viewTheme.appendChild(s3);
+
+    const s4 = el("div", "section");
+    s4.innerHTML = `
+      <h2>Crédits</h2>
+      <ul>
+        <li>Contenus rédigés d'après les <strong>programmes officiels</strong> de NSI (Bulletins officiels).</li>
+        <li>Certaines ressources <em>liées</em> (jamais copiées) proviennent du <strong>DIU « Enseigner l'informatique au lycée »</strong>
+          — Université Le Havre Normandie : Bruno Mermet (didactique), Yoann Pigné (structures de données),
+          Jean-Matthieu Barbier (web, représentation des données). Merci à eux.</li>
+        <li>Technologies : <strong>Pyodide</strong> (Python dans le navigateur), <strong>Firebase</strong> (comptes et progression),
+          <strong>GitHub Pages</strong> (hébergement).</li>
+      </ul>
+      <p class="note">♿ <strong>Accessibilité :</strong> le site est conçu avec attention (navigation clavier, contrastes,
+      lecteur d'écran partiel) mais n'a pas encore fait l'objet d'un audit RGAA complet.
+      Un problème d'accès ? Signale-le : <a href="mailto:ebechalani@gmail.com">ebechalani@gmail.com</a>.</p>`;
+    viewTheme.appendChild(s4);
+    scrollTop();
+  }
+
+  /* ---------------- Vue : Réviser (élève) ---------------- */
+  function renderReviser() {
+    viewTheme.innerHTML = "";
+    const header = el("div", "theme-header");
+    const crumb = el("button", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "🎯 Réviser"));
+    header.appendChild(el("p", "theme-intro",
+      "DS vendredi ? Coche le ou les thèmes à réviser : le site te ressert d'abord " +
+      "<strong>les questions que tu as ratées</strong>, puis la fiche résumé et les pièges à imprimer."));
+    viewTheme.appendChild(header);
+
+    // 1. Choix des thèmes (pré-cochés : réussite < 80 %)
+    const picker = el("div", "section reviser-picker");
+    picker.appendChild(el("h2", null, "1 · Choisis tes thèmes"));
+    const boxes = [];
+    COURSES.forEach((c) => {
+      const p = progress[c.id];
+      const lab = el("label", "reviser-choice");
+      const cb = el("input");
+      cb.type = "checkbox";
+      cb.value = c.id;
+      cb.checked = themeCommence(p) && !themeValide(p); // là où ça pêche
+      const pct = qcmAnswered(p) ? themeReussite(p) + " % de réussite" : "QCM pas encore fait";
+      lab.appendChild(cb);
+      const span = el("span");
+      span.innerHTML = ` ${c.emoji} <strong>${c.title}</strong> <span class="muted-text">— ${pct}</span>`;
+      lab.appendChild(span);
+      picker.appendChild(lab);
+      boxes.push(cb);
+    });
+    const goBtn = el("button", "btn", "🎯 C'est parti !");
+    picker.appendChild(goBtn);
+    viewTheme.appendChild(picker);
+
+    const out = el("div");
+    viewTheme.appendChild(out);
+
+    goBtn.addEventListener("click", () => {
+      const ids = boxes.filter((b) => b.checked).map((b) => b.value);
+      out.innerHTML = "";
+      if (!ids.length) { out.appendChild(el("p", "note", "Coche au moins un thème !")); return; }
+
+      // 2. Les questions ratées, à refaire (sans enregistrement : c'est de l'entraînement)
+      const sec = el("div", "section");
+      sec.appendChild(el("h2", null, "2 · Refais tes questions ratées"));
+      let nb = 0;
+      ids.forEach((tid) => {
+        const p = progress[tid];
+        const detail = p && p.detail;
+        const qs = QUIZZES[tid] || [];
+        qs.forEach((q, i) => {
+          const raté = detail ? detail[i] === 0 : qcmAnswered(p) > 0 ? false : false;
+          if (!raté) return;
+          nb++;
+          const item = el("div", "reviser-q");
+          item.appendChild(el("div", "reviser-q-titre", `<strong>Q${nb}.</strong> ${q.q}`));
+          const choices = el("div", "reviser-choices");
+          q.choices.forEach((ch, k) => {
+            const b = el("button", "btn secondary reviser-choice-btn", ch);
+            b.addEventListener("click", () => {
+              [...choices.children].forEach((x) => x.classList.remove("good", "bad"));
+              b.classList.add(k === q.answer ? "good" : "bad");
+              fb.innerHTML = k === q.answer
+                ? `✅ Oui ! ${q.explain || ""}`
+                : `❌ Pas encore — relis : ${q.explain || "revois la section correspondante du cours."}`;
+              fb.className = "reviser-fb show " + (k === q.answer ? "good" : "bad");
+              noteActivity(tid);
+            });
+            choices.appendChild(b);
+          });
+          item.appendChild(choices);
+          const fb = el("div", "reviser-fb");
+          item.appendChild(fb);
+          sec.appendChild(item);
+        });
+      });
+      if (!nb) {
+        sec.appendChild(el("p", "note",
+          "🎉 Aucune question ratée enregistrée sur ces thèmes — soit tu as tout bon, soit tu n'as pas encore fait le QCM : va le faire dans le thème, puis reviens ici."));
+      }
+      out.appendChild(sec);
+
+      // 3. Fiche de révision imprimable (résumés + erreurs fréquentes des thèmes cochés)
+      const sec3 = el("div", "section");
+      sec3.appendChild(el("h2", null, "3 · Ta fiche de révision"));
+      const bPrint = el("button", "btn secondary", "🖨️ Imprimer ma fiche (résumés + pièges)");
+      bPrint.addEventListener("click", () => {
+        let html = "";
+        ids.forEach((tid) => {
+          const c = COURSES.find((x) => x.id === tid);
+          const ex = THEME_EXTRAS[tid] || {};
+          html += `<h2>${c.emoji} ${c.title}</h2>`;
+          if (ex.resume && ex.resume.length) html += `<h3>📋 À retenir</h3><ul>${ex.resume.map((r) => `<li>${r}</li>`).join("")}</ul>`;
+          if (ex.erreurs && ex.erreurs.length) html += `<h3>⚠️ Les pièges</h3><ul>${ex.erreurs.map((r) => `<li>${r}</li>`).join("")}</ul>`;
+        });
+        openPrint("Ma fiche de révision", `<h1>🎯 Ma fiche de révision</h1>${html}`);
+      });
+      sec3.appendChild(bPrint);
+      sec3.appendChild(el("p", "extra-hint",
+        "Et pour finir : retourne dans chaque thème refaire 2-3 exercices 🟢, puis retente le QCM — " +
+        "ton meilleur score est toujours conservé."));
+      out.appendChild(sec3);
+      out.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    scrollTop();
+  }
+
   /* ---------------- Vue : Fiches méthode ---------------- */
   function renderMethodes() {
     viewTheme.innerHTML = "";
@@ -2779,6 +3118,28 @@ except Exception:
     );
     viewTheme.appendChild(header);
 
+    // 🔒 Mise à l'abri des corrigés : copie privée dans Firestore (collection
+    // `corriges`, lisible uniquement par les professeurs connectés).
+    if (P.isTeacher() && P.mode === "firebase" && P.saveCorriges) {
+      const mig = el("div", "info-callout teacher-block");
+      mig.innerHTML = "<strong>🔒 Corrigés privés :</strong> sauvegarde une copie des corrigés dans ton espace en ligne (lisible uniquement par les professeurs connectés). ";
+      const bMig = el("button", "btn secondary", "📤 Sauvegarder les corrigés en ligne");
+      bMig.addEventListener("click", () => {
+        bMig.disabled = true;
+        bMig.textContent = "⏳ Envoi en cours…";
+        const list = EVALUATIONS.filter((e) => e.corrige && e.id).map((e) => ({ id: e.id, titre: e.titre, corrige: e.corrige, niveau: NIV.id }));
+        P.saveCorriges(list)
+          .then((n) => { bMig.textContent = "✅ " + n + " corrigé(s) sauvegardé(s)"; })
+          .catch((e) => {
+            bMig.disabled = false;
+            bMig.textContent = "📤 Sauvegarder les corrigés en ligne";
+            alert("❌ Échec : " + e.message + "\nAs-tu publié les nouvelles règles Firestore (collection « corriges ») ? Voir SETUP-FIREBASE.md.");
+          });
+      });
+      mig.appendChild(bMig);
+      viewTheme.appendChild(mig);
+    }
+
     const TYPE = { DS: "📄 DS", TP: "💻 TP noté", pratique: "🧪 Épreuve pratique" };
     // Tri par thème (ordre du programme), DS avant TP ; transversal en dernier.
     const numByTheme = {};
@@ -2811,15 +3172,23 @@ except Exception:
       );
       tools.appendChild(bPrint);
 
-      if (ev.corrige && P.isTeacher()) {
+      if (P.isTeacher() && (ev.corrige || P.mode === "firebase")) {
         const det = el("details", "corrige teacher-block");
         det.appendChild(el("summary", null, "🔑 Corrigé (enseignant)"));
-        det.appendChild(el("div", "corrige-body", ev.corrige));
+        const corrBody = el("div", "corrige-body", ev.corrige || "<p class='muted-text'>⏳ Corrigé stocké en ligne — chargement…</p>");
+        det.appendChild(corrBody);
+        // Version en ligne (collection privée) prioritaire sur la copie locale.
+        if (P.fetchCorrige && P.mode === "firebase") {
+          P.fetchCorrige(NIV.id, ev.id).then((html) => {
+            if (html) corrBody.innerHTML = html;
+            else if (!ev.corrige) corrBody.innerHTML = "<p class='muted-text'>Pas de corrigé en ligne pour ce sujet.</p>";
+          });
+        }
         const bCor = el("button", "btn secondary", "🖨️ Imprimer le corrigé");
         bCor.addEventListener("click", () =>
           openPrint(
             "Corrigé — " + ev.titre,
-            `<h1>Corrigé — ${ev.titre}</h1>${ev.corrige}`
+            `<h1>Corrigé — ${ev.titre}</h1>` + corrBody.innerHTML
           )
         );
         bCor.style.marginTop = ".6rem";
@@ -3420,6 +3789,62 @@ except Exception:
   /* ---------------- Espace « Ma classe » (prof) ---------------- */
   let selectedClassId = null;
   let selectedDiagTheme = ""; // thème choisi dans le diagnostic par question (conservé au re-render)
+  // 🖨️ Bilan individuel imprimable : à remettre à l'élève ou aux parents.
+  function printBilanEleve(st, cls) {
+    if (!st) return;
+    const prog = P.getProgress(st.uid);
+    const sum = statsFrom(prog.qcm, prog.exos, prog.activite);
+    const nbCap = Object.values(prog.capacites || {}).filter(Boolean).length;
+    const totCap = COURSES.reduce((n, c) => n + (c.capacites || []).length, 0);
+    const rows = COURSES.slice().sort((a, b) => a.num - b.num).map((c) => {
+      const q = (prog.qcm || {})[c.id];
+      const ans = qcmAnswered(q), corr = qcmCorrect(q), t = qcmTotal(q);
+      let ex = 0;
+      Object.keys(prog.exos || {}).forEach((k) => { if (k.indexOf(c.id + ":exo:") === 0) ex++; });
+      const statut = t > 0 && ans === t && corr === t ? "⭐ validé"
+        : q && themeValide(q) ? "✅ validé"
+        : ans > 0 || ex > 0 ? "◐ en cours" : "—";
+      const qcmTxt = ans > 0 ? `${ans}/${t || "?"} répondues · ${Math.round((corr / ans) * 100)} % de réussite` : "—";
+      return `<tr><td>${c.emoji} ${escapeHtml(c.title)}</td><td>${qcmTxt}</td><td>${ex || "—"}</td><td>${statut}</td></tr>`;
+    }).join("");
+    openPrint(
+      "Bilan — " + st.name,
+      `<h1>📋 Bilan individuel — ${escapeHtml(st.name)}</h1>` +
+        `<p class="intro">${escapeHtml((cls && cls.name) || "")} · NSI ${NIV.label} · le ${new Date().toLocaleDateString("fr-FR")}</p>` +
+        `<table><tr><th>Progression globale</th><th>Réussite moyenne aux QCM</th><th>Thèmes validés</th><th>Capacités du programme</th></tr>` +
+        `<tr><td>${sum.progression} %</td><td>${sum.reussite} %</td><td>${sum.themesValidés}/${COURSES.length}</td><td>${nbCap}/${totCap} validées par le professeur</td></tr></table>` +
+        `<h2>Détail par thème</h2>` +
+        `<table><tr><th>Thème</th><th>QCM</th><th>Exercices travaillés</th><th>Statut</th></tr>${rows}</table>` +
+        `<h2>Appréciation du professeur</h2>` +
+        `<div class="field">${escapeHtml(prog.note || "")}</div>` +
+        `<p class="intro">Signature du professeur : ____________________ &nbsp;&nbsp;&nbsp; Signature des parents : ____________________</p>`
+    );
+  }
+
+  // 🖨️ Bilan de classe imprimable : une page pour le conseil de classe.
+  function printBilanClasse(cls, students) {
+    const lignes = students.map((st) => {
+      const prog = P.getProgress(st.uid);
+      const sum = statsFrom(prog.qcm, prog.exos, prog.activite);
+      const nbCap = Object.values(prog.capacites || {}).filter(Boolean).length;
+      return { name: st.name, sum, nbCap, note: prog.note || "" };
+    });
+    const moy = (f) => lignes.length ? Math.round(lignes.reduce((a, l) => a + f(l), 0) / lignes.length) : 0;
+    const rows = lignes.map((l) =>
+      `<tr><td><strong>${escapeHtml(l.name)}</strong></td><td>${l.sum.progression} %</td>` +
+      `<td>${l.sum.themesValidés}/${COURSES.length}</td><td>${l.sum.reussite} %</td>` +
+      `<td>${l.nbCap}</td><td>${escapeHtml(l.note)}</td></tr>`
+    ).join("");
+    openPrint(
+      "Bilan — " + (cls.name || "classe"),
+      `<h1>📋 Bilan de classe — ${escapeHtml(cls.name || "")}</h1>` +
+        `<p class="intro">NSI ${NIV.label} · ${lignes.length} élève(s) · le ${new Date().toLocaleDateString("fr-FR")}</p>` +
+        `<table><tr><th>Élève</th><th>Progression</th><th>Thèmes validés</th><th>Réussite QCM</th><th>Capacités</th><th>Appréciation</th></tr>${rows}` +
+        `<tr><th>Moyenne de la classe</th><th>${moy((l) => l.sum.progression)} %</th><th>—</th><th>${moy((l) => l.sum.reussite)} %</th><th>${moy((l) => l.nbCap)}</th><th></th></tr></table>` +
+        `<p class="intro">Progression = part des activités du site faites · Réussite = moyenne aux QCM répondus · Capacités = attendus du programme validés par le professeur.</p>`
+    );
+  }
+
   function renderClasse(isLiveRefresh) {
     viewTheme.innerHTML = "";
     const header = el("div", "theme-header");
@@ -3500,7 +3925,7 @@ except Exception:
             `<td class="num" title="réussite moyenne aux QCM faits">${sum.reussite} %</td>` +
             `<td class="num">${nbCap}</td>` +
             `<td class="note-td"></td>` +
-            `<td><button class="btn secondary btn-detail">Capacités</button> <button class="btn secondary btn-del">✕</button></td>` +
+            `<td><button class="btn secondary btn-detail">Capacités</button> <button class="btn secondary btn-bilan" title="Bilan individuel imprimable (à remettre à l'élève ou aux parents)">🖨️</button> <button class="btn secondary btn-del">✕</button></td>` +
             `</tr>`
           );
         })
@@ -3525,6 +3950,7 @@ except Exception:
           if (confirm("Retirer cet élève ?")) { P.removeStudent(u); renderClasse(); }
         });
         tr.querySelector(".btn-detail").addEventListener("click", () => openCapacites(u, students.find((s) => s.uid === u).name));
+        tr.querySelector(".btn-bilan").addEventListener("click", () => printBilanEleve(students.find((s) => s.uid === u), cls));
       });
       viewTheme.appendChild(tbl);
 
@@ -3549,8 +3975,52 @@ except Exception:
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
-      bCsv.style.marginTop = ".8rem";
-      viewTheme.appendChild(bCsv);
+      const toolsRow = el("div", "tp-print-group classe-tools");
+      toolsRow.appendChild(bCsv);
+      // 🖨️ Bilan de classe : une page imprimable pour le conseil de classe.
+      const bBilanCls = el("button", "btn secondary", "🖨️ Bilan de classe");
+      bBilanCls.addEventListener("click", () => printBilanClasse(cls, students));
+      toolsRow.appendChild(bBilanCls);
+      // 💾 Sauvegarde locale (.json) : filet de sécurité indépendant de Firebase.
+      const bSave = el("button", "btn secondary", "💾 Sauvegarder (.json)");
+      bSave.addEventListener("click", () => {
+        const data = P.exportData();
+        const blob = new Blob([JSON.stringify(data, null, 1)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "nsi-sauvegarde-" + new Date().toISOString().slice(0, 10) + ".json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+      bSave.title = "Télécharge toutes tes classes et la progression des élèves (à garder en lieu sûr).";
+      toolsRow.appendChild(bSave);
+      const bRestore = el("button", "btn secondary", "📂 Restaurer");
+      bRestore.title = "Recharge une sauvegarde .json faite avec « Sauvegarder ».";
+      const fileIn = document.createElement("input");
+      fileIn.type = "file";
+      fileIn.accept = ".json,application/json";
+      fileIn.style.display = "none";
+      fileIn.addEventListener("change", () => {
+        const f = fileIn.files[0];
+        if (!f) return;
+        f.text().then((txt) => {
+          const data = JSON.parse(txt);
+          const nb = (data.classes || []).length;
+          if (!confirm(`Restaurer ${nb} classe(s) depuis « ${f.name} » ? Les données actuelles portant les mêmes identifiants seront remplacées.`)) return;
+          const n = P.importData(data);
+          alert("✅ Sauvegarde restaurée (" + n + " enregistrement(s)).");
+          renderClasse();
+        }).catch((e) => alert("❌ Fichier illisible : " + e.message));
+        fileIn.value = "";
+      });
+      bRestore.addEventListener("click", () => fileIn.click());
+      toolsRow.appendChild(bRestore);
+      toolsRow.appendChild(fileIn);
+      toolsRow.style.marginTop = ".8rem";
+      viewTheme.appendChild(toolsRow);
 
       // 📊 Matrice de réussite par thème : 1 ligne par élève, 1 colonne par thème.
       const themesTri = COURSES.slice().sort((a, b) => a.num - b.num);
@@ -4109,6 +4579,15 @@ except Exception:
       showThemeView("methodes");
       renderMethodes();
       location.hash = "methodes";
+    } else if (target === "apropos") {
+      showThemeView("apropos");
+      renderApropos();
+      location.hash = "apropos";
+    } else if (target === "reviser") {
+      if (!P.isStudent()) return navigate("home");
+      showThemeView("reviser");
+      renderReviser();
+      location.hash = "reviser";
     } else if (target === "evaluations") {
       if (!P.isTeacher()) return navigate("home");
       showThemeView("evaluations");
@@ -4160,7 +4639,7 @@ except Exception:
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique", "debranche"].includes(t)) return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique", "debranche", "apropos", "reviser"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }

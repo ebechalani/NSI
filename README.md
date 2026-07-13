@@ -1,71 +1,66 @@
-# NSI Première — Cours interactif
+# NSI — Cours interactif Première & Terminale
 
-Site web interactif pour enseigner et apprendre la spécialité **Numérique et Sciences
-Informatiques** (NSI) en classe de **Première**. Cours, **code Python exécutable dans le
-navigateur** et **QCM auto-corrigés**, conformes au **programme officiel** (Bulletin officiel
-spécial n°1 du 22 janvier 2019).
+**➡️ Site en ligne : https://ebechalani.github.io/NSI/**
 
-> Support pédagogique indépendant. Le contenu est rédigé d'après le programme officiel (public)
-> et ne reproduit aucun manuel sous droits d'auteur.
+Plateforme pédagogique complète pour la spécialité **NSI** (Première **et**
+Terminale), conforme aux programmes officiels, avec comptes professeur/élève
+et suivi de progression en temps réel.
 
-## Les 7 thèmes du programme
+Par **Eddy Bachaalany** — professeur d'informatique, Lycée Montaigne (Liban).
+Contact : ebechalani@gmail.com
 
-1. 🔢 Représentation des données : types et valeurs de base
-2. 🧱 Représentation des données : types construits
-3. 📊 Traitement de données en tables
-4. 🌐 Interactions homme-machine sur le Web
-5. 🖥️ Architectures matérielles et systèmes d'exploitation
-6. 🐍 Langages et programmation
-7. 🧩 Algorithmique
+## Ce que contient le site
 
-Chaque thème comprend : les **capacités attendues** du BO, un cours structuré, des **cellules de
-code Python** modifiables et exécutables, et un **QCM** avec correction et explication.
+**Pour l'élève**
+- Cours interactifs des **9 thèmes de Première** et **6 thèmes de Terminale**,
+  vérifiés capacité par capacité contre le BO — code Python exécutable dans le
+  navigateur (Pyodide), démos HTML/CSS/JS live, jeux (frise historique avec
+  correction expliquée, escape game) ;
+- Exercices progressifs à compléter (le corrigé n'arrive que quand le
+  professeur le « pousse »), TP guidés pas à pas, QCM avec explications ;
+- Préparation au bac : épreuves pratiques blanches, bacs blancs écrits,
+  fiches méthode (épreuve pratique, épreuve écrite, Grand oral).
 
-## Fonctionnalités
-
-- ▶ **Python réel dans le navigateur** via [Pyodide](https://pyodide.org) (aucune installation).
-- 📝 **QCM auto-corrigés** avec explication de chaque réponse.
-- 📊 **Progression enregistrée** localement (un thème est « validé » quand son QCM est tout juste).
-- 🌙 **Thème clair / sombre**, mise en page **responsive** (mobile, tablette, ordinateur).
-- 🔗 Navigation par URL (`#nom-du-theme`) pour partager un thème précis.
-
-## Utilisation
-
-Aucune compilation nécessaire. Deux options :
-
-- **Ouvrir directement** `index.html` dans un navigateur (double-clic).
-- **Servir localement** (recommandé) :
-  ```bash
-  python -m http.server 8000
-  # puis ouvrir http://localhost:8000
-  ```
-
-> ⚠️ La **première exécution** d'un code Python télécharge Pyodide (~10 Mo) depuis un CDN :
-> une connexion Internet est nécessaire cette fois-là. Le reste du site fonctionne hors-ligne.
+**Pour le professeur**
+- Espace classe : création de classes (code + nom, sans mot de passe élève),
+  suivi en temps réel, matrice de réussite par thème, diagnostic par question,
+  export CSV, corrigés poussés exercice par exercice ;
+- **Déroulés heure par heure** de chaque thème (109 séances de 2 h) avec, pour
+  chaque séance : quoi utiliser sur le site, le déroulé minuté en classe, et
+  le kit de préparation (27 imprimables « mission », 39 fichiers réels
+  `.py`/`.sql`/`.csv` à déposer sur Capytale/Thonny/DB Browser) ;
+- 21 sujets d'évaluation avec corrigés et barèmes.
 
 ## Structure du projet
 
 ```
-NSI/
-├── index.html              page unique (SPA)
-├── assets/
-│   ├── css/style.css       styles + thème clair/sombre
-│   └── js/
-│       ├── courses.js      contenu des 7 thèmes (cours + code)
-│       ├── quizzes.js      questions de QCM par thème
-│       └── app.js          navigation, éditeur Python, logique QCM
-└── README.md
+index.html                  Bootstrap : sélecteur de niveau + chargement des scripts
+assets/css/style.css        Styles (clair/sombre, impression, accessibilité)
+assets/js/app.js            Moteur partagé (rendu, jeux, quiz, espace prof)
+assets/js/platform.js       Comptes, classes, progression (Firebase + repli local)
+assets/js/*.js              Contenus Première (courses, exercises, quizzes, tp,
+                            projects, glossary, resources)
+assets/js/terminale/*.js    Contenus Terminale (mêmes structures)
+assets/fichiers/            Fichiers téléchargeables (squelettes .py, .sql, .csv)
+firestore.rules             Règles de sécurité Firestore (copie de référence)
+SETUP-FIREBASE.md           Installation/maintenance du backend Firebase
+.github/workflows/check.yml Vérification syntaxe + chargement à chaque push
 ```
 
-## Ajouter / modifier du contenu
+## Développement
 
-- **Un paragraphe ou un exemple de code** : éditer `assets/js/courses.js`. Chaque section a un
-  champ `html` (le cours) et un champ optionnel `code` (la cellule Python exécutable).
-- **Une question de QCM** : éditer `assets/js/quizzes.js`. `answer` est l'indice (à partir de 0)
-  de la bonne réponse, `explain` le texte de correction.
+Site **100 % statique** (aucun build) : servir le dossier avec n'importe quel
+serveur HTTP (`python -m http.server`) et ouvrir `index.html`.
 
-## Pistes d'extension
+Après toute modification de contenu, **incrémenter la version de cache** dans
+`index.html` (`var v = "N"` **et** les `?v=N` des balises statiques).
 
-- Ajouter le programme de **Terminale NSI** (mêmes structures de données).
-- Exercices de programmation auto-évalués (comparaison de la sortie attendue).
-- Export PDF d'un thème pour distribution en classe.
+Backend : projet Firebase (Auth e-mail prof + anonyme élève, Firestore).
+Voir `SETUP-FIREBASE.md` (règles à publier, modèle de données, limites).
+
+## Licences
+
+- **Code** : MIT — **Contenus pédagogiques** : CC BY-NC-SA 4.0 (voir `LICENSE`).
+- Certaines ressources **liées** (jamais copiées) restent la propriété de leurs
+  auteurs : supports du DIU « Enseigner l'informatique au lycée » (Université
+  Le Havre Normandie — B. Mermet, Y. Pigné, J.-M. Barbier).

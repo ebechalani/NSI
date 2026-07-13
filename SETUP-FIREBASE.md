@@ -55,7 +55,13 @@ service cloud.firestore {
             && request.resource.data.linkedUid == request.auth.uid)
         || (signedIn()
             && resource.data.linkedUid == request.auth.uid
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['qcm', 'exos', 'activite']));
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['qcm', 'exos', 'activite', 'lastTheme']));
+    }
+
+    // Corrigés d'évaluations : lisibles/écrits uniquement par un compte prof
+    // (e-mail). Permet de sortir les corrigés du code public du site.
+    match /corriges/{cid} {
+      allow read, write: if isTeacherAuth();
     }
 
     // Comptes professeurs : chacun crée SA demande ; seul l'admin valide/refuse.
