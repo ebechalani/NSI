@@ -1,0 +1,57 @@
+{
+ "themeId": "histoire-informatique",
+ "level": "premiere",
+ "heures": "≈ 4 h fil rouge (2 séances de 2 h + rituels de 10 min répartis sur l'année)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Des racines de l'algorithme aux premiers ordinateurs",
+   "duree": "2 h",
+   "objectif": "Construire une première frise (Antiquité → 1970) et rencontrer les figures fondatrices (Pascal, Babbage, Lovelace, Turing) — en codant aussi, même en histoire.",
+   "surLeSite": [
+    "Section « 🃏 Jeu : la frise à reconstituer » (jeu interactif du thème, à jouer d'abord en version cartes papier)",
+    "Sections 2 à 7 : « Pourquoi une histoire de l'informatique ? », « Aux racines : l'algorithme et la logique », « Des premières machines à calculer », « Babbage et Lovelace », « Les fondements théoriques (1850–1945) », « Les premiers ordinateurs (1940–1970) »",
+    "Exercice 1 (facile : ordonner Web, transistor, Pascaline, machine de Turing) et exercice 4 (facile : dictionnaire {inventeur: invention}, cellule ▶ à compléter)",
+    "Glossaire du thème (Pascaline, machine analytique, machine de Turing, transistor…)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel d'entrée — « à votre avis, l'informatique commence quand ? » (votes, on y répondra en fin d'heure)",
+    "10–35 min : débranché : frise à reconstituer en îlots avec cartes imprimées (événements et dates séparés), puis vérification en jouant le jeu du site au vidéoprojecteur",
+    "35–70 min : îlots-experts : chaque îlot lit UNE section (2 à 7) et la présente en 2 min avec un objet/mime ; le prof recolle le récit",
+    "70–85 min : exercice 1 à l'ardoise (chronologie) — retour sur le vote initial : l'informatique précède l'ordinateur",
+    "85–110 min : exercice 4 en cellule ▶ : compléter et interroger le dictionnaire des inventeurs (on réinvestit les dictionnaires en histoire)",
+    "110–120 min : institutionnalisation : lancement de la frise murale de classe (les cartes validées y sont épinglées)"
+   ],
+   "aPreparer": [
+    "Cartes-événements imprimées et plastifiées (dates séparées des événements), un jeu par îlot",
+    "Frise murale : ficelle + pinces à linge + étiquettes, qui restera affichée toute l'année pour les rituels",
+    "Trace écrite (frise simplifiée à coller) ; vidéoprojecteur"
+   ]
+  },
+  {
+   "titre": "Séance 2 — Du microprocesseur à l'IA + évaluation",
+   "duree": "2 h",
+   "objectif": "Compléter la frise jusqu'à aujourd'hui (micro-informatique, Internet ≠ Web, IA, métiers), la manipuler en Python, et évaluer le fil rouge.",
+   "surLeSite": [
+    "Sections 8 à 12 : « Micro-informatique, logiciel et réseaux (1970–1990) », « Le Web, le mobile et aujourd'hui (1990 →) », « L'intelligence artificielle : une longue histoire », « L'évolution du stockage des données », « Et demain ? Métiers et études de l'informatique »",
+    "Section « Construire et trier une frise chronologique » (cellule ▶ : la frise comme liste de dictionnaires)",
+    "Exercices 5 (moyen : Internet ≠ Web), 3 (défi : trier la frise avec sorted) et 7 (défi : compréhension filtrant le XXᵉ siècle) ; exercice 6 (dichotomie sur la frise triée) pour les rapides",
+    "Jeu « 🔓 Bonus — Jeu d'évasion : la salle des machines »",
+    "QCM du thème (6 questions) en autonomie ; côté prof : matrice/diagnostic « Ma classe »",
+    "Évaluation : sujet « DS — Histoire de l'informatique » (40 min, /20) de la rubrique Évaluations"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — quiz-éclair sur la frise murale (ardoises)",
+    "10–35 min : îlots-experts sur les sections 8 à 12 + mini-débat tranché par l'exercice 5 : « Internet et le Web, deux choses différentes ? » (dates, inventeurs, une phrase chacun)",
+    "35–60 min : codage : cellule ▶ de la section « Construire et trier une frise » puis exercices 3 et 7 (réinvestissement du tri et des compréhensions vus dans les autres thèmes)",
+    "60–75 min : jeu d'évasion « la salle des machines » en îlots (chronométré)",
+    "75–80 min : QCM 6 questions en autonomie — le prof lit la matrice pour la remédiation orale immédiate",
+    "80–120 min : DS sur table (40 min) puis ramassage"
+   ],
+   "aPreparer": [
+    "Imprimer le sujet « DS — Histoire de l'informatique » (bouton 🖨️) + copies",
+    "Nouvelles cartes pour compléter la frise murale (1971 → aujourd'hui)",
+    "Chronomètre/gong pour l'escape game ; prévoir les rituels de 10 min suivants (1 repère historique à épingler à l'ouverture de chaque nouveau thème, trame = exercice 2 du site)"
+   ]
+  }
+ ]
+}

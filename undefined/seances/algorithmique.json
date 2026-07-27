@@ -1,0 +1,197 @@
+{
+ "themeId": "algorithmique",
+ "level": "premiere",
+ "heures": "≈ 16 h (8 séances de 2 h) — S22–S25 de la PROGRESSION (Avr.–Mai, Période 5)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Qu'est-ce qu'un algorithme ? Le parcours séquentiel",
+   "duree": "2 h",
+   "objectif": "Distinguer algorithme et programme ; écrire les parcours fondamentaux d'un tableau : recherche (convention −1), maximum, somme — tous linéaires.",
+   "surLeSite": [
+    "Sections 1–2 : « Qu'est-ce qu'un algorithme ? » et « Parcours séquentiel d'un tableau » avec cellule ▶ (recherche + maximum) à faire manipuler",
+    "Exercice 2 (facile) — recherche séquentielle renvoyant l'indice ou −1 ; Exercice 4 (facile) — somme(tab) sans sum",
+    "Résumé du thème, point 1 : « Parcours séquentiel : recherche, max, somme en O(n) »"
+   ],
+   "enClasse": [
+    "0–15 min : rituel + accroche : « dictez-moi la recette pour trouver le plus grand nombre d'une liste que je lis à voix haute » — le prof exécute LITTÉRALEMENT ce que disent les élèves, les ambiguïtés sautent aux yeux.",
+    "15–35 min : institutionnalisation Section 1 : algorithme (l'idée, en français) vs programme (la traduction Python) ; correct + se termine ; la démarche îlot du site : toujours écrire l'algorithme en étapes numérotées AVANT de coder.",
+    "35–60 min : débranché : chaque îlot reçoit 8 cartes-nombres faces cachées ; retourner une carte à la fois et tenir « le plus grand vu » sur ardoise — c'est maximum() joué à la main ; même chose pour la somme.",
+    "60–90 min : sur postes : cellule ▶ de la Section 2 exécutée puis modifiée (chercher une valeur absente → −1) ; puis Exercices 2 et 4 en cellule vide (l'algorithme en français d'abord, sur le cahier).",
+    "90–110 min : différenciation : les rapides écrivent compter_pairs(tab) et minimum(tab) sans aide ; les autres refont maximum() en le déroulant sur la fiche trace.",
+    "110–120 min : bilan : « combien d'opérations pour un tableau de n éléments ? » → faire dire « environ n » (linéaire) ; le prof pousse les corrigés ; trace écrite : les 4 schémas de parcours."
+   ],
+   "aPreparer": [
+    "Jeux de 8 cartes-nombres par îlot (à fabriquer) + ardoises",
+    "Fiche trace « les 4 schémas de parcours » (rechercher/compter/accumuler/max) à photocopier — la fiche méthode du site « Parcourir un tableau : les 4 schémas » peut servir de source, à imprimer",
+    "Vidéoprojecteur ; prévoir la reprise des exercices sur Capytale pour l'entraînement maison"
+   ]
+  },
+  {
+   "titre": "Séance 2 — La recherche dichotomique",
+   "duree": "2 h",
+   "objectif": "Mettre en œuvre la recherche dichotomique dans un tableau trié et ressentir l'écart O(n) / O(log n) par le jeu du nombre.",
+   "surLeSite": [
+    "Activité débranchée « Recherche : au hasard vs dichotomie » (20–30 min, déroulé complet + variante annuaire + notes prof fournis)",
+    "Section 3 « La recherche dichotomique » : exemple pas à pas sur [2, 5, 8, …, 91], warnbox « tableau déjà trié », cellule ▶ dichotomie() à faire manipuler",
+    "Exercice 1 (facile, texte à trou) — le calcul du milieu avec // ; Exercice 3 (facile) — indices milieux successifs à la main ; Exercice 5 (moyen) — implémenter la dichotomie"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : refaire une recherche séquentielle de tête sur 5 valeurs ; rappeler la convention −1.",
+    "10–40 min : débranché « Recherche : au hasard vs dichotomie » : manche 1 deviner dans l'ordre (compter les essais), manche 2 en coupant en deux ; comparer ~50 contre ~7 ; faire émerger POURQUOI il faut que ce soit trié.",
+    "40–65 min : institutionnalisation Section 3 : dérouler au tableau l'exemple du cours (chercher 23) avec les deux bornes gauche/droite matérialisées par deux aimants ; noter la warnbox.",
+    "65–90 min : sur postes : Exercice 1 (texte à trou // ) puis cellule ▶ dichotomie() exécutée et instrumentée (ajouter un print(gauche, milieu, droite) à chaque tour) ; Exercice 3 sur le cahier.",
+    "90–110 min : Exercice 5 (moyen) en cellule vide : réécrire la dichotomie sans modèle, tester une valeur présente et une absente ; les rapides comptent les comparaisons.",
+    "110–120 min : bilan : la note du cours « 1 000 000 d'éléments → ≈ 20 comparaisons » ; le prof pousse les corrigés ; annonce du duel de la prochaine séance."
+   ],
+   "aPreparer": [
+    "Un annuaire papier ou une liste triée imprimée pour la variante de l'activité débranchée (matériel non fourni)",
+    "Deux aimants/étiquettes « gauche » et « droite » pour le tableau",
+    "Trace écrite : l'algorithme de dichotomie en français à coller"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Projet îlot : « Recherche séquentielle vs dichotomique »",
+   "duree": "2 h",
+   "objectif": "Comparer expérimentalement deux algorithmes en comptant les comparaisons : produire le tableau n = 10, 1000, 1 000 000 et conclure O(n) vs O(log n).",
+   "surLeSite": [
+    "Projet îlot « Recherche séquentielle vs dichotomique » (niveau moyen, 1 à 2 séances) : les 5 phases, le code de départ (recherche_seq et dichotomie renvoyant (indice, nb_etapes)), les 3 tests attendus, le bonus (tailles 10 → 10000) et le corrigé prof",
+    "Exercice 6 (moyen) — recherche séquentielle qui COMPTE les comparaisons (échauffement)",
+    "Défi du thème « Mission : duel d'algorithmes » (même conclusion attendue, pour les rapides)",
+    "Fiche îlot du site « Avant de coder : réfléchir en îlot » (rôles et grille projet)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : constitution des îlots et distribution des rôles (la fiche îlot du site : pilote, codeur, testeur, rapporteur).",
+    "10–25 min : échauffement individuel : Exercice 6 (moyen) en cellule vide — instrumenter une fonction avec un compteur.",
+    "25–45 min : phases 1–2 du projet : rejouer rapidement « devine le nombre » puis écrire les DEUX algorithmes en français sur l'affiche d'îlot.",
+    "45–85 min : phase 3 (codage) : reprendre le code de départ du projet, le compléter, exécuter ; phase 4 (tests) : vérifier les 3 tests du site (même indice, ≤ 9 étapes pour 500 éléments, −1 si absent).",
+    "85–105 min : bonus du projet : boucle sur n = 10, 100, 1000, 10000 et tableau des étapes ; les îlots avancés font le défi « Mission : duel d'algorithmes » jusqu'à n = 1 000 000.",
+    "105–120 min : phase 5 : chaque rapporteur présente son tableau en 1 min ; conclusion collective « séquentiel ~ n, dichotomie ~ log₂ n » ; le prof pousse le corrigé du projet."
+   ],
+   "aPreparer": [
+    "Affiches A3 + feutres pour les algorithmes en français (phase 2)",
+    "Imprimer la grille d'évaluation de projet du site (PROJECT_GRILLE) pour noter la présentation",
+    "Faire faire le projet sur Capytale/Thonny plutôt que sur le site si l'on veut ramasser les fichiers"
+   ]
+  },
+  {
+   "titre": "Séance 4 — Les tris par sélection et par insertion",
+   "duree": "2 h",
+   "objectif": "Exécuter à la main puis programmer les tris par sélection et par insertion ; compter les comparaisons pour pressentir le coût quadratique.",
+   "surLeSite": [
+    "Activité débranchée « Trier à la main & compter le coût » (30–45 min : jeu de cartes, jetons-comparaisons, les deux tris ; déroulé et notes prof fournis)",
+    "Sections 4–5 : « Le tri par sélection » et « Le tri par insertion » avec leurs cellules ▶ (tri_selection, tri_insertion) à faire manipuler",
+    "Exercice 9 (défi) — implémenter le tri par sélection sur [5, 2, 9, 1, 7]",
+    "Erreur fréquente du site : « oublier l'échange tab[i], tab[i_min] = tab[i_min], tab[i] »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : « comment trieriez-vous une main de cartes ? » — faire verbaliser sans le savoir le tri par insertion.",
+    "10–45 min : débranché « Trier à la main & compter le coût » : chaque îlot trie 7 cartes par sélection en posant un jeton par comparaison, puis recommence le MÊME paquet par insertion ; comparer les tas de jetons ; question du site : « et avec 100 cartes ? ».",
+    "45–70 min : institutionnalisation Sections 4–5 : dérouler [5, 2, 9, 1, 7] au tableau pour les deux tris (l'exemple du cours) ; deux boucles imbriquées → coût en n².",
+    "70–95 min : sur postes : cellules ▶ tri_selection et tri_insertion exécutées puis instrumentées (print du tableau à chaque tour i) ; observer la partie gauche qui grandit.",
+    "95–115 min : Exercice 9 (défi) en cellule vide : réécrire le tri par sélection sans modèle ; les rapides ajoutent un compteur de comparaisons et vérifient ~n²/2.",
+    "115–120 min : bilan : quelle méthode pour un paquet PRESQUE trié ? (insertion) ; le prof pousse les corrigés."
+   ],
+   "aPreparer": [
+    "Un jeu de 6–8 cartes numérotées par îlot + une réserve de jetons (matériel de l'activité débranchée, non fourni par le site)",
+    "Trace écrite : les deux tris en français + un déroulé de [5, 2, 9, 1, 7] à compléter",
+    "Prévoir des cartes grand format aimantées pour le déroulé au tableau"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Prouver : coût, terminaison (variant), correction (invariant)",
+   "duree": "2 h",
+   "objectif": "Comparer les coûts O(1)/O(log n)/O(n)/O(n²) ; justifier la terminaison par un variant ; décrire les invariants qui prouvent la correction des deux tris.",
+   "surLeSite": [
+    "Section 8 « Coût d'un algorithme (complexité) » : tableau des 4 coûts avec la colonne n = 1 000 000, cellule ▶ (cout_sequentiel vs cout_dichotomie) à faire manipuler",
+    "Section 9 « Terminaison : le variant de boucle » ; retour sur les paragraphes « invariant » des Sections 4 et 5 (sélection : tranche triée ET éléments à leur place définitive ; insertion : tranche seulement triée)",
+    "Exercice 7 (moyen) — donner le variant de while n > 1: n = n // 2",
+    "QCM questions « coût du tri par sélection » et « pour prouver qu'une boucle se termine… »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : classer 4 situations (accès tab[i], parcours, dichotomie, tri) de la plus rapide à la plus lente, sur ardoise.",
+    "10–35 min : institutionnalisation Section 8 : le tableau des coûts recopié ; commenter la ligne n² = 10¹² « énorme » ; sur postes, cellule ▶ des coûts exécutée pour n = 10, 1000, 1 000 000.",
+    "35–60 min : Section 9 : définition du variant (entier, positif, strictement décroissant) ; Exercice 7 rédigé individuellement puis confronté en binôme ; chercher le variant de la dichotomie (droite − gauche).",
+    "60–90 min : débranché argumentation : chaque îlot reçoit l'invariant d'UN des deux tris (texte des Sections 4/5 imprimé) et doit l'expliquer à un îlot voisin avec 5 cartes en main ; faire toucher la différence « place définitive ou pas ».",
+    "90–110 min : écrit type bac : rédiger en 5 lignes « pourquoi le tri par sélection est correct » (invariant) et « pourquoi la dichotomie se termine » (variant) ; correction guidée.",
+    "110–120 min : bilan : distinguer variant (terminaison) / invariant (correction) — la note du cours ; 2 questions du QCM projetées ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Imprimer les paragraphes « invariant » des Sections 4 et 5 (un par îlot) — le bouton 🖨️ du cours permet de sortir la page",
+    "Prévoir un modèle de rédaction type bac (le site n'en fournit pas) : structure « propriété / vraie au départ / conservée / conclusion »",
+    "Cartes à jouer pour l'argumentation par îlot"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Les algorithmes gloutons",
+   "duree": "2 h",
+   "objectif": "Mettre en œuvre un algorithme glouton (rendu de monnaie) et découvrir qu'il n'est pas toujours optimal (système [1, 3, 4]).",
+   "surLeSite": [
+    "Section 6 « Les algorithmes gloutons » : rendu de 67 centimes, warnbox système truqué [1, 3, 4], cellule ▶ rendu_monnaie() à faire manipuler",
+    "Exercice 8 (défi) — coder rendu(somme, pieces) et exhiber un cas non optimal",
+    "QCM question « un algorithme glouton… » ; erreur fréquente du site « croire que le glouton donne toujours l'optimum »",
+    "Mini-projets du thème en prolongement pour les rapides : « Crible d'Ératosthène », « Mastermind », « Approximation de π (Monte-Carlo) »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : rendu de monnaie réel : « rendez-moi 67 centimes avec le moins de pièces » avec la monnaie factice — tout le monde fait du glouton sans le savoir.",
+    "10–30 min : formalisation Section 6 : « à chaque étape le meilleur choix local, sans retour arrière » ; dérouler 67 = 50 + 10 + 5 + 2 au tableau.",
+    "30–50 min : débranché contre-exemple : les îlots doivent rendre 6 avec des pièces [1, 3, 4] ; laisser le glouton échouer (4+1+1) puis trouver 3+3 ; discussion : quand le glouton se trompe-t-il ?",
+    "50–80 min : sur postes : cellule ▶ rendu_monnaie() exécutée, puis Exercice 8 (défi) en cellule vide avec les deux systèmes de pièces ; verbaliser la boucle « while somme >= p ».",
+    "80–110 min : différenciation : les rapides démarrent un mini-projet du thème (« Crible d'Ératosthène » ou « Mastermind ») ; les autres refont le glouton sur un problème d'emploi du temps simple donné par le prof.",
+    "110–120 min : bilan : rapide + intuitif MAIS pas toujours optimal ; question QCM ; corrigés poussés ; annonce du kNN."
+   ],
+   "aPreparer": [
+    "Monnaie factice (pièces 1, 2, 5, 10, 20, 50 + jetons marqués 1, 3, 4) — non fournie par le site",
+    "Un petit problème glouton supplémentaire rédigé par le prof pour la remédiation (ex. remplir un sac de poids maximal)",
+    "Repérer à l'avance les mini-projets du site à proposer aux rapides"
+   ]
+  },
+  {
+   "titre": "Séance 7 — Les k plus proches voisins (kNN) en projet",
+   "duree": "2 h",
+   "objectif": "Écrire l'algorithme qui prédit la classe d'un élément selon la classe majoritaire de ses k plus proches voisins (capacité BO), du papier millimétré au code.",
+   "surLeSite": [
+    "Section 7 « Les k plus proches voisins (kNN) » : les 3 étapes (distance, k plus proches, vote), note sur le choix de k, cellule ▶ knn() à faire manipuler",
+    "Projet îlot « Classer des objets avec les k plus proches voisins » (niveau défi, 2 à 3 séances — ici resserré) : phases 1–4, code de départ (6 fruits), tests, bonus 3e catégorie, corrigé avec asserts",
+    "Exercice 10 (défi) — coder distance et knn pour le fruit mystère",
+    "QCM : aucune question kNN — prévenir que le DS n°4 du site, lui, en contient"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : « comment votre appli photo reconnaît-elle un chien ? » — recueillir, introduire l'idée d'apprentissage à partir d'exemples étiquetés.",
+    "10–35 min : phase 1 du projet, débranchée : chaque îlot place les 6 fruits du code de départ sur une grille papier millimétré, pose le point mystère (5.2, 4.0), entoure les 3 voisins À LA RÈGLE et vote.",
+    "35–55 min : institutionnalisation Section 7 : les 3 étapes de l'algorithme au tableau ; pourquoi k impair ; k trop petit = bruit, trop grand = mélange.",
+    "55–90 min : phases 2–3 : algorithme en français sur l'affiche, puis codage sur postes à partir du code du projet : distance() d'abord (testée seule), puis le tri par distance, puis le vote ; cellule ▶ du cours en secours pour les bloqués.",
+    "90–110 min : phase 4 : tests du site (point près des pommes → pomme ; k = 1 et k = 3) ; bonus pour les rapides : 3e catégorie « citron » et point frontière ; Exercice 10 en autonomie pour les autres.",
+    "110–120 min : mini-présentations : « que se passe-t-il si k est trop grand ? » ; le prof pousse le corrigé (asserts) et annonce la séance bilan + TP noté."
+   ],
+   "aPreparer": [
+    "Papier millimétré + règles (une feuille par îlot) — le site fournit les données, pas le support de la phase papier",
+    "Affiches pour la phase 2 ; grille d'évaluation de projet du site imprimée",
+    "Réviser pour soi la question de l'égalité de vote (k pair) souvent posée par les élèves"
+   ]
+  },
+  {
+   "titre": "Séance 8 — Consolidation, QCM, remédiation et TP noté",
+   "duree": "2 h",
+   "objectif": "Stabiliser la boîte à outils du thème (quel algorithme pour quel problème, à quel coût), diagnostiquer les fragilités, puis évaluer sur poste.",
+   "surLeSite": [
+    "Section 10 « Synthèse : choisir et comparer » (tableau problème/algorithme/coût) ; résumé du thème (6 points) et les 4 erreurs fréquentes",
+    "QCM du thème (6 questions) en autonomie",
+    "Matrice de suivi / diagnostic par question (côté enseignant) pour cibler la remédiation",
+    "Évaluation : TP noté — Algorithmique (EVALUATIONS du site, 1 h sur poste, /20, corrigé prof) ; le DS n°4 — Algorithmique (1 h, sujet fourni) à programmer sur un créneau suivant"
+   ],
+   "enClasse": [
+    "0–15 min : rituel bilan : le tableau de la Section 10 projeté COLONNES MASQUÉES ; les élèves complètent algorithme et coût sur ardoise, ligne par ligne.",
+    "15–30 min : relecture active du résumé et des 4 erreurs fréquentes ; chaque élève écrit SA question restante sur un post-it (mur des questions, traité à l'oral).",
+    "30–45 min : QCM du thème (6 questions) en autonomie individuelle sur le site.",
+    "45–60 min : remédiation ciblée : via la matrice/diagnostic par question, le prof constitue 2 groupes (souvent : dichotomie sur non-trié, glouton « toujours optimal ») et fait refaire les exercices 3, 5 ou 8 du site ; les autres s'échauffent sur le défi « Mission : duel d'algorithmes ».",
+    "60–120 min : évaluation : TP noté — Algorithmique du site, 1 h sur poste, individuel, documents du site fermés."
+   ],
+   "aPreparer": [
+    "Imprimer le sujet du TP noté — Algorithmique (bouton 🖨️) et préparer l'environnement (Capytale/Thonny) pour ramasser les fichiers",
+    "Programmer le DS n°4 — Algorithmique (1 h sur table, sujet et corrigé dans EVALUATIONS) sur le créneau suivant",
+    "Post-its pour le mur des questions ; fiche de remédiation exercice ↔ question de QCM",
+    "Tableau de synthèse vierge à coller comme trace écrite finale"
+   ]
+  }
+ ]
+}

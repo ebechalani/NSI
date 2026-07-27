@@ -1,0 +1,212 @@
+{
+ "themeId": "term-langages",
+ "level": "terminale",
+ "heures": "20 h — 10 séances de 2 h",
+ "seances": [
+  {
+   "titre": "Séance 1 — Trois façons de programmer : les paradigmes",
+   "duree": "2 h",
+   "objectif": "Identifier impératif, fonctionnel et objet, et comprendre qu'un même problème admet plusieurs styles.",
+   "surLeSite": [
+    "Section 1 (cellule « somme des carrés » en 3 versions)",
+    "Fiche méthode « Estimer le coût (complexité) d'un algorithme » (réactivation)"
+   ],
+   "enClasse": [
+    "0–20 min : réactivation Première — fonctions, boucles, compréhensions ; sondage rapide « comment écririez-vous la somme des carrés ? »",
+    "20–50 min : Section 1 — exécuter la cellule comparant les 3 paradigmes ; par binômes, réécrire un petit problème (moyenne, comptage) dans les 3 styles",
+    "50–70 min : institutionnalisation — tableau paradigme / mots-clés / quand l'utiliser ; vocabulaire <strong>état</strong>, <strong>fonction pure</strong>",
+    "70–100 min : manipulation libre — transformer une boucle donnée en <em>map/filter</em> puis en compréhension",
+    "100–120 min : écriture libre — chaque élève rédige 3 phrases « impératif / fonctionnel / objet, c'est… » ; corrigé collectif poussé en fin de séance"
+   ],
+   "aPreparer": [
+    "Créer l'activité Capytale de la séquence (notebook vierge « paradigmes »)",
+    "Vérifier Thonny installé sur les postes (l'EP se passe sur un vrai Python)"
+   ]
+  },
+  {
+   "titre": "Séance 2 — POO (1) : classes, objets, attributs, méthodes",
+   "duree": "2 h",
+   "objectif": "Écrire une classe simple avec <strong>__init__</strong>, <strong>self</strong>, attributs et méthodes.",
+   "surLeSite": [
+    "Section 2 (classe CompteBancaire)",
+    "Exercices 2 et 5 (texte à trou <em>self</em> ; classe Compteur)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — en Première on <em>utilisait</em> des objets (listes, chaînes : <em>t.append</em>, <em>s.upper</em>) ; aujourd'hui on fabrique le moule",
+    "15–45 min : Section 2 — dérouler CompteBancaire ; schéma au tableau : classe = moule, objet = instance, <em>self</em> = l'objet courant",
+    "45–75 min : Exercice 2 (trou <em>self</em>) puis Exercice 5 (Compteur) sur le site ; circulation dans les rangs",
+    "75–105 min : extension guidée — ajouter une méthode <em>afficher()</em> et un attribut à CompteBancaire dans Thonny",
+    "105–120 min : institutionnalisation + corrigés poussés ; trace écrite : vocabulaire classe/instance/attribut/méthode/constructeur"
+   ],
+   "aPreparer": [
+    "Distribuer le squelette CompteBancaire sur Capytale",
+    "Prévoir la fiche de vocabulaire POO à coller dans le cahier"
+   ]
+  },
+  {
+   "titre": "Séance 3 — POO (2) : encapsuler une structure (classe Pile)",
+   "duree": "2 h",
+   "objectif": "Relier POO et structures de données : implémenter une interface par une classe.",
+   "surLeSite": [
+    "Section 2 (relecture)",
+    "Exercice 7 (défi : classe Pile — empiler, depiler, est_vide)",
+    "Glossaire du thème"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — interface vs implémentation (thème Structures de données) : que doit « savoir faire » une pile ?",
+    "15–55 min : Exercice 7 en autonomie sur machine (Thonny) : classe Pile encapsulant une liste ; les rapides ajoutent une classe File",
+    "55–75 min : mise en commun — pourquoi cacher la liste interne ? notion d'<strong>encapsulation</strong>",
+    "75–105 min : réinvestissement — utiliser sa Pile pour vérifier un parenthésage (réécriture objet d'un algo connu)",
+    "105–120 min : corrigé poussé + écriture libre : « en quoi la POO facilite le travail à plusieurs ? »"
+   ],
+   "aPreparer": [
+    "Préparer le fichier de tests (asserts) à donner aux élèves dans Thonny",
+    "Relire le corrigé de la vérification de parenthésage"
+   ]
+  },
+  {
+   "titre": "Séance 4 — La récursivité : cas de base + appel récursif",
+   "duree": "2 h",
+   "objectif": "Écrire et dérouler une fonction récursive simple ; comprendre la pile d'appels.",
+   "surLeSite": [
+    "Section 3 (factorielle, somme)",
+    "Exercices 1, 3 et 6 (factorielle à trous ; somme_liste ; puissance)",
+    "Fiche méthode « Écrire une fonction récursive sans se tromper »"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — la pile (séance 3) : dérouler factorielle(3) au tableau en empilant les appels",
+    "15–35 min : Section 3 — les 2 ingrédients obligatoires ; que se passe-t-il sans cas de base ? (RecursionError en direct)",
+    "35–75 min : Exercices 1, 3 puis 6 sur le site, en autonomie graduée ; méthode des 3 questions de la fiche",
+    "75–100 min : débogueur pas-à-pas de Thonny sur puissance(2, 5) — visualiser la pile d'appels réelle",
+    "100–120 min : institutionnalisation + corrigés poussés ; trace écrite : gabarit « if cas de base … return … »"
+   ],
+   "aPreparer": [
+    "Tester le débogueur pas-à-pas de Thonny sur un poste élève",
+    "Imprimer la fiche méthode récursivité (1 par élève)"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Récursivité (2) : coût et mémoïsation",
+   "duree": "2 h",
+   "objectif": "Mesurer le coût exponentiel de Fibonacci naïf et l'écraser par mémoïsation (porte d'entrée de la programmation dynamique).",
+   "surLeSite": [
+    "Section 4 (fib_naif vs fib_memo, piège memo={})",
+    "Exercice 4 (défi : escalier mémoïsé)",
+    "Fiche méthode « Estimer le coût »"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — dessiner l'arbre des appels de fib(5) : combien de fois calcule-t-on fib(2) ?",
+    "15–45 min : Section 4 — chronométrer fib_naif(30) vs fib_memo(50) ; institutionnaliser <strong>mémoïsation</strong> = dictionnaire de résultats",
+    "45–60 min : le piège <em>memo={}</em> en argument par défaut (warnbox de la section) — bug classique du bac",
+    "60–95 min : Exercice 4 (escalier) en binômes sur machine ; question bonus : pourquoi est-ce Fibonacci déguisé ?",
+    "95–120 min : corrigés poussés + écriture libre : « expliquer la mémoïsation à un élève de Première en 4 lignes »"
+   ],
+   "aPreparer": [
+    "Préparer un chronométrage (module time) prêt à coller dans Thonny",
+    "Annoncer le DS écrit de fin de thème"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Modularité, docstrings et gestion de versions (git)",
+   "duree": "2 h",
+   "objectif": "Découper un programme en fonctions et modules ; découvrir git comme outil d'historique et de travail collaboratif.",
+   "surLeSite": [
+    "Section 5 (est_premier / premiers_jusqu_a, encart git)",
+    "Encart « Coder pour de vrai » (Capytale, Thonny, VS Code)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — la « décomposition » de la pensée informatique ; pourquoi une fonction = une responsabilité ?",
+    "15–45 min : Section 5 — spécification par docstring ; séparer est_premier dans un module <em>outils.py</em> importé depuis un second fichier (vrais fichiers, dans Thonny)",
+    "45–70 min : démonstration git au vidéoprojecteur : init, commit, historique, retour en arrière ; vocabulaire commit/branche/fusion",
+    "70–105 min : mini-projet en binômes — découper un script monolithique fourni en 3 fonctions documentées + module",
+    "105–120 min : institutionnalisation + corrigé poussé ; trace écrite sur git (3 verbes : enregistrer, revenir, fusionner)"
+   ],
+   "aPreparer": [
+    "Installer git sur le poste prof et préparer un dépôt de démonstration",
+    "Déposer le script monolithique à découper sur Capytale"
+   ]
+  },
+  {
+   "titre": "Séance 7 — Mise au point : assert, jeux de tests, doctest et bugs classiques",
+   "duree": "2 h",
+   "objectif": "Construire un jeu de tests couvrant les cas limites et reconnaître les bugs récurrents (flottants, effet de bord, off-by-one).",
+   "surLeSite": [
+    "Sections 6–7 (moyenne + doctest ; bestiaire des bugs)",
+    "Défi « Mission : un test qui débusque le bug » (maximum + asserts)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — à l'épreuve pratique, les <em>assert</em> sont la spécification : les lire d'abord !",
+    "15–45 min : Section 6 — assert, jeu de tests, doctest sur la fonction moyenne ; règle d'or : tester le vide, le zéro, le négatif",
+    "45–70 min : Section 7 en îlots — chaque îlot exécute et explique un bug du bestiaire (flottants, b = a, off-by-one, elif) au reste de la classe",
+    "70–100 min : défi « Mission » sur machine : écrire maximum(t) et son jeu de tests ; échanger les fonctions entre binômes pour les casser",
+    "100–120 min : corrigés poussés + trace écrite : check-list « mon jeu de tests est-il complet ? »"
+   ],
+   "aPreparer": [
+    "Préparer 4 fonctions volontairement buguées (une par îlot)",
+    "Photocopier la check-list de tests"
+   ]
+  },
+  {
+   "titre": "Séance 8 — Calculabilité et décidabilité : les limites du calcul",
+   "duree": "2 h",
+   "objectif": "Distinguer calculable/décidable et présenter le problème de l'arrêt comme problème indécidable (Turing, 1936).",
+   "surLeSite": [
+    "Section 8 (cellule « un programme est une donnée », exec)",
+    "QCM (10 questions) — 3 questions en sortie de séance",
+    "Glossaire du thème"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — architecture de von Neumann (Première) : programme et données dans la même mémoire",
+    "15–35 min : activité débranchée — le paradoxe « cette phrase est fausse » joué à l'oral pour sentir la contradiction",
+    "35–65 min : Section 8 — le problème de l'arrêt, l'idée de la preuve par l'absurde au tableau ; conséquence : pas d'antivirus parfait",
+    "65–90 min : cellule exec() — la même chaîne est donnée puis programme ; thèse de Church-Turing (aucun langage ne fera mieux)",
+    "90–120 min : écriture libre — rédiger en 10 lignes « pourquoi le problème de l'arrêt est indécidable » (entraînement question ouverte du bac) ; corrigé poussé"
+   ],
+   "aPreparer": [
+    "Préparer les cartes de l'activité débranchée (phrases auto-référentes)",
+    "Relire la preuve de l'arrêt pour la questionner en classe"
+   ]
+  },
+  {
+   "titre": "Séance 9 — Entraînement épreuves du bac (écrit + pratique)",
+   "duree": "2 h",
+   "objectif": "S'entraîner dans les conditions réelles : un exercice écrit type bac sur table, un exercice type EP avec asserts sur machine.",
+   "surLeSite": [
+    "Évaluations : Bac blanc n°2, exercice « POO & dynamique » (sur table)",
+    "Évaluations : EP blanche n°2 — fusion & programmation dynamique (sur machine)",
+    "Fiches méthode « Réussir l'épreuve pratique » et « Réussir l'épreuve écrite »"
+   ],
+   "enClasse": [
+    "0–10 min : lecture guidée des deux fiches méthode — gestion du temps, lire les assert d'abord, respecter le nom demandé",
+    "10–50 min : sur table, sans machine — exercice écrit type bac (POO & programmation dynamique du Bac blanc n°2), copies ramassées",
+    "50–105 min : sur machine (Thonny, vrai Python) — EP blanche n°2 en conditions d'épreuve : 2 exercices, 55 min, asserts à faire passer",
+    "105–120 min : débriefing croisé — erreurs de gestion du temps, cas limites oubliés ; corrigés poussés en fin de séance"
+   ],
+   "aPreparer": [
+    "Imprimer le sujet écrit + prévoir des copies",
+    "Télécharger 2 sujets de la banque officielle Éduscol en réserve pour les rapides"
+   ]
+  },
+  {
+   "titre": "Séance 10 — QCM bilan, diagnostic « Ma classe » et remédiation",
+   "duree": "2 h",
+   "objectif": "Évaluer les acquis du thème, cibler les fragilités question par question et y remédier immédiatement.",
+   "surLeSite": [
+    "QCM (10 questions) en conditions individuelles",
+    "Tableau de bord « Ma classe » (diagnostic par question)",
+    "Exercices 1 à 7 (reprise ciblée) et sections 3, 4, 6 selon les fragilités"
+   ],
+   "enClasse": [
+    "0–25 min : QCM du thème (10 questions) en individuel sur le site",
+    "25–45 min : projection du diagnostic « Ma classe » — repérer les 2–3 questions les plus échouées, verbaliser les confusions",
+    "45–90 min : remédiation en groupes de besoin — groupe récursivité (Exercices 1, 3, 6 + Section 3), groupe POO (Exercices 2, 5, 7), groupe tests/mémoïsation (Exercice 4 + Section 6) ; les élèves solides tutorent ou attaquent un sujet EP de la banque",
+    "90–110 min : reprise collective des 2 questions les plus ratées, nouvelle question flash de vérification",
+    "110–120 min : bilan du thème + annonce du thème suivant (Algorithmique : la programmation dynamique y revient) ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "Vérifier la remontée des résultats dans « Ma classe » avant la séance",
+    "Préparer la composition des groupes de besoin à partir des séances 4 à 9"
+   ]
+  }
+ ]
+}

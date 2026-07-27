@@ -1,0 +1,193 @@
+{
+ "themeId": "term-archi-reseaux",
+ "level": "terminale",
+ "heures": "18 h (9 séances de 2 h — période 5, S19–S21)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Le SoC et le rôle de l'OS",
+   "duree": "2 h",
+   "objectif": "Identifier les blocs d'un SoC (CPU, GPU, mémoire, modem radio, E/S) et formuler le rôle de l'OS : gérer et partager les ressources.",
+   "surLeSite": [
+    "Sections 1–2",
+    "Exercice 1 (facile, SoC)",
+    "Ressource DIU : PDF « Introduction aux systèmes d'exploitation »"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation Première — architecture de von Neumann, composants d'un PC (au tableau, en îlots)",
+    "15–45 min : Section 1 — schéma du SoC ; chaque îlot ouvre un smartphone virtuel : quel bloc fait quoi ?",
+    "45–70 min : Exercice 1 sur table — associer fonctions et composants, avantage/limite du SoC",
+    "70–100 min : Section 2 — l'OS chef d'orchestre ; débat : que se passe-t-il quand 2 applis veulent le processeur ?",
+    "100–120 min : institutionnalisation + écriture libre (« un SoC, c'est… ») ; corrigé de l'exercice 1 poussé"
+   ],
+   "aPreparer": [
+    "Vidéoprojecteur (schéma SoC de la section 1)",
+    "Le PDF DIU « systèmes » en lien sur l'ENT"
+   ]
+  },
+  {
+   "titre": "Séance 2 — Processus et ordonnancement",
+   "duree": "2 h",
+   "objectif": "Décrire les états d'un processus (prêt/élu/bloqué) et simuler un ordonnanceur round-robin.",
+   "surLeSite": [
+    "Section 3 (cellule exécutable : tourniquet avec deque)",
+    "Exercice 5 (moyen, simulation round-robin)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — différence programme (fichier) / processus (exécution) ; erreur classique du site",
+    "15–40 min : Section 3 — les 3 états au tableau ; jeu de rôle : 4 élèves « processus », le prof « ordonnanceur »",
+    "40–75 min : cellule exécutable de la section 3 sur Basthon, puis Exercice 5 : dérouler le tourniquet {P1:4, P2:2} à la main AVANT d'exécuter",
+    "75–105 min : variantes en binômes : changer le quantum, 3 processus ; qui finit en premier et pourquoi ?",
+    "105–120 min : institutionnalisation (chronologie type bac) ; corrigé poussé"
+   ],
+   "aPreparer": [
+    "Salle info ou Basthon/Capytale (1 poste pour 2)"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Interblocage et commandes système",
+   "duree": "2 h",
+   "objectif": "Identifier un interblocage et savoir le casser ; utiliser quelques commandes de gestion des processus et fichiers.",
+   "surLeSite": [
+    "Sections 4–5",
+    "Exercice 7 (facile, deadlock)",
+    "Débranché : « Le dîner des philosophes » (30 min)"
+   ],
+   "enClasse": [
+    "0–30 min : activité débranchée « dîner des philosophes » — 5 élèves, 5 stylos ; vivre le blocage puis chercher la règle qui débloque",
+    "30–50 min : Section 4 — formaliser : attente circulaire, ordre d'acquisition des ressources ; Exercice 7 à l'oral",
+    "50–90 min : Section 5 sur machine — terminal réel : ps, kill, ls, cd, chmod… chaque îlot tient un « carnet de commandes »",
+    "90–110 min : mini-défi : retrouver le PID d'un processus et l'arrêter proprement",
+    "110–120 min : écriture libre (« un interblocage, c'est… ») ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "5 stylos + disposition en cercle pour le débranché",
+    "Postes avec accès à un terminal (Linux ou WSL/PowerShell)"
+   ]
+  },
+  {
+   "titre": "Séance 4 — Les réseaux : communiquer par paquets",
+   "duree": "2 h",
+   "objectif": "Décrire la commutation de paquets et l'encapsulation TCP/IP, en réinvestissant les acquis de Première.",
+   "surLeSite": [
+    "Section 6",
+    "Ressource DIU : fiche « Repères réseaux » (TCP/IP, DNS, masques, routage)"
+   ],
+   "enClasse": [
+    "0–20 min : réactivation Première — adresses IP, protocole TCP/IP, client/serveur (quiz oral rapide)",
+    "20–50 min : Section 6 — pourquoi découper en paquets ? Activité : envoyer une « lettre » découpée en 4 morceaux qui prennent des chemins différents",
+    "50–80 min : lecture guidée de la fiche « Repères réseaux » en îlots : chaque îlot restitue une notion (DNS, masque, passerelle…)",
+    "80–110 min : trace écrite collective — schéma de l'encapsulation au tableau, recopié et annoté",
+    "110–120 min : institutionnalisation + annonce du routage (séance 5)"
+   ],
+   "aPreparer": [
+    "Fiche « Repères réseaux » projetable",
+    "Enveloppes/papiers pour l'activité paquets"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Le routage : RIP contre OSPF",
+   "duree": "2 h",
+   "objectif": "Remplir une table de routage et comparer RIP (nombre de sauts) et OSPF (coût des liens, via Dijkstra).",
+   "surLeSite": [
+    "Section 7",
+    "Exercice 2 (moyen, table de routage R1→R5)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — le réseau à 5 routeurs de la section 7 projeté ; lien avec Dijkstra vu au thème algorithmique",
+    "15–45 min : Section 7 — RIP compte les sauts, OSPF somme les coûts : dérouler les deux sur le même graphe au tableau",
+    "45–80 min : Exercice 2 sur table en îlots : table de routage de R1, justification saut par saut",
+    "80–105 min : question type bac au tableau : panne d'une liaison → recalcul des routes ; rédiger la justification en 2 phrases",
+    "105–120 min : institutionnalisation (RIP ∝ sauts, OSPF ∝ 1/débit) ; corrigé poussé"
+   ],
+   "aPreparer": [
+    "Graphe du réseau imprimé (1 par îlot)",
+    "Copies : question de routage rédigée à ramasser"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Chiffrement symétrique : César et XOR",
+   "duree": "2 h",
+   "objectif": "Programmer un chiffrement symétrique (César, XOR) et comprendre le problème de l'échange de clé.",
+   "surLeSite": [
+    "Section 8 (cellule exécutable : code de César)",
+    "Exercices 3 (texte à trou César), 4 (déchiffrer PHVVDJH) et 6 (XOR)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — codage des caractères (ord/chr, vu en Première) et opérateur modulo",
+    "15–40 min : Section 8 — le code de César : exécuter la cellule, chiffrer son prénom à la main puis à la machine",
+    "40–70 min : Exercice 3 (texte à trou : le modulo 26) puis Exercice 4 (déchiffrer avec la clé -3)",
+    "70–100 min : Exercice 6 — chiffrement XOR ; constater que (x ^ k) ^ k = x : même clé pour chiffrer et déchiffrer",
+    "100–120 min : institutionnalisation — <strong>symétrique = une seule clé partagée</strong>, d'où le problème de l'échange ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "Salle info (Basthon/Capytale)",
+    "Alphabet + table ASCII imprimés en aide"
+   ]
+  },
+  {
+   "titre": "Séance 7 — Chiffrement asymétrique et HTTPS",
+   "duree": "2 h",
+   "objectif": "Expliquer le couple clé publique/clé privée, l'intérêt de HTTPS, et consolider en codant Vigenère.",
+   "surLeSite": [
+    "Section 9 (cellule exécutable : Vigenère)",
+    "Exercice 8 (moyen, asymétrique)",
+    "Défi « Mission : un message à l'épreuve des espions »"
+   ],
+   "enClasse": [
+    "0–20 min : réactivation — pourquoi le symétrique coince : sketch du cadenas (boîte ouverte à tous, clé gardée secrète)",
+    "20–50 min : Section 9 — clé publique/privée, HTTPS ; observer le cadenas et le certificat d'un vrai site dans le navigateur",
+    "50–70 min : Exercice 8 sur table : rédiger pourquoi l'asymétrique résout l'échange de clé (2 phrases type bac)",
+    "70–110 min : défi en îlots — Vigenère : chiffrer/déchiffrer, puis débattre : pourquoi résiste-t-il mieux que César aux fréquences ?",
+    "110–120 min : institutionnalisation + corrigés poussés ; annonce de la séance d'entraînement bac"
+   ],
+   "aPreparer": [
+    "Postes avec navigateur (inspection d'un certificat HTTPS)",
+    "Deux cadenas ou images pour le sketch clé publique/privée"
+   ]
+  },
+  {
+   "titre": "Séance 8 — Entraînement épreuves du bac",
+   "duree": "2 h",
+   "objectif": "S'entraîner en conditions réelles : un exercice écrit type bac sur ce thème, un exercice type épreuve pratique sur machine.",
+   "surLeSite": [
+    "Évaluations : Bac blanc n°2, exercice 1 « Processus, ordonnancement et routage » (7 pts)",
+    "Évaluations : EP blanche n°1 ou n°2 (1 exercice au choix)",
+    "Méthodes : « Réussir l'épreuve pratique » et « Réussir l'épreuve écrite »"
+   ],
+   "enClasse": [
+    "0–10 min : lecture des deux fiches méthode — lire les assert d'abord, ne jamais laisser une question de cours vide",
+    "10–55 min : sur table, sans document : exercice 1 du Bac blanc n°2 (états, tourniquet, deadlock, RIP/OSPF), code au stylo",
+    "55–65 min : correction croisée entre îlots avec le barème projeté",
+    "65–110 min : sur Thonny (vrai Python) : 1 exercice d'EP blanche avec asserts — coder, exécuter, valider tous les tests",
+    "110–120 min : bilan individuel : chacun note son point faible (écrit ou machine) ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "Copies + sujet écrit imprimé (exercice 1 du Bac blanc n°2)",
+    "Thonny installé sur les postes — l'EP se passe sur un vrai Python",
+    "Un sujet de la banque officielle Éduscol en réserve pour les rapides"
+   ]
+  },
+  {
+   "titre": "Séance 9 — QCM bilan, diagnostic et remédiation",
+   "duree": "2 h",
+   "objectif": "Évaluer les acquis du thème, diagnostiquer les fragilités avec « Ma classe » et remédier par groupes de besoin.",
+   "surLeSite": [
+    "QCM (10 questions)",
+    "Suivi « Ma classe » : matrice du thème + diagnostic par question",
+    "Exercices 1 à 8 (reprise ciblée)",
+    "Résumé et erreurs fréquentes du thème"
+   ],
+   "enClasse": [
+    "0–25 min : QCM du thème (10 questions) en autonomie, chacun sur son compte",
+    "25–40 min : diagnostic « Ma classe » projeté (anonymisé) : quelles questions ont résisté ?",
+    "40–85 min : remédiation par groupes de besoin — groupe processus/interblocage (Exercices 5 et 7), groupe routage (Exercice 2), groupe chiffrement (Exercices 6 et 8) ; les plus solides tutorent",
+    "85–110 min : reprise collective des 2 questions les plus ratées + relecture des « erreurs fréquentes » du site",
+    "110–120 min : écriture libre bilan (« ce que je dois revoir avant le bac ») versée au carnet de révision"
+   ],
+   "aPreparer": [
+    "Vérifier les comptes élèves pour le QCM et l'accès « Ma classe »",
+    "Prévoir les 3 pôles de remédiation (énoncés imprimés)"
+   ]
+  }
+ ]
+}

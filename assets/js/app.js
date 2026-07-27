@@ -676,13 +676,21 @@
     const plan = (typeof THEME_PLANS !== "undefined" ? THEME_PLANS : {})[themeId];
     if (!plan) return null;
     const det = el("details", "theme-plan teacher-block");
-    det.appendChild(el("summary", null, "📅 Déroulé heure par heure (prof) — " + plan.heures));
+    det.appendChild(el("summary", null,
+      "📅 Déroulé heure par heure (prof) — " + plan.heures +
+      ` <span class="plan-ouvrir">clique pour dérouler ▾</span>`));
     const body = el("div", "theme-plan-body");
     if (plan.resume) body.appendChild(el("p", "extra-hint", plan.resume));
     const tools = el("div", "tp-print-group");
     const bP = el("button", "btn secondary", "🖨️ Imprimer le déroulé");
     bP.addEventListener("click", () => printThemePlan(plan, themeId));
     tools.appendChild(bP);
+    // 📝 Toute la trace écrite du thème en un seul document (à projeter/distribuer).
+    if (plan.seances.some((s) => s.cours)) {
+      const bC = el("button", "btn secondary", "🖨️ Tout le cours à noter (élèves)");
+      bC.addEventListener("click", () => printCoursANoter(plan, themeId));
+      tools.appendChild(bC);
+    }
     body.appendChild(tools);
     // Cahier de textes : choisir une classe pour cocher les séances faites.
     const myClasses = (P.getClasses ? P.getClasses() : []).filter(
@@ -756,6 +764,22 @@
         seanceSyncs.push(sync);
         card.appendChild(bar);
       }
+      // 📝 La trace écrite de la séance : ce que les élèves copient dans le cahier,
+      // prête à projeter au tableau ou à imprimer/dicter.
+      if (s.cours) {
+        const cdet = el("details", "plan-cours");
+        cdet.appendChild(el("summary", null, "📝 Cours à noter dans le cahier <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
+        const cbody = el("div", "plan-cours-body");
+        cbody.innerHTML = s.cours;
+        const cbtn = el("button", "btn secondary", "🖨️ Projeter / imprimer cette trace écrite");
+        cbtn.addEventListener("click", () =>
+          openPrint("Cours à noter — " + s.titre,
+            `<h1>📝 Cours à noter — ${s.titre}</h1>` + s.cours)
+        );
+        cbody.appendChild(cbtn);
+        cdet.appendChild(cbody);
+        card.appendChild(cdet);
+      }
       const grid = el("div", "plan-grid");
       [["📖 Sur le site", s.surLeSite], ["🧑‍🏫 En classe", s.enClasse], ["🧰 À préparer toi-même", s.aPreparer]].forEach(([t, items]) => {
         const col = el("div", "plan-col");
@@ -792,6 +816,22 @@
     );
   }
 
+  // Toute la trace écrite du thème, séance par séance — le « cahier modèle »
+  // à projeter en classe ou à donner à un élève absent.
+  function printCoursANoter(plan, themeId) {
+    const c = COURSES.find((x) => x.id === themeId);
+    const blocs = plan.seances
+      .filter((s) => s.cours)
+      .map((s) => `<h2>${s.titre}</h2>` + s.cours)
+      .join("");
+    openPrint(
+      `Cours à noter — ${c ? c.title : themeId}`,
+      `<h1>📝 Cours à noter — ${c ? c.title : themeId}</h1>` +
+        `<p class="intro">La trace écrite complète du thème, séance par séance : à projeter pendant le cours, ou à donner à un élève absent pour rattraper son cahier.</p>` +
+        blocs
+    );
+  }
+
   // Kit de préparation du thème (prof) : la 3e colonne du déroulé, FOURNIE —
   // matériel débranché imprimable, fichiers réels (Capytale/Thonny), évaluations.
   // Données : THEME_KITS (resources.js).
@@ -799,7 +839,9 @@
     const kit = (typeof THEME_KITS !== "undefined" ? THEME_KITS : {})[themeId];
     if (!kit) return null;
     const det = el("details", "theme-plan theme-kit teacher-block");
-    det.appendChild(el("summary", null, "🧰 Kit de préparation (prof) — matériel, fichiers, évaluations"));
+    det.appendChild(el("summary", null,
+      "🧰 Kit de préparation (prof) — matériel, fichiers, évaluations" +
+      ` <span class="plan-ouvrir">clique pour dérouler ▾</span>`));
     const body = el("div", "theme-plan-body");
     if (kit.intro) body.appendChild(el("p", "extra-hint", kit.intro));
     if (kit.imprimables && kit.imprimables.length) {

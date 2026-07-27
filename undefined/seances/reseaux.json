@@ -1,0 +1,105 @@
+{
+ "themeId": "reseaux",
+ "level": "premiere",
+ "heures": "≈ 8 h (4 séances de 2 h) — S26–S27 de la PROGRESSION (Mai, Période 5)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Protocole, adresse IP et paquets : le réseau vivant",
+   "duree": "2 h",
+   "objectif": "Expliquer le rôle d'un protocole, comprendre le découpage d'un message en paquets numérotés avec en-tête, et découvrir l'encapsulation.",
+   "surLeSite": [
+    "Activité débranchée « Le réseau vivant (paquets) » (25–35 min : cartes-paquets, routeurs humains, désordre/perte/doublon ; déroulé, variante et notes prof fournis)",
+    "Sections 1–3 : « Relier les machines », « Réseau, protocole et adresse IP » (analogie postale), « Découper un message en paquets » avec le schéma d'encapsulation et la cellule ▶ découpage/reconstruction à faire manipuler",
+    "Exercices 1 à 3 (faciles) : rôle du numéro, recoller 3 paquets, vrai/faux « un seul bloc »",
+    "QCM questions « à quoi sert un protocole » et « pourquoi découper en paquets »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel + accroche : « quand tu envoies ce message, part-il d'un seul bloc ? » — vote à main levée, on y répondra en fin de séance.",
+    "10–45 min : débranché « Le réseau vivant » : phrase découpée en 5 cartes-paquets numérotées, élèves-routeurs, arrivée en désordre, retri par numéro ; le prof RETIRE une carte (perte détectée et redemandée) puis glisse un doublon (ignoré).",
+    "45–70 min : institutionnalisation Sections 1–2 : protocole = règles communes (analogie de la lettre), adresse IP = adresse postale de la machine ; puis Section 3 : l'en-tête (src, dst, num) et le schéma des enveloppes emboîtées (encapsulation) recopié.",
+    "70–95 min : sur postes : cellule ▶ de la Section 3 : exécuter le découpage de « Bonjour le monde », changer le message, observer les dictionnaires-paquets ; puis la reconstruction triée par numéro.",
+    "95–115 min : Exercices 1 à 3 (faciles) en autonomie, réponse rédigée avant de déplier la solution ; les rapides ajoutent un champ « taille » à l'en-tête.",
+    "115–120 min : bilan : retour au vote de départ (c'était faux !) ; le prof pousse les corrigés ; trace écrite : paquet = en-tête + données."
+   ],
+   "aPreparer": [
+    "Cartes-paquets à fabriquer (n° + un mot au feutre, 5 par message, 2 jeux) — le site donne le déroulé, pas le matériel",
+    "Plan de classe dégagé pour la chaîne de routeurs humains",
+    "Trace écrite : schéma d'encapsulation à compléter, à photocopier",
+    "Vidéoprojecteur pour la cellule ▶ en correction collective"
+   ]
+  },
+  {
+   "titre": "Séance 2 — Routage, désordre, perte et doublon",
+   "duree": "2 h",
+   "objectif": "Décrire le routage de proche en proche et sa robustesse ; détecter et traiter les trois incidents (désordre → retri, perte → numéro manquant, doublon → ignoré) en Python.",
+   "surLeSite": [
+    "Sections 4–5 : « Le routage : trouver le chemin » (schéma routeurs A/B/C/D, note « Terminale » sur RIP/OSPF) et « Désordre, perte et doublon » (tableau des 3 incidents) avec cellule ▶ reconstruire() à faire manipuler",
+    "Exercices 4 et 5 (moyens) — découper « Vive la NSI » en compréhension ; détecter les manquants dans 1, 2, 4, 5",
+    "Exercices 7 et 8 (défis) — reconstruire() avec dictionnaire {num: data} puis version qui SIGNALE les perdus ; Exercice 9 (défi) — pourquoi le routage rend Internet robuste",
+    "QCM questions « que fait un routeur » et « paquets dans le désordre »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : re-dicter les 3 incidents et leur remède, sur ardoise (le tableau de la Section 5 en autocontrôle).",
+    "10–30 min : débranché routage : la variante « panne » de l'activité réseau vivant : un élève-routeur « tombe en panne », les cartes passent par un autre chemin ; relier au schéma A/B/C/D de la Section 4 ; Exercice 9 traité à l'oral.",
+    "30–50 min : institutionnalisation Section 4 : routage de proche en proche, plusieurs chemins, robustesse (conçu pour ça) ; bien poser la limite du programme : les protocoles de routage (RIP/OSPF), c'est la Terminale.",
+    "50–80 min : sur postes : Section 5, cellule ▶ reconstruire() exécutée sur le cas désordre + doublon ; les élèves cassent le jeu de paquets (retirer le n°2) et observent le message d'alerte ; Exercices 4 puis 5 en cellule vide.",
+    "80–110 min : Exercices 7 puis 8 (défis) en binômes : la version dictionnaire, puis la version qui signale les perdus ; faire VERBALISER pourquoi une clé de dictionnaire élimine le doublon.",
+    "110–120 min : bilan : le tableau des 3 incidents complété de mémoire en trace écrite ; le prof pousse les corrigés ; teaser : « et comment RÉPARER une perte automatiquement ? »."
+   ],
+   "aPreparer": [
+    "Réutiliser les cartes-paquets de la séance 1 + un badge « EN PANNE » pour le routeur",
+    "Trace écrite : tableau des 3 incidents vierge à photocopier",
+    "Préparer sur Capytale un jeu de paquets « mystère » (avec perte et doublon cachés) à faire diagnostiquer en devoir maison"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Le bit alterné, IP & TCP ; lancement du projet",
+   "duree": "2 h",
+   "objectif": "Dérouler le protocole du bit alterné dans ses trois scénarios (nominal, paquet perdu, ACK perdu) ; distinguer les rôles d'IP et de TCP ; démarrer le projet « Simulation de paquets réseau ».",
+   "surLeSite": [
+    "Section 6 « Le protocole du bit alterné » : les 3 chronogrammes (cas nominal, paquet perdu, ACK perdu) et la cellule ▶ de simulation DÉTERMINISTE (scénario ok / paquet_perdu / ack_perdu) à faire manipuler ; Section 7 « Deux protocoles complémentaires : IP et TCP »",
+    "Exercice 10 (moyen) — dérouler l'échange complet Alice/Bob avec le 1er envoi de P2 perdu ; Exercice 6 (moyen) — IP vs TCP en une phrase ; Exercice 11 (défi) — coder l'émetteur bit alterné (pour les rapides)",
+    "Projet îlot « Simulation de paquets réseau » (niveau défi, 2 séances) : phases 1–3 et code de départ",
+    "QCM questions « rôle de l'ACK » et « pourquoi l'alternance 0/1 distingue un doublon »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : rejouer sur ardoise la détection d'une perte (numéro manquant) — « détecter, oui ; mais réparer ? ».",
+    "10–35 min : débranché bit alterné : deux élèves jouent Alice et Bob avec des cartes « paquet bit 0/1 » et « ACK 0/1 » ; le prof intercepte tantôt un paquet, tantôt un ACK ; la classe suit le chronogramme au tableau (les 3 scénarios de la Section 6).",
+    "35–55 min : institutionnalisation : les 3 règles (bit qui alterne, ACK, timeout/retransmission) ; pourquoi le bit démasque le doublon quand c'est l'ACK qui s'est perdu ; Section 7 : IP achemine sans garantie, TCP fiabilise — Exercice 6 rédigé en une phrase.",
+    "55–80 min : sur postes : cellule ▶ de la simulation déterministe : exécuter, puis MODIFIER le scénario (mettre deux paquet_perdu de suite, déplacer l'ack_perdu) et prédire la sortie avant chaque exécution ; Exercice 10 sur papier ensuite.",
+    "80–115 min : lancement du projet en îlots : phase 1 (pourquoi découper ? qu'exige la remise en ordre ?), phase 2 (algorithme papier), début phase 3 (codage de reconstruire() à partir du code de départ) ; les rapides attaquent l'Exercice 11.",
+    "115–120 min : point d'étape des îlots (où en est chacun) ; le prof pousse les corrigés des exercices 6 et 10 ; le projet reste ouvert pour la séance 4."
+   ],
+   "aPreparer": [
+    "Cartes « paquet bit 0 / bit 1 » et « ACK 0 / ACK 1 » à fabriquer + un sablier ou minuteur pour matérialiser le timeout",
+    "Affiches d'îlot pour la phase 2 du projet",
+    "Imprimer la grille d'évaluation de projet du site pour annoncer les critères dès le lancement"
+   ]
+  },
+  {
+   "titre": "Séance 4 — Fin du projet, consolidation, QCM et évaluation",
+   "duree": "2 h",
+   "objectif": "Terminer et présenter la simulation robuste (désordre + perte + doublon) ; consolider tout le thème ; QCM en autonomie, remédiation puis évaluation courte.",
+   "surLeSite": [
+    "Projet « Simulation de paquets réseau » phases 4–5 : les 3 tests du site (« Bonjour le monde ! », doublon sans répétition, détection du manquant), le bonus perte + doublon affichés, le corrigé reconstruire_robuste avec assert",
+    "Section 8 « Synthèse et mise en pratique » ; résumé du thème (5 points) et les 3 erreurs fréquentes",
+    "QCM du thème (9 questions) en autonomie ; matrice de suivi / diagnostic par question côté prof pour la remédiation",
+    "Défi du thème « Mission : le réseau vivant » en remédiation débranchée si besoin"
+   ],
+   "enClasse": [
+    "0–35 min : reprise du projet : finir la phase 3, puis phase 4 (passer les 3 tests du site, ajouter le bonus détection perte + doublon) ; le prof circule avec la grille d'évaluation.",
+    "35–55 min : phase 5 : chaque îlot présente en 2 min « que se passe-t-il si un paquet est perdu ? » avec démonstration à l'écran ; le prof pousse le corrigé reconstruire_robuste.",
+    "55–70 min : consolidation : Section 8 projetée, résumé (5 points) et 3 erreurs fréquentes relus ; carte mentale collective au tableau : protocole / paquets / routage / incidents / bit alterné / IP-TCP.",
+    "70–85 min : QCM du thème (9 questions) en autonomie individuelle sur le site.",
+    "85–100 min : remédiation ciblée via la matrice/diagnostic par question : groupe « bit alterné » rejoue le débranché cartes/ACK avec le prof ; groupe « incidents » refait les exercices 5 et 7 ; les autres tentent l'Exercice 11 (émetteur bit alterné).",
+    "100–120 min : évaluation écrite courte (20 min) sur table : pas de sujet dans EVALUATIONS pour ce thème → à rédiger par le prof en s'inspirant du QCM (9 questions) et des exercices 1, 5, 6 et 10 (numéro de paquet, manquants, IP vs TCP, déroulé bit alterné), conformément à la progression du site (« QCM + TP court »)."
+   ],
+   "aPreparer": [
+    "Rédiger l'évaluation courte (aucun sujet EVALUATIONS pour « reseaux » sur le site) : 4–5 questions calquées sur le QCM et les exercices 1, 5, 6, 10 + un déroulé de bit alterné ; prévoir le barème /10 ou /20",
+    "Imprimer la grille d'évaluation de projet et les sujets de l'évaluation",
+    "Garder les cartes paquet/ACK sous la main pour la remédiation débranchée",
+    "Ramasser les fichiers du projet via Capytale si le codage s'y est fait"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,154 @@
+{
+ "themeId": "architecture-os",
+ "level": "premiere",
+ "heures": "≈ 12 h (6 séances de 2 h) — S19–S21 de la PROGRESSION (Mars, Période 4)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Qu'y a-t-il dans un ordinateur ? Le modèle de von Neumann",
+   "duree": "2 h",
+   "objectif": "Identifier les composants (CPU, RAM, stockage, E/S) et décrire le modèle de von Neumann (UC, UAL, mémoire, E/S ; programme enregistré ; cycle charger → décoder → exécuter).",
+   "surLeSite": [
+    "Sections 1–2 du cours : « Qu'y a-t-il dans un ordinateur ? » (tableau composants/analogie du bureau) et « Le modèle de von Neumann » (warnbox UC ≠ UAL)",
+    "Exercice 1 (facile) — qui calcule, l'UC ou l'UAL ?",
+    "Exercice 8 (défi) — associer 4 actions au bon composant matériel",
+    "QCM du thème (8 questions) : projeter les questions 1–2 (UAL, programme enregistré) en bilan"
+   ],
+   "enClasse": [
+    "0–15 min : rituel + accroche débranchée : une vieille tour ouverte circule d'îlot en îlot ; chaque îlot nomme ce qu'il reconnaît sur une ardoise (RAM, disque, ventilateur du CPU…).",
+    "15–40 min : mise en commun sur le vrai matériel, puis lecture guidée de la Section 1 au vidéoprojecteur ; les élèves remplissent le tableau composant/rôle/analogie sur leur fiche.",
+    "40–70 min : institutionnalisation Section 2 : schéma de von Neumann au tableau (UC, UAL, mémoire, E/S) ; insister sur la warnbox « l'UC décode, l'UAL calcule » et sur l'idée révolutionnaire du programme enregistré.",
+    "70–95 min : sur postes, en binômes : Exercice 1 (facile) puis Exercice 8 (défi) — réponses argumentées à l'écrit avant de déplier la solution.",
+    "95–110 min : jeu de tri débranché : cartes « RAM / disque / UC / UAL / capteur / écran » à classer en volatile/permanent, entrée/sortie, calcule/commande.",
+    "110–120 min : trace écrite collée (schéma von Neumann + tableau composants) ; le prof pousse les corrigés des exercices ; annonce : « la semaine prochaine, on devient le processeur »."
+   ],
+   "aPreparer": [
+    "Une vieille unité centrale ouverte (ou barrette de RAM, disque dur, CPU déclipsé) — le site ne fournit que le tableau, pas le matériel réel",
+    "Ardoises + jeu de cartes composants à fabriquer (une planche par îlot)",
+    "Trace écrite à trous (schéma von Neumann à légender) à photocopier",
+    "Vidéoprojecteur pour projeter les Sections 1–2 du site"
+   ]
+  },
+  {
+   "titre": "Séance 2 — Dérouler un programme en langage machine",
+   "duree": "2 h",
+   "objectif": "Dérouler à la main une séquence LOAD/ADD/STORE/HALT sur machine à accumulateur (PC, ACC, mémoire) et relier ce déroulé au cycle de von Neumann, puis l'exécuter sur le simulateur Python du site.",
+   "surLeSite": [
+    "Section 3 « Dérouler un programme en langage machine » : tableau du jeu d'instructions, déroulé PC/ACC/mémoire, puis cellule ▶ du mini-simulateur Python (boucle fetch-décode-exécute) à faire manipuler",
+    "Exercice 11 (moyen) — dérouler À LA MAIN LOAD 0 / ADD 1 / STORE 2 / HALT avec mem = [7, 5, 0], puis vérifier en cellule ▶",
+    "QCM question « Avec mem = [7, 5], que vaut l'accumulateur après LOAD 0 puis ADD 1 ? »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : 3 questions flash sur von Neumann (ardoise) — qui décode ? qui calcule ? où est rangé le programme ?",
+    "10–35 min : débranché « je suis le processeur » : au tableau, 3 cases mémoire dessinées + une boîte ACC + un curseur PC ; un élève-UC lit l'instruction, un élève-UAL calcule, la classe suit l'état. Dérouler LOAD 0 ; ADD 1 ; STORE 2 ; HALT.",
+    "35–55 min : institutionnalisation : le tableau PC/instruction/ACC/mémoire de la Section 3 est recopié comme trace écrite ; lien explicite avec charger → décoder → exécuter.",
+    "55–85 min : sur postes : les élèves exécutent la cellule ▶ du simulateur, puis la MODIFIENT : changer mem, ajouter une instruction ADD, faire calculer mem[2] = mem[0] + mem[1] + mem[1].",
+    "85–110 min : Exercice 11 (moyen) en autonomie : déroulé à la main sur la fiche AVANT vérification par le code ; les rapides inventent un programme de 5 instructions et le donnent à dérouler au voisin.",
+    "110–120 min : bilan : question QCM projetée + le prof pousse le corrigé de l'exercice 11 ; préciser (warnbox du site) que le BO n'impose aucun langage machine particulier."
+   ],
+   "aPreparer": [
+    "Fiche « tableau de déroulé » vierge (colonnes PC / instruction / ACC / mémoire) à photocopier — le site montre le tableau rempli, pas la version à compléter",
+    "Étiquettes géantes LOAD/ADD/STORE/HALT + 3 boîtes « mémoire » pour le théâtre du processeur",
+    "Prévoir la même activité sur Capytale (copier le code du simulateur) pour les élèves qui veulent le garder"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Du transistor aux portes logiques : le demi-additionneur",
+   "duree": "2 h",
+   "objectif": "Réaliser des opérations logiques de base avec des portes ET/OU/NON/XOR et construire un demi-additionneur (somme = XOR, retenue = ET), en Python puis en simulation de circuit.",
+   "surLeSite": [
+    "Sections 4–5 : « Du transistor à la porte logique » (tableau des 4 portes) et « Construire un circuit : le demi-additionneur » avec cellule ▶ (fonctions ET/OU/NON/XOR) à faire manipuler",
+    "Exercice 5 (moyen) — que valent somme et retenue pour a=1, b=1 ? (cellule fournie)",
+    "Défi du thème « Mission : demi-additionneur » (code de départ fourni)",
+    "Rubrique Logisim Evolution du thème : circuits fournis « Additionneurs & soustracteur » (Addition.circ) et « UAL » (ALU.circ), + PDF « 4 — Logique combinatoire »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : rappel algèbre de Boole (thème « Représentation des données ») : tables de ET, OU, NON sur ardoise.",
+    "10–35 min : débranché « portes humaines » : deux élèves-entrées lèvent (1) ou baissent (0) le bras, un élève-porte applique sa règle ; la classe prédit la sortie. Enchaîner ET, OU, XOR.",
+    "35–55 min : institutionnalisation Section 4 (transistor = interrupteur, milliards par processeur) puis Section 5 : construire ensemble la table 1+1 → somme 0, retenue 1 ; faire RECONNAÎTRE que somme = XOR et retenue = ET.",
+    "55–85 min : sur postes : cellule ▶ du demi-additionneur exécutée puis modifiée ; Exercice 5 (moyen) ; les élèves écrivent ensuite XOR uniquement avec ET/OU/NON dans une cellule vide.",
+    "85–110 min : défi « Mission : demi-additionneur » en îlots ; les plus rapides ouvrent Logisim Evolution avec le fichier Addition.circ du site et câblent le demi-additionneur graphiquement.",
+    "110–120 min : bilan : projection du circuit Logisim qui fonctionne ; le prof pousse les corrigés ; trace écrite : les 4 portes + le demi-additionneur."
+   ],
+   "aPreparer": [
+    "Installer Logisim Evolution sur les postes et télécharger les .circ depuis la page du thème (le site fournit les fichiers, pas l'installation)",
+    "Cartons 0/1 pour l'activité « portes humaines »",
+    "Imprimer le PDF « 4 — Logique combinatoire » du site comme support pour les îlots avancés",
+    "Trace écrite : tables de vérité à compléter puis coller"
+   ]
+  },
+  {
+   "titre": "Séance 4 — L'OS, capteurs/actionneurs et l'arborescence de fichiers",
+   "duree": "2 h",
+   "objectif": "Identifier les rôles du système d'exploitation, la chaîne capteur → traitement → actionneur, et savoir écrire un chemin absolu ou relatif dans une arborescence.",
+   "surLeSite": [
+    "Sections 6–8 : « Le rôle du système d'exploitation », « Périphériques, capteurs et actionneurs — l'IHM » avec cellule ▶ du thermostat à faire manipuler, « Le système de fichiers arborescent » avec l'exercice intégré « Entraîne-toi : trouve le chemin relatif » (4 questions, corrigé dans l'onglet prof)",
+    "Exercice 10 (facile) — classer capteur/actionneur ; Exercice 3 (facile) — chemin relatif ../photos",
+    "QCM questions « rôle de l'OS » et « un capteur est un périphérique… »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : « citez 3 OS » — recueil au tableau (Windows, Android, Linux…), faire émerger que le smartphone en a un aussi.",
+    "10–30 min : institutionnalisation Section 6 : les 5 missions de l'OS (processus, mémoire, fichiers, périphériques, sécurité) ; warnbox « l'OS pilote le matériel, il ne le fabrique pas ».",
+    "30–55 min : Section 7 : tableau capteur/traitement/actionneur complété en îlot avec 3 nouveaux exemples par îlot ; puis sur postes, cellule ▶ du thermostat : exécuter, changer la CONSIGNE, ajouter une hystérésis simple. Exercice 10 (facile) en autonomie.",
+    "55–80 min : débranché arborescence : l'arbre /home/ada du cours reproduit en ficelle + étiquettes au sol (ou au tableau) ; un élève-curseur se déplace physiquement : « où t'emmène ../photos ? ».",
+    "80–105 min : Section 8 sur postes : les 4 questions « trouve le chemin relatif » sur le cahier AVANT mise en commun (corrigé dans l'onglet prof du site) ; Exercice 3 (facile) ; les rapides inventent une arborescence piège pour le voisin.",
+    "105–120 min : bilan : 2 questions du QCM projetées ; trace écrite : arbre + définitions chemin absolu/relatif, . et .. ; annonce du terminal pour la prochaine séance."
+   ],
+   "aPreparer": [
+    "Ficelle + étiquettes cartonnées (/​, home, ada, photos, cours, nsi.py) pour l'arbre au sol — le site fournit le schéma, pas le matériel",
+    "Si disponible : une carte micro:bit pour montrer un vrai capteur/actionneur (citée par le cours, non fournie)",
+    "Trace écrite à photocopier : arbre à légender + tableau des 5 missions de l'OS"
+   ]
+  },
+  {
+   "titre": "Séance 5 — La ligne de commande : TP Linux et « Mission terminal »",
+   "duree": "2 h",
+   "objectif": "Utiliser pwd, ls, cd, mkdir, cat, cp, mv, rm dans un vrai terminal ; naviguer en chemins absolus et relatifs ; réinvestir dans le projet îlot « Mission terminal ».",
+   "surLeSite": [
+    "Section 9 « La ligne de commande » avec la « Session type — à toi de prédire » (6 commandes, corrigé dans l'onglet prof)",
+    "Mémo — commandes Linux essentielles (tableau des 12 commandes, à imprimer via le bouton 🖨️)",
+    "TP guidé « TP — Se repérer dans l'arborescence » étapes 1–3 (pwd/ls, chemins, mkdir -p) puis TP guidé « TP — Manipuler des fichiers » étapes 1–2 (touch/cat/wc, cp/mv) — corrigés masqués à déplier en fin de séance",
+    "Projet îlot « Mission terminal » (niveau facile, 1 séance) : phases 1–5 + simulateur Python fourni ; Exercice 9 (défi) y renvoie"
+   ],
+   "enClasse": [
+    "0–10 min : rituel : projeter la « Session type » de la Section 9 ; chaque élève prédit sur ardoise ce qu'affichent les 6 commandes (départ /home/ada) ; correction avec l'onglet prof.",
+    "10–20 min : distribution du Mémo Linux imprimé ; démonstration au vidéoprojecteur d'un vrai terminal : pwd, ls, cd, l'invite, la casse.",
+    "20–55 min : TP guidé « Se repérer dans l'arborescence » étapes 1–3 en binômes sur vrai terminal ; le prof circule ; verbaliser « où suis-je ? » avant chaque commande.",
+    "55–80 min : TP guidé « Manipuler des fichiers » étapes 1–2 (création du fichier eleves.txt, cp/mv/renommage) ; avertir : mv écrase, rm est irréversible.",
+    "80–110 min : projet « Mission terminal » en îlots : phase 1 (dessiner l'arborescence), phase 2 (suite de commandes sur papier), phases 3–4 (simulateur Python du site : retrouver secret.txt), phase 5 éclair (expliquer .. à l'oral).",
+    "110–120 min : mise en commun : chemin absolu /serveur/prive/secret.txt au tableau ; le prof déplie les corrigés masqués des TP guidés et pousse celui du projet."
+   ],
+   "aPreparer": [
+    "Un VRAI terminal par poste : Linux du lycée, WSL, ou terminal en ligne — les TP guidés du site sont en bash, le site ne fournit pas l'environnement",
+    "Imprimer le Mémo Linux (bouton 🖨️ du site), un par élève",
+    "Feuilles blanches pour dessiner l'arborescence du projet (phase 1)",
+    "Prévoir le simulateur « Mission terminal » copié sur Capytale en secours si les terminaux réels manquent"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Droits et permissions, consolidation et évaluation",
+   "duree": "2 h",
+   "objectif": "Lire et modifier des permissions Unix (rwx / octal, chmod) ; consolider tout le thème ; QCM en autonomie avec remédiation, puis TP noté.",
+   "surLeSite": [
+    "Section 10 « Droits et permissions » avec cellule ▶ permissions_vers_octal ; Section 11 « Synthèse : du transistor à l'utilisateur »",
+    "TP guidé « TP — Droits et permissions » étapes 1–2 (lire, modifier) ; étape 3 « premier script bash » en bonus pour les rapides",
+    "Exercices 2 (facile, rwxr-x--- → 750), 4 (moyen, vers_octal) et 7 (défi, octal_vers_droits)",
+    "Résumé du thème (6 points) et « erreurs fréquentes » (3 pièges) à relire ; QCM du thème (8 questions) en autonomie",
+    "Évaluation : TP noté « Permissions et portes logiques » (EVALUATIONS du site, 1 h sur poste, /20, corrigé prof fourni)"
+   ],
+   "enClasse": [
+    "0–25 min : rituel puis Section 10 : décoder rwxr-x--- ensemble, règle r=4/w=2/x=1 ; TP guidé « Droits et permissions » étapes 1–2 sur terminal ; Exercice 2 en ardoise.",
+    "25–40 min : sur postes : cellule ▶ permissions_vers_octal exécutée et modifiée ; Exercices 4 puis 7 en cellule vide (les rapides font l'étape 3 bonus du TP : script bash).",
+    "40–50 min : consolidation : relire le résumé (6 points) et les 3 erreurs fréquentes du site ; Section 11 projetée : la pile transistors → portes → processeur → OS → applications.",
+    "50–65 min : QCM du thème (8 questions) en autonomie individuelle sur le site.",
+    "65–80 min : remédiation : le prof ouvre la matrice de suivi / le diagnostic par question côté enseignant, repère les questions échouées (UC/UAL et octal en général) et reprend en mini-groupe pendant que les autres refont les exercices ratés.",
+    "80–120 min : évaluation : TP noté « Permissions et portes logiques » du site, 1 h sur poste, individuel."
+   ],
+   "aPreparer": [
+    "Imprimer le sujet du TP noté « Permissions et portes logiques » (bouton 🖨️ de la rubrique EVALUATIONS) + préparer les postes (terminal + Python)",
+    "Programmer le DS sur table de 50 min « DS — Architectures et systèmes d'exploitation » (sujet + corrigé fournis dans EVALUATIONS — c'est le DS n°3 de la progression) sur un créneau ultérieur",
+    "Fiche de remédiation : liste des exercices du site à refaire selon la question de QCM échouée",
+    "Trace écrite finale : la pyramide « du transistor à l'utilisateur » à coller"
+   ]
+  }
+ ]
+}

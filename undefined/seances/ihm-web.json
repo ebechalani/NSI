@@ -1,0 +1,160 @@
+{
+ "themeId": "ihm-web",
+ "level": "premiere",
+ "heures": "≈ 12 h (6 séances de 2 h)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Le Web, le dialogue client-serveur et le HTML",
+   "duree": "2 h",
+   "objectif": "Comprendre requête/réponse entre client et serveur, distinguer les rôles des 3 langages, et écrire le squelette d'une page HTML.",
+   "surLeSite": [
+    "Sections 1 à 4 : « Le Web : un dialogue client-serveur », « Les trois langages du Web », « Structure d'un document HTML », « Attributs et détails à connaître » (démos HTML interactives à faire modifier)",
+    "Défi du thème « Mission : maquette de page club » (en îlot, sur papier)",
+    "Exercices 1 et 3 (facile) : HTML, CSS ou JS ? ; page minimale « Club NSI » sur papier"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — afficher le code source d'un site connu au vidéoprojecteur : « quelqu'un a ÉCRIT tout ça ».",
+    "10–35 min : <strong>débranché</strong> — jeu de rôle client/serveur : un élève « navigateur » écrit une requête sur papier (URL), un élève « serveur » pioche la bonne fiche-réponse et la renvoie ; introduire requête/réponse, puis les 3 langages (structure/habillage/interaction) avec l'analogie de la maison.",
+    "35–55 min : <strong>manipulation</strong> — sections 3–4 : chaque élève modifie les démos interactives (changer le titre, ajouter un paragraphe, une image, un lien).",
+    "55–70 min : <strong>institutionnalisation</strong> — squelette HTML au cahier + tableau des 3 langages.",
+    "70–100 min : <strong>îlots</strong> — défi « Mission : maquette de page club » : dessiner la page d'accueil du club NSI (titre, image, menu, bouton d'inscription) en annotant chaque zone HTML/CSS/JS. <strong>Conserver ces maquettes : elles servent au projet !</strong>",
+    "100–115 min : exercices 1 et 3 sur papier, puis vérification dans une démo du site.",
+    "115–120 min : corrigés + bilan."
+   ],
+   "aPreparer": [
+    "Fiches-réponses papier pour le jeu client/serveur (le site n'a pas d'activité débranchée pour ce thème : à fabriquer)",
+    "Feuilles A3 + feutres pour les maquettes ; pochette pour les archiver jusqu'au projet",
+    "Trace écrite : squelette HTML + tableau des 3 langages",
+    "Vidéoprojecteur (code source d'un site réel)"
+   ]
+  },
+  {
+   "titre": "Séance 2 — CSS : sélecteurs, couleurs et modèle de boîte",
+   "duree": "2 h",
+   "objectif": "Mettre en forme avec CSS : sélecteurs élément/.classe/#id, couleurs et unités, modèle de boîte (margin/border/padding).",
+   "surLeSite": [
+    "Sections 5 à 9 : « La mise en forme avec CSS », « Les sélecteurs CSS en profondeur », « Couleurs, valeurs et unités », « Où placer le CSS, et le modèle de boîte », « Bloc ou en ligne ? » (démos interactives)",
+    "Exercices interactifs 🏆 « mets en forme une page avec du CSS » et « s'entraîner aux sélecteurs CSS » (éditeurs CSS intégrés)",
+    "Exercice interactif 🏆 « styliser une carte (modèle de boîte) » pour les rapides",
+    "Exercice 2 (facile) : que ciblent .menu et #menu ?"
+   ],
+   "enClasse": [
+    "0–10 min : rituel ardoise — HTML, CSS ou JS ? (réactivation exercice 1).",
+    "10–25 min : <strong>débranché</strong> — « relooking papier » : sur la maquette de la séance 1, surligner en deux couleurs ce qui relève du contenu (HTML) et de l'habillage (CSS) ; discuter « même contenu, deux habillages ».",
+    "25–55 min : <strong>manipulation</strong> — sections 5 à 7 : modifier les démos (changer une couleur, cibler .menu puis #titre) ; section 8 : schéma du modèle de boîte.",
+    "55–70 min : <strong>institutionnalisation</strong> — les 3 sélecteurs (p / .classe / #id) + le modèle de boîte au cahier.",
+    "70–105 min : <strong>pratique</strong> — exercices interactifs 🏆 « mets en forme une page » puis « sélecteurs CSS » en binômes ; rapides : 🏆 « styliser une carte ».",
+    "105–120 min : exercice 2 sur papier + corrigés poussés."
+   ],
+   "aPreparer": [
+    "Surligneurs 2 couleurs par îlot + les maquettes de la séance 1",
+    "Schéma A4 du modèle de boîte à coller",
+    "Nuancier imprimé de quelques couleurs hexadécimales (pont avec le thème données de base)",
+    "Casque anti-frustration : prévoir les solutions des exos 🏆 à pousser en fin d'heure"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Cascade, formulaires et protocole HTTP (GET/POST)",
+   "duree": "2 h",
+   "objectif": "Comprendre qui l'emporte en CSS (cascade), construire un formulaire complet, et distinguer GET (URL) et POST (corps de la requête).",
+   "surLeSite": [
+    "Sections 10 et 11 : « La cascade, la spécificité et l'héritage », « Responsive : media queries » + exercice interactif 🏆 « la cascade — quelle couleur l'emporte ? »",
+    "Sections 18 à 20 : « Client et serveur : qui exécute quoi ? », « Créer un formulaire HTML » (démo), « Le protocole HTTP : GET et POST »",
+    "Exercice guidé 🏆 « un formulaire d'inscription (étape par étape) » : les 13 étapes, code final assemblé à la dernière",
+    "Exercices 4, 5 et 6 (moyen) : URL → dictionnaire Python, GET ou POST pour un mot de passe, formulaire sur papier"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — 3 sélecteurs à décoder sur ardoise.",
+    "10–30 min : <strong>manipulation</strong> — sections 10–11 + exo 🏆 « la cascade » : parier sur la couleur gagnante avant de vérifier.",
+    "30–45 min : <strong>débranché</strong> — chaque élève écrit une URL à paramètres sur ardoise (recherche?q=…&tri=…), le voisin la décompose en chemin + paramètres ; section 20 projetée en appui.",
+    "45–60 min : <strong>institutionnalisation</strong> — GET = paramètres visibles dans l'URL, POST = corps de la requête ; règle en rouge : jamais un mot de passe en GET (erreur fréquente n°3 du thème).",
+    "60–100 min : <strong>pratique</strong> — exercice guidé du formulaire, étapes 1 à 13 en binômes (un div par champ, label relié à l'input, types email/password/date/radio) ; exécuter le code final assemblé.",
+    "100–115 min : exercices 4, 5, 6 (le 4 se code en Python dans une cellule ; les 5 et 6 sur papier).",
+    "115–120 min : corrigés poussés."
+   ],
+   "aPreparer": [
+    "Ardoises pour le débranché des URL",
+    "Impression de l'exercice guidé du formulaire (🖨️) comme fiche de route des binômes",
+    "Trace écrite GET/POST (tableau comparatif)",
+    "Ressource complémentaire éventuelle : PDF « Client / serveur » du cours DIU lié au thème (rubrique ressources)"
+   ]
+  },
+  {
+   "titre": "Séance 4 — JavaScript : les bases, les événements et le DOM",
+   "duree": "2 h",
+   "objectif": "Transposer ses acquis Python en JavaScript, réagir à un clic avec addEventListener, et lire/modifier la page avec getElementById.",
+   "surLeSite": [
+    "Sections « JavaScript : le 3ᵉ pilier », « Les bases du langage : variables, types, opérateurs », « Conditions, boucles et fonctions » (mini-éditeurs JS intégrés à faire manipuler)",
+    "Exercice interactif 🏆 « un petit programme (moyenne) »",
+    "Sections « Réagir à un événement (JavaScript) » et « Manipuler le DOM : sélectionner, lire, modifier » (démos interactives)",
+    "Exercices interactifs 🏆 « lire et modifier le contenu » et « style et classes »",
+    "Exercice 8 (défi) : au clic sur le bouton d'id b, écrire « Bonjour » dans le paragraphe d'id msg"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — retour éclair sur le formulaire (label/for, required).",
+    "10–25 min : <strong>pont Python → JS</strong> — construire ensemble au tableau le tableau de correspondance (variable, if, for, def/function, print/console.log) ; rassurer : « vous savez déjà programmer ».",
+    "25–50 min : <strong>manipulation</strong> — sections bases JS dans les mini-éditeurs (variables, condition, fonction) puis exo 🏆 « moyenne ».",
+    "50–65 min : <strong>institutionnalisation</strong> — le trio magique au cahier : getElementById, addEventListener(\"click\", …), textContent.",
+    "65–105 min : <strong>pratique</strong> — démos « Réagir à un événement » et « Manipuler le DOM » modifiées par les élèves, puis exos 🏆 « lire et modifier le contenu » et « style et classes » en binômes.",
+    "105–115 min : exercice 8 : écrire le code sur papier PUIS le tester dans une démo.",
+    "115–120 min : corrigés poussés + annonce du projet."
+   ],
+   "aPreparer": [
+    "Affiche A3 du tableau de correspondance Python ↔ JavaScript (à fabriquer, très structurant pour des débutants)",
+    "Trace écrite du trio getElementById / addEventListener / textContent",
+    "Coups de pouce imprimés pour l'exercice 8 (code à trous)",
+    "Vérifier que les postes ont un navigateur récent"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Valider un formulaire + projet « Mini-site d'inscription » (1/2)",
+   "duree": "2 h",
+   "objectif": "Comprendre la validation côté client (confort) vs côté serveur (sécurité), puis démarrer le vrai site : maquette finalisée et codage HTML/CSS dans un éditeur réel.",
+   "surLeSite": [
+    "Section « Valider un formulaire en JavaScript » (démo complète avec preventDefault) et section « Cookies, traces et vie privée »",
+    "Erreurs fréquentes du thème (n°1 : « la validation JavaScript suffit » — faux)",
+    "Exercices 7 et 9 (défis) : compter les paramètres d'une URL en Python ; pourquoi la validation JS ne suffit pas",
+    "Projet îlot « Mini-site d'inscription » : phases 1 à 3, code de départ HTML/JS fourni (formulaire + écouteur submit)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — le trio JS sur ardoise.",
+    "10–30 min : <strong>manipulation</strong> — section « Valider un formulaire » : lire la démo ensemble, repérer preventDefault et le test du champ vide ; débat oral sur l'exercice 9 (contourner le JS ? → le serveur revérifie TOUJOURS).",
+    "30–40 min : <strong>culture</strong> — section « Cookies, traces et vie privée » (10 min, lien EMC/RGPD).",
+    "40–55 min : <strong>projet, phases 1–2</strong> — ressortir les maquettes de la séance 1 ; chaque îlot arrête sa liste de champs et ses vérifications.",
+    "55–115 min : <strong>projet, phase 3 (partie 1)</strong> — coder le vrai fichier .html dans un éditeur (VS Code / Bloc-notes) et l'ouvrir dans le navigateur : structure HTML + formulaire d'abord, CSS ensuite, en s'appuyant sur le code de départ du site ; exercice 7 en Python pour les îlots en avance.",
+    "115–120 min : sauvegarde des fichiers + point d'étape par îlot."
+   ],
+   "aPreparer": [
+    "Éditeur de texte installé sur les postes (VS Code conseillé) + procédure « enregistrer en .html et ouvrir dans le navigateur »",
+    "Les maquettes A3 de la séance 1",
+    "Dossier réseau/clé par îlot pour sauvegarder le site entre les deux séances",
+    "Check-list papier de la phase 3 (formulaire, labels reliés, CSS appliqué)"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Projet (2/2), QCM, remédiation et évaluation",
+   "duree": "2 h",
+   "objectif": "Terminer la validation JavaScript, tester, présenter le mini-site (évaluation de projet), puis diagnostiquer avec le grand QCM et remédier.",
+   "surLeSite": [
+    "Projet « Mini-site d'inscription » phases 4 et 5 : tests fournis (champ vide → erreur, champ rempli → succès, pas de rechargement) et bonus (longueur ≥ 2, message rouge/vert)",
+    "QCM du thème (25 questions) en autonomie",
+    "Exercice 🏆 « Exercice bilan : écris une page complète » et exo « sélecteurs CSS » comme supports de remédiation",
+    "Côté prof : matrice de suivi + diagnostic par question ; sujets EVALUATIONS « DS — Interactions homme-machine sur le Web » (45 min) et « TP noté — Page web d'inscription » (1 h 30) prêts à l'emploi"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — rappel des critères d'évaluation du projet affichés.",
+    "10–45 min : <strong>projet, phase 4</strong> — finaliser le script de validation puis tests croisés : chaque îlot teste le site d'un autre avec la liste du site (champ vide, preventDefault, message de succès) ; bonus pour les rapides.",
+    "45–70 min : <strong>phase 5, évaluation</strong> — présentation de 3 min par îlot : démo + expliquer GET/POST et pourquoi le serveur doit revérifier ; le prof note avec la grille (projet web évalué, conforme à la progression).",
+    "70–95 min : <strong>QCM en autonomie</strong> — les 25 questions du thème ; scores relevés pour le diagnostic par question.",
+    "95–110 min : <strong>remédiation</strong> — groupes de besoin d'après le diagnostic : sélecteurs → exo 🏆 sélecteurs ; JS/DOM → exo 🏆 « lire et modifier le contenu » ; structure → 🏆 « exercice bilan : page complète ».",
+    "110–120 min : bilan du thème + annonce : le « DS — IHM Web » (45 min) du site sera donné sur table à la séance suivante (ou le TP noté « Page web d'inscription » d'1 h 30 selon le choix)."
+   ],
+   "aPreparer": [
+    "Grille d'évaluation du projet (HTML correct, CSS, validation JS, oral GET/POST/sécurité) — non fournie par le site",
+    "Fiche de tests croisés à cocher entre îlots",
+    "Imprimer le sujet du « DS — Interactions homme-machine sur le Web » (🖨️) pour l'évaluation sur table qui suit",
+    "Feuille de score QCM alimentant la matrice de suivi"
+   ]
+  }
+ ]
+}

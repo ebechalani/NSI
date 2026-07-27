@@ -1,0 +1,246 @@
+{
+ "themeId": "term-structures",
+ "level": "terminale",
+ "heures": "24 h — 12 séances de 2 h (≈ 25 h prévues au BO pour ce thème)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Interface, implémentation et pile (LIFO)",
+   "duree": "2 h",
+   "objectif": "Distinguer le contrat d'une structure (interface) de son code (implémentation) et programmer une pile.",
+   "surLeSite": [
+    "Sections 1–2 (« Interface et implémentation », « La pile (LIFO) »)",
+    "TP guidé « Pile & file : de l'interface à l'implémentation » étape 1",
+    "Exercice 1 (texte à trou : empiler / sommet)",
+    "Activité débranchée « Piles & files avec des gobelets »"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation Première — que sait faire une <em>list</em> Python (append, pop, indices) ? sondage oral rapide.",
+    "15–35 min : débranché gobelets en îlots : empiler/dépiler à voix haute, impossible d'atteindre le milieu → LIFO.",
+    "35–65 min : Sections 1–2 vidéoprojetées, cellules exécutées : le contrat (TAD), la classe Pile, l'image de la prise électrique.",
+    "65–95 min : machine — TP guidé étape 1 (prédire les 4 print AVANT d'exécuter) + Exercice 1.",
+    "95–120 min : institutionnalisation (interface = promesse, coût = implémentation) ; écriture libre : « pourquoi cacher _elements ? » ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Une pile de gobelets + étiquettes par îlot",
+    "TP distribué sur Capytale (ou Thonny prêt sur les postes)"
+   ]
+  },
+  {
+   "titre": "Séance 2 — La pile en action et la file (FIFO)",
+   "duree": "2 h",
+   "objectif": "Résoudre un vrai problème avec une pile (parenthésage) et implémenter une file efficace avec deque.",
+   "surLeSite": [
+    "Sections 3–4 (« Application de la pile : les parenthèses », « La file (FIFO) »)",
+    "TP guidé « Pile & file » étapes 2–3 (+ étape 4 bonus)",
+    "Exercice 2 (texte à trou : defiler avec deque)",
+    "Défi « Mission : un correcteur de parenthèses »"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — LIFO ou FIFO ? quiz éclair à l'oral sur des situations (Ctrl-Z, file d'impression…).",
+    "10–35 min : Section 3 : déroulé À LA MAIN de la pile sur « (3+[2×(1-4)]) », un élève au tableau tient la pile.",
+    "35–60 min : Section 4 : la file, pourquoi list.pop(0) est lent, deque.popleft() en O(1) ; cellule exécutée.",
+    "60–100 min : machine — TP étapes 2–3 (file d'impression, puis mini-défi parenthèses à compléter jusqu'à faire passer les 5 asserts) ; étape 4 bonus pour les rapides.",
+    "100–120 min : institutionnalisation : tableau comparatif pile/file (opérations, ordre de sortie, coûts) ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "TP étapes 2–4 prêt sur Capytale/Thonny",
+    "Le déroulé des parenthèses préparé au tableau"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Projet îlots : l'historique du navigateur",
+   "duree": "2 h",
+   "objectif": "Réinvestir la pile en autonomie : modéliser Précédent / Suivant avec deux piles et une classe testée par asserts.",
+   "surLeSite": [
+    "Projet îlots n°1 « L'historique du navigateur (pile) » (phases 1 à 5)",
+    "Exercice 5 (défi : inverser une chaîne avec une pile)"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — pourquoi le bouton Précédent est-il un LIFO ? discussion en îlots.",
+    "10–30 min : phases 1–2 sur papier : décrire visiter / precedent / suivant avec DEUX piles (passé et futur).",
+    "30–85 min : codage de la classe Navigateur + scénario de tests assert (visiter A, B, C ; revenir ; visiter D…).",
+    "85–105 min : démonstrations éclair des îlots ; question piège : que devient le « futur » après une nouvelle visite ?",
+    "105–120 min : bilan collectif ; Exercice 5 en autonomie pour les rapides ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Thonny/Capytale sur tous les postes (le projet peut compter comme TP noté n°1)",
+    "Grille d'évaluation du projet (structure choisie, tests, démo)"
+   ]
+  },
+  {
+   "titre": "Séance 4 — Listes chaînées et projet « file de priorité »",
+   "duree": "2 h",
+   "objectif": "Découvrir les maillons chaînés (définition récursive) et concevoir en îlot une structure absente de Python : la file de priorité.",
+   "surLeSite": [
+    "Section 5 (« Listes chaînées : des maillons reliés »)",
+    "Projet îlots n°2 « Gestionnaire de tâches à priorité » (phases 1 à 4)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — fonctions récursives (lien Première / thème Langages) : cas de base + appel qui s'en rapproche.",
+    "15–45 min : Section 5 : la classe Maillon, longueur récursive, insertion en tête sans décalage ; cellules exécutées.",
+    "45–100 min : projet 2 en îlots : pourquoi ni pile ni file ne conviennent ; interface sur papier puis classe GestionnaireTaches avec tuples (priorite, numero, description) et asserts.",
+    "100–120 min : mise en commun des deux implémentations possibles (chercher le max vs liste triée) et de leurs coûts ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Thonny/Capytale prêt",
+    "Notebooks DIU EIL « Piles, files & ensembles » en ressource complémentaire (Basthon)"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Les arbres : vocabulaire, taille, hauteur",
+   "duree": "2 h",
+   "objectif": "Passer du linéaire au hiérarchique : définir récursivement un arbre binaire et calculer taille et hauteur.",
+   "surLeSite": [
+    "Section 6 (« Les arbres : une structure hiérarchique »)",
+    "Exercices 3 et 6 (taille, hauteur)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — les tuples de Première (immuables, déballage) : ils vont représenter nos nœuds.",
+    "15–40 min : vocabulaire construit au tableau sur l'arborescence des dossiers du lycée : racine, nœud, fils, feuille, taille, hauteur ; chaque îlot dessine un arbre et fait deviner ses mesures.",
+    "40–70 min : Section 6 : triplets (valeur, gauche, droite), taille et hauteur récursives ; cellules exécutées et déroulées.",
+    "70–100 min : machine — Exercices 3 et 6 (écrire les deux fonctions sans regarder le cours, puis comparer).",
+    "100–120 min : écriture libre : rédiger la définition récursive d'un arbre binaire ; piège taille ≠ hauteur explicité ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Feuilles quadrillées pour dessiner les arbres (réflexe épreuve écrite)"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Les quatre parcours d'un arbre binaire",
+   "duree": "2 h",
+   "objectif": "Maîtriser préfixe, infixe, suffixe et largeur — et découvrir que l'infixe d'un ABR sort trié.",
+   "surLeSite": [
+    "Section 7 (« Parcourir un arbre binaire »)",
+    "Exercices 4, 7 et 9 (préfixe, infixe, les 4 parcours du même arbre)"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — taille/hauteur de l'arbre affiché, réponse sur ardoise.",
+    "10–40 min : les 3 parcours en profondeur mimés au tableau (quand traite-t-on la racine ?) puis la largeur : la FILE de la séance 2 revient en scène.",
+    "40–75 min : Exercice 9 en îlots : PRÉDIRE les 4 parcours sur papier SANS exécuter, puis vérifier sur machine.",
+    "75–105 min : machine — Exercices 4 et 7 ; constat clé : l'infixe donne [1, 3, 5, 7, 9], trié.",
+    "105–120 min : institutionnalisation : suffixe = racine en dernier, largeur = file ; teaser ABR ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Un grand arbre affiché/projeté pour les déroulés à la main"
+   ]
+  },
+  {
+   "titre": "Séance 7 — L'arbre binaire de recherche : rechercher et insérer",
+   "duree": "2 h",
+   "objectif": "Exploiter l'invariant de l'ABR pour chercher et insérer en O(hauteur), et comprendre le cas dégénéré du « peigne ».",
+   "surLeSite": [
+    "Section 8 (« L'arbre binaire de recherche »)",
+    "Exercices 8 et 10 (défis : recherche puis insertion par reconstruction)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — la dichotomie de Première : éliminer la moitié à chaque étape, c'est exactement l'idée de l'ABR.",
+    "15–45 min : Section 8 : l'invariant gauche < racine < droite, recherche, insertion qui RECONSTRUIT la branche (tuples immuables) ; cellules exécutées.",
+    "45–80 min : machine — Exercice 8 (recherche) puis Exercice 10 (inserer, vérifié par l'infixe trié).",
+    "80–105 min : sur table, style bac : insérer 12, 5, 20, 3, 8, 15, 25 dans un ABR vide, dessiner l'arbre, donner hauteur et taille.",
+    "105–120 min : le « peigne » : insérer 1, 2, 3, 4… → O(n) ; bilan O(log n) équilibré vs O(n) dégénéré ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Exercice « insertion sur table » photocopié (entraînement écrit)"
+   ]
+  },
+  {
+   "titre": "Séance 8 — Les graphes : modéliser et représenter",
+   "duree": "2 h",
+   "objectif": "Modéliser des relations par un graphe et savoir écrire — et convertir — matrice et listes d'adjacence.",
+   "surLeSite": [
+    "Sections 9–10 (« Les graphes », « Matrice ou listes d'adjacence : passer de l'une à l'autre »)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — les dictionnaires de Première (clé → valeur) : ils vont porter nos listes d'adjacence.",
+    "15–35 min : modéliser au tableau les amitiés de la classe (ou un plan de métro) : sommets, arêtes, graphe non orienté.",
+    "35–70 min : Section 9 : listes d'adjacence en dictionnaire, premier parcours en largeur avec une file ; cellules exécutées.",
+    "70–100 min : Section 10 : matrice d'adjacence (symétrie), conversions dans les deux sens ; chaque îlot écrit matrice_vers_listes sans regarder, puis compare.",
+    "100–120 min : institutionnalisation : matrice = « voisins ? » en O(1) mais n² cases, listes = compactes ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Le graphe support (amitiés ou plan) préparé au tableau"
+   ]
+  },
+  {
+   "titre": "Séance 9 — Parcours en largeur et en profondeur (BFS / DFS)",
+   "duree": "2 h",
+   "objectif": "Comprendre que changer la structure (file → pile) change le parcours, et écrire le DFS itératif et récursif.",
+   "surLeSite": [
+    "Section 11 (« Le parcours en profondeur (DFS) »)",
+    "Exercice 11 (défi : dfs itératif avec une pile)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — BFS de la séance 8 déroulé à l'oral ; rappel : la pile d'appels de Python (récursivité).",
+    "15–45 min : Section 11 : DFS itératif (pile explicite) vs récursif (pile d'appels), comparaison des deux ordres sur le MÊME graphe ; cellules exécutées.",
+    "45–80 min : machine — Exercice 11 : écrire dfs(g, depart) et comparer à l'ordre BFS.",
+    "80–105 min : sur table, style bac : dérouler BFS puis DFS à la main sur un graphe donné (voisins en ordre alphabétique).",
+    "105–120 min : institutionnalisation : FILE → largeur, PILE → profondeur, une seule ligne change ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Graphe de déroulé imprimé (format question d'écrit)"
+   ]
+  },
+  {
+   "titre": "Séance 10 — Cycles dans un graphe et choix de la bonne structure",
+   "duree": "2 h",
+   "objectif": "Détecter un cycle par DFS + suivi du parent, et savoir justifier le choix d'une structure (dont liste vs dictionnaire).",
+   "surLeSite": [
+    "Sections 12–13 (« Détecter un cycle », « Bien choisir : un récapitulatif »)",
+    "Exercice 12 (défi : contient_cycle)"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation — DFS récursif récité en binômes (cas de base ? ensemble vus ?).",
+    "15–45 min : Section 12 : cycle = voisin déjà vu qui n'est PAS le parent ; déroulé à la main sur le carré A-B-C-D-A puis la chaîne A-B-C.",
+    "45–70 min : machine — Exercice 12 : contient_cycle, avec le cas du graphe non connexe.",
+    "70–95 min : Section 13 : tableau récapitulatif + cellule chronométrée liste vs dictionnaire (200 000 entrées) : le dict gagne par milliers.",
+    "95–120 min : écriture libre : pour 4 situations données (annulation, guichet, annuaire, réseau routier), choisir la structure et JUSTIFIER en une phrase ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Les 4 situations à trancher photocopiées ou projetées"
+   ]
+  },
+  {
+   "titre": "Séance 11 — Entraînement épreuves du bac : EP + écrit",
+   "duree": "2 h",
+   "objectif": "Se placer dans les conditions réelles des deux épreuves : 1 h d'épreuve pratique sur machine, puis un exercice écrit type bac sur table.",
+   "surLeSite": [
+    "Évaluations : Épreuve pratique blanche n°1 « ABR & file » (2 exercices, 1 h, asserts)",
+    "Évaluations : Bac blanc n°1, exercice 1 (arbres binaires de recherche et récursivité, 7 pts)",
+    "Fiches méthode « Réussir l'épreuve pratique » et « Réussir l'épreuve écrite »"
+   ],
+   "enClasse": [
+    "0–10 min : lecture guidée des fiches méthode : lire les asserts d'abord, respecter les noms, tester au fur et à mesure.",
+    "10–70 min : EP blanche n°1 en conditions réelles sur un VRAI Python (Thonny/Capytale) : recherche dans un ABR + file à deux piles, sans document.",
+    "70–105 min : sur table, au stylo : exercice 1 du bac blanc n°1 (dessiner l'ABR, hauteur/taille, infixe, fonction taille récursive, coûts).",
+    "105–120 min : débrief croisé avec les barèmes du corrigé : erreurs de noms, cas de base oublié, version qui n'exploite pas l'ABR plafonnée ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Postes avec un vrai Python (Thonny ou Capytale) — l'EP ne se passe pas dans le navigateur",
+    "Sujet écrit imprimé + copies",
+    "Quelques sujets de la banque officielle Éduscol en réserve pour les rapides"
+   ]
+  },
+  {
+   "titre": "Séance 12 — QCM bilan, diagnostic « Ma classe » et remédiation",
+   "duree": "2 h",
+   "objectif": "Mesurer les acquis du thème, cibler les fragilités question par question et remédier par groupes de besoin.",
+   "surLeSite": [
+    "QCM du thème (11 questions, dont coûts ABR et détection de cycle)",
+    "Suivi « Ma classe » : matrice par thème + diagnostic par question",
+    "Fiches « Résumé » et « Erreurs fréquentes » du thème ; exercices 1 à 12 selon besoin"
+   ],
+   "enClasse": [
+    "0–25 min : QCM individuel sur le site, sans document.",
+    "25–45 min : diagnostic « Ma classe » vidéoprojeté : les questions les plus ratées sont rejouées et expliquées par les élèves qui ont réussi.",
+    "45–90 min : remédiation en îlots de besoin : pile/file → TP guidé à refaire ; arbres → Exercices 6, 7, 9 ; graphes → Exercices 11, 12 ; les solides prennent un sujet EP de la banque officielle.",
+    "90–110 min : chaque îlot rédige une « carte erreur » (l'erreur fréquente + comment l'éviter) à partir de la fiche du thème.",
+    "110–120 min : bilan du thème et annonce du suivant : ces structures reviendront partout en algorithmique (Dijkstra, tri fusion) ; corrigés poussés."
+   ],
+   "aPreparer": [
+    "Suivi « Ma classe » ouvert sur le poste prof",
+    "2–3 sujets de la banque officielle Éduscol déposés sur Capytale",
+    "Fiches résumé/erreurs imprimées pour les cartes erreur"
+   ]
+  }
+ ]
+}

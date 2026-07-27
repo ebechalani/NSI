@@ -1,0 +1,146 @@
+{
+ "themeId": "donnees-base",
+ "level": "premiere",
+ "heures": "≈ 12 h (6 séances de 2 h, période S7–S9 de la PROGRESSION)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Le coffre binaire : coder avec des 0 et des 1",
+   "duree": "2 h",
+   "objectif": "Comprendre le bit comme un interrupteur, l'octet, et LA formule du thème : n bits → 2ⁿ valeurs.",
+   "surLeSite": [
+    "Activité débranchée « Le coffre binaire (cartes) » (fiche complète 30–40 min : déroulé, variante ASCII, note prof — bouton 🖨️)",
+    "Sections 1 « Pourquoi tout est-il codé en 0 et 1 ? » et 2 « Le bit, l'octet et les puissances de 2 » (cellule ▶ : table des puissances de 2 à faire manipuler)",
+    "Exercices 1 (facile, texte à trou 2 ** bits) et 3 (facile : valeurs codables sur 5 puis 12 bits)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel fil rouge histoire — Leibniz et le binaire (à épingler sur la frise murale)",
+    "10–50 min : débranché « Le coffre binaire » en îlots : 5 cartes 16-8-4-2-1, former 13, lire des configurations du prof, puis LA question : combien de nombres différents avec 5 cartes ?",
+    "50–70 min : institutionnalisation : sections 1–2, cellule ▶ des puissances de 2 exécutée et modifiée (jusqu'à 2¹⁰), piège bit/octet (100 Mb/s ≈ 12,5 Mo/s)",
+    "70–95 min : exercices 1 et 3 en cellule (texte à trous puis écriture)",
+    "95–110 min : variante de la fiche : coder son initiale ASCII sur 8 cartes, échanger des messages binaires entre îlots",
+    "110–120 min : trace bit/octet/2ⁿ à coller + corrigés poussés"
+   ],
+   "aPreparer": [
+    "Fabriquer 5 cartes à points par îlot (16, 8, 4, 2, 1) + jeux de 8 cartes pour la variante ASCII",
+    "Imprimer la fiche débranchée (bouton 🖨️ de la rubrique Activités débranchées)",
+    "Trace écrite ; carte « Leibniz » pour la frise"
+   ]
+  },
+  {
+   "titre": "Séance 2 — Convertir dans les deux sens",
+   "duree": "2 h",
+   "objectif": "Convertir binaire → décimal (poids) et décimal → binaire (divisions successives), à la main puis en Python.",
+   "surLeSite": [
+    "Sections 3 « Comprendre une base : le rôle de la position », 4 « Convertir : binaire → décimal » (cellule ▶ algorithme de Horner) et 5 « Convertir : décimal → binaire » (cellule ▶ dec_vers_bin)",
+    "Exercices 2 (facile : 1011 en décimal, vérification 0b1011), 4 (facile : 38 par divisions successives, vérification bin(38)) et 5 (moyen : fonction nb_bits(v))"
+   ],
+   "enClasse": [
+    "0–10 min : rituel ardoise — lire une configuration de cartes binaires",
+    "10–30 min : section 3 : décortiquer 2025 en base 10 (poids des positions), puis transférer le principe à la base 2",
+    "30–55 min : débranché : batterie de conversions à l'ardoise dans les deux sens (tableau des poids / tableau des restes), vérifications avec les cellules ▶ des sections 4–5",
+    "55–85 min : exercices 2 et 4 : TOUJOURS papier d'abord, Python ensuite pour vérifier",
+    "85–110 min : exercice 5 en binômes (première fonction du thème, réinvestit while)",
+    "110–120 min : trace des deux méthodes + corrigés poussés"
+   ],
+   "aPreparer": [
+    "Ardoises ; tableau des poids (…| 16 | 8 | 4 | 2 | 1) imprimé",
+    "Batterie de conversions différenciées (3 niveaux)",
+    "Trace écrite méthodes de conversion"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Hexadécimal et entiers relatifs",
+   "duree": "2 h",
+   "objectif": "Lire/écrire de l'hexadécimal (1 chiffre = 4 bits) et coder un entier négatif en complément à deux.",
+   "surLeSite": [
+    "Section 6 « L'hexadécimal (base 16) : le binaire compact » (cellule ▶ : Python jongle entre les trois bases)",
+    "Section 7 « Coder les entiers négatifs : le complément à deux » (cellule ▶ complement_a_deux)",
+    "Exercices 6 (moyen : octet 11001010 → hexa CA par quartets) et 7 (moyen : décomposer la couleur #1E90FF en R, V, B)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel conversion à l'ardoise",
+    "10–30 min : débranché : découper des octets en deux quartets sur ardoise, construire ensemble la table 0–F",
+    "30–55 min : section 6 + cellule ▶, puis exercice 6 en cellule",
+    "55–75 min : exercice 7 : ouvrir une pipette de couleurs au vidéoprojecteur, décoder #1E90FF — l'hexa sert à quelque chose de visible",
+    "75–105 min : section 7 : complément à deux pas à pas avec les cartes (le poids fort devient −128), cellule ▶ manipulée, plage −128..+127 découverte en îlot",
+    "105–120 min : trace + corrigés poussés"
+   ],
+   "aPreparer": [
+    "Jeu de cartes −128 / 64 / 32 / … / 1 par îlot pour le complément à deux",
+    "Pipette de couleurs (outil du navigateur) prête à projeter ; nuancier imprimé",
+    "Trace écrite hexa + complément à deux"
+   ]
+  },
+  {
+   "titre": "Séance 4 — Débordement, flottants, booléens",
+   "duree": "2 h",
+   "objectif": "Observer le débordement, comprendre pourquoi 0.1 + 0.2 ≠ 0.3, et construire les tables de vérité de et/ou/non.",
+   "surLeSite": [
+    "Section 8 « Le débordement (overflow) » (cellule ▶ : simuler un octet avec le modulo 256)",
+    "Section 9 « Les nombres à virgule : les flottants » (cellule ▶ : print(0.1 + 0.2))",
+    "Section 10 « Les booléens et l'algèbre de Boole » (cellule ▶ : tables de vérité de and/or)",
+    "Exercices 8 (défi : add8 et le débordement de 250 + 10) et 9 (défi : fonction proche(a, b) au lieu de ==)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel",
+    "10–35 min : section 8 : image du compteur kilométrique qui « tourne », cellule ▶ puis exercice 8 (prédire add8(255, 1) avant d'exécuter)",
+    "35–65 min : section 9 : faire PARIER la classe sur 0.1 + 0.2 == 0.3, exécuter, expliquer l'approximation ; exercice 9 en cellule",
+    "65–95 min : section 10 en débranché d'abord : tables de vérité jouées debout/assis (deux élèves = deux entrées, l'îlot vote la sortie), puis cellule ▶ pour vérifier",
+    "95–115 min : mini-parcours de 4 questions type DS sur ardoise (une par section du jour)",
+    "115–120 min : trace + corrigés poussés"
+   ],
+   "aPreparer": [
+    "Image de compteur kilométrique (ou anecdote du bug d'Ariane 5) à projeter",
+    "Cartons Vrai/Faux par élève pour les tables de vérité",
+    "Les 4 questions type DS ; trace écrite"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Coder les caractères + TP noté",
+   "duree": "2 h",
+   "objectif": "Utiliser ord/chr, distinguer ASCII/Unicode/UTF-8, puis passer le TP noté sur poste.",
+   "surLeSite": [
+    "Section 11 « Le codage des caractères : ASCII, Unicode, UTF-8 » (cellule ▶ ord/chr) et section 12 « Comment UTF-8 code un caractère (1 à 4 octets) » (cellule ▶ sur le mot « été »)",
+    "Mission-défi du thème « Le décodeur secret » (décoder [72, 73, 32, 78, 83, 73])",
+    "Exercice 10 (défi : chiffre de César avec ord et chr) ou mini-projet « Chiffre de César » pour les rapides",
+    "Évaluation : sujet « TP noté — Représentation des données » (1 h sur poste, /20) de la rubrique Évaluations"
+   ],
+   "enClasse": [
+    "0–10 min : rituel",
+    "10–30 min : sections 11–12 : cellules ▶ manipulées ; chaque îlot code un mot en ASCII binaire sur cartes, l'îlot voisin le décode (réinvestit la séance 1)",
+    "30–55 min : mission « Le décodeur secret » en cellule ; les rapides attaquent le César (exercice 10)",
+    "55–60 min : consignes et installation du TP noté",
+    "60–120 min : TP noté sur poste (1 h) — idéalement sur Capytale pour ramasser les fichiers"
+   ],
+   "aPreparer": [
+    "Table ASCII imprimée par îlot",
+    "Sujet « TP noté — Représentation des données » prêt (activité Capytale créée, ou impression 🖨️) ; postes vérifiés",
+    "Cartes binaires de la séance 1 ressorties pour les messages secrets"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Consolidation, QCM, remédiation, DS n°2",
+   "duree": "2 h",
+   "objectif": "Boucler le thème : synthèse, auto-évaluation par QCM, remédiation ciblée, puis DS n°2 sur table.",
+   "surLeSite": [
+    "Fiche-résumé du thème (5 points) et « Erreurs fréquentes » (bit/octet, 2⁴ = 16, flottants et ==) pour le quiz-relais",
+    "QCM complet du thème (18 questions) en autonomie",
+    "Pour les rapides pendant la remédiation : projet en îlot « Le coffre binaire » ou mini-projet « Conversion de bases » (mini-projet « Chiffre de Vigenère » en bonus)",
+    "Côté prof : « Ma classe » — matrice par thème + diagnostic par question",
+    "Évaluation : sujet « DS n°2 — Représentation des données » (55 min, /20) de la rubrique Évaluations"
+   ],
+   "enClasse": [
+    "0–20 min : consolidation : quiz-relais en îlots construit sur la fiche-résumé et les erreurs fréquentes (chaque îlot rédige 2 questions pour les autres)",
+    "20–45 min : QCM 18 questions en autonomie sur le site (résultats remontés dans « Ma classe »)",
+    "45–60 min : remédiation : groupes de besoin constitués à partir de la matrice/diagnostic par question ; les solides avancent sur le mini-projet « Conversion de bases »",
+    "60–115 min : DS n°2 sur table (55 min)",
+    "115–120 min : ramassage + teaser du thème suivant (types construits)"
+   ],
+   "aPreparer": [
+    "Imprimer le sujet « DS n°2 — Représentation des données » (bouton 🖨️) + copies",
+    "Cartons/gabarit du quiz-relais",
+    "Groupes de remédiation pré-esquissés à partir des QCM des séances précédentes"
+   ]
+  }
+ ]
+}

@@ -1028,6 +1028,34 @@ td.cell-none { text-align: center; color: var(--text-soft); }
 .classe-diag-table table { font-size: .84rem; }
 .classe-diag-table tr.row-alert td { font-weight: 600; }
 
+/* ---------- Cours à noter (trace écrite, dans les déroulés prof) ---------- */
+.plan-ouvrir {
+  float: right; font-size: .75rem; font-weight: 500; color: var(--text-soft);
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px;
+  padding: .1rem .6rem; margin-left: .6rem;
+}
+details[open] > summary .plan-ouvrir { display: none; }
+details.plan-cours {
+  margin: .6rem 0 .8rem; border: 1.5px solid var(--accent-2); border-radius: 10px;
+  background: var(--bg-elev); overflow: hidden;
+}
+details.plan-cours > summary {
+  cursor: pointer; font-weight: 700; padding: .55rem .8rem; color: var(--accent-2);
+  list-style: none; user-select: none; background: var(--bg-soft);
+}
+details.plan-cours > summary::-webkit-details-marker { display: none; }
+.plan-cours-body { padding: .7rem .9rem .9rem; }
+.plan-cours-body p { margin: .4rem 0; line-height: 1.6; }
+.plan-cours-body ul { margin: .4rem 0; padding-left: 1.2rem; }
+.plan-cours-body li { margin: .2rem 0; line-height: 1.5; }
+.plan-cours-body pre {
+  background: var(--code-bg); color: var(--code-text); border-radius: 8px;
+  padding: .6rem .8rem; overflow-x: auto; font-family: var(--mono); font-size: .85rem;
+  line-height: 1.5; margin: .4rem 0;
+}
+.plan-cours-body pre code { background: none; color: inherit; padding: 0; }
+.plan-cours-body .btn { margin-top: .6rem; }
+
 /* ---------- « Reprendre où j'en étais » (élève, accueil) ---------- */
 .resume-hero {
   display: flex; align-items: center; gap: .9rem; width: 100%;

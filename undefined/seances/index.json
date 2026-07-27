@@ -1,0 +1,92 @@
+[
+ {
+  "tid": "langages-prog",
+  "level": "premiere",
+  "n": 12,
+  "file": "undefined/seances/langages-prog.json"
+ },
+ {
+  "tid": "histoire-informatique",
+  "level": "premiere",
+  "n": 2,
+  "file": "undefined/seances/histoire-informatique.json"
+ },
+ {
+  "tid": "donnees-base",
+  "level": "premiere",
+  "n": 6,
+  "file": "undefined/seances/donnees-base.json"
+ },
+ {
+  "tid": "types-construits",
+  "level": "premiere",
+  "n": 6,
+  "file": "undefined/seances/types-construits.json"
+ },
+ {
+  "tid": "donnees-tables",
+  "level": "premiere",
+  "n": 6,
+  "file": "undefined/seances/donnees-tables.json"
+ },
+ {
+  "tid": "ihm-web",
+  "level": "premiere",
+  "n": 6,
+  "file": "undefined/seances/ihm-web.json"
+ },
+ {
+  "tid": "architecture-os",
+  "level": "premiere",
+  "n": 6,
+  "file": "undefined/seances/architecture-os.json"
+ },
+ {
+  "tid": "algorithmique",
+  "level": "premiere",
+  "n": 8,
+  "file": "undefined/seances/algorithmique.json"
+ },
+ {
+  "tid": "reseaux",
+  "level": "premiere",
+  "n": 4,
+  "file": "undefined/seances/reseaux.json"
+ },
+ {
+  "tid": "term-structures",
+  "level": "terminale",
+  "n": 12,
+  "file": "undefined/seances/term-structures.json"
+ },
+ {
+  "tid": "term-algo",
+  "level": "terminale",
+  "n": 11,
+  "file": "undefined/seances/term-algo.json"
+ },
+ {
+  "tid": "term-langages",
+  "level": "terminale",
+  "n": 10,
+  "file": "undefined/seances/term-langages.json"
+ },
+ {
+  "tid": "term-bdd",
+  "level": "terminale",
+  "n": 9,
+  "file": "undefined/seances/term-bdd.json"
+ },
+ {
+  "tid": "term-archi-reseaux",
+  "level": "terminale",
+  "n": 9,
+  "file": "undefined/seances/term-archi-reseaux.json"
+ },
+ {
+  "tid": "term-histoire",
+  "level": "terminale",
+  "n": 2,
+  "file": "undefined/seances/term-histoire.json"
+ }
+]

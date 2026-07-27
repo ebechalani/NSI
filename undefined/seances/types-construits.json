@@ -1,0 +1,158 @@
+{
+ "themeId": "types-construits",
+ "level": "premiere",
+ "heures": "≈ 12 h (6 séances de 2 h)",
+ "seances": [
+  {
+   "titre": "Séance 1 — Pourquoi des types construits ? Tuples et premières listes",
+   "duree": "2 h",
+   "objectif": "Comprendre le besoin de regrouper des valeurs ; manipuler un tuple (immuable, déballage) et lire une liste par ses indices (premier = 0, dernier = len-1 ou -1).",
+   "surLeSite": [
+    "Sections 1 à 3 : « Pourquoi des types “construits” ? », « Les p-uplets (tuples) », « Les listes : créer et accéder aux éléments » (2 cellules ▶ à faire manipuler : tuple/déballage/TypeError, indices/tranches/IndexError)",
+    "Activité d'ouverture en îlot de la section 1 : modéliser son groupe sur papier (quelle structure pour quels besoins ?)",
+    "Exercices 1, 2 et 4 (facile) : texte à trou append/dernier, lecture de t[0], t[-1], len, t[1:3], déballage du point (4, 7)",
+    "Exercice 8 (facile, texte à trou) : échanger a et b sans variable temporaire"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — retour sur les types de base ; question flash : « comment stocker les 30 moyennes de la classe avec ce qu'on sait ? » (impasse volontaire).",
+    "10–30 min : <strong>débranché</strong> — activité d'ouverture de la section 1 en îlot (papier), puis jeu des casiers : 5 enveloppes numérotées 0 à 4 alignées au tableau, on « lit » enveloppe 0, enveloppe -1, la tranche 1:3 ; verbaliser « le premier indice est 0 ».",
+    "30–55 min : <strong>manipulation</strong> — sections 2 et 3 projetées, les élèves exécutent les cellules ▶ : provoquer exprès l'erreur point[0] = 9 (tuple immuable) puis notes[5] (IndexError) et LIRE les messages ensemble.",
+    "55–70 min : <strong>institutionnalisation</strong> — coller la trace écrite : tableau des 3 structures (tuple/liste/dictionnaire) de la section 1 + règle « dernier indice = len(t)-1 ».",
+    "70–105 min : <strong>pratique</strong> — exercices 1, 2, 4 puis 8 : prédire par écrit AVANT d'exécuter, puis vérifier dans la cellule.",
+    "105–120 min : le prof pousse les corrigés des 4 exercices ; bilan éclair sur les erreurs fréquentes n°1 et 2 du site (indices, tuple immuable)."
+   ],
+   "aPreparer": [
+    "5 enveloppes/boîtes numérotées 0–4 avec des cartes-valeurs à l'intérieur (débranché des indices)",
+    "Trace écrite à coller (tableau des 3 structures — reprendre celui de la section 1, bouton 🖨️ du site)",
+    "Vidéoprojecteur + comptes élèves prêts (les cellules ▶ tournent dans le navigateur, prévoir Capytale en secours)",
+    "Impression des exercices 1, 2, 4, 8 pour les élèves sans poste"
+   ]
+  },
+  {
+   "titre": "Séance 2 — Modifier, parcourir, construire par compréhension",
+   "duree": "2 h",
+   "objectif": "Modifier une liste (append, t[i]=v, remove), la parcourir par éléments puis par indices, et lire/écrire une compréhension simple.",
+   "surLeSite": [
+    "Sections 4 à 6 : « Modifier une liste », « Parcourir une liste », « La construction par compréhension » (cellules ▶ à faire manipuler)",
+    "TP guidé « TP Python — Séquences : listes, slicing, complexité », exercices 1 à 3 (participants, planning/slicing, durées/compréhensions)",
+    "Exercices 3, 5 et 6 : carrés de 1 à 5 par compréhension (facile), moyenne par accumulation sans sum (moyen), fonction nb_pairs (moyen)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel ardoise — 4 questions flash sur la séance 1 (t[0] ?, t[-1] ?, len ?, tranche ?).",
+    "10–25 min : <strong>débranché</strong> — la « file humaine » : 6 élèves alignés sont la liste ; on joue append (un élève arrive en bout), t[2] = v (remplacement), remove ; la classe prédit l'état après chaque opération.",
+    "25–50 min : <strong>manipulation</strong> — sections 4 et 5 : cellules ▶ exécutées par les élèves, distinguer parcours « par éléments » et « par indices ».",
+    "50–65 min : <strong>institutionnalisation</strong> — section 6 : lire une compréhension à voix haute (« la liste des n·n POUR n allant de… SI… ») ; gabarit [expr for x in iterable if cond] dans le cahier.",
+    "65–105 min : <strong>pratique</strong> — TP guidé « Séquences » exercices 1 à 3 en binômes, puis exercices 3, 5 et 6 seuls en cellule vide.",
+    "105–120 min : corrigés poussés par le prof ; minute méthodo « accumulation : initialiser AVANT la boucle »."
+   ],
+   "aPreparer": [
+    "6 cartes-valeurs grand format pour la file humaine (débranché)",
+    "Ardoises + feutres pour le rituel",
+    "Impression du TP guidé « Séquences » exercices 1–3 (bouton 🖨️) pour travailler cahier fermé",
+    "Trace écrite : gabarit de la compréhension + les 3 opérations de modification"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Matrices et le piège des alias",
+   "duree": "2 h",
+   "objectif": "Manipuler une liste de listes avec la double indexation m[ligne][colonne] et la double boucle ; comprendre copie vs référence (piège [[0]*3]*2).",
+   "surLeSite": [
+    "Section 7 : « Tableaux de tableaux (matrices) » (cellule ▶ à faire manipuler)",
+    "Fiche + « Valeur vs référence (le piège des alias) » (rubrique TP/fiches du thème)",
+    "TP guidé « TP Python — Fonctions & structures de données », étapes 1–2 (fonctions ; listes : slicing, copie vs référence)",
+    "TP guidé « Séquences », exercices 4 et 5 (tuples & unpacking ; défi : mesurer un coût)",
+    "Exercice 11 (défi) : matrice 3×3 avec des 1 sur la diagonale",
+    "Mini-projet « Morpion — détection du gagnant » pour les plus rapides"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — corriger 2 compréhensions fausses écrites au tableau (chasse à l'erreur).",
+    "10–30 min : <strong>débranché</strong> — bataille navale sur papier quadrillé : donner des « coups » m[ligne][colonne], puis faire écrire par l'îlot la double boucle en pseudo-code qui balaie toute la grille.",
+    "30–55 min : <strong>manipulation</strong> — section 7 : cellules ▶ exécutées ; démonstration spectaculaire du piège des alias ([[0]*3]*2 : on modifie une case, deux lignes changent !).",
+    "55–70 min : <strong>institutionnalisation</strong> — fiche + « Valeur vs référence » lue ensemble, vérification pas à pas avec le bouton « 🔎 Pas à pas » (Python Tutor) ; règle : matrice par compréhension imbriquée, jamais par multiplication.",
+    "70–105 min : <strong>pratique</strong> — TP guidé « Fonctions & structures » étapes 1–2 puis exercice 11 en cellule vide ; les rapides basculent sur le mini-projet Morpion.",
+    "105–120 min : corrigés poussés ; devoir : TP guidé « Séquences » exercices 4–5 à terminer."
+   ],
+   "aPreparer": [
+    "Feuilles quadrillées + grilles de bataille navale (débranché matrices)",
+    "Vidéoprojecteur pour la démonstration Python Tutor du piège des alias",
+    "Impression de la fiche + « Valeur vs référence » à coller dans le cahier (🖨️)",
+    "Cahier des charges d'une page pour le Morpion (différenciation des rapides)"
+   ]
+  },
+  {
+   "titre": "Séance 4 — Le dictionnaire : la clé plutôt que la position",
+   "duree": "2 h",
+   "objectif": "Créer, lire, modifier et parcourir un dictionnaire ; utiliser .get pour compter sans KeyError.",
+   "surLeSite": [
+    "Sections 8 à 12 : « Le dictionnaire : associer une clé à une valeur », « ajouter, modifier, supprimer », « Parcourir un dictionnaire », « par compréhension », « Compter avec un dictionnaire » (cellules ▶ à faire manipuler)",
+    "Section 15 : « Pièges fréquents avec les dictionnaires »",
+    "TP guidé « TP Python — Dictionnaires », exercices 1 à 3 (annuaire, comptage avec Counter, compréhension)",
+    "Exercices 7, 9 et 10 : dictionnaire élève + clé mention (moyen), inventaire du jeu avec .get (moyen), occurrences de « mississippi » (défi)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel ardoise — liste ou tuple ? 4 situations à trancher.",
+    "10–30 min : <strong>débranché</strong> — la « carte d'identité » : chaque îlot reçoit des étiquettes clé (nom, classe, moyenne) et des étiquettes valeur à apparier ; comparer avec la liste : « pourquoi chercher par CLÉ est plus lisible que par position ? ».",
+    "30–60 min : <strong>manipulation</strong> — sections 8 à 10 : cellules ▶ exécutées (accès d[clé], ajout, .items()) ; provoquer un KeyError et le lire ensemble.",
+    "60–75 min : <strong>institutionnalisation</strong> — trace écrite : d[clé], d[clé] = v, .get(clé, defaut), parcours .items() ; motif du comptage de la section 12.",
+    "75–110 min : <strong>pratique</strong> — TP guidé « Dictionnaires » exercices 1 à 3 en binômes, puis exercices 7, 9 seuls et défi 10 (mississippi).",
+    "110–120 min : corrigés poussés ; lecture rapide de la section 15 (pièges) en sortie de classe."
+   ],
+   "aPreparer": [
+    "Jeux d'étiquettes clé/valeur cartonnées par îlot (débranché dictionnaire)",
+    "Impression du TP guidé « Dictionnaires » ex 1–3 (🖨️)",
+    "Trace écrite dictionnaire à faire coller (les 4 gestes : lire, écrire, .get, .items)",
+    "Prévoir le motif de comptage écrit en A3 au mur (occ[c] = occ.get(c, 0) + 1)"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Ensembles, synthèse et projet en îlot « Groupes du camp »",
+   "duree": "2 h",
+   "objectif": "Découvrir les ensembles (dédoublonner, ET/OU/SANS), choisir la bonne structure selon le besoin, et réinvestir tout le thème dans le projet en îlot.",
+   "surLeSite": [
+    "Sections 14 et 16 : « Les ensembles (set) — pour aller plus loin » et « Choisir la bonne structure (synthèse) » (cellule ▶) ; section 13 (Counter/defaultdict) signalée aux rapides",
+    "Exercices 13 et 14 (set des notes différentes ; foot & théâtre) et exercice 12 (défi — meilleure moyenne sans sorted)",
+    "Projet îlot « Organiser les groupes du camp robotique » : phases 1 à 5 (code de départ former_groupes, tests, bonus âges moyens)",
+    "Défi du thème « Mission : carnet de classe » (donné en devoir)",
+    "TP guidé « Dictionnaires » exercice 4 (ensembles) pour les rapides"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — question flash dictionnaire (.get) au vidéoprojecteur.",
+    "10–25 min : <strong>manipulation</strong> — section 14 (sets) : cellule ▶ puis exercices 13 et 14 en direct.",
+    "25–40 min : <strong>institutionnalisation</strong> — section 16 : jeu de l'ardoise « quelle structure pour… ? » (coordonnées GPS, inventaire, notes de la classe, invités sans doublon).",
+    "40–55 min : <strong>projet, phases 1–2</strong> — en îlot sur papier : définir 2–3 règles d'équilibre, décrire la stratégie gloutonne « distribuer comme des cartes ».",
+    "55–105 min : <strong>projet, phases 3–4</strong> — coder former_groupes(eleves, nb_groupes) à partir du code de départ du site, puis dérouler les 3 tests fournis (chacun placé une fois, tailles proches, niveaux mélangés).",
+    "105–120 min : <strong>phase 5</strong> — présentation éclair (2 min/îlot) : justifier les règles ; le prof remplit la grille d'évaluation de projet ; exercice 12 et défi « carnet de classe » donnés en devoir."
+   ],
+   "aPreparer": [
+    "Grille d'évaluation du projet (critères : règles justifiées, code qui tourne, tests passés, oral) — le site fournit phases et tests mais pas la grille",
+    "Fiches élèves fictives supplémentaires (passer de 6 à 12 inscrits pour corser)",
+    "Feuilles A3 + feutres pour les phases papier",
+    "Chronomètre visible pour les présentations éclair"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Consolidation, QCM, remédiation et TP noté",
+   "duree": "2 h",
+   "objectif": "Stabiliser les 4 structures, diagnostiquer les fragilités par le QCM, remédier en groupes de besoin, puis évaluer sur poste.",
+   "surLeSite": [
+    "Fiche résumé du thème (6 points) et erreurs fréquentes (3) — rubrique exercices",
+    "QCM du thème (10 questions) en autonomie",
+    "Côté prof : matrice de suivi par thème + diagnostic par question pour constituer les groupes de remédiation",
+    "Sujet EVALUATIONS « TP noté — Types construits » (1 h sur poste, /20, corrigé fourni) ; le « DS — Types construits » (50 min) reste en réserve pour une évaluation papier ultérieure"
+   ],
+   "enClasse": [
+    "0–15 min : rituel bilan — relecture guidée du résumé (6 points) et des 3 erreurs fréquentes ; 3 questions flash ardoise.",
+    "15–35 min : <strong>QCM en autonomie</strong> — les 10 questions du site, chacun note son score ; le prof relève les questions les plus ratées (diagnostic par question).",
+    "35–55 min : <strong>remédiation</strong> — groupes de besoin d'après le diagnostic : indices → refaire exercice 2 ; compréhension → exercice 3 ; dictionnaires → exercice 10 ; les solides aident ou avancent sur le Morpion.",
+    "55–115 min : <strong>TP noté sur poste</strong> (1 h) — sujet « TP noté — Types construits » du site : max/min sans fonctions, moyenne, compréhension, dictionnaire bilan, bonus occurrences.",
+    "115–120 min : ramassage des fichiers + teaser du thème suivant : « et si la liste contenait des dictionnaires ? » (pont vers les tables)."
+   ],
+   "aPreparer": [
+    "Imprimer le sujet du TP noté (bouton 🖨️ de la rubrique Évaluations) + fichier de départ notes = [12, 8, 15, 17, 6, 14, 11] déposé sur Capytale/Thonny",
+    "Feuille de score QCM à remplir par élève (alimente la matrice de suivi)",
+    "Parcours de remédiation écrits au tableau (qui refait quel exercice)",
+    "Clé USB / procédure de ramassage des .py"
+   ]
+  }
+ ]
+}

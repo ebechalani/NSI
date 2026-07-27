@@ -1,0 +1,195 @@
+{
+ "themeId": "term-bdd",
+ "level": "terminale",
+ "heures": "18 h (9 séances de 2 h)",
+ "seances": [
+  {
+   "titre": "Du fichier au SGBD : le modèle relationnel",
+   "duree": "2 h",
+   "objectif": "Identifier relation, attribut, domaine, enregistrement ; distinguer structure et contenu ; comprendre le rôle d'un SGBD.",
+   "surLeSite": [
+    "Sections 1–2 (« Pourquoi des bases de données ? », « Le modèle relationnel ») avec la base « lycée » (tables <strong>classe</strong> et <strong>eleve</strong>)",
+    "Capacités du thème (encadré d'ouverture) à projeter"
+   ],
+   "enClasse": [
+    "0–15 min : réactivation Première — données en tables (CSV, dictionnaires) : limites d'un fichier unique (redondance, accès concurrent, recherche)",
+    "15–40 min : Section 1 en lecture guidée — rôle du SGBD, idée ACID, exemples (SQLite, PostgreSQL)",
+    "40–75 min : Section 2 — vocabulaire sur les tables classe/eleve ; écrire les schémas <em>eleve(id, nom, #id_classe, moyenne)</em>",
+    "75–105 min : manipulation — ouvrir la base « lycée » dans DB Browser, distinguer onglet structure / onglet données",
+    "105–120 min : institutionnalisation (schéma ≠ contenu) + écriture libre ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "DB Browser for SQLite installé sur les postes + fichier lycee.db pré-rempli (tables classe et eleve du cours)",
+    "Vidéoprojecteur pour la démonstration"
+   ]
+  },
+  {
+   "titre": "Clés, contraintes d'intégrité et schémas « malades »",
+   "duree": "2 h",
+   "objectif": "Identifier clé primaire, clé étrangère et les trois contraintes d'intégrité ; repérer les anomalies d'un schéma redondant.",
+   "surLeSite": [
+    "Sections 3–4 (« Clés primaires, clés étrangères, intégrité », « Un schéma malade »)",
+    "Exercice 9 (anomalies du club de sport, niveau moyen)"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — interro flash sur le vocabulaire de la séance 1",
+    "10–40 min : Section 3 — clés primaire/étrangère, contraintes de domaine, d'entité, référentielle ; démo DB Browser : le SGBD refuse une clé étrangère invalide",
+    "40–70 min : Section 4 en îlots — la table <strong>emprunt</strong> du CDI : trouver les anomalies de mise à jour, d'insertion, de suppression",
+    "70–100 min : Exercice 9 sur papier — découper la table du club de sport en 3 tables avec clés",
+    "100–120 min : institutionnalisation (redondance = schéma malade) + écriture libre ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "Copies papier de la table « emprunt » malade et de l'énoncé du club de sport",
+    "Base lycee.db pour la démo du refus d'intégrité référentielle"
+   ]
+  },
+  {
+   "titre": "Interroger : SELECT, FROM, WHERE, tri",
+   "duree": "2 h",
+   "objectif": "Écrire et vérifier des requêtes d'interrogation : projection (SELECT), sélection (WHERE), tri (ORDER BY), DISTINCT.",
+   "surLeSite": [
+    "Sections 5–6 (cellules Python exécutables « équivalent SQL »)",
+    "TP guidé « TP — Requêtes SQL sur la base du lycée » étapes 1–2",
+    "Exercices 1 et 2 (niveau facile)"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — redessiner le schéma de la base lycée de mémoire",
+    "10–35 min : Section 5 — SELECT = colonnes (projection), WHERE = lignes (sélection) ; exécuter la cellule Python équivalente",
+    "35–60 min : TP étape 1 sur papier (comme à l'écrit), puis vérification dans DB Browser",
+    "60–85 min : ORDER BY et DISTINCT (Section 6 début) + TP étape 2 sur machine",
+    "85–110 min : Exercices 1 et 2 en autonomie, en vrai SQL sur la base",
+    "110–120 min : institutionnalisation + corrigés poussés"
+   ],
+   "aPreparer": [
+    "DB Browser + lycee.db sur tous les postes (tables eleve et note du TP)",
+    "Fiche réponse papier pour l'écriture des requêtes avant exécution"
+   ]
+  },
+  {
+   "titre": "Agréger et croiser : GROUP BY et jointures",
+   "duree": "2 h",
+   "objectif": "Utiliser COUNT/AVG/MIN/MAX, agréger par paquets avec GROUP BY, croiser deux tables avec JOIN … ON.",
+   "surLeSite": [
+    "Sections 6–7 (cellules Python exécutables : GROUP BY et double boucle de jointure)",
+    "TP guidé « Requêtes SQL sur la base du lycée » étapes 3–4",
+    "Exercices 3, 4, 6 et 7 (niveau moyen)"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — 3 requêtes SELECT/WHERE/ORDER BY à écrire au tableau",
+    "10–35 min : Section 6 — fonctions d'agrégat puis GROUP BY « par paquets » ; cellule Python à l'appui",
+    "35–55 min : TP étape 4 (agrégation) sur machine, calculs vérifiés à la main",
+    "55–85 min : Section 7 — la jointure : ON relie clé étrangère et clé primaire ; démo du produit cartésien si on oublie ON",
+    "85–110 min : TP étape 3 + Exercices 3, 4, 6 et 7 en autonomie",
+    "110–120 min : institutionnalisation + corrigés poussés"
+   ],
+   "aPreparer": [
+    "Base lycee.db avec la table note (étape 3 du TP) chargée",
+    "Requête jointure sans ON préparée pour la démo du produit cartésien"
+   ]
+  },
+  {
+   "titre": "Modifier la base : INSERT, UPDATE, DELETE",
+   "duree": "2 h",
+   "objectif": "Écrire des requêtes de mise à jour en mesurant le danger du WHERE oublié ; consolider tout le SQL du thème.",
+   "surLeSite": [
+    "Sections 8–9 (« Modifier la base », « Mémo SQL »)",
+    "TP guidé « Requêtes SQL sur la base du lycée » étape 5",
+    "Exercices 5 et 8 (niveau défi) + défi « Mission : le tableau d'honneur »"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — une jointure à écrire au tableau",
+    "10–35 min : Section 8 — INSERT/UPDATE/DELETE ; démo live d'un UPDATE sans WHERE sur une copie jetable de la base (toute la table écrasée)",
+    "35–65 min : TP étape 5 sur machine, dont le refus du SGBD pour la suppression d'un élève encore référencé",
+    "65–90 min : Exercices 5 et 8, puis défi « tableau d'honneur » (requête complète WHERE + ORDER BY)",
+    "90–110 min : Section 9 — construction collective du mémo SQL, fiche de synthèse personnelle",
+    "110–120 min : écriture libre + corrigés poussés"
+   ],
+   "aPreparer": [
+    "Copie jetable de lycee.db pour la démo destructive (UPDATE sans WHERE)",
+    "Fiche mémo SQL vierge à compléter (recto-verso)"
+   ]
+  },
+  {
+   "titre": "Projet îlots « médiathèque » (1/2) : schéma et requêtes",
+   "duree": "2 h",
+   "objectif": "Concevoir en îlot un schéma relationnel sain (LIVRE, EMPRUNT) et écrire les requêtes SQL du documentaliste.",
+   "surLeSite": [
+    "Projet « Mini-base de données de la médiathèque », phases 1 à 3",
+    "Sections 3–4 en appui (clés, anomalies)"
+   ],
+   "enClasse": [
+    "0–15 min : lancement — situation du cahier d'emprunts, constitution des îlots, rappel des anomalies d'une table unique",
+    "15–45 min : phases 1–2 — conception du schéma LIVRE/EMPRUNT sur papier, justification des clés primaires et étrangère",
+    "45–90 min : phase 3 — écrire les requêtes du documentaliste (sélection, projection, jointure, COUNT) puis les vérifier dans DB Browser",
+    "90–110 min : mise en commun inter-îlots — comparer les schémas, trancher les désaccords",
+    "110–120 min : bilan intermédiaire, consignes pour la séance 2"
+   ],
+   "aPreparer": [
+    "Base mediatheque.db pré-créée dans DB Browser (tables LIVRE et EMPRUNT vides ou remplies)",
+    "Fiche projet imprimée par îlot (situation + questions du documentaliste)"
+   ]
+  },
+  {
+   "titre": "Projet îlots « médiathèque » (2/2) : mini-moteur SQL en Python",
+   "duree": "2 h",
+   "objectif": "Programmer sélection, projection et jointure en Python pur et retrouver les résultats des requêtes SQL (les asserts font foi).",
+   "surLeSite": [
+    "Projet « Mini-base de données de la médiathèque », phases 4 à 6 (code fourni)",
+    "Sections 5 et 7 (cellules Python « équivalent SQL ») en appui"
+   ],
+   "enClasse": [
+    "0–10 min : réactivation — SQL et Python côte à côte : une sélection = une compréhension de liste",
+    "10–60 min : phase 4 — coder <strong>selection</strong>, <strong>projection</strong>, <strong>jointure</strong> sur Thonny ou Capytale (tables = listes de dictionnaires)",
+    "60–85 min : phase 5 — tests : chaque requête papier doit donner le même résultat que le mini-moteur (asserts)",
+    "85–110 min : phase 6 — présentations d'îlots : une requête SQL et « sa traduction » Python côte à côte",
+    "110–120 min : institutionnalisation — ce qu'apporte un vrai SGBD (contraintes, persistance, concurrence) ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "Thonny ou Capytale opérationnels (l'épreuve pratique se passe sur un vrai Python)",
+    "Squelette de code du mini-moteur à distribuer (tables livres/emprunts pré-saisies)"
+   ]
+  },
+  {
+   "titre": "Entraînement épreuves du bac : écrit + pratique",
+   "duree": "2 h",
+   "objectif": "S'entraîner dans les conditions réelles : exercice SQL type bac au stylo, puis exercice type épreuve pratique avec asserts sur machine.",
+   "surLeSite": [
+    "Évaluations : Bac blanc n°1 (écrit type bac « arbres · SQL · graphes »), exercice SQL",
+    "Fiches méthode « Réussir l'épreuve écrite » et « Réussir l'épreuve pratique »"
+   ],
+   "enClasse": [
+    "0–10 min : lecture guidée des deux fiches méthode — gestion du temps, SQL en majuscules, « lire les asserts d'abord »",
+    "10–55 min : sur table — l'exercice SQL du Bac blanc n°1 en conditions réelles (stylo, sans document, temps limité)",
+    "55–70 min : correction commentée « à la façon du correcteur » : points faciles à ne jamais laisser vides",
+    "70–110 min : sur machine — 1 exercice type épreuve pratique avec asserts (sujet de la banque officielle sur dictionnaires/tables) sous Thonny",
+    "110–120 min : bilan des réflexes (nom exact de la fonction, tester au fur et à mesure) ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "Sujets imprimés de l'exercice SQL (un par élève)",
+    "Un sujet SQL/tables de la banque officielle d'épreuve pratique, prêt sur les postes",
+    "Postes avec vrai Python (Thonny) — pas l'éditeur du navigateur"
+   ]
+  },
+  {
+   "titre": "QCM bilan, diagnostic « Ma classe » et remédiation",
+   "duree": "2 h",
+   "objectif": "Mesurer les acquis du thème question par question et remédier par groupes de besoin avant de quitter le SQL.",
+   "surLeSite": [
+    "QCM (10 questions)",
+    "Suivi « Ma classe » : matrice par thème + diagnostic par question",
+    "Section 9 (Mémo SQL) ; exercices non traités en réserve"
+   ],
+   "enClasse": [
+    "0–25 min : QCM individuel des 10 questions, sans document",
+    "25–45 min : diagnostic « Ma classe » projeté — repérer les questions massivement échouées (jointures ? WHERE ? anomalies ?)",
+    "45–95 min : remédiation par groupes de besoin — reprise ciblée des étapes 3 et 5 du TP, exercices restants, défi pour les plus rapides",
+    "95–110 min : mémo SQL finalisé + carte mentale du thème (clés → intégrité → requêtes)",
+    "110–120 min : écriture libre bilan (« ce que je sais faire / ce qui me résiste ») ; corrigés poussés"
+   ],
+   "aPreparer": [
+    "Comptes élèves actifs pour la remontée du QCM dans « Ma classe »",
+    "Copies du mémo SQL pour le classeur de révision bac"
+   ]
+  }
+ ]
+}

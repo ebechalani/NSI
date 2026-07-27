@@ -1,0 +1,154 @@
+{
+ "themeId": "donnees-tables",
+ "level": "premiere",
+ "heures": "≈ 12 h (6 séances de 2 h)",
+ "seances": [
+  {
+   "titre": "Séance 1 — La notion de table : liste de dictionnaires",
+   "duree": "2 h",
+   "objectif": "Acquérir le vocabulaire (table, enregistrement, descripteur) et représenter une table en Python comme liste de dictionnaires.",
+   "surLeSite": [
+    "Sections 1 et 2 : « Des données partout : la notion de table » et « Représenter une table en Python » (cellule ▶ à faire manipuler)",
+    "TP guidé « TP Python — Une table de A à Z (csv) », étape 1 : « Une table = une liste de dictionnaires » (cellule ▶)",
+    "Exercice 3 (facile) : afficher le nombre de lignes et la liste des colonnes",
+    "Réactivation : exercice 12 du thème « types construits » (liste de dictionnaires, meilleure moyenne)"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — réactivation dictionnaires (ardoise : lire e[\"nom\"], ajouter une clé).",
+    "10–35 min : <strong>débranché</strong> — chaque îlot reçoit 5 fiches cartonnées « élève » (nom, classe, note) en désordre : reconstituer le tableau au sol, nommer les colonnes ; introduire les mots <strong>enregistrement</strong> (une fiche) et <strong>descripteur</strong> (un nom de colonne).",
+    "35–60 min : <strong>manipulation</strong> — sections 1–2 : cellule ▶ exécutée ; faire le lien fiche ↔ dictionnaire, pile de fiches ↔ liste.",
+    "60–75 min : <strong>institutionnalisation</strong> — trace écrite : table = liste de dictionnaires ; 1 ligne = 1 dict ; colonnes = clés de la première ligne.",
+    "75–105 min : <strong>pratique</strong> — TP guidé étape 1 en binômes puis exercice 3 seul en cellule vide ; défi rapide : ajouter un 6ᵉ enregistrement à la table.",
+    "105–120 min : corrigés poussés + question de sortie sur papier (« qu'est-ce qu'un descripteur ? »)."
+   ],
+   "aPreparer": [
+    "Jeux de 5 fiches cartonnées « élève » par îlot (le site n'a pas d'activité débranchée pour ce thème : matériel à fabriquer)",
+    "Trace écrite à coller (vocabulaire + schéma fiche↔dictionnaire)",
+    "Billets de sortie (petits papiers pour la question finale)",
+    "Vidéoprojecteur + postes avec accès au site"
+   ]
+  },
+  {
+   "titre": "Séance 2 — Lire un fichier CSV (et convertir les nombres !)",
+   "duree": "2 h",
+   "objectif": "Lire un CSV avec csv.DictReader, comprendre séparateur et ligne d'en-tête, et convertir systématiquement les valeurs numériques (tout est chaîne !).",
+   "surLeSite": [
+    "Sections 3 et 4 : « Le format CSV : lire un fichier de données » et « Vérifier la cohérence d'une table » (cellules ▶ à faire manipuler)",
+    "TP guidé « Une table de A à Z », étape 2 : « Lire un CSV avec csv.DictReader (et convertir les nombres !) »",
+    "Exercices 5 et 6 (moyen) : charger un mini-CSV avec DictReader ; moyenne avec conversion int(...)",
+    "Erreur fréquente n°1 du thème : « les valeurs lues dans un CSV sont des chaînes »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — 3 questions flash sur la séance 1.",
+    "10–30 min : <strong>observation guidée</strong> — le MÊME fichier eleves.csv ouvert dans le Bloc-notes (texte brut : séparateurs, en-tête) puis dans un tableur : « le tableur n'est qu'un habillage » ; repérer le point-virgule.",
+    "30–55 min : <strong>manipulation</strong> — sections 3–4 : cellules ▶ exécutées ; piège mis en scène : \"17\" + 1 explose → il faut int() ; vérifier la cohérence (même nombre de colonnes partout).",
+    "55–70 min : <strong>institutionnalisation</strong> — gabarit DictReader dans le cahier + règle en rouge : « un CSV ne livre QUE des chaînes ».",
+    "70–105 min : <strong>pratique</strong> — TP guidé étape 2 en binômes, puis exercices 5 et 6 seuls en cellule vide.",
+    "105–120 min : corrigés poussés ; question de sortie : « pourquoi int(l[\"note\"]) ? »."
+   ],
+   "aPreparer": [
+    "Un vrai fichier eleves.csv (à créer) déposé sur les postes + version imprimée du contenu brut",
+    "Tableur installé (LibreOffice/Excel) pour la comparaison bloc-notes/tableur",
+    "Trace écrite : gabarit de lecture CSV",
+    "Prévoir un CSV volontairement incohérent (colonne manquante) pour la section 4"
+   ]
+  },
+  {
+   "titre": "Séance 3 — Filtrer et trier une table",
+   "duree": "2 h",
+   "objectif": "Filtrer par compréhension avec condition et trier avec sorted(..., key=lambda ...), sans détruire la table d'origine.",
+   "surLeSite": [
+    "Sections 5 et 6 : « Rechercher : filtrer des lignes » et « Trier selon une colonne » (cellules ▶ à faire manipuler)",
+    "TP guidé « Une table de A à Z », étapes 3 et 4 (filtrer par compréhension ; trier avec sorted et key)",
+    "Exercices 1 (texte à trou — filtrer les élèves ayant la moyenne), 2 (nés avant 1910), 4 (tri par année) et 7 (meilleure note avec max et key)",
+    "Erreur fréquente n°2 : « trier sans key »"
+   ],
+   "enClasse": [
+    "0–10 min : rituel ardoise — lire un DictReader, convertir une note.",
+    "10–30 min : <strong>débranché</strong> — avec les fiches cartonnées de la séance 1 : chaque îlot exécute à la main « garde les notes ≥ 10 » (filtre : on écarte des fiches) puis « range par note décroissante » (tri : on réordonne TOUTES les fiches) ; verbaliser la différence filtre/tri.",
+    "30–55 min : <strong>manipulation</strong> — sections 5–6 : cellules ▶ exécutées ; montrer l'erreur du tri sans key.",
+    "55–70 min : <strong>institutionnalisation</strong> — les 2 gabarits au cahier : [l for l in table if ...] et sorted(table, key=lambda l: ..., reverse=True) ; règle : on construit une NOUVELLE table.",
+    "70–105 min : <strong>pratique</strong> — TP guidé étapes 3–4 en binômes puis exercices 1, 2, 4 et 7 seuls en cellule.",
+    "105–120 min : corrigés poussés + chasse à l'erreur collective (un tri sans key à réparer)."
+   ],
+   "aPreparer": [
+    "Les jeux de fiches cartonnées de la séance 1 (réutilisés pour filtre/tri à la main)",
+    "Affiche A3 des deux gabarits filtrer/trier pour le mur",
+    "Impression des exercices 1, 2, 4, 7 (🖨️) pour préparation cahier fermé",
+    "Ardoises pour le rituel"
+   ]
+  },
+  {
+   "titre": "Séance 4 — Statistiques et jointure : la chaîne de traitement complète",
+   "duree": "2 h",
+   "objectif": "Calculer des statistiques sur une colonne, fusionner deux tables par une clé commune, et enchaîner charger → filtrer → trier → calculer.",
+   "surLeSite": [
+    "Sections 7, 8 et 9 : « Calculer des statistiques sur une colonne », « Fusionner deux tables (jointure) », « Synthèse : la chaîne de traitement » (cellules ▶)",
+    "TP guidé « Une table de A à Z », étapes 5 et 6 (statistiques ; défi — jointure de deux tables sur une clé)",
+    "Exercices 8, 9 et 10 (défis) : année de naissance moyenne, jointure {classe → prof}, pipeline complet filtrer→trier→classer"
+   ],
+   "enClasse": [
+    "0–10 min : rituel — filtre et tri à écrire sur ardoise (gabarits de la séance 3).",
+    "10–25 min : <strong>débranché</strong> — jointure physique : deux paquets de fiches (élèves / affichette classe→prof) ; chaque îlot apparie par la colonne commune et « enrichit » ses fiches au crayon.",
+    "25–50 min : <strong>manipulation</strong> — sections 7–8 : cellules ▶ exécutées (moyenne, min/max, jointure par dictionnaire).",
+    "50–65 min : <strong>institutionnalisation</strong> — section 9 : schéma de la chaîne charger → vérifier → filtrer/trier/calculer collé dans le cahier ; chaque étape produit une NOUVELLE table.",
+    "65–110 min : <strong>pratique</strong> — TP guidé étapes 5–6 en binômes, puis défis 8, 9, 10 en autonomie (le 10 est le pipeline bilan : le pousser chez tous).",
+    "110–120 min : corrigés poussés ; annonce du projet « Enquête sur un fichier CSV » pour la prochaine séance."
+   ],
+   "aPreparer": [
+    "Deuxième paquet de fiches « classe → professeur » pour la jointure débranchée",
+    "Schéma A4 de la chaîne de traitement à coller (reprendre la section 9, 🖨️)",
+    "Différenciation : coup de pouce écrit pour le défi 9 (copier la ligne avec dict(e))",
+    "Constituer les îlots du projet de la séance 5"
+   ]
+  },
+  {
+   "titre": "Séance 5 — Projet en îlot « Enquête sur un fichier CSV »",
+   "duree": "2 h",
+   "objectif": "Mener une enquête complète sur un CSV réel : poser des questions, choisir filtre/tri/calcul, coder, tester et restituer comme un rapport.",
+   "surLeSite": [
+    "Projet îlot « Enquête sur un fichier CSV » : phases 1 à 5, code de départ (CSV simulé 6 lignes), 3 tests fournis, bonus jointure {classe → professeur}",
+    "Défi du thème « Mission : enquête express » (échauffement)",
+    "Section 9 « Synthèse : la chaîne de traitement » en appui au tableau"
+   ],
+   "enClasse": [
+    "0–10 min : lancement — rôles dans l'îlot (pilote clavier, vérificateur, rapporteur) ; défi « Mission : enquête express » en échauffement collectif.",
+    "10–25 min : <strong>phase 1</strong> — chaque îlot rédige ses 4 questions d'enquête sur papier (ex. « qui en 1NSI ? », « moyenne des notes ? »).",
+    "25–40 min : <strong>phase 2</strong> — pour chaque question, écrire s'il s'agit d'un filtre, d'un tri ou d'un calcul, et sur quelle colonne (validation prof avant de coder).",
+    "40–90 min : <strong>phase 3</strong> — codage à partir du code de départ du site (DictReader, filtre 1NSI, classement, moyenne) ; le prof circule avec la section 9 comme carte.",
+    "90–105 min : <strong>phase 4</strong> — tests fournis : len(table) == 6, le filtre 1NSI renvoie 4 élèves, Grace première ; bonus jointure pour les rapides.",
+    "105–120 min : <strong>phase 5</strong> — « rapport d'enquête » oral de 2 min par îlot ; le prof évalue avec la grille de projet."
+   ],
+   "aPreparer": [
+    "Grille d'évaluation du projet (démarche, code, tests, restitution) — non fournie par le site",
+    "Optionnel mais fort : un CSV réel plus gros (open data, liste anonymisée de la classe) pour remplacer le CSV simulé",
+    "Feuilles « rapport d'enquête » à compléter (questions / méthode / réponse)",
+    "Badges ou cartes de rôles pour les îlots"
+   ]
+  },
+  {
+   "titre": "Séance 6 — Consolidation, QCM, remédiation et TP noté",
+   "duree": "2 h",
+   "objectif": "Consolider la chaîne de traitement, diagnostiquer par le QCM, remédier en groupes de besoin, puis évaluer sur poste (TP noté n°3).",
+   "surLeSite": [
+    "Fiche résumé du thème (4 points) et erreurs fréquentes (3) — rubrique exercices",
+    "QCM du thème (8 questions) en autonomie",
+    "Côté prof : matrice de suivi par thème + diagnostic par question",
+    "Sujet EVALUATIONS « TP noté — Traitement de données en tables » (1 h sur poste, /20, corrigé et barème fournis) ; le « DS — Traitement de données en tables » (50 min) reste en réserve"
+   ],
+   "enClasse": [
+    "0–15 min : rituel bilan — relecture du résumé et des erreurs fréquentes ; questions flash : enregistrement ? descripteur ? pourquoi int() ?",
+    "15–35 min : <strong>QCM en autonomie</strong> — 8 questions ; chacun note son score, le prof relève les questions ratées (diagnostic par question).",
+    "35–55 min : <strong>remédiation</strong> — groupes de besoin : filtre → refaire exercice 1 ; conversion CSV → exercice 5 ; jointure → exercice 9 ; les solides terminent le bonus du projet.",
+    "55–115 min : <strong>TP noté sur poste</strong> (1 h) — sujet « TP noté — Traitement de données en tables » : nombre d'élèves et colonnes, filtre 1NSI, moyenne, classement décroissant, reçus, bonus major.",
+    "115–120 min : ramassage des .py + teaser du thème suivant (« et si on AFFICHAIT ces données dans une page web ? »)."
+   ],
+   "aPreparer": [
+    "Imprimer le sujet du TP noté (🖨️) + fichier de départ avec la table eleves déposé sur Capytale/Thonny",
+    "Feuille de score QCM par élève (alimente la matrice de suivi)",
+    "Parcours de remédiation affichés au tableau",
+    "Procédure de ramassage des fichiers rendus"
+   ]
+  }
+ ]
+}
