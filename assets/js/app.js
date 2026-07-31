@@ -687,7 +687,7 @@
     tools.appendChild(bP);
     // 📝 Toute la trace écrite du thème en un seul document (à projeter/distribuer).
     if (plan.seances.some((s) => s.cours)) {
-      const bC = el("button", "btn secondary", "🖨️ Tout le cours à noter (élèves)");
+      const bC = el("button", "btn secondary", "🖨️ Tout le cours du thème (élèves)");
       bC.addEventListener("click", () => printCoursANoter(plan, themeId));
       tools.appendChild(bC);
     }
@@ -768,7 +768,7 @@
       // prête à projeter au tableau ou à imprimer/dicter.
       if (s.cours) {
         const cdet = el("details", "plan-cours");
-        cdet.appendChild(el("summary", null, "📝 Cours à noter dans le cahier <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
+        cdet.appendChild(el("summary", null, "📝 Le cours de la séance — notion, exemples, défi <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
         const cbody = el("div", "plan-cours-body");
         cbody.innerHTML = s.cours;
         const cbtn = el("button", "btn secondary", "🖨️ Projeter / imprimer cette trace écrite");
@@ -827,7 +827,7 @@
     openPrint(
       `Cours à noter — ${c ? c.title : themeId}`,
       `<h1>📝 Cours à noter — ${c ? c.title : themeId}</h1>` +
-        `<p class="intro">La trace écrite complète du thème, séance par séance : à projeter pendant le cours, ou à donner à un élève absent pour rattraper son cahier.</p>` +
+        `<p class="intro">Le cours complet du thème, séance par séance — notion expliquée, méthodes, traces d'exécution et défis : à projeter pendant le cours, ou à donner à un élève absent.</p>` +
         blocs
     );
   }

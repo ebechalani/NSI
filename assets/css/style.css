@@ -1055,6 +1055,14 @@ details.plan-cours > summary::-webkit-details-marker { display: none; }
 }
 .plan-cours-body pre code { background: none; color: inherit; padding: 0; }
 .plan-cours-body .btn { margin-top: .6rem; }
+.plan-cours-body table {
+  border-collapse: collapse; margin: .5rem 0; font-size: .88rem;
+  font-family: var(--mono);
+}
+.plan-cours-body th, .plan-cours-body td {
+  border: 1px solid var(--border); padding: .3rem .7rem; text-align: center;
+}
+.plan-cours-body th { background: var(--bg-soft); font-weight: 700; }
 
 /* ---------- « Reprendre où j'en étais » (élève, accueil) ---------- */
 .resume-hero {
