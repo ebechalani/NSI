@@ -771,6 +771,13 @@
         cdet.appendChild(el("summary", null, "📝 Le cours de la séance — notion, exemples, défi <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
         const cbody = el("div", "plan-cours-body");
         cbody.innerHTML = s.cours;
+        // Les tableaux (traces d'exécution) défilent dans leur propre cadre :
+        // sinon ils poussent toute la page sur un écran étroit.
+        cbody.querySelectorAll("table").forEach((tbl) => {
+          const box = el("div", "plan-cours-scroll");
+          tbl.parentNode.insertBefore(box, tbl);
+          box.appendChild(tbl);
+        });
         const cbtn = el("button", "btn secondary", "🖨️ Projeter / imprimer cette trace écrite");
         cbtn.addEventListener("click", () =>
           openPrint("Cours à noter — " + s.titre,

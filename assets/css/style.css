@@ -68,7 +68,7 @@ body {
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
-.brand { display: flex; align-items: center; gap: .55rem; font-weight: 700; }
+.brand { display: flex; align-items: center; gap: .55rem; font-weight: 700; min-width: 0; }
 .brand-logo {
   font-family: var(--mono); font-weight: 800;
   background: var(--accent); color: #fff;
@@ -207,6 +207,17 @@ body {
 .section code:not(pre code) {
   font-family: var(--mono); background: var(--bg-soft); border: 1px solid var(--border);
   padding: .08rem .35rem; border-radius: 5px; font-size: .88em;
+  /* un identifiant long (document.querySelectorAll…) doit pouvoir se couper,
+     sinon il pousse la page hors de l'écran sur un téléphone */
+  overflow-wrap: anywhere;
+}
+/* Tout bloc préformaté du cours défile dans son cadre : sinon une longue
+   ligne de code fait défiler la page entière sur un téléphone. */
+.section pre { overflow-x: auto; max-width: 100%; }
+/* Sur petit écran seulement, un tableau large défile dans son cadre au lieu
+   de pousser la page (le rendu sur ordinateur reste inchangé). */
+@media (max-width: 700px) {
+  .section table { display: block; width: max-content; max-width: 100%; overflow-x: auto; }
 }
 /* Blocs de requêtes SQL (thème Bases de données) */
 .section pre.sql {
@@ -679,8 +690,16 @@ body.role-student .exo-corrige.pushed { display: block; }       /* …sauf si le
 @media (max-width: 520px) { .tb-row { grid-template-columns: 1fr 44px; } .tb-track { grid-column: 1 / -1; } }
 
 /* ---------- Plateforme : connexion, rôles, classe ---------- */
-.account-box { display: flex; align-items: center; gap: .4rem; }
+/* min-width:0 : sans lui, le nom de l'élève pousse la barre hors de l'écran
+   sur un téléphone et toute la page se met à défiler horizontalement. */
+.account-box { display: flex; align-items: center; gap: .4rem; min-width: 0; }
 .acc-name { font-size: .8rem; color: var(--text-soft); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 560px) {
+  .topbar { padding: .6rem .6rem; gap: .4rem; }
+  .menu-toggle, .icon-btn { width: 36px; height: 36px; }
+  .acc-name { max-width: 70px; }
+  .acc-logout { padding: .3rem .45rem; }
+}
 .acc-logout { background: var(--bg-soft); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: .35rem .6rem; font-size: .78rem; cursor: pointer; }
 .acc-logout:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -1055,8 +1074,9 @@ details.plan-cours > summary::-webkit-details-marker { display: none; }
 }
 .plan-cours-body pre code { background: none; color: inherit; padding: 0; }
 .plan-cours-body .btn { margin-top: .6rem; }
+.plan-cours-scroll { overflow-x: auto; max-width: 100%; margin: .5rem 0; }
 .plan-cours-body table {
-  border-collapse: collapse; margin: .5rem 0; font-size: .88rem;
+  border-collapse: collapse; margin: 0; font-size: .88rem;
   font-family: var(--mono);
 }
 .plan-cours-body th, .plan-cours-body td {
