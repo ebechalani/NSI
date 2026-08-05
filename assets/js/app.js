@@ -989,19 +989,21 @@
     return cell;
   }
 
-  /* ---------------- Basthon (ouvrir le code dans la console en ligne) ---------------- */
-  // Encode une chaîne UTF-8 en base64 (gère les accents).
-  function utf8ToB64(str) {
-    return btoa(unescape(encodeURIComponent(str)));
-  }
+  /* ---------------- Basthon (ouvrir le code dans le notebook en ligne) ----------------
+     Format attendu par Basthon sur ?ipynb= (vérifié sur notebook.basthon.fr) :
+     il essaie d'abord de DÉGONFLER (zlib « deflate » encodé en base64 URL-safe),
+     et retombe sinon sur decodeURIComponent du paramètre.
+     ⚠️ Un simple base64 du JSON ne marche PLUS : Basthon le passe à JSON.parse
+     tel quel et affiche « l'ipynb est corrompu ». */
 
-  // Ouvre le code dans le NOTEBOOK Basthon (et non la console) :
-  // on fabrique un notebook .ipynb minimal (1 cellule de code) passé en ?ipynb=.
-  function openInBasthon(code) {
+  // Notebook .ipynb minimal : une seule cellule de code.
+  function makeNotebook(code) {
     const lines = code.split("\n");
-    const source = lines.map((l, i) => (i < lines.length - 1 ? l + "\n" : l));
-    const nb = {
-      cells: [{ cell_type: "code", metadata: {}, execution_count: null, outputs: [], source }],
+    return {
+      cells: [{
+        cell_type: "code", metadata: {}, execution_count: null, outputs: [],
+        source: lines.map((l, i) => (i < lines.length - 1 ? l + "\n" : l)),
+      }],
       metadata: {
         kernelspec: { name: "python3", display_name: "Python 3" },
         language_info: { name: "python" },
@@ -1009,19 +1011,39 @@
       nbformat: 4,
       nbformat_minor: 5,
     };
-    let url = "https://notebook.basthon.fr/";
-    try {
-      url += "?ipynb=" + encodeURIComponent(utf8ToB64(JSON.stringify(nb)));
-    } catch (e) {
-      /* repli : notebook vide + presse-papiers */
-    }
-    const win = window.open(url, "_blank", "noopener");
-    // Filet de sécurité : on copie aussi le code (au cas où l'import échoue).
+  }
+
+  // Voie normale : deflate + base64 URL-safe (ce que Basthon produit lui-même
+  // pour ses liens de partage) — URL courte, accents et « % » préservés.
+  function basthonPayload(json) {
+    if (typeof CompressionStream === "undefined") return Promise.reject();
+    const flux = new Blob([new TextEncoder().encode(json)]).stream()
+      .pipeThrough(new CompressionStream("deflate"));
+    return new Response(flux).arrayBuffer().then((buf) => {
+      let bin = "";
+      new Uint8Array(buf).forEach((b) => { bin += String.fromCharCode(b); });
+      return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    });
+  }
+
+  function openInBasthon(code) {
+    const json = JSON.stringify(makeNotebook(code));
+    // La fenêtre doit s'ouvrir DANS le clic (sinon le navigateur la bloque) :
+    // on l'ouvre vide, puis on la redirige quand l'adresse est prête.
+    const win = window.open("", "_blank");
+    if (win) { try { win.opener = null; } catch (e) {} }
+    // Filet de sécurité : le code est aussi copié, au cas où.
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(code).catch(() => {});
     }
-    if (!win) toast("Autorise les pop-ups pour ouvrir Basthon.");
-    else toast("⚡ Notebook Basthon ouvert (code aussi copié, au cas où).");
+    if (!win) { toast("Autorise les pop-ups pour ouvrir Basthon."); return; }
+    basthonPayload(json)
+      // Repli (navigateur ancien) : JSON encodé DEUX fois, car Basthon décode
+      // une fois via l'URL puis une seconde fois avec decodeURIComponent.
+      .catch(() => encodeURIComponent(encodeURIComponent(json)))
+      .then((p) => { win.location.href = "https://notebook.basthon.fr/?ipynb=" + p; })
+      .catch(() => { win.location.href = "https://notebook.basthon.fr/"; });
+    toast("⚡ Notebook Basthon ouvert (code aussi copié, au cas où).");
   }
 
   // Un « cadre » Slate : un en-tête + un contenu, bordé et distinct.
