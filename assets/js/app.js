@@ -279,6 +279,7 @@
     home.appendChild(homeLink);
     navList.appendChild(home);
 
+    navList.appendChild(el("li", "nav-sep", "📚 Les thèmes"));
     COURSES.forEach((c) => {
       const li = el("li");
       const p = progress[c.id];
@@ -298,39 +299,55 @@
       navList.appendChild(li);
     });
 
-    // Séparateur + rubriques transversales
-    const sep = el("li", "nav-sep", "Activités & ressources");
-    navList.appendChild(sep);
-
-    const extraLinks = [
-      { target: "classe", num: "🏫", emoji: "", text: "Ma classe", prof: true },
-      { target: "profs", num: "👤", emoji: "", text: "Comptes profs", admin: true },
-      { target: "reviser", num: "🎯", emoji: "", text: "Réviser", eleve: true },
-      { target: "projets", num: "🏝️", emoji: "", text: "Projets en îlots" },
-      { target: "debranche", num: "🎲", emoji: "", text: "Activités débranchées" },
-      { target: "glossaire", num: "📖", emoji: "", text: "Glossaire NSI" },
-      { target: "methodes", num: "🧭", emoji: "", text: "Fiches méthode" },
-      { target: "tp", num: "🧪", emoji: "", text: "TP guidés (DIU)" },
-      { target: "progression", num: "🗓️", emoji: "", text: "Progression annuelle", prof: true },
-      { target: "didactique", num: "📚", emoji: "", text: "Enseigner la NSI (prof)", prof: true },
-      { target: "evaluations", num: "📝", emoji: "", text: "Évaluations (prof)", prof: true },
-      { target: "bo", num: "✅", emoji: "", text: "Conformité au BO", prof: true },
-      { target: "apropos", num: "ℹ️", emoji: "", text: "À propos & données" },
+    // Rubriques transversales, groupées par public : le prof retrouve TOUS ses
+    // outils sous un seul titre au lieu de les chercher dans une liste à plat.
+    const sections = [
+      {
+        titre: "🎒 Activités & ressources",
+        liens: [
+          { target: "reviser", num: "🎯", text: "Réviser", eleve: true },
+          { target: "projets", num: "🏝️", text: "Projets en îlots" },
+          { target: "debranche", num: "🎲", text: "Activités débranchées" },
+          { target: "glossaire", num: "📖", text: "Glossaire NSI" },
+          { target: "methodes", num: "🧭", text: "Fiches méthode" },
+          { target: "tp", num: "🧪", text: "TP guidés (DIU)" },
+          { target: "apropos", num: "ℹ️", text: "À propos & données" },
+        ],
+      },
+      {
+        titre: "👩‍🏫 Espace prof",
+        prof: true,
+        liens: [
+          { target: "preparer", num: "🗓️", text: "Préparer mes cours", prof: true },
+          { target: "classe", num: "🏫", text: "Ma classe", prof: true },
+          { target: "evaluations", num: "📝", text: "Évaluations", prof: true },
+          { target: "progression", num: "📅", text: "Progression annuelle", prof: true },
+          { target: "didactique", num: "📚", text: "Enseigner la NSI", prof: true },
+          { target: "bo", num: "✅", text: "Conformité au BO", prof: true },
+          { target: "profs", num: "👤", text: "Comptes profs", admin: true },
+        ],
+      },
     ];
-    extraLinks
-      .filter((x) => (!x.prof || P.isTeacher()) && (!x.admin || P.isAdmin()) && (!x.eleve || P.isStudent()))
-      .forEach((x) => {
-      const li = el("li");
-      const link = el(
-        "a",
-        "nav-link",
-        `<span class="nav-num">${x.num}</span>` +
-          `<span class="nav-text">${x.text}</span>`
+    sections.forEach((s) => {
+      if (s.prof && !P.isTeacher()) return;
+      const liens = s.liens.filter(
+        (x) => (!x.prof || P.isTeacher()) && (!x.admin || P.isAdmin()) && (!x.eleve || P.isStudent())
       );
-      link.dataset.target = x.target;
-      link.href = "#" + x.target;
-      li.appendChild(link);
-      navList.appendChild(li);
+      if (!liens.length) return;
+      navList.appendChild(el("li", "nav-sep", s.titre));
+      liens.forEach((x) => {
+        const li = el("li");
+        const link = el(
+          "a",
+          "nav-link",
+          `<span class="nav-num">${x.num}</span>` +
+            `<span class="nav-text">${x.text}</span>`
+        );
+        link.dataset.target = x.target;
+        link.href = "#" + x.target;
+        li.appendChild(link);
+        navList.appendChild(li);
+      });
     });
 
     navList.querySelectorAll(".nav-link").forEach((link) => {
@@ -382,6 +399,32 @@
        tu la retrouves depuis n'importe quel ordinateur.`
     );
     viewHome.appendChild(info);
+
+    // « Ma prochaine séance » : le prof qui revient reprend là où sa classe en est.
+    if (P.isTeacher()) {
+      const classId = prepClasseId();
+      const next = typeof THEME_PLANS !== "undefined" ? prochaineSeance(classId) : null;
+      const hero = el("button", "resume-hero");
+      if (next) {
+        const c = COURSES.find((x) => x.id === next.themeId);
+        const s = THEME_PLANS[next.themeId].seances[next.i];
+        hero.innerHTML =
+          `<span class="resume-icon">▶</span>` +
+          `<span class="resume-body"><strong>Ma prochaine séance</strong>` +
+          `<span class="resume-sub">${c.emoji} ${c.title} · ${s.titre}</span></span><span class="resume-go">→</span>`;
+        hero.addEventListener("click", () => {
+          prepThemeId = next.themeId; prepSeanceIdx = next.i;
+          navigate("preparer");
+        });
+      } else {
+        hero.innerHTML =
+          `<span class="resume-icon">🗓️</span>` +
+          `<span class="resume-body"><strong>Préparer mes cours</strong>` +
+          `<span class="resume-sub">fiches de cours, déroulés, matériel et évaluations, séance par séance</span></span><span class="resume-go">→</span>`;
+        hero.addEventListener("click", () => navigate("preparer"));
+      }
+      viewHome.appendChild(hero);
+    }
 
     // « Reprendre où j'en étais » : l'élève qui revient sait immédiatement quoi faire.
     if (P.isStudent()) {
@@ -3860,6 +3903,294 @@ except Exception:
   /* ---------------- Espace « Ma classe » (prof) ---------------- */
   let selectedClassId = null;
   let selectedDiagTheme = ""; // thème choisi dans le diagnostic par question (conservé au re-render)
+  /* ---------------- Espace prof : « Préparer mes cours » ----------------
+     LA page du prof : une séance = un seul endroit qui réunit la fiche de
+     cours détaillée, le déroulé minuté, le matériel, les fichiers,
+     l'évaluation du thème et le cahier de textes. Rien de plié, rien à
+     chercher dans les pages élèves. */
+  let prepThemeId = null;   // thème ouvert dans « Préparer mes cours »
+  let prepSeanceIdx = null; // séance ouverte (null = liste des séances)
+
+  function prepClasses() {
+    return (P.getClasses ? P.getClasses() : []).filter(
+      (c) => c.teacherUid === (P.getSession() || {}).fbUid
+    );
+  }
+  function prepClasseId() {
+    const mes = prepClasses();
+    if (!mes.length) return null;
+    let id = null;
+    try { id = localStorage.getItem("nsi-prep-classe"); } catch (e) {}
+    return mes.some((c) => c.id === id) ? id : mes[0].id;
+  }
+  function themesAvecPlan() {
+    const plans = typeof THEME_PLANS !== "undefined" ? THEME_PLANS : {};
+    return COURSES.slice().sort((a, b) => a.num - b.num).filter((c) => plans[c.id]);
+  }
+  // La première séance non « faite » (dans l'ordre du programme) pour la classe.
+  function prochaineSeance(classId) {
+    for (const c of themesAvecPlan()) {
+      const plan = THEME_PLANS[c.id];
+      for (let i = 0; i < plan.seances.length; i++) {
+        const etat = classId && P.getSeanceEtat ? P.getSeanceEtat(classId, c.id + ":" + i) : null;
+        if (!etat || !etat.faite) return { themeId: c.id, i };
+      }
+    }
+    return null; // toutes faites : belle année !
+  }
+
+  function renderPreparer() {
+    viewTheme.innerHTML = "";
+    const classId = prepClasseId();
+    const header = el("div", "theme-header");
+    const crumb = el("button", "crumb", "⌂ Accueil");
+    crumb.addEventListener("click", () => navigate("home"));
+    header.appendChild(crumb);
+    header.appendChild(el("h1", null, "🗓️ Préparer mes cours"));
+    header.appendChild(el("p", "theme-intro",
+      "Chaque séance réunit ici <strong>tout ce qu'il te faut</strong> : la fiche de cours à projeter, le déroulé minuté, le matériel à imprimer, les fichiers à déposer et l'évaluation du thème."));
+    viewTheme.appendChild(header);
+
+    // Choix de la classe (le cahier de textes et « ma prochaine séance » en dépendent)
+    const mes = prepClasses();
+    if (mes.length > 1) {
+      const row = el("div", "cahier-picker");
+      row.appendChild(el("span", null, "Classe :"));
+      const sel = el("select", "corr-target");
+      sel.innerHTML = mes.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+      if (classId) sel.value = classId;
+      sel.addEventListener("change", () => {
+        try { localStorage.setItem("nsi-prep-classe", sel.value); } catch (e) {}
+        renderPreparer();
+      });
+      row.appendChild(sel);
+      viewTheme.appendChild(row);
+    }
+
+    // ▶ Ma prochaine séance : reprendre là où la classe en est.
+    const next = prochaineSeance(classId);
+    if (next && !(prepThemeId === next.themeId && prepSeanceIdx === next.i)) {
+      const c = COURSES.find((x) => x.id === next.themeId);
+      const s = THEME_PLANS[next.themeId].seances[next.i];
+      const hero = el("button", "resume-hero");
+      hero.innerHTML =
+        `<span class="resume-icon">▶</span>` +
+        `<span class="resume-body"><strong>Ma prochaine séance${mes.length ? " — " + escapeHtml((mes.find((x) => x.id === classId) || {}).name || "") : ""}</strong>` +
+        `<span class="resume-sub">${c.emoji} ${c.title} · ${s.titre}</span></span><span class="resume-go">→</span>`;
+      hero.addEventListener("click", () => { prepThemeId = next.themeId; prepSeanceIdx = next.i; renderPreparer(); });
+      viewTheme.appendChild(hero);
+    }
+
+    if (prepThemeId && THEME_PLANS[prepThemeId] && prepSeanceIdx != null) {
+      renderPrepSeance(classId);
+    } else if (prepThemeId && THEME_PLANS[prepThemeId]) {
+      renderPrepSeanceList(classId);
+    } else {
+      renderPrepThemes(classId);
+    }
+    scrollTop();
+  }
+
+  // Étape 1 : choisir le thème (avec l'avancement du cahier de textes).
+  function renderPrepThemes(classId) {
+    const grid = el("div", "prep-themes");
+    themesAvecPlan().forEach((c) => {
+      const plan = THEME_PLANS[c.id];
+      const faites = plan.seances.filter((s, i) =>
+        classId && P.getSeanceEtat && (P.getSeanceEtat(classId, c.id + ":" + i) || {}).faite).length;
+      const btn = el("button", "prep-theme-card");
+      btn.innerHTML =
+        `<span class="pt-emoji">${c.emoji}</span>` +
+        `<span class="pt-body"><strong>Thème ${c.num} — ${c.title}</strong>` +
+        `<span class="pt-sub">${plan.seances.length} séances · ${plan.heures}${classId ? ` · <strong>${faites}/${plan.seances.length} faites</strong>` : ""}</span></span>` +
+        (faites === plan.seances.length && classId ? `<span class="pt-done">✓</span>` : `<span class="resume-go">→</span>`);
+      btn.addEventListener("click", () => { prepThemeId = c.id; prepSeanceIdx = null; renderPreparer(); });
+      grid.appendChild(btn);
+    });
+    viewTheme.appendChild(grid);
+  }
+
+  // Étape 2 : la liste des séances du thème.
+  function renderPrepSeanceList(classId) {
+    const c = COURSES.find((x) => x.id === prepThemeId);
+    const plan = THEME_PLANS[prepThemeId];
+    const back = el("button", "crumb", "← Tous les thèmes");
+    back.addEventListener("click", () => { prepThemeId = null; prepSeanceIdx = null; renderPreparer(); });
+    viewTheme.appendChild(back);
+    viewTheme.appendChild(el("h2", "prep-titre", `${c.emoji} ${c.title} <span class="plan-duree">· ${plan.heures}</span>`));
+    if (plan.resume) viewTheme.appendChild(el("p", "extra-hint", plan.resume));
+    const tools = el("div", "tp-print-group");
+    const bPlan = el("button", "btn secondary", "🖨️ Le déroulé complet");
+    bPlan.addEventListener("click", () => printThemePlan(plan, prepThemeId));
+    tools.appendChild(bPlan);
+    if (plan.seances.some((s) => s.cours)) {
+      const bC = el("button", "btn secondary", "🖨️ Tout le cours du thème (élèves)");
+      bC.addEventListener("click", () => printCoursANoter(plan, prepThemeId));
+      tools.appendChild(bC);
+    }
+    viewTheme.appendChild(tools);
+    const list = el("div", "prep-seances");
+    plan.seances.forEach((s, i) => {
+      const etat = classId && P.getSeanceEtat ? P.getSeanceEtat(classId, prepThemeId + ":" + i) : null;
+      const row = el("button", "prep-seance-row" + (etat && etat.faite ? " done" : ""));
+      row.innerHTML =
+        `<span class="ps-etat">${etat && etat.faite ? "✅" : "▫️"}</span>` +
+        `<span class="ps-body"><strong>${s.titre}</strong>` +
+        `<span class="ps-sub">${s.duree}${s.objectif ? " · " + s.objectif : ""}` +
+        `${etat && etat.faite && etat.date ? ` · <em>faite le ${etat.date}</em>` : ""}` +
+        `${etat && etat.note ? ` · 📝 ${escapeHtml(etat.note)}` : ""}</span></span><span class="resume-go">→</span>`;
+      row.addEventListener("click", () => { prepSeanceIdx = i; renderPreparer(); });
+      list.appendChild(row);
+    });
+    viewTheme.appendChild(list);
+  }
+
+  // Étape 3 : LA page d'une séance — tout au même endroit, rien de plié.
+  function renderPrepSeance(classId) {
+    const c = COURSES.find((x) => x.id === prepThemeId);
+    const plan = THEME_PLANS[prepThemeId];
+    const s = plan.seances[prepSeanceIdx];
+    const back = el("button", "crumb", `← ${c.emoji} ${c.title} (toutes les séances)`);
+    back.addEventListener("click", () => { prepSeanceIdx = null; renderPreparer(); });
+    viewTheme.appendChild(back);
+
+    viewTheme.appendChild(el("h2", "prep-titre", `${s.titre} <span class="plan-duree">· ${s.duree}</span>`));
+    if (s.objectif) viewTheme.appendChild(el("p", "plan-objectif", "🎯 " + s.objectif));
+
+    // Cahier de textes de la séance (classe choisie en haut de page)
+    if (classId && P.getSeanceEtat) {
+      const key = prepThemeId + ":" + prepSeanceIdx;
+      const bar = el("div", "cahier-seance");
+      const lab = el("label", "cahier-faite");
+      const cb = el("input"); cb.type = "checkbox";
+      lab.appendChild(cb); lab.appendChild(el("span", null, " Séance faite"));
+      const dateEl = el("span", "cahier-date");
+      const noteIn = el("input", "cahier-note"); noteIn.type = "text";
+      noteIn.placeholder = "note rapide (où on s'est arrêté, à reprendre…)";
+      bar.appendChild(lab); bar.appendChild(dateEl); bar.appendChild(noteIn);
+      const sync = () => {
+        const etat = P.getSeanceEtat(classId, key);
+        cb.checked = !!(etat && etat.faite);
+        dateEl.textContent = etat && etat.date ? "le " + etat.date : "";
+        if (document.activeElement !== noteIn) noteIn.value = (etat && etat.note) || "";
+        bar.classList.toggle("done", !!(etat && etat.faite));
+      };
+      const save = () => {
+        const prev = P.getSeanceEtat(classId, key) || {};
+        if (!cb.checked && !noteIn.value.trim()) P.setSeanceEtat(classId, key, null);
+        else P.setSeanceEtat(classId, key, {
+          faite: cb.checked,
+          date: cb.checked ? (prev.faite && prev.date ? prev.date : new Date().toLocaleDateString("fr-FR")) : "",
+          note: noteIn.value.trim(),
+        });
+        sync();
+      };
+      cb.addEventListener("change", save);
+      noteIn.addEventListener("change", save);
+      sync();
+      viewTheme.appendChild(bar);
+    }
+
+    // 📝 La fiche de cours, OUVERTE (c'est la pièce maîtresse de la page)
+    if (s.cours) {
+      const sec = el("div", "prep-bloc prep-cours");
+      sec.appendChild(el("h3", null, "📝 Le cours de la séance — à projeter / faire noter"));
+      const body = el("div", "plan-cours-body");
+      body.innerHTML = s.cours;
+      body.querySelectorAll("table").forEach((tbl) => {
+        const box = el("div", "plan-cours-scroll");
+        tbl.parentNode.insertBefore(box, tbl);
+        box.appendChild(tbl);
+      });
+      const b = el("button", "btn secondary", "🖨️ Projeter / imprimer cette fiche");
+      b.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));
+      body.appendChild(b);
+      sec.appendChild(body);
+      viewTheme.appendChild(sec);
+    }
+
+    // ⏱️ Le déroulé minuté + ce qu'il faut avoir préparé
+    const grid = el("div", "plan-grid prep-grid");
+    [["⏱️ En classe, minute par minute", s.enClasse],
+     ["📖 Sur le site (à projeter/faire faire)", s.surLeSite],
+     ["🧰 À préparer avant la séance", s.aPreparer]].forEach(([t, items]) => {
+      const col = el("div", "plan-col");
+      col.appendChild(el("div", "plan-col-head", t));
+      const ul = el("ul");
+      (items && items.length ? items : ["—"]).forEach((it) => {
+        const li = el("li"); li.innerHTML = it; ul.appendChild(li);
+      });
+      col.appendChild(ul);
+      grid.appendChild(col);
+    });
+    viewTheme.appendChild(grid);
+
+    // 🧰 Le matériel du thème (imprimables + fichiers), directement accessible
+    const kit = (typeof THEME_KITS !== "undefined" ? THEME_KITS : {})[prepThemeId];
+    if (kit && ((kit.imprimables || []).length || (kit.fichiers || []).length)) {
+      const sec = el("div", "prep-bloc");
+      sec.appendChild(el("h3", null, "🧰 Matériel du thème"));
+      if (kit.imprimables && kit.imprimables.length) {
+        const row = el("div", "tp-print-group");
+        kit.imprimables.forEach((im) => {
+          const b = el("button", "btn secondary", "🖨️ " + im.titre);
+          b.addEventListener("click", () => openPrint(im.titre, im.html));
+          row.appendChild(b);
+        });
+        sec.appendChild(row);
+      }
+      if (kit.fichiers && kit.fichiers.length) {
+        const ul = el("ul", "kit-files");
+        kit.fichiers.forEach((f) => {
+          const li = el("li");
+          li.innerHTML = `<a href="${f.chemin}" download>📄 ${f.nom}</a> — ${f.desc}`;
+          ul.appendChild(li);
+        });
+        sec.appendChild(ul);
+      }
+      viewTheme.appendChild(sec);
+    }
+
+    // 📝 Les évaluations du thème (sujet + corrigé imprimables)
+    const evals = (typeof EVALUATIONS !== "undefined" ? EVALUATIONS : []).filter((e) => e.themeId === prepThemeId);
+    if (evals.length) {
+      const sec = el("div", "prep-bloc");
+      sec.appendChild(el("h3", null, "📝 Évaluations du thème"));
+      evals.forEach((ev) => {
+        const row = el("div", "prep-eval-row");
+        row.appendChild(el("span", null, `<strong>${ev.titre}</strong> · ${ev.duree} · / ${ev.total} pts`));
+        const bS = el("button", "btn secondary", "🖨️ Sujet");
+        bS.addEventListener("click", () => openPrint(ev.titre,
+          `<h1>${ev.titre}</h1><p class="intro">Durée : ${ev.duree} · Barème : / ${ev.total} points</p>${ev.enonce}`));
+        row.appendChild(bS);
+        if (ev.corrige) {
+          const bC = el("button", "btn secondary", "🔑 Corrigé");
+          bC.addEventListener("click", () => openPrint("Corrigé — " + ev.titre, `<h1>Corrigé — ${ev.titre}</h1>${ev.corrige}`));
+          row.appendChild(bC);
+        }
+        sec.appendChild(row);
+      });
+      viewTheme.appendChild(sec);
+    }
+
+    // Navigation séance précédente / suivante + passerelle vers la page élève
+    const nav = el("div", "tp-print-group prep-nav");
+    if (prepSeanceIdx > 0) {
+      const b = el("button", "btn secondary", "← Séance précédente");
+      b.addEventListener("click", () => { prepSeanceIdx--; renderPreparer(); });
+      nav.appendChild(b);
+    }
+    if (prepSeanceIdx < plan.seances.length - 1) {
+      const b = el("button", "btn", "Séance suivante →");
+      b.addEventListener("click", () => { prepSeanceIdx++; renderPreparer(); });
+      nav.appendChild(b);
+    }
+    const bTheme = el("button", "btn secondary", "👀 Voir le thème côté élève");
+    bTheme.addEventListener("click", () => navigate(prepThemeId));
+    nav.appendChild(bTheme);
+    viewTheme.appendChild(nav);
+  }
+
   // 🖨️ Bilan individuel imprimable : à remettre à l'élève ou aux parents.
   function printBilanEleve(st, cls) {
     if (!st) return;
@@ -4673,6 +5004,11 @@ except Exception:
       showThemeView("tp");
       renderTP();
       location.hash = "tp";
+    } else if (target === "preparer") {
+      if (!P.isTeacher()) return navigate("home");
+      showThemeView("preparer");
+      renderPreparer();
+      location.hash = "preparer";
     } else if (target === "classe") {
       if (!P.isTeacher()) return navigate("home");
       showThemeView("classe");
@@ -4710,7 +5046,7 @@ except Exception:
 
   function isKnownTarget(t) {
     if (!t) return false;
-    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique", "debranche", "apropos", "reviser"].includes(t)) return true;
+    if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique", "debranche", "apropos", "reviser", "preparer"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
   }
