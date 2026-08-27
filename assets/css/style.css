@@ -1047,6 +1047,41 @@ td.cell-none { text-align: center; color: var(--text-soft); }
 .classe-diag-table table { font-size: .84rem; }
 .classe-diag-table tr.row-alert td { font-weight: 600; }
 
+/* ---------- Conducteur de séance (timeline pas à pas, prof) ---------- */
+.conduite { display: flex; flex-direction: column; gap: .7rem; margin-top: .6rem; padding-left: 1rem; border-left: 3px solid var(--accent); }
+.conduite-wrap { padding: .7rem .9rem .9rem; }
+.cd-etape {
+  position: relative;
+  background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px;
+  padding: .7rem .9rem;
+}
+.cd-etape::before {
+  content: ""; position: absolute; left: -1.45rem; top: 1.05rem;
+  width: .7rem; height: .7rem; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg);
+}
+.cd-head { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+.cd-time {
+  font-family: var(--mono); font-weight: 800; font-size: .78rem;
+  background: var(--accent); color: #fff; border-radius: 999px; padding: .12rem .6rem;
+  flex: 0 0 auto;
+}
+.cd-chip {
+  font-size: .74rem; font-weight: 700; border-radius: 999px; padding: .12rem .55rem;
+  background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent);
+  flex: 0 0 auto;
+}
+.cd-noter .cd-chip { background: var(--ok-soft); color: var(--ok-text); border-color: var(--ok-text); }
+.cd-exercice .cd-chip, .cd-tp .cd-chip { background: var(--bad-soft); color: var(--bad-text); border-color: var(--bad-text); }
+.cd-jeu .cd-chip, .cd-debranche .cd-chip, .cd-rituel .cd-chip { background: #fef3c7; color: var(--warn-text); border-color: var(--warn-text); }
+html[data-theme="dark"] .cd-jeu .cd-chip, html[data-theme="dark"] .cd-debranche .cd-chip, html[data-theme="dark"] .cd-rituel .cd-chip { background: #3b2f10; }
+.cd-titre { font-size: .95rem; }
+.cd-prof { margin: .45rem 0 .1rem; font-size: .88rem; color: var(--text-soft); font-style: italic; line-height: 1.5; }
+.cd-contenu { margin-top: .45rem; padding-top: .45rem; border-top: 1px dashed var(--border); }
+.cd-noter { border-left: 4px solid var(--ok); }
+.cd-exercice, .cd-tp { border-left: 4px solid var(--bad); }
+.cd-jeu, .cd-debranche, .cd-rituel { border-left: 4px solid var(--warn); }
+
 /* ---------- Espace prof « Préparer mes cours » ---------- */
 .prep-titre { margin: .9rem 0 .3rem; }
 .prep-themes { display: flex; flex-direction: column; gap: .55rem; margin-top: .8rem; }

@@ -715,6 +715,56 @@
   // Déroulé heure par heure du thème (prof) : quoi faire de chaque séance avec
   // le contenu du site (sections, exercices, TP, quiz), et ce que le professeur
   // doit préparer/ajouter lui-même. Données : THEME_PLANS (resources.js).
+  /* ---------------- Conducteur de séance (prof) ----------------
+     La timeline pas à pas d'une séance : chaque étape horodatée dit ce que
+     fait le prof et contient le contenu au bon moment (fragment de fiche à
+     faire noter, exercice à donner, jeu à lancer). Données : seance.etapes. */
+  const CONDUITE_TYPES = {
+    jeu: ["🎮", "Jeu"], debranche: ["🎲", "Débranché"], rituel: ["⚡", "Rituel"],
+    explication: ["🗣️", "Explication"], noter: ["✍️", "À noter"], demo: ["▶", "Démo"],
+    exercice: ["💻", "Exercice"], tp: ["🧪", "TP"], qcm: ["❓", "QCM"],
+    correction: ["✅", "Correction"], bilan: ["🎯", "Bilan"],
+  };
+
+  function makeConduite(s) {
+    const wrap = el("div", "conduite");
+    (s.etapes || []).forEach((e) => {
+      const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
+      const card = el("div", "cd-etape cd-" + (CONDUITE_TYPES[e.type] ? e.type : "autre"));
+      const head = el("div", "cd-head");
+      head.innerHTML =
+        `<span class="cd-time">${e.t}</span>` +
+        `<span class="cd-chip">${emo} ${label}</span>` +
+        `<strong class="cd-titre">${e.titre}</strong>`;
+      card.appendChild(head);
+      if (e.prof) card.appendChild(el("p", "cd-prof", "👩‍🏫 " + e.prof));
+      if (e.contenu) {
+        const body = el("div", "cd-contenu plan-cours-body");
+        body.innerHTML = e.contenu;
+        body.querySelectorAll("table").forEach((tbl) => {
+          const box = el("div", "plan-cours-scroll");
+          tbl.parentNode.insertBefore(box, tbl);
+          box.appendChild(tbl);
+        });
+        card.appendChild(body);
+      }
+      wrap.appendChild(card);
+    });
+    return wrap;
+  }
+
+  function printConduite(s, themeTitle) {
+    const blocs = (s.etapes || []).map((e) => {
+      const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
+      return `<h2>${e.t} — ${emo} ${label} · ${e.titre}</h2>` +
+        (e.prof ? `<p class="intro">👩‍🏫 ${e.prof}</p>` : "") +
+        (e.contenu || "");
+    }).join("");
+    openPrint("Conducteur — " + s.titre,
+      `<h1>🎬 Conducteur — ${s.titre}</h1>` +
+      `<p class="intro">${themeTitle || ""} · ${s.duree}${s.objectif ? " · 🎯 " + s.objectif : ""}</p>` + blocs);
+  }
+
   function makeThemePlan(themeId) {
     const plan = (typeof THEME_PLANS !== "undefined" ? THEME_PLANS : {})[themeId];
     if (!plan) return null;
@@ -807,9 +857,26 @@
         seanceSyncs.push(sync);
         card.appendChild(bar);
       }
-      // 📝 La trace écrite de la séance : ce que les élèves copient dans le cahier,
-      // prête à projeter au tableau ou à imprimer/dicter.
-      if (s.cours) {
+      // 🎬 Le conducteur pas à pas (cours, exercices et jeux intercalés au bon
+      // moment) — ou, à défaut, la fiche de cours seule.
+      if (s.etapes && s.etapes.length) {
+        const cdet = el("details", "plan-cours");
+        cdet.appendChild(el("summary", null, "🎬 Conducteur pas à pas — cours, exercices, jeux au bon moment <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
+        const cbody = el("div", "conduite-wrap");
+        const tools = el("div", "tp-print-group");
+        const bC = el("button", "btn secondary", "🖨️ Imprimer le conducteur");
+        bC.addEventListener("click", () => printConduite(s, themeTitle(themeId)));
+        tools.appendChild(bC);
+        if (s.cours) {
+          const bF = el("button", "btn secondary", "🖨️ La fiche de cours seule (élèves)");
+          bF.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));
+          tools.appendChild(bF);
+        }
+        cbody.appendChild(tools);
+        cbody.appendChild(makeConduite(s));
+        cdet.appendChild(cbody);
+        card.appendChild(cdet);
+      } else if (s.cours) {
         const cdet = el("details", "plan-cours");
         cdet.appendChild(el("summary", null, "📝 Le cours de la séance — notion, exemples, défi <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
         const cbody = el("div", "plan-cours-body");
@@ -831,7 +898,10 @@
         card.appendChild(cdet);
       }
       const grid = el("div", "plan-grid");
-      [["📖 Sur le site", s.surLeSite], ["🧑‍🏫 En classe", s.enClasse], ["🧰 À préparer toi-même", s.aPreparer]].forEach(([t, items]) => {
+      const colonnes = s.etapes && s.etapes.length
+        ? [["📖 Sur le site", s.surLeSite], ["🧰 À préparer toi-même", s.aPreparer]]
+        : [["📖 Sur le site", s.surLeSite], ["🧑‍🏫 En classe", s.enClasse], ["🧰 À préparer toi-même", s.aPreparer]];
+      colonnes.forEach(([t, items]) => {
         const col = el("div", "plan-col");
         col.appendChild(el("div", "plan-col-head", t));
         const ul = el("ul");
@@ -4091,8 +4161,25 @@ except Exception:
       viewTheme.appendChild(bar);
     }
 
-    // 📝 La fiche de cours, OUVERTE (c'est la pièce maîtresse de la page)
-    if (s.cours) {
+    if (s.etapes && s.etapes.length) {
+      // 🎬 Le conducteur pas à pas : LA séance dans l'ordre, cours, exercices
+      // et jeux intercalés au bon moment. La fiche est répartie dedans.
+      const sec = el("div", "prep-bloc prep-cours");
+      sec.appendChild(el("h3", null, "🎬 La séance pas à pas"));
+      const tools = el("div", "tp-print-group");
+      const bC = el("button", "btn secondary", "🖨️ Imprimer le conducteur");
+      bC.addEventListener("click", () => printConduite(s, c.title));
+      tools.appendChild(bC);
+      if (s.cours) {
+        const bF = el("button", "btn secondary", "🖨️ La fiche de cours seule (élèves)");
+        bF.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));
+        tools.appendChild(bF);
+      }
+      sec.appendChild(tools);
+      sec.appendChild(makeConduite(s));
+      viewTheme.appendChild(sec);
+    } else if (s.cours) {
+      // 📝 Repli (pas encore de conducteur) : la fiche de cours ouverte
       const sec = el("div", "prep-bloc prep-cours");
       sec.appendChild(el("h3", null, "📝 Le cours de la séance — à projeter / faire noter"));
       const body = el("div", "plan-cours-body");
@@ -4109,11 +4196,12 @@ except Exception:
       viewTheme.appendChild(sec);
     }
 
-    // ⏱️ Le déroulé minuté + ce qu'il faut avoir préparé
+    // Ce qu'il faut avoir sous la main (le « quand » vit dans le conducteur)
     const grid = el("div", "plan-grid prep-grid");
-    [["⏱️ En classe, minute par minute", s.enClasse],
-     ["📖 Sur le site (à projeter/faire faire)", s.surLeSite],
-     ["🧰 À préparer avant la séance", s.aPreparer]].forEach(([t, items]) => {
+    const cols = s.etapes && s.etapes.length
+      ? [["📖 Sur le site (à projeter/faire faire)", s.surLeSite], ["🧰 À préparer avant la séance", s.aPreparer]]
+      : [["⏱️ En classe, minute par minute", s.enClasse], ["📖 Sur le site (à projeter/faire faire)", s.surLeSite], ["🧰 À préparer avant la séance", s.aPreparer]];
+    cols.forEach(([t, items]) => {
       const col = el("div", "plan-col");
       col.appendChild(el("div", "plan-col-head", t));
       const ul = el("ul");
