@@ -738,6 +738,9 @@
         `<strong class="cd-titre">${e.titre}</strong>`;
       card.appendChild(head);
       if (e.prof) card.appendChild(el("p", "cd-prof", "👩‍🏫 " + e.prof));
+      // Le pendant côté classe : ce que FONT les élèves pendant cette étape
+      // (jamais spectateurs — c'est la moitié du contrat pédagogique).
+      if (e.eleves) card.appendChild(el("p", "cd-eleves", "🧑‍🎓 Les élèves " + e.eleves));
       if (e.contenu) {
         const body = el("div", "cd-contenu plan-cours-body");
         body.innerHTML = e.contenu;
@@ -758,11 +761,28 @@
       const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
       return `<h2>${e.t} — ${emo} ${label} · ${e.titre}</h2>` +
         (e.prof ? `<p class="intro">👩‍🏫 ${e.prof}</p>` : "") +
+        (e.eleves ? `<p class="intro">🧑‍🎓 Les élèves ${e.eleves}</p>` : "") +
         (e.contenu || "");
     }).join("");
     openPrint("Conducteur — " + s.titre,
       `<h1>🎬 Conducteur — ${s.titre}</h1>` +
       `<p class="intro">${themeTitle || ""} · ${s.duree}${s.objectif ? " · 🎯 " + s.objectif : ""}</p>` + blocs);
+  }
+
+  // Le « plan de travail élève » : la même timeline vue par la classe — le
+  // créneau et ce qu'ILS font, sans les consignes du prof ni les réponses.
+  // À projeter en début d'heure : chacun sait quoi faire, le prof circule.
+  function printPlanEleve(s, themeTitle) {
+    const lignes = (s.etapes || []).map((e) => {
+      const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
+      return `<tr><td><strong>${e.t}</strong></td><td>${emo} ${label}</td>` +
+        `<td>${e.eleves ? "Les élèves " + e.eleves : e.titre}</td></tr>`;
+    }).join("");
+    openPrint("Plan de travail — " + s.titre,
+      `<h1>🧑‍🎓 Plan de travail — ${s.titre}</h1>` +
+      `<p class="intro">${themeTitle || ""} · ${s.duree}${s.objectif ? " · 🎯 Objectif : " + s.objectif : ""}</p>` +
+      `<table><tr><th>Quand</th><th>Quoi</th><th>Ce qu'on fait</th></tr>${lignes}</table>` +
+      `<p class="intro">Avance à ton rythme dans le créneau : si tu es en avance, aide ton voisin ou tente le défi ; si tu bloques, lève la main — le professeur circule.</p>`);
   }
 
   function makeThemePlan(themeId) {
@@ -867,6 +887,9 @@
         const bC = el("button", "btn secondary", "🖨️ Imprimer le conducteur");
         bC.addEventListener("click", () => printConduite(s, themeTitle(themeId)));
         tools.appendChild(bC);
+        const bPE = el("button", "btn secondary", "🧑‍🎓 Plan de travail élève (à projeter)");
+        bPE.addEventListener("click", () => printPlanEleve(s, themeTitle(themeId)));
+        tools.appendChild(bPE);
         if (s.cours) {
           const bF = el("button", "btn secondary", "🖨️ La fiche de cours seule (élèves)");
           bF.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));
@@ -4170,6 +4193,9 @@ except Exception:
       const bC = el("button", "btn secondary", "🖨️ Imprimer le conducteur");
       bC.addEventListener("click", () => printConduite(s, c.title));
       tools.appendChild(bC);
+      const bPE = el("button", "btn secondary", "🧑‍🎓 Plan de travail élève (à projeter)");
+      bPE.addEventListener("click", () => printPlanEleve(s, c.title));
+      tools.appendChild(bPE);
       if (s.cours) {
         const bF = el("button", "btn secondary", "🖨️ La fiche de cours seule (élèves)");
         bF.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));

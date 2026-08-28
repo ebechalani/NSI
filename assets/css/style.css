@@ -1077,6 +1077,11 @@ td.cell-none { text-align: center; color: var(--text-soft); }
 html[data-theme="dark"] .cd-jeu .cd-chip, html[data-theme="dark"] .cd-debranche .cd-chip, html[data-theme="dark"] .cd-rituel .cd-chip { background: #3b2f10; }
 .cd-titre { font-size: .95rem; }
 .cd-prof { margin: .45rem 0 .1rem; font-size: .88rem; color: var(--text-soft); font-style: italic; line-height: 1.5; }
+.cd-eleves {
+  margin: .3rem 0 .1rem; font-size: .88rem; line-height: 1.5;
+  color: var(--ok-text); background: var(--ok-soft);
+  border-radius: 8px; padding: .35rem .6rem;
+}
 .cd-contenu { margin-top: .45rem; padding-top: .45rem; border-top: 1px dashed var(--border); }
 .cd-noter { border-left: 4px solid var(--ok); }
 .cd-exercice, .cd-tp { border-left: 4px solid var(--bad); }
