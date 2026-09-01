@@ -1,0 +1,9 @@
+# Artefacts Python générés à l'exécution / à la vérification des scripts.
+# Attention : ne pas ignorer *.pyc globalement — les fichiers de
+# assets/projets/pyc/ sont volontairement versionnés (ils sont chargés par
+# la console Python du site).
+__pycache__/
+
+# Système
+.DS_Store
+Thumbs.db
