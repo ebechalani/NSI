@@ -447,6 +447,28 @@ const QUIZZES = {
       answer: 3,
       explain: "La validation client n'est que du confort (message immédiat). Une requête peut être forgée sans passer par la page : seule la vérification serveur protège.",
     },
+    {
+      q: "Sur le Wi-Fi public d'un café, tu envoies ton mot de passe par un formulaire en POST à un site en http:// (sans « s »). Que se passe-t-il ?",
+      choices: [
+        "Aucun risque : avec POST, le mot de passe est dans le corps de la requête et non dans l'URL, donc personne ne peut le lire",
+        "Le navigateur chiffre automatiquement tout formulaire qui contient un champ mot de passe",
+        "Le mot de passe circule en clair sur le réseau : quelqu'un connecté au même Wi-Fi peut l'intercepter et le lire",
+        "Seul le serveur destinataire peut le lire, puisque la requête lui est adressée",
+      ],
+      answer: 2,
+      explain: "POST évite seulement que le mot de passe apparaisse dans l'URL : sans HTTPS, tout le contenu de la requête circule en clair et un intermédiaire (Wi-Fi public, FAI) peut le lire. Seul le « s » de https (transmission chiffrée, cadenas dans le navigateur) rend l'échange illisible pour lui.",
+    },
+    {
+      q: "Un site de vente en ligne affiche le cadenas (HTTPS) dans la barre d'adresse. Que garantit-il exactement ?",
+      choices: [
+        "La transmission entre ton navigateur et le serveur est chiffrée, et le serveur est bien celui du domaine affiché",
+        "Le site est honnête : le cadenas n'est accordé qu'aux commerçants sérieux et vérifiés",
+        "Tes données seront bien protégées une fois enregistrées sur le serveur du site",
+        "La page n'utilise aucun cookie de pistage et ne collecte aucune trace",
+      ],
+      answer: 0,
+      explain: "HTTPS protège le trajet des données (chiffrement de la transmission + certificat qui identifie le serveur), pas ce que le site en fait ensuite : un site frauduleux ou mal sécurisé peut très bien être en HTTPS. Le cadenas ne remplace pas ton esprit critique.",
+    },
   ],
 
   "architecture-os": [

@@ -17,12 +17,13 @@ const COURSES = [
       "Tout, dans un ordinateur, est représenté par des suites de 0 et de 1. Ce thème montre comment on code les nombres entiers, les nombres à virgule, les booléens et les caractères.",
     capacites: [
       "Passer de la représentation d'une base dans une autre (binaire, décimal, hexadécimal).",
-      "Évaluer le nombre de bits nécessaires pour écrire un entier, ou un nombre de valeurs.",
+      "Évaluer le nombre de bits nécessaires pour écrire un entier, un nombre de valeurs, ou la somme et le produit de deux entiers.",
       "Représenter un entier relatif (complément à deux).",
       "Calculer sur des nombres entiers et observer les phénomènes de débordement.",
       "Comprendre les limites de la représentation des nombres flottants (norme IEEE 754).",
       "Utiliser l'algèbre de Boole : opérateurs et, ou, non ; tables de vérité.",
       "Connaître le codage des caractères (ASCII, Unicode, UTF-8).",
+      "Convertir un fichier texte d'un encodage à un autre (ISO-8859-1, UTF-8).",
     ],
     sections: [
       {
@@ -213,6 +214,48 @@ print("200 + 100 =", add8(200, 100))   # 44
 print(2 ** 100)`,
       },
       {
+        title: "Combien de bits pour une somme, un produit ? Les tailles usuelles",
+        html: `<p>On a vu que, sur 8 bits, une addition dont le résultat dépasse 255 déborde : le bit de trop est perdu. Pour éviter ce piège, il faut savoir <strong>prévoir la taille d'un résultat avant de le calculer</strong>. Deux règles suffisent, et on les trouve en raisonnant sur le pire cas.</p>
+<ul>
+<li><strong>Somme.</strong> Si a s'écrit sur n bits et b sur m bits, alors a + b s'écrit sur <strong>au plus max(n, m) + 1 bits</strong>. Le bit supplémentaire, c'est la retenue finale. Pire cas avec deux octets : 255 + 255 = 510, qui s'écrit 111111110 en binaire, soit 9 bits.</li>
+<li><strong>Produit.</strong> Si a s'écrit sur n bits et b sur m bits, alors a × b s'écrit sur <strong>au plus n + m bits</strong>. Pire cas avec deux octets : 255 × 255 = 65 025, qui tient sur 16 bits (il est juste en dessous de 65 536, la première valeur qui réclame 17 bits).</li>
+</ul>
+<p class="note">💡 Pourquoi ces règles ? Un entier qui s'écrit sur n bits est strictement inférieur à 2<sup>n</sup>. Donc a + b &lt; 2<sup>n</sup> + 2<sup>m</sup>, et cette somme ne dépasse pas 2 × 2<sup>max(n, m)</sup> = 2<sup>max(n, m) + 1</sup>. De même a × b &lt; 2<sup>n</sup> × 2<sup>m</sup> = 2<sup>n + m</sup>. Ce sont des <em>bornes</em> : parfois il faut moins. Par exemple 200 + 7 = 207 tient encore sur 8 bits alors que la règle en garantit 9. En Python, la méthode <code>n.bit_length()</code> donne le nombre exact de bits nécessaires pour écrire l'entier n (elle est utilisée dans la cellule ci-dessous).</p>
+<p>Dans une machine, on ne choisit pas librement le nombre de bits : les entiers sont rangés dans des cases de taille fixe, presque toujours <strong>8, 16, 32 ou 64 bits</strong>. Chaque taille a deux plages, selon que l'on réserve ou non un bit pour le signe (complément à deux, vu plus haut).</p>
+<table>
+<tr><th>Taille</th><th>Non signé</th><th>Signé (complément à deux)</th><th>Exemple d'usage</th></tr>
+<tr><td>8 bits</td><td>0 à 255</td><td>-128 à 127</td><td>un canal de couleur (rouge, vert ou bleu) d'un pixel</td></tr>
+<tr><td>16 bits</td><td>0 à 65 535</td><td>-32 768 à 32 767</td><td>un échantillon de son sur un CD audio</td></tr>
+<tr><td>32 bits</td><td>0 à 4 294 967 295</td><td>-2 147 483 648 à 2 147 483 647</td><td>le type <code>int</code> de nombreux langages (C, Java...)</td></tr>
+<tr><td>64 bits</td><td>0 à 18 446 744 073 709 551 615</td><td>-9 223 372 036 854 775 808 à 9 223 372 036 854 775 807</td><td>les entiers des processeurs actuels, les tailles de fichiers</td></tr>
+</table>
+<p>C'est là que le débordement de la partie précédente prend tout son sens. En Python, tu ne le vois jamais (entiers illimités, on l'a dit) : <code>255 * 255</code> vaut tranquillement 65 025. Mais à taille fixe, multiplier deux canaux de couleur sur 8 bits sans passer à 16 bits, ou additionner deux échantillons sonores proches de 32 767 sans prévoir un bit de plus, produit un résultat faux (couleur aberrante, craquement dans le son). Les règles ci-dessus disent justement combien de bits réserver pour que ça n'arrive pas.</p>
+<p class="warnbox">⚠️ <strong>Le bug de l'an 2038.</strong> Beaucoup de systèmes comptent le temps en secondes écoulées depuis le 1er janvier 1970, dans un entier <strong>signé sur 32 bits</strong>. Le maximum, 2 147 483 647 secondes, sera atteint le 19 janvier 2038 à 03 h 14 min 07 s (temps universel). Une seconde plus tard, le compteur déborde et bascule à -2 147 483 648, c'est-à-dire une date en 1901 ! La solution, déjà déployée sur la plupart des systèmes récents, est de passer ce compteur sur 64 bits.</p>`,
+        code: `# Combien de bits pour écrire un entier ? La méthode bit_length()
+for n in [255, 256, 510, 65025]:
+    print(n, "->", n.bit_length(), "bits")
+
+# Pire cas d'une somme de deux octets
+s = 255 + 255
+print("255 + 255 =", s, "-> tient sur", s.bit_length(), "bits")
+
+# Pire cas d'un produit de deux octets
+p = 255 * 255
+print("255 * 255 =", p, "-> tient sur", p.bit_length(), "bits")
+
+# Règle générale : a sur n bits, b sur m bits
+a, b = 200, 7
+n, m = a.bit_length(), b.bit_length()
+print("200 s'écrit sur", n, "bits, 7 sur", m, "bits")
+print("somme :", (a + b).bit_length(), "bits ; garanti par la règle :", max(n, m) + 1)
+print("produit :", (a * b).bit_length(), "bits ; garanti par la règle :", n + m)
+
+# Plages des tailles usuelles (non signé / signé en complément à deux)
+for taille in [8, 16, 32, 64]:
+    print(taille, "bits : 0 ..", 2**taille - 1, "| signé :", -2**(taille - 1), "..", 2**(taille - 1) - 1)`,
+        prof: `<p>Capacité du programme de Première : évaluer le nombre de bits nécessaires à l'écriture d'un entier, de la somme ou du produit de deux entiers. Erreur fréquente des élèves : croire que le produit demande n × m bits (au lieu de n + m), ou que la somme demande n + m bits. Faire refaire à la main 255 + 255 en colonnes pour visualiser la retenue qui crée le 9e bit. Les entiers à taille fixe des autres langages ne sont pas au programme : on les cite seulement comme motivation, sans exercice dessus.</p>`,
+      },
+      {
         title: "Les nombres à virgule : les flottants",
         html: `
         <p>Pour les nombres « à virgule » (3,14 ; 0,5 ; …), l'ordinateur utilise le type <strong>flottant</strong> (<code>float</code>). L'idée importante à retenir n'est <em>pas</em> le détail technique du codage, mais une <strong>conséquence pratique</strong> :</p>
@@ -268,6 +311,33 @@ valide = len(mdp) >= 8 and any(c.isdigit() for c in mdp)
 print("Mot de passe valide ?", valide)`,
       },
       {
+        title: "and / or : Python s'arrête dès qu'il connaît la réponse",
+        html: `<p>On a vu dans la section précédente les tables de vérité de <code>and</code> et <code>or</code>. Regarde la ligne « faux <code>and</code> … » : quelle que soit la valeur du second opérande, le résultat est faux. Python le sait aussi, et il en profite : il évalue les opérandes <strong>de gauche à droite</strong> et <strong>s'arrête dès que le résultat est connu</strong>. C'est l'<em>évaluation séquentielle</em>, dite aussi <em>paresseuse</em> ou <em>en court-circuit</em>.</p><table><tr><th>Expression</th><th>Si le premier opérande vaut…</th><th>Alors Python…</th></tr><tr><td><code>A and B</code></td><td><code>False</code></td><td>répond <code>False</code> sans évaluer <code>B</code></td></tr><tr><td><code>A and B</code></td><td><code>True</code></td><td>doit évaluer <code>B</code> : le résultat est celui de <code>B</code></td></tr><tr><td><code>A or B</code></td><td><code>True</code></td><td>répond <code>True</code> sans évaluer <code>B</code></td></tr><tr><td><code>A or B</code></td><td><code>False</code></td><td>doit évaluer <code>B</code> : le résultat est celui de <code>B</code></td></tr></table><p>Le résultat final est exactement celui de la table de vérité : seul le <strong>calcul</strong> est abrégé. Dans la cellule ci-dessous, la fonction <code>bavarde</code> affiche un message chaque fois qu'elle est appelée : tu verras que l'opérande de droite n'est parfois jamais évalué.</p><p>À quoi ça sert ? À <strong>protéger une opération risquée</strong> par une condition placée juste avant. Avec <code>x = 0</code>, l'expression <code>x != 0 and y / x &gt; 1</code> vaut simplement <code>False</code> : la division n'est jamais tentée. De même, <code>i &lt; len(t) and t[i] == v</code> est le garde-fou classique pour lire une case d'une liste sans risquer un <code>IndexError</code> : si l'indice est trop grand, <code>t[i]</code> n'est jamais lu.</p><p class="warnbox">⚠️ L'<strong>ordre</strong> des opérandes compte. <code>y / x &gt; 1 and x != 0</code> contient les mêmes tests, mais la division est faite en premier : avec <code>x = 0</code>, c'est un <code>ZeroDivisionError</code>. Place toujours la condition de garde <strong>à gauche</strong>, avant l'opération qu'elle protège.</p><p class="note">💡 Ce n'est pas une bizarrerie de Python : la plupart des langages (C, Java, JavaScript…) font exactement la même chose avec leurs opérateurs <code>&amp;&amp;</code> et <code>||</code>.</p>`,
+        code: `def bavarde(nom, valeur):
+    print("   -> on évalue", nom)
+    return valeur
+
+print("A : False and ...")
+r = bavarde("gauche", False) and bavarde("droite", True)
+print("   résultat :", r)
+print("B : True or ...")
+r = bavarde("gauche", True) or bavarde("droite", False)
+print("   résultat :", r)
+
+x, y = 0, 5
+print(x != 0 and y / x > 1)      # -> False : y / x n'est jamais calculé
+try:
+    print(y / x > 1 and x != 0)  # y / x est calculé en premier : plantage
+except ZeroDivisionError:
+    print("ZeroDivisionError : division par zéro !")
+
+t = [3, 8, 8, 1]
+v = 8
+for i in [1, 4]:
+    print(i, ":", i < len(t) and t[i] == v)  # -> 1 : True puis 4 : False`,
+        prof: `<p>Le programme de Première demande explicitement l'évaluation séquentielle des opérateurs booléens. Hors programme (à ne pas développer) : <code>and</code> et <code>or</code> renvoient en réalité l'un de leurs opérandes, pas forcément un booléen (<code>0 or 7</code> vaut <code>7</code>) ; la cellule n'utilise que des opérandes booléens pour éviter cette subtilité. Activité possible : faire prédire l'affichage de la cellule avant de l'exécuter, puis inverser l'ordre des opérandes du garde-fou <code>i &lt; len(t) and t[i] == v</code> pour obtenir un <code>IndexError</code> avec <code>i = 4</code>.</p>`,
+      },
+      {
         title: "Le codage des caractères : ASCII, Unicode, UTF-8",
         html: `
         <p>Et les <strong>lettres</strong> ? Puisque la machine ne connaît que des nombres, on attribue à chaque caractère un <strong>numéro</strong>, via une table de correspondance.</p>
@@ -302,6 +372,37 @@ print([hex(b) for b in octets])  # ['0xc3', '0xa9', '0x74', '0xc3', '0xa9']
 # Combien d'octets selon le caractère ?
 for c in "Aé€😀":
     print(c, "->", len(c.encode("utf-8")), "octet(s)")  # 1, 2, 3, 4`,
+      },
+      {
+        title: "Convertir un fichier d'un encodage à l'autre (ISO-8859-1 ↔ UTF-8)",
+        html: `<p>On vient de voir comment UTF-8 code un caractère sur 1 à 4 octets, et d'où viennent les fameux « Ã© » quand un fichier est lu avec le mauvais encodage. Avant UTF-8, l'encodage le plus répandu en Europe de l'Ouest était <strong>ISO-8859-1</strong>, surnommé <strong>latin-1</strong> : exactement <strong>1 octet par caractère</strong>, donc 256 caractères possibles au total. Il couvre l'alphabet latin occidental (é, è, ç, ñ, ß, ø…) mais ni le grec, ni le cyrillique, ni le symbole €, ni les emojis. Beaucoup de fichiers anciens sont encore dans cet encodage, et il faut savoir les convertir.</p><table><tr><th></th><th>ISO-8859-1 (latin-1)</th><th>UTF-8</th></tr><tr><td>Octets par caractère</td><td>toujours 1</td><td>1 à 4</td></tr><tr><td>Caractères possibles</td><td>256</td><td>tout Unicode (plus d'un million de positions)</td></tr><tr><td>Compatible ASCII (codes 0 à 127) ?</td><td>oui</td><td>oui</td></tr><tr><td>€, emojis, alphabets non latins</td><td>non</td><td>oui</td></tr></table><p>Convertir un fichier, c'est le <strong>décoder</strong> avec son encodage d'origine pour retrouver le texte, puis le <strong>réencoder</strong> avec le nouvel encodage. En Python, la recette tient en trois temps :</p><ol><li>ouvrir le fichier en lecture avec <code>encoding="latin-1"</code> ;</li><li>lire son contenu avec <code>f.read()</code> : on obtient une chaîne de caractères, qui ne dépend plus d'aucun encodage ;</li><li>ouvrir un nouveau fichier en écriture avec <code>encoding="utf-8"</code> et y écrire cette chaîne.</li></ol><p>Le texte est identique mais la taille du fichier change : une lettre accentuée occupait 1 octet en latin-1 et en occupe 2 en UTF-8, alors que les caractères ASCII gardent 1 octet. Dans la démonstration ci-dessous, « Élève : été, café » (17 caractères dont 5 accentués) passe de 17 octets à 22 octets. Observe aussi ce qui se passe quand on relit le fichier latin-1 en croyant qu'il est en UTF-8 : avec <code>errors="replace"</code>, chaque accent devient un losange de remplacement au lieu de faire planter le programme.</p><p class="warnbox">⚠️ La conversion inverse (UTF-8 → latin-1) n'est pas toujours possible : si le texte contient un caractère absent des 256 de latin-1, comme « € » ou un emoji, Python lève une <code>UnicodeEncodeError</code>. Il faut l'attraper avec <code>try / except</code>, ou accepter de perdre le caractère (remplacé par un « ? ») avec <code>errors="replace"</code>.</p><p class="note">💡 Sans Python, un éditeur de texte comme VS Code ou Notepad++ permet de choisir l'encodage au moment d'enregistrer le fichier (« Enregistrer avec encodage ») : c'est la même conversion, faite à la souris.</p>`,
+        code: `import os
+
+# 1) On ecrit un texte en ISO-8859-1 (latin-1) : 1 octet par caractere
+texte = "Élève : été, café"
+with open("ancien.txt", "w", encoding="latin-1") as f:
+    f.write(texte)
+print("Taille en latin-1 :", os.path.getsize("ancien.txt"), "octets")  # -> 17 octets
+
+# 2) Lecture avec le MAUVAIS encodage : les octets des accents ne sont pas de l'UTF-8 valide
+with open("ancien.txt", "r", encoding="utf-8", errors="replace") as f:
+    print("Lu en utf-8 (faux) :", f.read())  # chaque accent devient un losange
+
+# 3) La vraie conversion : lire en latin-1, reecrire en utf-8
+with open("ancien.txt", "r", encoding="latin-1") as f:
+    contenu = f.read()
+with open("nouveau.txt", "w", encoding="utf-8") as f:
+    f.write(contenu)
+with open("nouveau.txt", "r", encoding="utf-8") as f:
+    print("Relu en utf-8 :", f.read())
+print("Taille en utf-8 :", os.path.getsize("nouveau.txt"), "octets")  # -> 22 octets (5 accents sur 2 octets)
+
+# 4) Piege : latin-1 ne connait pas le symbole euro
+try:
+    with open("prix.txt", "w", encoding="latin-1") as f:
+        f.write("Prix : 5 €")
+except UnicodeEncodeError as e:
+    print("Erreur :", e)`,
       },
     ],
   },
@@ -838,6 +939,50 @@ for l in table:
     for cle, val in l.items():
         if val == "":
             print("⚠️ valeur manquante :", l["nom"], "-> colonne", cle)`,
+      },
+      {
+        title: "Le domaine de valeurs d'une colonne",
+        html: `<p>La section précédente a chassé les doublons, les valeurs non numériques et les cases vides. Mais contrôler le <em>type</em> ne suffit pas : <code>23</code> est bien un entier, et pourtant ce n'est pas une note sur 20 ; <code>13</code> est un entier, et pourtant ce n'est pas un mois. Chaque colonne possède en fait un <strong>domaine de valeurs</strong> : l'<strong>ensemble des valeurs admissibles</strong> pour cette colonne. Un domaine = un <strong>type</strong> (entier, chaîne…) <em>plus</em> une <strong>contrainte</strong> qui restreint les valeurs possibles. C'est toi (ou l'auteur du fichier) qui le fixes, en fonction de ce que la colonne représente.</p>
+        <table>
+          <tr><th>colonne</th><th>type</th><th>domaine (valeurs admissibles)</th><th>exemples hors domaine</th></tr>
+          <tr><td>note</td><td>entier</td><td>entier entre 0 et 20 (bornes comprises)</td><td><code>23</code>, <code>-1</code>, <code>17.5</code> (pas un entier)</td></tr>
+          <tr><td>mois</td><td>entier</td><td>entier entre 1 et 12</td><td><code>0</code>, <code>13</code></td></tr>
+          <tr><td>code postal</td><td>chaîne</td><td>exactement 5 caractères, tous des chiffres</td><td><code>"3300"</code> (4 chiffres), <code>"75O12"</code> (lettre O)</td></tr>
+          <tr><td>classe</td><td>chaîne</td><td>une valeur parmi l'ensemble fini {1G1, 1G2, 1NSI}</td><td><code>"1TG3"</code>, <code>"1nsi"</code></td></tr>
+          <tr><td>naissance</td><td>entier</td><td>année entre 1800 et l'année en cours</td><td><code>2312</code>, <code>"mil neuf cent six"</code></td></tr>
+        </table>
+        <p><strong>Vérifier la cohérence d'une table</strong>, c'est donc vérifier que <strong>chaque valeur appartient au domaine de sa colonne</strong>. Les contrôles de la section précédente en sont des cas particuliers : <code>"mil neuf cent six"</code> n'est pas dans le domaine de <em>naissance</em> (mauvais type), <code>""</code> n'est ni une note ni un code postal (valeur manquante). Pour systématiser, on écrit <strong>un test par colonne</strong> — une fonction qui renvoie <code>True</code> si la valeur est admissible —, on range ces tests dans un dictionnaire dont les clés sont les noms de colonnes, et une fonction <code>valide(ligne)</code> parcourt les colonnes pour signaler celles dont la valeur sort du domaine. Seule la chasse aux <em>doublons</em> reste à part : elle porte sur la table entière, pas sur une valeur isolée.</p>
+        <p class="warnbox">⚠️ Deux pièges. (1) Les valeurs lues dans un CSV sont des chaînes : on convertit d'abord (<code>int(l["note"])</code>) et c'est la valeur <em>convertie</em> que l'on compare au domaine ; si la conversion échoue, la valeur est déjà hors domaine. (2) Un code postal se garde en <strong>chaîne</strong>, pas en entier : <code>int("01000")</code> vaut <code>1000</code>, le zéro de tête disparaît et le code postal de Bourg-en-Bresse est perdu. D'où le domaine « chaîne de 5 chiffres », et non « entier ».</p>
+        <p class="note">💡 En Terminale, les bases de données relationnelles reprennent exactement cette idée : chaque attribut a un domaine, et c'est le logiciel de base de données qui refuse lui-même toute valeur hors domaine (contrainte de domaine). En Première, c'est ton programme qui fait ce travail — comme ci-dessous.</p>`,
+        code: `# Un domaine par colonne : un test qui renvoie True si la valeur est admissible
+DOMAINES = {
+    "note":   lambda v: type(v) == int and 0 <= v <= 20,
+    "mois":   lambda v: type(v) == int and 1 <= v <= 12,
+    "cp":     lambda v: type(v) == str and len(v) == 5 and v.isdigit(),
+    "classe": lambda v: v in {"1G1", "1G2", "1NSI"},
+}
+
+table = [
+    {"nom": "Ada", "note": 17, "mois": 9,  "cp": "75012", "classe": "1NSI"},
+    {"nom": "Tim", "note": 23, "mois": 9,  "cp": "69003", "classe": "1G2"},   # note > 20
+    {"nom": "Lou", "note": 14, "mois": 13, "cp": "13008", "classe": "1NSI"},  # mois 13
+    {"nom": "Eve", "note": 12, "mois": 1,  "cp": "3300",  "classe": "1G1"},   # cp : 4 chiffres
+    {"nom": "Max", "note": 9,  "mois": 6,  "cp": "33000", "classe": "1TG3"},  # classe inconnue
+]
+
+def valide(ligne):
+    # renvoie la liste des colonnes dont la valeur sort de son domaine
+    return [col for col, dans_domaine in DOMAINES.items() if not dans_domaine(ligne[col])]
+
+for ligne in table:
+    erreurs = valide(ligne)
+    if erreurs == []:
+        print("OK     :", ligne["nom"])
+    else:
+        for col in erreurs:
+            print("REJETÉ :", ligne["nom"], "-> colonne", col, "=", repr(ligne[col]))
+# -> 1 ligne acceptée (Ada), 4 lignes rejetées avec la colonne fautive`,
+        prof: `La notion de domaine n'était nommée nulle part en Première sur le site ; elle prépare directement la contrainte de domaine du modèle relationnel (Terminale, thème bases de données) — rester ici au niveau « type + contrainte, un test par colonne ». Activité rapide : avant de charger le CSV du projet « Enquête sur un fichier CSV », faire écrire aux élèves le domaine de chacune de ses colonnes (type, bornes, ensemble fini), puis coder les tests correspondants. Points de vigilance : <code>type(v) == int</code> est volontairement strict (il rejette 17.5 et aussi True, alors que <code>isinstance(True, int)</code> vaudrait True) ; sur un CSV réel, convertir d'abord dans un <code>try</code> comme dans la section précédente, puis tester la valeur convertie ; insister sur le code postal gardé en chaîne (01000 : Bourg-en-Bresse).`,
       },
       {
         title: "Rechercher : filtrer des lignes",
@@ -2938,6 +3083,37 @@ while True:
 print("Résultat : mem[2] =", mem[2])`,
       },
       {
+        title: "Un ou plusieurs processeurs ?",
+        html: `<p>Dans le déroulé qui précède, <strong>une seule</strong> unité exécutait les instructions <strong>l'une après l'autre</strong> : c'est une machine <strong>mono-processeur</strong>, le modèle de von Neumann dans sa version d'origine. Un seul cycle charger → décoder → exécuter tourne à la fois, et pour aller plus vite il faut l'accélérer (augmenter la <em>fréquence</em>, le nombre de cycles par seconde). Or, depuis le milieu des années 2000, on ne sait plus beaucoup augmenter cette fréquence sans que la puce chauffe trop. La solution des constructeurs : mettre <strong>plusieurs processeurs</strong> dans la machine.</p>
+        <table>
+          <tr><th>Machine</th><th>Ce qu'il y a dedans</th><th>Ce qui se passe</th></tr>
+          <tr><td><strong>mono-processeur</strong></td><td>un seul processeur (une UC + une UAL)</td><td>une instruction à la fois, les programmes se succèdent</td></tr>
+          <tr><td><strong>multi-processeurs</strong></td><td>plusieurs puces processeur séparées sur la carte mère (gros serveurs)</td><td>plusieurs unités de calcul travaillent <strong>vraiment en même temps</strong>, chacune sur un programme ou un morceau de programme</td></tr>
+          <tr><td><strong>multi-cœurs</strong></td><td>plusieurs <strong>cœurs</strong> gravés sur la <em>même</em> puce, chaque cœur étant un processeur complet (sa propre UC, sa propre UAL)</td><td>même chose, en plus compact : c'est le cas de la quasi-totalité des ordinateurs et téléphones actuels</td></tr>
+        </table>
+        <p><strong>Exemple concret.</strong> Un portable à <strong>4 cœurs</strong> peut exécuter réellement en parallèle ton navigateur, ta musique, l'antivirus et ton programme Python : quatre programmes, quatre cœurs, chacun avance sans attendre les autres. Un smartphone récent a souvent <strong>8 cœurs</strong>. Mais un ordinateur allumé fait tourner bien plus de programmes que cela (souvent plus d'une centaine de <em>processus</em>) : c'est le <strong>système d'exploitation</strong> qui répartit les programmes sur les cœurs et les fait alterner sur chacun — on y revient dans la section sur l'OS.</p>
+        <p class="warnbox">⚠️ Plus de cœurs ne veut pas dire que <em>ton</em> programme va plus vite. Un programme Python comme ceux de ce cours est <strong>séquentiel</strong> : ses instructions s'enchaînent une par une, il n'occupe donc qu'<strong>un seul cœur</strong>. Sur une machine à 4 cœurs, il ne tourne pas 4 fois plus vite ; ce sont surtout les <em>autres</em> programmes qui ne le ralentissent plus. Pense aux <strong>caisses d'un supermarché</strong> : avec 4 caisses au lieu d'une, le magasin sert 4 fois plus de clients par heure, mais <strong>un</strong> client ne passe pas plus vite en caisse. Découper un programme en morceaux qui tournent en parallèle est possible, mais délicat : c'est au programme de Terminale.</p>
+        <p>Vérifions l'analogie par un petit calcul : 12 clients qui mettent chacun 3 minutes, avec 1, 2 ou 4 caisses.</p>`,
+        code: `# Analogie des caisses : une caisse = un coeur, un client = un programme.
+# 12 clients se présentent en même temps ; chacun met 3 minutes à passer en caisse.
+DUREE_CLIENT = 3      # minutes passées en caisse par UN client
+clients = 12
+
+for nb_caisses in (1, 2, 4):
+    tours = clients // nb_caisses          # 12 est divisible par 1, 2 et 4
+    total = tours * DUREE_CLIENT           # temps pour vider toute la file
+    print(f"{nb_caisses} caisse(s) : les {clients} clients sont servis en {total:>2} min")
+# -> 36 min, 18 min, 9 min : le magasin sert plus de monde par heure.
+
+# Et pour UN seul client, un magasin à 4 caisses est-il plus rapide ?
+un_client = 1
+for nb_caisses in (1, 4):
+    total = DUREE_CLIENT * un_client       # il ne peut occuper qu'une caisse à la fois
+    print(f"{nb_caisses} caisse(s) : 1 client seul est servi en {total} min")
+# -> 3 min dans les deux cas : un programme séquentiel n'utilise qu'un coeur.`,
+        prof: `Rester au niveau des concepts généraux demandé en Première : un cœur = un processeur complet gravé sur la même puce ; plusieurs cœurs = plusieurs programmes qui avancent vraiment en même temps. Ne pas entrer dans les threads, l'ordonnanceur ni l'hyperthreading (Terminale). Activité rapide : faire ouvrir le gestionnaire des tâches (Windows : onglet Performance, graphe du processeur) ou lancer <code>import os ; print(os.cpu_count())</code> dans un Python installé (Thonny) : la valeur renvoyée est le nombre de processeurs <em>logiques</em>, souvent le double des cœurs physiques. Dans le navigateur (Pyodide), ne pas annoncer de valeur à l'avance : le résultat dépend de ce que le navigateur accepte de révéler sur la machine.`,
+      },
+      {
         title: "Du transistor à la porte logique",
         html: `
         <p>Comment le processeur « calcule »-t-il, avec seulement de l'électricité ? Tout repose sur le <strong>transistor</strong> : un minuscule <em>interrupteur</em> commandé électriquement (passant = 1, bloqué = 0). Un processeur moderne en contient des <strong>milliards</strong>.</p>
@@ -2993,6 +3169,37 @@ for a in (0, 1):
         </ul>
         <p class="note">💡 Les OS <strong>libres</strong> comme <strong>GNU/Linux</strong> (code source ouvert, gratuit) sont partout : serveurs du Web, box Internet, Android, supercalculateurs. Un même OS pilote des matériels très différents grâce aux pilotes.</p>
         <p class="warnbox">⚠️ L'OS <em>pilote</em> le matériel ; il ne le <em>fabrique</em> pas. C'est un logiciel, pas un composant physique.</p>`,
+      },
+      {
+        title: "Systèmes libres et systèmes propriétaires",
+        html: `<p>La remarque ci-dessus qualifie GNU/Linux d'OS <strong>libre</strong>. Que veut dire ce mot ? Tout logiciel est d'abord écrit par des humains dans un langage de programmation (C, Python…) : c'est son <strong>code source</strong>. L'auteur a ensuite deux choix. Soit il ne livre que le programme exécutable et interdit, par un contrat appelé <strong>licence</strong>, de le copier ou de le modifier : le logiciel est <strong>propriétaire</strong> (Windows, macOS, iOS). Soit il publie le code source et sa licence te garantit <strong>quatre libertés</strong> : le logiciel est <strong>libre</strong> (on dit aussi <em>open source</em>, quasi synonyme en pratique). Ces libertés ont été formulées par la Free Software Foundation de Richard Stallman (fondateur du projet GNU en 1983, voir le thème Histoire), qui les numérote de 0 à 3, clin d'œil de programmeur :</p>
+<ol>
+  <li><strong>exécuter</strong> le programme, pour n'importe quel usage ;</li>
+  <li><strong>étudier</strong> comment il fonctionne (impossible sans le code source !) ;</li>
+  <li>le <strong>modifier</strong> pour l'adapter à tes besoins ;</li>
+  <li>le <strong>redistribuer</strong>, tel quel ou modifié, pour que tout le monde en profite.</li>
+</ol>
+<p><strong>Précision de vocabulaire.</strong> <strong>Linux</strong> n'est que le <strong>noyau</strong> (<em>kernel</em>) : le cœur qui assure les missions vues ci-dessus (processus, mémoire, pilotes). Seul, il est inutilisable. Une <strong>distribution</strong> y ajoute les outils du projet GNU (le terminal et ses commandes <code>ls</code>, <code>cp</code>…), un environnement graphique, des applications et un installateur : <strong>Debian</strong>, <strong>Ubuntu</strong>, <strong>Fedora</strong>, Linux Mint… sont des systèmes complets, d'où le nom GNU/Linux. Les frontières sont parfois floues : <strong>Android</strong> repose sur le noyau Linux mais embarque des composants propriétaires (services Google, pilotes de nombreux téléphones) ; à l'inverse, Apple publie le code du noyau de <strong>macOS</strong> et d'<strong>iOS</strong>, mais l'ensemble reste propriétaire ; <strong>Windows</strong> est entièrement propriétaire.</p>
+<table>
+  <tr><th></th><th>OS libre (Debian, Ubuntu, Fedora…)</th><th>OS propriétaire (Windows, macOS, iOS)</th></tr>
+  <tr><td>Code source</td><td>accessible à tous</td><td>secret : seul l'exécutable est fourni</td></tr>
+  <tr><td>Modifier, redistribuer</td><td>autorisé par la licence</td><td>interdit par la licence</td></tr>
+  <tr><td>Qui décide des évolutions ?</td><td>une communauté (bénévoles et entreprises)</td><td>l'éditeur seul</td></tr>
+  <tr><td>Prix</td><td>souvent gratuit, pas toujours (Red Hat vend un abonnement à sa distribution)</td><td>licence payante, ou incluse dans le prix de l'appareil</td></tr>
+  <tr><td>Où le trouve-t-on surtout ?</td><td>serveurs du Web, supercalculateurs, box Internet, objets connectés</td><td>PC de bureau et portables, iPhone, consoles de jeu</td></tr>
+</table>
+<p>La <strong>licence</strong> est le texte juridique qui fixe ces règles. Deux licences libres célèbres : la <strong>GPL</strong> (celle du noyau Linux) exige que toute version modifiée que l'on diffuse reste libre, tandis que la <strong>MIT</strong>, très courte, autorise presque tout, y compris réutiliser le code dans un logiciel propriétaire.</p>
+<p class="warnbox">⚠️ <strong>Libre ne veut pas dire gratuit.</strong> Le mot vient de <em>liberté</em>, pas de <em>gratuité</em> (en anglais, <em>free software</em> est ambigu, d'où le succès du terme <em>open source</em>). Un jeu mobile gratuit dont le code est secret reste propriétaire ; à l'inverse, on peut vendre un logiciel libre ou son support. Et <strong>propriétaire ne veut pas dire mauvais</strong> : Windows ou macOS sont soignés, bien intégrés à leur matériel et accompagnés d'un support professionnel.</p>
+<p>Pourquoi ce choix compte-t-il ? Un code ouvert apporte :</p>
+<ul>
+  <li>l'<strong>indépendance</strong> : personne ne peut t'imposer un changement ni te retirer le logiciel ;</li>
+  <li>une <strong>sécurité auditable</strong> : n'importe qui peut lire le code, chercher et corriger une faille. Ce n'est pas une garantie : la faille Heartbleed est restée deux ans dans OpenSSL, logiciel libre, avant d'être repérée en 2014 ;</li>
+  <li>la <strong>pérennité</strong> : un projet abandonné par son auteur peut être repris par d'autres. Depuis la fin du support standard de Windows 10 (octobre 2025), les PC trop anciens pour Windows 11 peuvent ainsi repartir sous une distribution Linux légère ;</li>
+  <li>un <strong>coût</strong> réduit : pas de licence à payer par poste (installer et maintenir a tout de même un prix).</li>
+</ul>
+<p>Résultat : la grande majorité des serveurs du Web et les 500 supercalculateurs les plus puissants du monde (classement TOP500, sans exception depuis 2017) tournent sous Linux, alors que Windows équipe encore environ 7 ordinateurs de bureau sur 10, et Android (noyau Linux) environ 7 smartphones sur 10.</p>
+<p class="note">💡 Au lycée, les deux mondes cohabitent souvent : des postes sous Windows sur lesquels tournent des logiciels libres (Python lui-même est libre, comme Firefox ou LibreOffice), parfois des postes ou un serveur sous Linux. Le terminal que tu utiliseras plus bas fonctionne d'ailleurs presque à l'identique sous Linux et macOS. Mais d'abord, quel que soit son camp, un OS doit dialoguer avec le matériel et avec toi : c'est l'objet de la section suivante.</p>`,
+        prof: `<p><strong>Pistes pour la classe (10 min).</strong> Question flash : « Quel OS fait tourner ton téléphone ? la salle info ? les serveurs de Google ? », puis classement libre / propriétaire au tableau. Les élèves confondent presque toujours <em>libre</em> et <em>gratuit</em> : insister sur le jeu mobile gratuit (propriétaire) et sur Red Hat (libre et payant). La remarque de la section précédente présente GNU/Linux comme « gratuit » : c'est vrai des distributions usuelles, mais ce n'est pas la définition, d'où la nuance ici. Le programme de Première demande de présenter le contraste libre / propriétaire ; le détail des licences n'est pas exigible. Débat court possible : « une administration devrait-elle privilégier le libre ? » (indépendance, coût, souveraineté).</p>`,
       },
       {
         title: "Périphériques, capteurs et actionneurs — l'IHM",
@@ -3483,6 +3690,52 @@ for i in range(5):
           <li><strong>Atelier « chasse au bug » :</strong> distribuer 3 programmes buggés (1 par type d'erreur) à corriger en îlot.</li>
           <li><strong>Réflexe à ancrer :</strong> ajouter des <code>print</code> intermédiaires pour « voir » les valeurs ; écrire un <code>assert</code> qui reproduit le bug.</li>
           <li><strong>Lien :</strong> renvoyer à la fiche méthode « Lire un message d'erreur Python ».</li>
+        </ul>`,
+      },
+      {
+        title: "Un jeu de tests réussi ne prouve pas la correction",
+        html: `<p>Dans les deux sections précédentes, tu as écrit des <code>assert</code> et lu « Tous les tests passent ✔ ». Tentant d'en conclure que la fonction est <em>juste</em>. Attention : un <code>assert</code> ne vérifie que <strong>l'exemple que tu as choisi</strong>. Si le bug se cache dans un cas auquel tu n'as pas pensé, tous les tests restent verts… et la fonction reste fausse.</p>
+        <p class="important">Les tests peuvent révéler la <strong>présence</strong> de bugs, jamais leur <strong>absence</strong> (formule attribuée à l'informaticien Edsger Dijkstra, vers 1970). Un jeu de tests réussi signifie « sur ces exemples-là, ça marche », pas « ça marche toujours ».</p>
+        <p>L'exemple ci-dessous : une année est <strong>bissextile</strong> si elle est divisible par 4, <em>sauf</em> les années de siècle (divisibles par 100), <em>sauf</em> celles divisibles par 400. Ainsi 2020 et 2024 sont bissextiles, 2023 et 2019 non, 1900 non (divisible par 100 mais pas par 400), 2000 oui (divisible par 400). La version 1, <code>annee % 4 == 0</code>, oublie les deux exceptions ; pourtant les quatre tests choisis « au hasard » parmi des années récentes passent, car aucun n'est une année de siècle. Le test <code>assert est_bissextile(1900) == False</code> aurait suffi à la démasquer — encore fallait-il y penser.</p>
+        <p>Trois réflexes pour choisir de <em>bons</em> tests :</p>
+        <ol>
+          <li><strong>Les cas limites.</strong> Teste les bornes et les valeurs « bizarres » : 0, un nombre négatif, une liste vide ou à un seul élément, la valeur exactement égale au seuil (<code>mention(16)</code>, pas seulement <code>mention(18)</code>). Ici : les années de siècle.</li>
+          <li><strong>Ce qui DOIT échouer.</strong> Un jeu de tests qui ne contient que des cas « vrais » ne vérifie pas que la fonction sait dire non : ajoute des tests dont la réponse attendue est <code>False</code> (<code>est_premier(9)</code>, <code>est_premier(1)</code>).</li>
+          <li><strong>Relire la spécification.</strong> Le bug est souvent dans ta compréhension de l'énoncé, pas dans la syntaxe : pour chaque phrase de la spécification (« sauf les années de siècle »), écris au moins un test qui la vérifie.</li>
+        </ol>
+        <p class="warnbox">⚠️ Piège : écrire les tests <em>après</em> le code, en regardant ce qu'il fait. Tu retrouves alors ton propre raisonnement (et ses trous) dans les tests. Écris-les à partir de la spécification, <strong>avant</strong> ou indépendamment du code.</p>
+        <p>Pour être vraiment sûr, il faut <em>raisonner</em> sur le programme au lieu de l'exécuter : c'est l'idée de l'<strong>invariant de boucle</strong>, que tu rencontreras avec les tris dans le thème Algorithmique et que la Terminale prolonge. Les tests n'en restent pas moins indispensables : un test qui échoue est une certitude (il y a un bug), et un jeu de tests est ton filet de sécurité à chaque modification du code.</p>`,
+        code: `def est_bissextile(annee):
+    """Renvoie True si annee est bissextile (366 jours), False sinon."""
+    return annee % 4 == 0        # règle incomplète... qui va pourtant passer les tests
+
+assert est_bissextile(2020) == True
+assert est_bissextile(2024) == True
+assert est_bissextile(2023) == False
+assert est_bissextile(2019) == False
+print("Tous les tests passent ✔ (et pourtant la fonction est fausse)")
+
+# Le test auquel on n'a pas pensé : 1900 est divisible par 4 mais n'a eu que 365 jours
+try:
+    assert est_bissextile(1900) == False
+    print("1900 : OK")
+except AssertionError:
+    print("1900 : ÉCHEC, est_bissextile(1900) renvoie", est_bissextile(1900))
+
+# Version correcte : divisible par 4, SAUF les années de siècle (÷100), SAUF les multiples de 400
+def est_bissextile_v2(annee):
+    return annee % 4 == 0 and (annee % 100 != 0 or annee % 400 == 0)
+
+assert est_bissextile_v2(1900) == False   # ce test aurait attrapé la version 1
+assert est_bissextile_v2(2000) == True    # 2000 : multiple de 400 -> bissextile
+assert est_bissextile_v2(2100) == False   # prochaine année de siècle non bissextile
+print("v2 : 1900 ->", est_bissextile_v2(1900), "| 2000 ->", est_bissextile_v2(2000), "| 2100 ->", est_bissextile_v2(2100))`,
+        prof: `<ul>
+          <li><strong>Ce que la section apporte :</strong> la limite des tests, absente jusqu'ici (les deux sections précédentes se terminent sur des tests verts). Ne pas la présenter comme un désaveu des tests : un test qui échoue reste une certitude.</li>
+          <li><strong>Activité rapide (10 min) :</strong> projeter la version 1 avec ses quatre <code>assert</code> et demander « trouvez un test qui la casse ». Les élèves proposent rarement 1900 d'eux-mêmes : c'est le moment d'énoncer la règle complète et le réflexe « un test par phrase de la spécification ».</li>
+          <li><strong>Anecdote :</strong> le tableur Excel accepte toujours la date 29/02/1900 (compatibilité historique avec Lotus 1-2-3) — le bug de 1900 est resté célèbre.</li>
+          <li><strong>Réinvestir :</strong> dans le défi <code>est_premier</code> des exercices, faire ajouter <code>est_premier(1) == False</code> et <code>est_premier(2) == True</code> ; dans <code>mention</code>, tester les seuils exacts (16, 14, 12, 10).</li>
+          <li><strong>Hors programme de Première :</strong> couverture de code, modules <code>unittest</code>/<code>doctest</code> — non exigés. L'invariant de boucle est traité dans le thème Algorithmique (tris par sélection et par insertion).</li>
         </ul>`,
       },
       {
@@ -3989,6 +4242,54 @@ print("\\nNombre d'événements :", len(frise))`,
         <p>Un <strong>réseau</strong> relie des machines pour qu'elles échangent des données. Pour se comprendre, elles doivent suivre les mêmes règles : c'est un <strong>protocole</strong> — un ensemble de conventions sur le <em>format</em> des messages et l'<em>ordre</em> des échanges.</p>
         <p class="note">📮 Analogie : envoyer une lettre suppose un format commun (adresse au bon endroit, timbre, enveloppe). Sans ce « protocole postal » partagé, la lettre n'arriverait pas. Sur Internet, c'est pareil.</p>
         <p>Internet repose sur la famille de protocoles <strong>TCP/IP</strong>. Chaque machine y possède une <strong>adresse IP</strong> (ex. <code>192.168.1.10</code>) qui l'identifie de façon unique sur le réseau, un peu comme une adresse postale. On envoie donc un message « à destination de telle adresse IP ».</p>`,
+      },
+      {
+        title: "Le réseau local du lycée : qui fait quoi ?",
+        html: `<p>Tu connais maintenant le vocabulaire de base : réseau, protocole, adresse IP. Avant de suivre les paquets à travers Internet, regarde le réseau que tu utilises tous les jours sans le voir : celui du lycée. C'est un <strong>réseau local</strong> (en anglais <em>LAN</em>, <em>Local Area Network</em>) : toutes les machines de l'établissement sont reliées entre elles, avec <strong>une seule porte de sortie</strong> vers Internet. Chaque équipement y a un rôle précis :</p>
+<table>
+  <tr><th>Élément</th><th>Rôle</th><th>Analogie ou exemple</th></tr>
+  <tr><td><strong>Postes</strong> (ordinateurs, tablettes, imprimantes réseau)</td><td>Les machines qui envoient et reçoivent les données ; chacune a sa propre adresse IP.</td><td>Les habitants d'un immeuble, chacun avec son numéro d'appartement : <code>192.168.1.20</code>, <code>192.168.1.21</code>…</td></tr>
+  <tr><td><strong>Câble Ethernet</strong> (prise <strong>RJ45</strong>)</td><td>Relie un poste à la prise murale, puis au switch. C'est sur ce fil que circulent les trames vues dans l'encapsulation. Débit courant : 100 Mb/s ou 1 Gb/s.</td><td>Un tuyau privé et fiable ; il faut être branché.</td></tr>
+  <tr><td><strong>Borne Wi-Fi</strong> (point d'accès)</td><td>Même rôle que la prise murale, mais par ondes radio, pour les portables et les tablettes. La borne est elle-même reliée au switch par un câble.</td><td>Une « prise sans fil » partagée : le débit se divise entre les appareils connectés et baisse avec la distance et les murs.</td></tr>
+  <tr><td><strong>Commutateur</strong> (<em>switch</em>)</td><td>Boîtier à 8, 24 ou 48 prises qui relie entre elles les machines d'une salle ou d'un bâtiment. Il apprend qui est branché sur quelle prise et ne transmet une trame qu'à la prise du destinataire.</td><td>Le trieur du courrier interne : il dépose chaque enveloppe dans la bonne boîte, sans la montrer aux autres.</td></tr>
+  <tr><td><strong>Serveur pédagogique</strong></td><td>Ordinateur toujours allumé, dans le local technique : il vérifie ton identifiant et ton mot de passe quand tu ouvres une session, stocke ton dossier personnel (le lecteur réseau, identique quelle que soit la salle), et héberge parfois un intranet.</td><td>Les casiers du lycée plus le bureau qui contrôle ta carte à l'entrée.</td></tr>
+  <tr><td><strong>Serveur DHCP</strong> (souvent une fonction du routeur ou du serveur)</td><td>Attribue automatiquement à chaque machine qui se connecte une adresse IP libre, pour une durée limitée (le <em>bail</em>), et lui indique l'adresse du routeur à utiliser pour sortir.</td><td>L'accueil qui te remet un badge numéroté à ton arrivée et le récupère à ton départ. Plage <code>192.168.1.100</code> à <code>192.168.1.199</code> : 100 postes possibles.</td></tr>
+  <tr><td><strong>Routeur</strong> (passerelle)</td><td>La seule porte entre le réseau local et l'extérieur : il reçoit tous les paquets destinés à une adresse hors du lycée et les envoie vers le FAI. Côté réseau local, il a lui aussi une adresse, par exemple <code>192.168.1.1</code>.</td><td>La porte d'entrée de l'immeuble : tout ce qui sort ou entre passe par là.</td></tr>
+  <tr><td><strong>Pare-feu / proxy</strong> (filtrage)</td><td>Souvent dans le même boîtier que le routeur. Le pare-feu bloque les connexions non autorisées ; le proxy fait passer la navigation web par un intermédiaire qui applique les règles de l'établissement (sites bloqués, journal des connexions).</td><td>Le vigile à la porte, avec sa liste. C'est lui qui explique qu'un site accessible chez toi soit bloqué au lycée.</td></tr>
+  <tr><td><strong>Box du FAI</strong> (liaison opérateur)</td><td>Le lien physique (fibre le plus souvent) entre le routeur du lycée et le réseau du fournisseur d'accès à Internet, donc vers le reste d'Internet.</td><td>La rue qui relie l'immeuble au reste de la ville.</td></tr>
+</table>
+<p><strong>Trajet d'une requête vers Internet.</strong> Tu ouvres un site depuis le poste <code>192.168.1.20</code> de la salle info. Le paquet part vers la prise murale (câble RJ45) ou vers la borne Wi-Fi, arrive au <strong>switch</strong> de la salle, qui le remet au <strong>routeur</strong> (puisque la destination n'est pas dans le lycée). Le routeur et son <strong>pare-feu/proxy</strong> vérifient que la requête est autorisée, puis l'envoient par la <strong>box</strong> vers le <strong>FAI</strong>, qui la fait voyager de routeur en routeur jusqu'au serveur du site (c'est le routage, partie suivante). La réponse refait exactement le chemin inverse. En résumé : <code>poste → prise murale ou Wi-Fi → switch → routeur + pare-feu → box → FAI → Internet</code>.</p>
+<p><strong>Trajet vers le serveur pédagogique.</strong> Quand tu ouvres ton dossier personnel ou que tu imprimes, la destination est dans le lycée : <code>poste → switch → serveur</code>, et c'est tout. Le paquet <strong>ne passe jamais par le routeur</strong> et ne sort pas du réseau local. C'est pour cela que le lecteur réseau reste accessible même quand la connexion Internet du lycée est en panne, et que copier un fichier depuis le serveur est bien plus rapide que le télécharger depuis Internet. Attention, l'<strong>ENT</strong> (notes, cahier de textes) est le plus souvent hébergé à l'extérieur, chez un prestataire : quand tu le consultes depuis la salle info, ta requête sort par le routeur comme pour n'importe quel site.</p>
+<p><strong>Pourquoi les adresses du lycée sont privées.</strong> Les adresses <code>192.168.x.x</code> (65 536 adresses), <code>10.x.x.x</code> (plus de 16 millions) et <code>172.16.0.0</code> à <code>172.31.255.255</code> sont <strong>réservées aux réseaux locaux</strong> : elles ne sont jamais acheminées sur Internet, si bien que des millions de réseaux dans le monde utilisent en même temps un <code>192.168.1.20</code> sans se gêner. Depuis Internet, ton poste est donc <strong>invisible</strong> : seul le routeur possède une adresse <strong>publique</strong>, unique au monde et fournie par le FAI, et c'est lui qui fait le lien en remplaçant, à la sortie, l'adresse privée du poste par la sienne, puis en rendant la réponse au bon poste (ce mécanisme s'appelle la traduction d'adresses, NAT ; le nom n'est pas à retenir en Première).</p>
+<p class="warnbox">⚠️ Ne confonds pas <strong>switch</strong> et <strong>routeur</strong>. Le switch relie des machines du <em>même</em> réseau local : il fait circuler les trames à l'intérieur du lycée. Le routeur relie <em>deux réseaux différents</em> (le réseau local et Internet) et décide vers où envoyer chaque paquet d'après son adresse IP de destination. Les routeurs de la partie suivante sont ces mêmes équipements, chez le FAI et partout sur Internet.</p>
+<p class="note">💡 Le programme de Première demande de savoir simuler ou décrire un réseau simple : celui du lycée est l'exemple idéal. Sur un poste de la salle, tu peux afficher ton adresse IP, celle du routeur (la « passerelle par défaut ») et celle du serveur DHCP avec la commande <code>ipconfig /all</code> sous Windows (sous Linux, <code>ip a</code> donne ton adresse et <code>ip route</code> la passerelle), et retrouver chaque ligne du tableau ci-dessus. Le module Python <code>ipaddress</code> te dit ensuite si une adresse est privée :</p>`,
+        code: `# Adresse privée ou publique ? Le module ipaddress de Python sait répondre.
+import ipaddress
+
+adresses = [
+    "192.168.1.20",   # un poste de la salle info
+    "192.168.1.1",    # le routeur du lycée, côté réseau local
+    "10.44.7.130",    # un poste d'un autre établissement (plage 10.x.x.x)
+    "172.16.0.3",     # la destination de l'exemple de la partie « paquets »
+    "8.8.8.8",        # un serveur public sur Internet
+    "1.1.1.1",        # un autre serveur public
+]
+for a in adresses:
+    ip = ipaddress.ip_address(a)
+    if ip.is_private:
+        print(a, "-> PRIVÉE  : valable seulement à l'intérieur du réseau local")
+    else:
+        print(a, "-> PUBLIQUE : joignable depuis tout Internet")
+
+# Une adresse IPv4 = 4 nombres de 0 à 255 = 4 octets = 32 bits (thème « Représentation »)
+ip = ipaddress.ip_address("192.168.1.20")
+print("192.168.1.20 en un seul entier :", int(ip))          # -> 3232235796
+print("Vérification :", 192 * 256**3 + 168 * 256**2 + 1 * 256 + 20)
+
+# Le DHCP distribue les adresses d'une plage réservée : combien de postes possibles ?
+print("Plage 192.168.1.100 à 192.168.1.199 :", 199 - 100 + 1, "adresses")   # -> 100 adresses`,
+        prof: `<p><strong>Activité de 15 min :</strong> faire relever sur un poste l'adresse IP et la passerelle par défaut (<code>ipconfig /all</code> sous Windows, qui affiche aussi le serveur DHCP ; <code>ip a</code> et <code>ip route</code> sous Linux), puis faire suivre physiquement le câble RJ45 jusqu'au switch de la salle. Les élèves dessinent ensuite le trajet poste → switch → routeur → box pour une requête web, et poste → switch → serveur pour l'ouverture du lecteur réseau. Comparer les adresses relevées sur plusieurs postes (même début <code>192.168.1.</code>, dernier nombre différent) prépare la notion de masque de sous-réseau, réservée à la Terminale.</p>
+<p><strong>Points de vigilance :</strong> le switch travaille avec les adresses matérielles (MAC) et non avec les adresses IP, ce qu'on ne dit pas aux élèves en Première ; la NAT est seulement nommée. Selon l'établissement, routeur, pare-feu et proxy sont un seul boîtier ou trois équipements distincts : adapter le tableau à l'infrastructure réelle avec l'aide du référent numérique.</p>`,
       },
       {
         title: "Découper un message en paquets",

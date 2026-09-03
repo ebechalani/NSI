@@ -6771,15 +6771,16 @@ sum(l["note"] for l in t) / len(t)                      # c</code></pre>
       <h4>Exercice 3 — HTTP (6 pts)</h4>
       <ol type="a">
         <li>Différence entre GET et POST ? (2 pts)</li>
-        <li>Pour un mot de passe, laquelle choisir ? Pourquoi ? (2 pts)</li>
+        <li>Pour un mot de passe, laquelle choisir ? Pourquoi ? (1 pt)</li>
         <li>Combien de paramètres dans <code>recherche?q=robot&amp;tri=note</code> ? Les nommer. (2 pts)</li>
+        <li>Le site est en <code>http://</code> (sans « s »). Le mot de passe envoyé en POST est-il à l'abri de quelqu'un qui écoute le réseau (Wi-Fi public) ? Que change HTTPS ? (1 pt)</li>
       </ol>
       <h4>Exercice 4 — Client / serveur (4 pts)</h4>
       <p>Une vérification de formulaire faite seulement en JavaScript suffit-elle pour la sécurité ? Justifier.</p>`,
     corrige: `
       <h4>Ex 1</h4><p>a) HTML (<code>&lt;p&gt;</code>) ; b) CSS (<code>color: red;</code>) ; c) JavaScript (<code>addEventListener("click", ...)</code>).</p>
       <h4>Ex 2</h4><p><code>p</code> : toutes les balises p. <code>.menu</code> : les éléments de classe menu (<code>&lt;div class="menu"&gt;</code>). <code>#titre</code> : l'unique élément d'identifiant titre.</p>
-      <h4>Ex 3</h4><p>a) GET : données dans l'URL (visibles) ; POST : dans le corps. b) POST (le mot de passe ne doit pas apparaître dans l'URL). c) 2 paramètres : <code>q</code> et <code>tri</code>.</p>
+      <h4>Ex 3</h4><p>a) GET : données dans l'URL (visibles) ; POST : dans le corps. b) POST (le mot de passe ne doit pas apparaître dans l'URL). c) 2 paramètres : <code>q</code> et <code>tri</code>. d) Non : en HTTP tout circule en clair, POST sort seulement le mot de passe de l'URL. HTTPS chiffre la transmission entre le navigateur et le serveur : un intermédiaire (Wi-Fi public, FAI) ne peut ni la lire ni la modifier — c'est le cadenas du navigateur.</p>
       <h4>Ex 4</h4><p>Non : le JavaScript (côté client) peut être contourné/désactivé. La validation de sécurité se refait toujours côté serveur.</p>`,
   },
 
