@@ -14,11 +14,14 @@ const THEME_EXTRAS = {
       "Entiers négatifs : complément à deux ; sur 8 bits, plage −128 à +127.",
       "Les flottants sont des approximations : 0.1 + 0.2 ≠ 0.3, on ne teste pas l'égalité stricte.",
       "Caractères : ASCII (128), Unicode/UTF-8 ; ord() et chr() en Python.",
+      "Si a tient sur n bits et b sur m bits, alors a + b tient sur au plus max(n, m) + 1 bits et a × b sur au plus n + m bits (pire cas sur deux octets : 255 + 255 = 510 sur 9 bits, 255 × 255 = 65 025 sur 16 bits) ; en Python, n.bit_length() donne le nombre exact de bits de n.",
+      "Convertir un fichier latin-1 (ISO-8859-1, 1 octet par caractère) en UTF-8 : l'ouvrir avec encoding=\"latin-1\", lire la chaîne, la réécrire dans un fichier ouvert avec encoding=\"utf-8\" ; chaque lettre accentuée passe de 1 à 2 octets, et latin-1 ne peut pas coder « € » (UnicodeEncodeError).",
     ],
     erreurs: [
       "Confondre bit (b) et octet (o) : un débit de 100 Mb/s ≈ 12,5 Mo/s.",
       "Oublier que 2⁴ = 16 (un chiffre hexa = 4 bits, pas 8).",
       "Comparer deux flottants avec == : préférer une tolérance (abs(a-b) < 1e-9).",
+      "Mettre la condition de garde <strong>après</strong> l'opération risquée : <code>y / x &gt; 1 and x != 0</code> ou <code>t[i] == v and i &lt; len(t)</code>. Python évalue de gauche à droite, donc la division (ou l'accès à la liste) est tentée avant le test et plante. Le garde-fou se place à gauche : <code>x != 0 and y / x &gt; 1</code>.",
     ],
     exercices: [
       { niveau: "facile", enonce: "Texte à trou — nombre de valeurs codables sur n bits.",
@@ -128,6 +131,7 @@ const THEME_EXTRAS = {
       "CSV : fichier texte, valeurs séparées ; 1re ligne = noms de colonnes.",
       "Filtrer = compréhension avec condition ; Trier = sorted(..., key=...).",
       "Fusionner (jointure) = relier deux tables par une colonne commune.",
+      "Domaine d'une colonne = type + contrainte (note entière de 0 à 20, mois de 1 à 12, code postal = chaîne de 5 chiffres, classe dans un ensemble fini) ; table cohérente = chaque valeur est dans le domaine de sa colonne.",
     ],
     erreurs: [
       "Oublier que les valeurs lues dans un CSV sont des chaînes (int(...) pour calculer).",
@@ -178,6 +182,7 @@ const THEME_EXTRAS = {
       "GET = paramètres dans l'URL ; POST = données dans le corps.",
       "JavaScript réagit aux événements (addEventListener).",
       "Sécurité : ne jamais faire confiance aux données du client.",
+      "HTTPS = HTTP chiffré (cadenas) : un intermédiaire (Wi-Fi public, FAI) ne peut ni lire ni modifier l'échange ; indispensable pour mot de passe, paiement, données personnelles — POST ne chiffre rien.",
     ],
     erreurs: [
       "Croire que la validation JavaScript suffit : la sécurité se fait côté serveur.",
@@ -185,19 +190,19 @@ const THEME_EXTRAS = {
       "Mettre un mot de passe en GET (visible dans l'URL).",
     ],
     exercices: [
-      { niveau: "facile", enonce: "Pour chacun, dis si c'est HTML, CSS ou JavaScript : (a) <h1>Titre</h1> ; (b) color: red; ; (c) addEventListener('click', ...).",
+      { niveau: "facile", enonce: "Pour chacun, dis si c'est HTML, CSS ou JavaScript : (a) <code>&lt;h1&gt;Titre&lt;/h1&gt;</code> ; (b) <code>color: red;</code> ; (c) <code>addEventListener('click', ...)</code>.",
         solution: "(a) HTML (structure/contenu) ; (b) CSS (présentation) ; (c) JavaScript (interactivité)." },
       { niveau: "facile", enonce: "En CSS, qu'est-ce que cible '.menu' et qu'est-ce que cible '#menu' ? Donne le HTML correspondant.",
-        solution: ".menu (point) cible tous les éléments de classe menu : <p class=\"menu\">. #menu (dièse) cible l'unique élément d'identifiant menu : <div id=\"menu\">." },
-      { niveau: "facile", enonce: "Sur papier : écris une page HTML minimale avec un titre <h1> « Club NSI » et un paragraphe.",
-        solution: "<!DOCTYPE html><html lang=\"fr\"><head><meta charset=\"UTF-8\"><title>Club</title></head><body><h1>Club NSI</h1><p>Bienvenue !</p></body></html>." },
+        solution: "<code>.menu</code> (point) cible tous les éléments de classe menu : <code>&lt;p class=\"menu\"&gt;</code>. <code>#menu</code> (dièse) cible l'unique élément d'identifiant menu : <code>&lt;div id=\"menu\"&gt;</code>." },
+      { niveau: "facile", enonce: "Sur papier : écris une page HTML minimale avec un titre <code>&lt;h1&gt;</code> « Club NSI » et un paragraphe.",
+        solution: "<code>&lt;!DOCTYPE html&gt;&lt;html lang=\"fr\"&gt;&lt;head&gt;&lt;meta charset=\"UTF-8\"&gt;&lt;title&gt;Club&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Club NSI&lt;/h1&gt;&lt;p&gt;Bienvenue !&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</code>" },
       { niveau: "moyen", enonce: "Décompose l'URL 'page?ville=Beyrouth&jour=lundi' en un dictionnaire de paramètres avec Python.",
         code: `url = "page?ville=Beyrouth&jour=lundi"\nchemin, req = url.split("?")\nparams = dict(c.split("=") for c in req.split("&"))\nprint(params)`,
         solution: "On sépare au ?, puis chaque 'clé=valeur' au &. Résultat : {'ville': 'Beyrouth', 'jour': 'lundi'}." },
       { niveau: "moyen", enonce: "Un formulaire envoie un mot de passe. GET ou POST ? Justifie en une phrase.",
         solution: "POST : avec GET, le mot de passe apparaîtrait dans l'URL (visible, mémorisé dans l'historique et les favoris). POST le place dans le corps de la requête, hors de l'URL." },
       { niveau: "moyen", enonce: "Sur papier : écris le HTML d'un formulaire avec un champ texte (nom) et un bouton « S'inscrire ».",
-        solution: "<form><label>Nom : <input type=\"text\" id=\"nom\"></label><button type=\"submit\">S'inscrire</button></form>." },
+        solution: "<code>&lt;form&gt;&lt;label&gt;Nom : &lt;input type=\"text\" id=\"nom\"&gt;&lt;/label&gt;&lt;button type=\"submit\"&gt;S'inscrire&lt;/button&gt;&lt;/form&gt;</code>" },
       { niveau: "défi", enonce: "Combien de paramètres dans 'recherche?q=robot&page=2&tri=note' ? Écris le code Python qui affiche la valeur de 'tri'.",
         code: `url = "recherche?q=robot&page=2&tri=note"\nreq = url.split("?")[1]\nparams = dict(c.split("=") for c in req.split("&"))\nprint(len(params), "paramètres")\nprint("tri =", params["tri"])`,
         solution: "3 paramètres (q, page, tri). params['tri'] vaut 'note'." },
@@ -218,6 +223,8 @@ const THEME_EXTRAS = {
       "L'OS gère processus, mémoire, fichiers, périphériques, sécurité.",
       "Fichiers en arborescence ; chemins absolu (/...) ou relatif (. / ..).",
       "Langage machine : instructions élémentaires (LOAD, ADD, STORE, HALT…) exécutées par le processeur via l'accumulateur.",
+      "Mono-processeur : une seule unité exécute les instructions l'une après l'autre ; multi-cœurs / multi-processeurs : plusieurs unités travaillent vraiment en même temps, réparties par l'OS — un programme séquentiel n'occupe qu'un cœur.",
+      "Libre (GNU/Linux : Debian, Ubuntu, Fedora…) = code source accessible + 4 libertés (exécuter, étudier, modifier, redistribuer) ; propriétaire (Windows, macOS, iOS) = code secret, licence d'utilisation. Linux est un noyau, la distribution est l'OS complet ; libre ≠ gratuit.",
     ],
     erreurs: [
       "Confondre l'UC (commande) et l'UAL (calculs).",
@@ -264,12 +271,14 @@ const THEME_EXTRAS = {
       "for = boucle bornée (range), while = boucle non bornée.",
       "Fonctions : paramètres + return ; spécifier (docstring + assert).",
       "Bibliothèques : import + lire la documentation (help).",
+      "Un jeu de tests réussi ne prouve pas la correction (Dijkstra) : penser aux cas limites, aux résultats False attendus, à chaque phrase de la spécification.",
     ],
     erreurs: [
       "Oublier les deux-points : ou mal indenter un bloc.",
       "range(n) s'arrête à n-1 (pas n).",
       "Confondre print (affiche) et return (renvoie une valeur).",
       "Boucle while infinie : la condition ne devient jamais fausse.",
+      "Croire une fonction juste parce que ses assert passent : les tests ne couvrent que les cas auxquels on a pensé (est_bissextile(1900)).",
     ],
     exercices: [
       { niveau: "facile", enonce: "Texte à trou — complète est_pair, vérifie, puis exécute.",
@@ -353,6 +362,28 @@ const THEME_EXTRAS = {
       { niveau: "défi", enonce: "kNN : code distance(a,b) et knn(donnees, point, k) pour classer un fruit mystère. (voir projet kNN)",
         code: `donnees = [(1,1,"pomme"),(2,1,"pomme"),(5,4,"banane"),(6,4,"banane")]\ndef distance(a, b):\n    return ((a[0]-b[0])**2 + (a[1]-b[1])**2) ** 0.5\ndef knn(donnees, point, k=3):\n    voisins = sorted(donnees, key=lambda d: distance(d, point))[:k]\n    classes = [v[2] for v in voisins]\n    return max(set(classes), key=classes.count)\nprint(knn(donnees, (5.2, 4.0), k=3))`,
         solution: "On trie les points par distance au point mystère, on garde les k plus proches, on vote la classe majoritaire. (5.2,4.0) est proche des bananes → 'banane'." },
+      { niveau: "défi", enonce: "<strong>Code le tri par insertion de zéro.</strong> Écris <code>tri_insertion(tab)</code> qui trie la liste <code>tab</code> <strong>en place</strong> (on modifie la liste reçue, sans en créer une nouvelle) et la renvoie, <strong>sans utiliser</strong> <code>sort</code> ni <code>sorted</code>. Principe : la partie gauche de la liste est déjà triée ; pour chaque élément <code>tab[i]</code> (la « carte » à insérer), décale d'une case vers la droite tous les éléments de la partie triée qui sont plus grands que lui, puis pose-le dans le trou. Trace attendue sur <code>[5, 2, 9, 1, 7]</code> : après i = 1 → <code>[2, 5, 9, 1, 7]</code> ; i = 2 → <code>[2, 5, 9, 1, 7]</code> (9 est déjà à sa place) ; i = 3 → <code>[1, 2, 5, 9, 7]</code> ; i = 4 → <code>[1, 2, 5, 7, 9]</code>. Ton code doit passer ces tests : <code>assert tri_insertion([5, 2, 9, 1, 7]) == [1, 2, 5, 7, 9]</code>, <code>assert tri_insertion([]) == []</code>, <code>assert tri_insertion([4]) == [4]</code>, <code>assert tri_insertion([3, 3, 1]) == [1, 3, 3]</code>, <code>assert tri_insertion([1, 2, 3]) == [1, 2, 3]</code>. Ajoute un <code>print</code> à la fin de chaque tour de la boucle <code>for</code> pour voir la trace.",
+        code: `def tri_insertion(tab):
+    for i in range(1, len(tab)):
+        cle = tab[i]            # la carte à insérer
+        j = i - 1
+        while j >= 0 and tab[j] > cle:
+            tab[j + 1] = tab[j]  # on décale vers la droite
+            j -= 1
+        tab[j + 1] = cle         # on pose la carte à sa place
+        print("fin du tour i =", i, ":", tab)
+    return tab
+
+# Les tests de l'énoncé
+assert tri_insertion([5, 2, 9, 1, 7]) == [1, 2, 5, 7, 9]
+assert tri_insertion([]) == []                 # liste vide : la boucle for ne tourne pas
+assert tri_insertion([4]) == [4]               # un seul élément : déjà trié
+assert tri_insertion([3, 3, 1]) == [1, 3, 3]   # doublons conservés
+assert tri_insertion([1, 2, 3]) == [1, 2, 3]   # déjà trié : aucun décalage
+print("Tous les tests passent ✔")`,
+        solution: "On garde deux indices : <code>i</code> parcourt la liste à partir de la 2ᵉ case (la 1ʳᵉ, seule, est triée), et <code>j</code> recule dans la partie triée. Tant que <code>j &gt;= 0</code> et que <code>tab[j]</code> est plus grand que la carte, on copie <code>tab[j]</code> une case à droite (<code>tab[j + 1] = tab[j]</code>) puis <code>j -= 1</code>. Quand la boucle <code>while</code> s'arrête, le trou est en <code>j + 1</code> : on y pose la carte. Trace sur <code>[5, 2, 9, 1, 7]</code> : i = 1, carte 2 : 5 décalé → <code>[2, 5, 9, 1, 7]</code> ; i = 2, carte 9 : aucun décalage ; i = 3, carte 1 : 9, 5, 2 décalés → <code>[1, 2, 5, 9, 7]</code> ; i = 4, carte 7 : 9 décalé → <code>[1, 2, 5, 7, 9]</code>. Les cas limites passent sans code particulier : pour <code>[]</code> et <code>[4]</code>, <code>range(1, len(tab))</code> est vide et la boucle <code>for</code> ne tourne pas ; les doublons sont conservés car on décale seulement les éléments <em>strictement</em> plus grands (<code>&gt;</code>, pas <code>&gt;=</code>). Coût : dans le pire cas (liste triée à l'envers), le tour i fait i décalages, soit 1 + 2 + … + (n − 1) ≈ n²/2 opérations, d'ordre n² ; dans le meilleur cas (liste déjà triée), aucun décalage : n − 1 comparaisons seulement." },
+      { niveau: "moyen", enonce: "<strong>Sur papier — pourquoi les tris se terminent-ils ?</strong> Dans le tri par insertion du cours, la boucle interne est <code>while j &gt;= 0 and tab[j] &gt; cle:</code> et son corps se termine par <code>j -= 1</code>. (a) Donne un <strong>variant de boucle</strong> qui prouve qu'elle se termine : une quantité entière, positive ou nulle, qui décroît strictement à chaque tour. Justifie les trois propriétés. (b) Pourquoi la boucle <code>for i in range(1, len(tab))</code> du tri par insertion, et les deux boucles <code>for</code> du tri par sélection, se terminent-elles forcément ? Combien de tours fait chacune ? (c) Bonus : énonce l'<strong>invariant</strong> « au début du tour i, … » du tri par insertion et celui du tri par sélection, puis explique en quoi ils diffèrent.",
+        solution: "<strong>(a)</strong> Variant : <code>j + 1</code> (ou simplement <code>j</code>, en acceptant qu'il atteigne −1 à la sortie). Entier : <code>j</code> est un indice. Positif ou nul : tant qu'on est dans la boucle, la condition <code>j &gt;= 0</code> est vraie, donc <code>j + 1 &gt;= 1</code>. Strictement décroissant : chaque tour fait <code>j -= 1</code>, et rien d'autre ne modifie <code>j</code>. Un entier positif qui perd 1 à chaque tour ne peut pas descendre indéfiniment : au plus <code>i</code> tours, puis <code>j</code> vaut −1 et <code>j &gt;= 0</code> devient faux. Remarque : grâce à l'évaluation séquentielle de <code>and</code>, <code>tab[j]</code> n'est jamais lu quand <code>j</code> vaut −1 (thème « types de base »). <strong>(b)</strong> Une boucle <code>for</code> sur un <code>range</code> est <strong>bornée</strong> : le nombre de tours est fixé avant d'entrer dans la boucle et ne dépend pas de ce qui se passe dedans. Le variant est « le nombre d'éléments du range qu'il reste à parcourir ». Tri par insertion : <code>n − 1</code> tours (i de 1 à n − 1). Tri par sélection : la boucle externe fait <code>n</code> tours (ou n − 1 selon l'écriture) et la boucle interne, au tour i, fait <code>n − 1 − i</code> tours ; au total environ n²/2 comparaisons. <strong>(c)</strong> Insertion : « au début du tour i, <code>tab[0..i-1]</code> est triée » — triée <em>entre ses éléments</em> seulement : ils ne sont pas forcément les plus petits de la liste et peuvent encore bouger. Sélection : « au début du tour i, <code>tab[0..i-1]</code> contient les i plus petits éléments de la liste, dans l'ordre, à leur place <em>définitive</em> ». Dans les deux cas, à la fin (i = n) l'invariant dit que toute la liste est triée : c'est ce qui prouve que le tri est <strong>correct</strong>, alors que le variant prouve qu'il <strong>s'arrête</strong>." },
     ],
     defi: { titre: "Mission : duel d'algorithmes",
       html: "Compte et compare le nombre d'étapes de la recherche séquentielle et de la dichotomie pour n = 10, 1000, 1 000 000. Conclus sur O(n) vs O(log n)." },
@@ -402,6 +433,7 @@ const THEME_EXTRAS = {
       "Routage = choix du chemin des paquets via des routeurs.",
       "Désordre → on retrie ; perte → numéro manquant ; doublon → on ignore.",
       "Bit alterné : chaque paquet porte un bit 0/1 ; sans ACK portant le même bit avant le timeout, l'émetteur retransmet.",
+      "Réseau local du lycée : postes reliés (câble RJ45 ou Wi-Fi) à un switch ; le routeur + pare-feu/proxy est l'unique sortie vers Internet via la box du FAI ; le DHCP distribue des adresses privées (192.168.x.x, 10.x.x.x), invisibles d'Internet ; le serveur pédagogique (fichiers, comptes) se joint sans quitter le réseau local.",
     ],
     erreurs: [
       "Penser qu'un message voyage d'un seul bloc (il est découpé en paquets).",
