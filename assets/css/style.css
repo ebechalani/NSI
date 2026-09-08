@@ -1251,3 +1251,58 @@ details.plan-cours > summary::-webkit-details-marker { display: none; }
   .section { box-shadow: none; break-inside: avoid; }
   .content { max-width: 100%; padding: 0; }
 }
+
+
+/* ===== Conducteurs : liens vers le contenu cité + projection sur le TBI ===== */
+.cd-link { color: var(--accent); font-weight: 600; text-decoration: underline dotted; text-underline-offset: 2px; }
+.cd-link:hover { text-decoration-style: solid; }
+.cible-flash { animation: cibleFlash 2.4s ease-out; border-radius: 12px; }
+@keyframes cibleFlash { 0% { box-shadow: 0 0 0 5px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
+.cd-actions { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .55rem; }
+.cd-actions .btn { font-size: .78rem; padding: .25rem .6rem; }
+.cd-projete { outline: 2px solid var(--accent); outline-offset: 3px; }
+.cd-projete .cd-titre::after { content: " 📽️ à l'écran"; color: var(--accent); font-size: .8em; font-weight: 600; }
+.proj-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; margin: .3rem 0 .8rem; padding: .55rem .75rem;
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; }
+.proj-bar .btn { font-size: .82rem; }
+.proj-dot { display: inline-block; width: .6rem; height: .6rem; border-radius: 50%; background: #94a3b8; margin-left: .3rem; }
+.proj-dot.on { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+.proj-status { font-size: .82rem; color: var(--text-soft); margin-right: .4rem; }
+
+/* Fenêtre de projection : plein cadre, grands caractères, rien d'autre que le contenu */
+body.projecteur .topbar, body.projecteur .sidebar, body.projecteur .skip-link, body.projecteur #overlay,
+body.projecteur .teacher-block, body.projecteur .prof-note { display: none !important; }
+body.projecteur .layout { display: block; }
+body.projecteur .content { max-width: none; padding: 1.2rem 3rem 5rem; }
+body.projecteur.noir, body.projecteur.noir .content { background: #000 !important; }
+body.projecteur.noir .proj-stage { visibility: hidden; }
+.proj-stage { font-size: calc(1.35rem * var(--proj-zoom, 1)); line-height: 1.55; max-width: 1500px; margin: 0 auto; }
+.proj-stage h1 { font-size: 2em; line-height: 1.2; margin: .15em 0 .55em; }
+.proj-stage h1 .lv-tag { font-size: .45em; vertical-align: middle; margin-left: .4em; }
+.proj-stage p, .proj-stage li, .proj-stage td, .proj-stage th { font-size: 1em; }
+.proj-stage table { font-size: .92em; }
+.proj-stage pre, .proj-stage code { font-size: .92em; }
+.proj-stage .codecell, .proj-stage .code-editor, .proj-stage textarea { font-size: .95em; }
+.proj-kicker { color: var(--text-soft); font-size: .8em; margin-bottom: .4em; }
+.proj-eleves { margin-top: 1.2em; padding: .8em 1.1em; border-left: 6px solid var(--accent); background: var(--accent-soft);
+  border-radius: 10px; font-weight: 600; }
+.proj-enonce { padding: .2em 0; }
+.proj-pre { background: var(--bg-soft); padding: .8em 1em; border-radius: 10px; overflow: auto; }
+.proj-splash { text-align: center; padding: 12vh 0 0; }
+.proj-splash h1 { font-size: 2.6em; }
+.proj-duree { color: var(--text-soft); }
+.proj-objectif { max-width: 34em; margin: 1em auto 0; }
+.proj-plan td:first-child { white-space: nowrap; }
+.proj-wait { text-align: center; padding: 14vh 0; color: var(--text-soft); }
+.proj-logo { font-size: 3em; font-weight: 800; color: var(--accent); letter-spacing: .04em; }
+.proj-hint { max-width: 34em; margin: .6em auto 0; font-size: .85em; }
+.proj-choices { list-style: none; padding: 0; margin: .6em 0; }
+.proj-choices li { display: flex; gap: .8em; align-items: flex-start; padding: .55em .95em; margin: .4em 0;
+  border: 2px solid var(--border); border-radius: 12px; background: var(--bg-elev); }
+.proj-choices .lettre { font-weight: 800; color: var(--accent); min-width: 1.5em; }
+.proj-choices li.proj-ok { border-color: var(--ok); background: var(--ok-soft); }
+.proj-explain { margin-top: .8em; padding: .7em 1em; background: var(--ok-soft); border-radius: 10px; }
+.proj-nav { display: flex; gap: .6rem; justify-content: center; margin-top: 1.1em; }
+.proj-nav .btn { font-size: .9em; padding: .45em 1.1em; }
+.proj-tools { position: fixed; right: .8rem; bottom: .8rem; display: flex; gap: .35rem; opacity: .3; transition: opacity .2s; z-index: 50; }
+.proj-tools:hover { opacity: 1; }

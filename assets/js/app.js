@@ -34,6 +34,9 @@
     return e;
   };
 
+  // Fenêtre de projection (TBI) : ouverte par le prof avec ?projecteur=1
+  const IS_PROJ = new URLSearchParams(location.search).get("projecteur") === "1";
+
   /* ---------------- Thème clair / sombre ---------------- */
   const THEME_KEY = "nsi-theme";
   function applyTheme(t) {
@@ -676,7 +679,7 @@
     // Exercices progressifs + mini-défi (avant le QCM)
     const ex = THEME_EXTRAS[c.id];
     if (ex && ex.exercices) viewTheme.appendChild(makeExercices(ex.exercices, c.id));
-    if (ex && ex.defi) viewTheme.appendChild(makeDefi(ex.defi));
+    if (ex && ex.defi) viewTheme.appendChild(makeDefi(ex.defi, c.id));
 
     // TP guidés du thème, faisables directement ici (dépliables)
     const themeTPs = makeThemeTPs(c.id);
@@ -726,24 +729,226 @@
     correction: ["✅", "Correction"], bilan: ["🎯", "Bilan"],
   };
 
-  function makeConduite(s) {
+  /* ---------------- Liens et projection depuis les conducteurs ----------------
+     Les étapes citent « Exercice 3 », « exercices 2 et 3 », « QCM », « partie 4 »,
+     « section « … » », « TP « … » », « projet « … » ». Deux services :
+       1. les rendre CLIQUABLES : on va au bon endroit du thème (ancre + surbrillance) ;
+       2. les rendre PROJETABLES : le prof garde le conducteur sur son écran et envoie
+          à la fenêtre de projection (TBI) ce que la classe doit voir à cet instant. */
+  const normTxt = (s) =>
+    String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+
+  function findSectionIdx(themeId, title) {
+    const c = COURSES.find((x) => x.id === themeId);
+    const n = normTxt(title);
+    if (!c || !n) return -1;
+    let i = c.sections.findIndex((sec) => normTxt(sec.title) === n);
+    if (i < 0) i = c.sections.findIndex((sec) => normTxt(sec.title).includes(n) || n.includes(normTxt(sec.title)));
+    return i;
+  }
+  function findByTitre(arr, title) {
+    const n = normTxt(title);
+    if (!n) return null;
+    return (arr || []).find((x) => normTxt(x.titre) === n) ||
+      (arr || []).find((x) => normTxt(x.titre).includes(n) || n.includes(normTxt(x.titre))) || null;
+  }
+  const miniProjetsDe = (themeId) => (typeof MINI_PROJETS !== "undefined" ? MINI_PROJETS : []).filter((p) => p.theme === themeId);
+
+  // Résout une référence textuelle en cible : { label, theme, anchor, kind?, index? }
+  // (ancre sur la page du thème, kind/index si projetable) ou { label, nav } (autre page).
+  function refTarget(kind, arg, themeId) {
+    const c = COURSES.find((x) => x.id === themeId);
+    if (!c) return null;
+    const ex = (typeof THEME_EXTRAS !== "undefined" && THEME_EXTRAS[themeId]) || {};
+    switch (kind) {
+      case "exercice": {
+        const n = +arg;
+        if (!(ex.exercices && n >= 1 && n <= ex.exercices.length)) return null;
+        return { label: "Exercice " + n, theme: themeId, anchor: "e" + n, kind: "exercice", index: n - 1 };
+      }
+      case "qcm":
+        return QUIZZES[themeId] ? { label: "QCM", theme: themeId, anchor: "qcm", kind: "qcm", index: 0 } : null;
+      case "partie": {
+        const n = +arg;
+        if (!(n >= 1 && n <= c.sections.length)) return null;
+        return { label: "Partie " + n, theme: themeId, anchor: "s" + n, kind: "section", index: n - 1 };
+      }
+      case "section":
+      case "jeu": {
+        const i = findSectionIdx(themeId, arg);
+        return i < 0 ? null : { label: c.sections[i].title, theme: themeId, anchor: "s" + (i + 1), kind: "section", index: i };
+      }
+      case "defi": {
+        const d = ex.defi && normTxt(ex.defi.titre);
+        const n = normTxt(arg);
+        if (d && (d === n || d.includes(n) || n.includes(d))) return { label: ex.defi.titre, theme: themeId, anchor: "defi", kind: "defi", index: 0 };
+        const mp = findByTitre(miniProjetsDe(themeId), arg);
+        return mp ? { label: mp.titre, theme: themeId, anchor: "mp-" + mp.id } : null;
+      }
+      case "tp": {
+        const t = findByTitre((typeof GUIDED_TP !== "undefined" ? GUIDED_TP : []).filter((x) => x.theme === themeId && x.steps && x.steps.length), arg);
+        if (t) return { label: t.titre, theme: themeId, anchor: "tp-" + t.id };
+        const mp = findByTitre(miniProjetsDe(themeId), arg);
+        return mp ? { label: mp.titre, theme: themeId, anchor: "mp-" + mp.id } : null;
+      }
+      case "projet": {
+        const pr = findByTitre(typeof PROJECTS !== "undefined" ? PROJECTS : [], arg);
+        if (pr) return { label: pr.titre, nav: "projet:" + pr.id };
+        const mp = findByTitre(miniProjetsDe(themeId), arg);
+        return mp ? { label: mp.titre, theme: themeId, anchor: "mp-" + mp.id } : null;
+      }
+    }
+    return null;
+  }
+
+  function linkHtml(t, text) {
+    if (!t) return text;
+    const attrs = t.nav
+      ? `href="#${t.nav}" data-nav="${t.nav}"`
+      : `href="#${t.theme}@${t.anchor}" data-theme="${t.theme}" data-anchor="${t.anchor}"`;
+    return `<a class="cd-link" ${attrs} title="Aller à : ${escapeHtml(t.label)}">${text}</a>`;
+  }
+
+  // Transforme les références d'un fragment HTML en liens — dans le texte seulement
+  // (jamais dans une balise, ni dans <a>, <code>, <pre>). `found` collecte les cibles.
+  function linkifyRefs(html, themeId, found) {
+    if (!html || !themeId) return html || "";
+    const add = (t) => {
+      if (found && t && !found.some((x) => x.label === t.label && x.anchor === t.anchor && x.nav === t.nav)) found.push(t);
+      return t;
+    };
+    const parts = String(html).split(/(<[^>]+>)/);
+    let skip = 0;
+    return parts.map((p) => {
+      if (p.startsWith("<")) {
+        if (/^<(a|code|pre)\b/i.test(p)) skip++;
+        else if (/^<\/(a|code|pre)\b/i.test(p)) skip = Math.max(0, skip - 1);
+        return p;
+      }
+      if (skip || !p.trim()) return p;
+      return p
+        .replace(/\b(exercices?)(\s+)(\d+(?:\s*(?:,|et|à|–|-)\s*\d+)*)/gi, (m, w, sp, nums) =>
+          w + sp + nums.replace(/\d+/g, (n) => linkHtml(add(refTarget("exercice", n, themeId)), n)))
+        .replace(/\b(parties?)(\s+)(\d+)\b/gi, (m, w, sp, n) => w + sp + linkHtml(add(refTarget("partie", n, themeId)), n))
+        .replace(/\b(sections?|jeu|défi|defi|TP|projet)\s+«\s*([^»]+?)\s*»/gi, (m, w, title) => {
+          const k = /^s/i.test(w) ? "section" : /^j/i.test(w) ? "jeu" : /^d/i.test(w) ? "defi" : /^t/i.test(w) ? "tp" : "projet";
+          const t = add(refTarget(k, title, themeId));
+          return t ? `${w} « ${linkHtml(t, title)} »` : m;
+        })
+        .replace(/\bQCM\b/g, (m) => linkHtml(add(refTarget("qcm", null, themeId)), m));
+    }).join("");
+  }
+
+  // Va à une ancre d'un thème (« e3 », « s4 », « qcm », « tp-xxx ») : ouvre la page
+  // si besoin, déplie les <details> parents, fait défiler et met en surbrillance.
+  function goToAnchor(themeId, anchor) {
+    if (currentThemeId !== themeId || viewTheme.classList.contains("hidden")) navigate(themeId);
+    const id = themeId + "-" + anchor;
+    let tries = 0;
+    (function tick() {
+      const t = document.getElementById(id);
+      if (!t) { if (tries++ < 30) setTimeout(tick, 60); return; }
+      for (let par = t.parentElement; par; par = par.parentElement) if (par.tagName === "DETAILS") par.open = true;
+      if (t.tagName === "DETAILS") t.open = true;
+      t.scrollIntoView({ behavior: "smooth", block: "start" });
+      t.classList.remove("cible-flash");
+      void t.offsetWidth;
+      t.classList.add("cible-flash");
+      setTimeout(() => t.classList.remove("cible-flash"), 2600);
+    })();
+  }
+
+  function bindRefLinks(root) {
+    root.addEventListener("click", (ev) => {
+      const a = ev.target.closest("a.cd-link");
+      if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button !== 0) return;
+      ev.preventDefault();
+      if (a.dataset.nav) navigate(a.dataset.nav);
+      else goToAnchor(a.dataset.theme, a.dataset.anchor);
+    });
+  }
+
+  // Côté prof : canal vers la fenêtre de projection (BroadcastChannel, repli localStorage).
+  const PROJ = (() => {
+    let chan = null, last = null, ready = false;
+    const stateFns = [];
+    try { chan = new BroadcastChannel("nsi-projecteur"); } catch (e) {}
+    function post(msg) {
+      const m = Object.assign({ ts: Date.now() }, msg);
+      try { chan && chan.postMessage(m); } catch (e) {}
+      try { localStorage.setItem("nsi-projecteur-msg", JSON.stringify(m)); } catch (e) {}
+    }
+    function send(msg) { if (msg.type === "show" || msg.type === "noir") last = msg; post(msg); }
+    if (chan) chan.onmessage = (ev) => {
+      const m = ev.data || {};
+      if (m.type === "ready") { ready = true; if (last) post(last); stateFns.forEach((f) => f(true)); }
+      else if (m.type === "bye") { ready = false; stateFns.forEach((f) => f(false)); }
+    };
+    function open() {
+      const w = window.open(location.pathname + "?projecteur=1", "nsi-projecteur");
+      if (w) w.focus();
+      return w;
+    }
+    return { send, open, ping: () => post({ type: "ping" }), isReady: () => ready, onState: (f) => stateFns.push(f) };
+  })();
+
+  function makeConduite(s, themeId, sIdx) {
     const wrap = el("div", "conduite");
-    (s.etapes || []).forEach((e) => {
+    const canProj = themeId != null && sIdx != null && !IS_PROJ;
+
+    function projShow(m) {
+      const msg = m.type ? m : Object.assign({ type: "show" }, m);
+      PROJ.send(msg);
+      if (!PROJ.isReady()) PROJ.open(); // l'écran rejoue le dernier message à son ouverture
+      wrap.querySelectorAll(".cd-projete").forEach((x) => x.classList.remove("cd-projete"));
+      if (msg.kind === "etape") {
+        const card = wrap.querySelector(`[data-etape="${msg.etape}"]`);
+        if (card) card.classList.add("cd-projete");
+      }
+    }
+
+    if (canProj) {
+      const bar = el("div", "proj-bar");
+      const bOpen = el("button", "btn primary", "📽️ Ouvrir l'écran de projection");
+      bOpen.title = "Ouvre une fenêtre à glisser sur le TBI / vidéoprojecteur : elle n'affiche que ce que tu décides de projeter.";
+      bOpen.addEventListener("click", () => PROJ.open());
+      const dot = el("span", "proj-dot");
+      const status = el("span", "proj-status", "écran non ouvert");
+      const bTitre = el("button", "btn secondary", "🎬 Titre de la séance");
+      bTitre.addEventListener("click", () => projShow({ kind: "titre", theme: themeId, seance: sIdx }));
+      const bPlan = el("button", "btn secondary", "🧑‍🎓 Plan de travail");
+      bPlan.addEventListener("click", () => projShow({ kind: "plan", theme: themeId, seance: sIdx }));
+      const bNoir = el("button", "btn secondary", "⬛ Écran noir");
+      bNoir.addEventListener("click", () => projShow({ type: "noir" }));
+      bar.append(bOpen, dot, status, bTitre, bPlan, bNoir);
+      const setState = (on) => {
+        dot.classList.toggle("on", on);
+        status.textContent = on ? "écran de projection connecté" : "écran non ouvert";
+      };
+      PROJ.onState(setState);
+      setState(PROJ.isReady());
+      PROJ.ping();
+      wrap.appendChild(bar);
+    }
+
+    (s.etapes || []).forEach((e, eIdx) => {
       const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
       const card = el("div", "cd-etape cd-" + (CONDUITE_TYPES[e.type] ? e.type : "autre"));
+      card.dataset.etape = eIdx;
+      const refs = []; // cibles citées dans l'étape → liens + boutons « projeter »
       const head = el("div", "cd-head");
       head.innerHTML =
         `<span class="cd-time">${e.t}</span>` +
         `<span class="cd-chip">${emo} ${label}</span>` +
-        `<strong class="cd-titre">${e.titre}</strong>`;
+        `<strong class="cd-titre">${linkifyRefs(e.titre, themeId, refs)}</strong>`;
       card.appendChild(head);
-      if (e.prof) card.appendChild(el("p", "cd-prof", "👩‍🏫 " + e.prof));
+      if (e.prof) card.appendChild(el("p", "cd-prof", "👩‍🏫 " + linkifyRefs(e.prof, themeId, refs)));
       // Le pendant côté classe : ce que FONT les élèves pendant cette étape
       // (jamais spectateurs — c'est la moitié du contrat pédagogique).
-      if (e.eleves) card.appendChild(el("p", "cd-eleves", "🧑‍🎓 Les élèves " + e.eleves));
+      if (e.eleves) card.appendChild(el("p", "cd-eleves", "🧑‍🎓 Les élèves " + linkifyRefs(e.eleves, themeId, refs)));
       if (e.contenu) {
         const body = el("div", "cd-contenu plan-cours-body");
-        body.innerHTML = e.contenu;
+        body.innerHTML = linkifyRefs(e.contenu, themeId, refs);
         body.querySelectorAll("table").forEach((tbl) => {
           const box = el("div", "plan-cours-scroll");
           tbl.parentNode.insertBefore(box, tbl);
@@ -751,8 +956,24 @@
         });
         card.appendChild(body);
       }
+      if (canProj) {
+        const act = el("div", "cd-actions");
+        const b = el("button", "btn secondary", "📽️ Projeter cette étape");
+        b.title = "Affiche à l'écran de projection le contenu de l'étape et ce que font les élèves — sans tes consignes";
+        b.addEventListener("click", () => projShow({ kind: "etape", theme: themeId, seance: sIdx, etape: eIdx }));
+        act.appendChild(b);
+        refs.filter((t) => t.kind && t.theme).forEach((t) => {
+          const lab = t.label.length > 42 ? t.label.slice(0, 40) + "…" : t.label;
+          const bb = el("button", "btn secondary cd-proj-ref", "📽️ " + lab);
+          bb.title = "Projeter : " + t.label;
+          bb.addEventListener("click", () => projShow({ kind: t.kind, theme: t.theme, index: t.index }));
+          act.appendChild(bb);
+        });
+        card.appendChild(act);
+      }
       wrap.appendChild(card);
     });
+    bindRefLinks(wrap);
     return wrap;
   }
 
@@ -896,7 +1117,7 @@
           tools.appendChild(bF);
         }
         cbody.appendChild(tools);
-        cbody.appendChild(makeConduite(s));
+        cbody.appendChild(makeConduite(s, themeId, sIdx));
         cdet.appendChild(cbody);
         card.appendChild(cdet);
       } else if (s.cours) {
@@ -1745,6 +1966,7 @@ except Exception:
   function makeQuiz(themeId) {
     const questions = QUIZZES[themeId];
     const wrap = el("div", "quiz");
+    wrap.id = themeId + "-qcm";
     wrap.appendChild(el("h2", null, "📝 Quiz — teste tes connaissances"));
 
     const answered = new Array(questions.length).fill(false);
@@ -1775,6 +1997,7 @@ except Exception:
 
     questions.forEach((item, qi) => {
       const qbox = el("div", "quiz-item");
+      qbox.id = themeId + "-q" + (qi + 1);
       qbox.appendChild(
         el("div", "quiz-q", `<span class="qn">Q${qi + 1}.</span>${item.q}`)
       );
@@ -2481,6 +2704,7 @@ except Exception:
     liste.forEach((exo, i) => {
       const lv = NIVEAU_BADGE[exo.niveau] || NIVEAU_BADGE.facile;
       const box = el("div", "exo-item");
+      box.id = themeId + "-e" + (i + 1);
       box.appendChild(
         el(
           "div",
@@ -2572,8 +2796,9 @@ except Exception:
     });
   }
 
-  function makeDefi(defi) {
+  function makeDefi(defi, themeId) {
     const wrap = el("div", "extra-block defi-block");
+    if (themeId) wrap.id = themeId + "-defi";
     wrap.appendChild(el("h2", null, "🚀 Mini-défi / mission"));
     const card = el("div", "defi-card");
     card.appendChild(el("h3", null, defi.titre));
@@ -3706,12 +3931,14 @@ except Exception:
     );
     if (!tps.length) return null;
     const wrap = el("div", "extra-block exos");
+    wrap.id = themeId + "-tp";
     wrap.appendChild(el("h2", null, "🧪 TP guidés de ce thème"));
     wrap.appendChild(
       el("p", "extra-hint", "Des TP pas-à-pas, <strong>à faire ici</strong> : clique pour ouvrir, exécute le code, réponds aux questions. Imprimables (énoncé élève / corrigé prof).")
     );
     tps.forEach((t) => {
       const det = el("details", "tp-inline");
+      det.id = themeId + "-tp-" + t.id;
       det.appendChild(el("summary", null, (t.lang === "python" ? "🐍 " : "🖥️ ") + t.titre));
       const body = el("div", "tp-inline-body");
       if (t.intro) body.appendChild(el("p", "tp-intro", t.intro));
@@ -3754,7 +3981,11 @@ except Exception:
       const wrap = el("div", "extra-block exos");
       wrap.appendChild(el("h2", null, "🐍 Mini-projets de ce thème"));
       wrap.appendChild(el("p", "extra-hint", "Des petits projets à coder. Clique pour ouvrir l'énoncé."));
-      mps.forEach((p) => wrap.appendChild(inlineDetails((p.bonus ? "⭐ " : "🐍 ") + p.titre + " · " + p.cat, makeMiniProjet(p, true))));
+      mps.forEach((p) => {
+        const d = inlineDetails((p.bonus ? "⭐ " : "🐍 ") + p.titre + " · " + p.cat, makeMiniProjet(p, true));
+        d.id = themeId + "-mp-" + p.id;
+        wrap.appendChild(d);
+      });
       frag.appendChild(wrap);
     }
     // Fiches & mémo : à lire ici (dépliables)
@@ -4202,7 +4433,7 @@ except Exception:
         tools.appendChild(bF);
       }
       sec.appendChild(tools);
-      sec.appendChild(makeConduite(s));
+      sec.appendChild(makeConduite(s, prepThemeId, prepSeanceIdx));
       viewTheme.appendChild(sec);
     } else if (s.cours) {
       // 📝 Repli (pas encore de conducteur) : la fiche de cours ouverte
@@ -5066,6 +5297,13 @@ except Exception:
   /* ---------------- Routeur ---------------- */
   let currentTarget = "home";
   function navigate(target) {
+    if (target && target.includes("@")) {
+      // lien profond « theme@ancre » (ex. #donnees-base@e3) : la page, puis l'endroit
+      const [th, anc] = target.split("@");
+      navigate(th);
+      goToAnchor(th, anc);
+      return;
+    }
     currentTarget = target && target !== "home" ? target : "";
     currentThemeId = null; // renderTheme le réaffectera pour les pages de thème
     if (target === "home" || !target) {
@@ -5160,15 +5398,202 @@ except Exception:
 
   function isKnownTarget(t) {
     if (!t) return false;
+    t = t.split("@")[0];
     if (["projets", "glossaire", "progression", "methodes", "evaluations", "bo", "tp", "classe", "profs", "didactique", "debranche", "apropos", "reviser", "preparer"].includes(t)) return true;
     if (t.startsWith("projet:")) return true;
     return !!COURSES.find((c) => c.id === t);
+  }
+
+  /* ---------------- Fenêtre de projection (TBI) ----------------
+     Ouverte par le prof depuis un conducteur (index.html?projecteur=1). Elle n'affiche
+     QUE ce qu'il envoie : titre de séance, plan de travail, étape, section de cours
+     (code exécutable), énoncé d'exercice, QCM question par question, écran noir.
+     Ni menu, ni notes prof, ni consignes : uniquement ce que la classe doit voir. */
+  function renderProjecteur() {
+    document.body.classList.add("projecteur");
+    showThemeView("");
+    viewTheme.innerHTML = "";
+    const stage = el("div", "proj-stage");
+    viewTheme.appendChild(stage);
+
+    // Taille du texte mémorisée (A− / A+), thème clair/sombre, plein écran
+    let zoom = parseFloat(localStorage.getItem("nsi-proj-zoom") || "1") || 1;
+    const applyZoom = () => {
+      document.documentElement.style.setProperty("--proj-zoom", String(zoom));
+      try { localStorage.setItem("nsi-proj-zoom", String(zoom)); } catch (e) {}
+    };
+    applyZoom();
+    const tools = el("div", "proj-tools");
+    const mk = (txt, title, fn) => {
+      const b = el("button", "btn secondary", txt);
+      b.title = title;
+      b.addEventListener("click", fn);
+      tools.appendChild(b);
+    };
+    mk("A−", "Réduire le texte", () => { zoom = Math.max(0.6, +(zoom - 0.1).toFixed(2)); applyZoom(); });
+    mk("A+", "Agrandir le texte", () => { zoom = Math.min(2.4, +(zoom + 0.1).toFixed(2)); applyZoom(); });
+    mk("🌓", "Clair / sombre", () => { const b = $("#themeToggle"); if (b) b.click(); });
+    mk("⛶", "Plein écran", () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+    });
+    document.body.appendChild(tools);
+
+    const kicker = (txt) => el("div", "proj-kicker", txt);
+    const wrapTables = (root) => root.querySelectorAll("table").forEach((tbl) => {
+      const box = el("div", "plan-cours-scroll");
+      tbl.parentNode.insertBefore(box, tbl);
+      box.appendChild(tbl);
+    });
+    const wait = () => {
+      document.body.classList.remove("noir");
+      stage.innerHTML =
+        `<div class="proj-wait"><div class="proj-logo">&lt;/&gt; NSI</div>` +
+        `<p>Écran de projection prêt.</p>` +
+        `<p class="proj-hint">Glisse cette fenêtre sur le TBI (⛶ pour le plein écran). Depuis ton conducteur, clique « 📽️ Projeter » : ce que la classe doit voir s'affiche ici.</p></div>`;
+    };
+
+    let qcm = null; // { theme, i, reveal }
+    function renderQ() {
+      const qs = QUIZZES[qcm.theme];
+      const q = qs[qcm.i];
+      const c = COURSES.find((x) => x.id === qcm.theme);
+      stage.innerHTML = "";
+      stage.appendChild(kicker(`📝 QCM · ${c ? c.title : ""} · question ${qcm.i + 1} / ${qs.length}`));
+      stage.appendChild(el("h1", null, q.q));
+      const ul = el("ul", "proj-choices");
+      q.choices.forEach((ch, i) => {
+        ul.appendChild(el("li", qcm.reveal && i === q.answer ? "proj-ok" : "", `<span class="lettre">${"ABCD"[i] || i + 1}</span><span>${ch}</span>`));
+      });
+      stage.appendChild(ul);
+      if (qcm.reveal && q.explain) stage.appendChild(el("div", "proj-explain", "✅ " + q.explain));
+      const nav = el("div", "proj-nav");
+      const nb = (txt, fn, dis) => { const b = el("button", "btn secondary", txt); b.disabled = !!dis; b.addEventListener("click", fn); nav.appendChild(b); };
+      nb("◀ Précédente", () => { qcm.i--; qcm.reveal = false; renderQ(); }, qcm.i === 0);
+      nb(qcm.reveal ? "🙈 Cacher la réponse" : "👁️ Réponse", () => { qcm.reveal = !qcm.reveal; renderQ(); });
+      nb("Suivante ▶", () => { qcm.i++; qcm.reveal = false; renderQ(); }, qcm.i >= qs.length - 1);
+      stage.appendChild(nav);
+    }
+    document.addEventListener("keydown", (ev) => {
+      if (!qcm || !stage.querySelector(".proj-choices")) return;
+      const n = QUIZZES[qcm.theme].length;
+      if (ev.key === "ArrowRight" && qcm.i < n - 1) { qcm.i++; qcm.reveal = false; renderQ(); }
+      else if (ev.key === "ArrowLeft" && qcm.i > 0) { qcm.i--; qcm.reveal = false; renderQ(); }
+      else if (ev.key === " " || ev.key === "Enter") { ev.preventDefault(); qcm.reveal = !qcm.reveal; renderQ(); }
+    });
+
+    function show(m) {
+      document.body.classList.remove("noir");
+      stage.innerHTML = "";
+      qcm = null;
+      currentThemeId = m.theme || null;
+      const c = COURSES.find((x) => x.id === m.theme);
+      const plan = (typeof THEME_PLANS !== "undefined" ? THEME_PLANS : {})[m.theme];
+      const s = plan && plan.seances ? plan.seances[m.seance] : null;
+      const ex = (typeof THEME_EXTRAS !== "undefined" && THEME_EXTRAS[m.theme]) || {};
+      const tTitle = c ? `${c.emoji} ${c.title}` : "";
+      switch (m.kind) {
+        case "titre": {
+          if (!s) return wait();
+          stage.appendChild(el("div", "proj-splash",
+            `<div class="proj-kicker">${tTitle}</div><h1>${s.titre}</h1>` +
+            `<p class="proj-duree">⏱️ ${s.duree || ""}</p>` +
+            (s.objectif ? `<p class="proj-objectif">🎯 ${s.objectif}</p>` : "")));
+          return;
+        }
+        case "plan": {
+          if (!s) return wait();
+          const lignes = (s.etapes || []).map((e) => {
+            const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
+            return `<tr><td><strong>${e.t}</strong></td><td>${emo} ${label}</td><td>${e.eleves ? "Les élèves " + e.eleves : e.titre}</td></tr>`;
+          }).join("");
+          stage.appendChild(kicker(`${tTitle} · ${s.titre}`));
+          stage.appendChild(el("h1", null, "🧑‍🎓 Plan de travail"));
+          stage.appendChild(el("div", "plan-cours-scroll",
+            `<table class="proj-plan"><tr><th>Quand</th><th>Quoi</th><th>Ce qu'on fait</th></tr>${lignes}</table>`));
+          return;
+        }
+        case "etape": {
+          const e = s && s.etapes ? s.etapes[m.etape] : null;
+          if (!e) return wait();
+          const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
+          stage.appendChild(kicker(`${emo} ${label} · ${e.t} · ${s.titre}`));
+          stage.appendChild(el("h1", null, e.titre));
+          if (e.contenu) { const body = el("div", "plan-cours-body", e.contenu); wrapTables(body); stage.appendChild(body); }
+          if (e.eleves) stage.appendChild(el("div", "proj-eleves", "🧑‍🎓 Ce que vous faites — les élèves " + e.eleves));
+          return;
+        }
+        case "section": {
+          const sec = c && c.sections[m.index];
+          if (!sec) return wait();
+          stage.appendChild(kicker(tTitle));
+          stage.appendChild(el("h1", null, `${m.index + 1}. ${sec.title}`));
+          if (sec.html) { const b = el("div", "plan-cours-body", sec.html); wrapTables(b); stage.appendChild(b); }
+          if (sec.schema) stage.appendChild(el("div", "schema", sec.schema));
+          if (sec.code) stage.appendChild(makeCodeCell(sec.code));
+          if (sec.htmldemo) stage.appendChild(makeHtmlCell(sec.htmldemo));
+          return;
+        }
+        case "exercice": {
+          const exo = ex.exercices && ex.exercices[m.index];
+          if (!exo) return wait();
+          const lv = NIVEAU_BADGE[exo.niveau] || NIVEAU_BADGE.facile;
+          stage.appendChild(kicker(`🏋️ ${tTitle}`));
+          stage.appendChild(el("h1", null, `Exercice ${m.index + 1} <span class="lv-tag ${lv.cls}">${lv.label}</span>`));
+          stage.appendChild(el("div", "proj-enonce", exo.enonce));
+          if (exo.gapcode && exo.gaps) stage.appendChild(el("pre", "proj-pre", escapeHtml(exo.gapcode)));
+          else if (exo.code) stage.appendChild(makeCodeCell("# À vous : écrivez le code ici, puis ▶ Exécuter\n"));
+          return;
+        }
+        case "defi": {
+          if (!ex.defi) return wait();
+          stage.appendChild(kicker(`🚀 ${tTitle}`));
+          stage.appendChild(el("h1", null, ex.defi.titre));
+          stage.appendChild(el("div", "proj-enonce", ex.defi.html));
+          if (ex.defi.code) stage.appendChild(makeCodeCell(ex.defi.code));
+          return;
+        }
+        case "qcm": {
+          const qs = QUIZZES[m.theme];
+          if (!qs || !qs.length) return wait();
+          qcm = { theme: m.theme, i: Math.min(Math.max(0, m.index || 0), qs.length - 1), reveal: false };
+          renderQ();
+          return;
+        }
+      }
+      wait();
+    }
+
+    // Réception : BroadcastChannel, avec repli sur l'événement storage (même origine).
+    let chan = null, lastTs = 0;
+    try { chan = new BroadcastChannel("nsi-projecteur"); } catch (e) {}
+    const post = (m) => { try { chan && chan.postMessage(m); } catch (e) {} };
+    const handle = (m) => {
+      if (!m || typeof m !== "object") return;
+      if (m.type === "ping") return post({ type: "ready" });
+      if (m.ts && m.ts === lastTs) return; // déjà traité (arrivé par les deux canaux)
+      lastTs = m.ts || 0;
+      if (m.type === "show") show(m);
+      else if (m.type === "noir") { stage.innerHTML = ""; document.body.classList.add("noir"); }
+    };
+    if (chan) chan.onmessage = (ev) => handle(ev.data);
+    window.addEventListener("storage", (ev) => {
+      if (ev.key === "nsi-projecteur-msg" && ev.newValue) { try { handle(JSON.parse(ev.newValue)); } catch (e) {} }
+    });
+    window.addEventListener("beforeunload", () => post({ type: "bye" }));
+    wait();
+    try {
+      const m = JSON.parse(localStorage.getItem("nsi-projecteur-msg") || "null");
+      if (m && (m.type === "show" || m.type === "noir")) handle(m);
+    } catch (e) {}
+    post({ type: "ready" });
   }
 
   /* ---------------- Démarrage ---------------- */
   function startApp() {
     document.body.classList.remove("gated");
     applyRole();
+    if (IS_PROJ) { renderProjecteur(); return; } // fenêtre TBI : n'affiche que ce que le prof envoie
     syncStudentProgress();
     buildNav();
     updateGlobalProgress();
@@ -5263,7 +5688,7 @@ except Exception:
   });
 
   window.addEventListener("hashchange", () => {
-    if (!P.getSession()) return;
+    if (!P.getSession() || IS_PROJ) return;
     const t = location.hash.replace("#", "");
     const current = viewTheme.classList.contains("hidden") ? "home" : "theme";
     // évite les boucles : ne renavigue que si nécessaire
