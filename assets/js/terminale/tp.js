@@ -455,6 +455,257 @@ print("Épreuve pratique : réussie !")`,
       },
     ],
   },
+
+  /* ===================== Langages et programmation ===================== */
+  {
+    id: "term-tp-paradigmes",
+    theme: "term-langages",
+    lang: "python",
+    titre: "TP — Un même problème, trois paradigmes (d'après le DIU)",
+    intro:
+      "Objectif : résoudre le MÊME problème (des statistiques sur une liste de notes, puis un point du plan) en style impératif, fonctionnel puis objet, pour DISTINGUER les paradigmes sur des exemples et sentir ce que chacun apporte. Bonus : un thermostat événementiel. Adapté du chapitre « Paradigmes de programmation » du DIU EIL (B. Mermet & G. Simon, Université Le Havre Normandie, CC BY-NC-SA).",
+    steps: [
+      {
+        num: "1", titre: "Impératif : des variables qui changent d'état", run: true,
+        code: `# ÉTAPE 1 — IMPÉRATIF : on décrit PAS À PAS ce que fait la machine, avec des
+# variables dont l'état change (affectations, boucles, tests).
+notes = [8, 15, 12, 19, 6, 14]
+
+# a) Moyenne des notes >= 10
+total = 0
+nb = 0
+for n in notes:
+    if n >= 10:
+        total = total + n
+        nb = nb + 1
+print("moyenne des notes >= 10 :", total / nb)   # ?
+
+# b) Meilleure note (sans utiliser max)
+meilleure = notes[0]
+for n in notes:
+    if n > meilleure:
+        meilleure = n
+print("meilleure :", meilleure)                  # ?
+
+# c) À TOI : compte le nombre de notes < 10, toujours avec une boucle`,
+        note: "Définition du DIU : en impératif, « un programme est une succession d'instructions qui peuvent modifier l'état de la mémoire ». Repère ces modifications d'état dans le code.",
+        questions: [
+          "Avant d'exécuter : qu'affichent les deux print ? Vérifie.",
+          "Liste toutes les variables dont la valeur CHANGE après leur création. Combien d'affectations sont exécutées en tout dans la boucle a) ?",
+          "Écris la partie c) avec une boucle et un compteur.",
+        ],
+        correction: [
+          "moyenne des notes >= 10 : 15.0 (15 + 12 + 19 + 14 = 60, divisé par 4) ; meilleure : 19.",
+          "total, nb et meilleure changent d'état (n aussi, à chaque tour). Dans la boucle a) : 6 affectations de n, puis 4 fois (total et nb) = 8, soit 14 affectations. C'est cet état qui évolue que le style fonctionnel cherche à supprimer.",
+          {
+            code: `notes = [8, 15, 12, 19, 6, 14]
+nb_faibles = 0
+for n in notes:
+    if n < 10:
+        nb_faibles = nb_faibles + 1
+print("notes < 10 :", nb_faibles)   # 2`,
+          },
+        ],
+      },
+      {
+        num: "2", titre: "Fonctionnel : composer des fonctions, ne rien modifier", run: true,
+        code: `# ÉTAPE 2 — FONCTIONNEL : on COMPOSE des fonctions, sans modifier de variable.
+from functools import reduce
+notes = [8, 15, 12, 19, 6, 14]
+
+bonnes = list(filter(lambda n: n >= 10, notes))          # filtrage
+print(bonnes)                                            # ?
+print(sum(bonnes) / len(bonnes))                         # moyenne des notes >= 10
+
+meilleure = reduce(lambda acc, n: n if n > acc else acc, notes)   # pliage (réduction)
+print(meilleure)                                         # ?
+
+# À TOI : avec map + lambda, fabrique la liste des notes sur 100 (note * 5)
+# sur_100 = ...
+# assert sur_100 == [40, 75, 60, 95, 30, 70]
+
+# À TOI : avec filter, la liste des notes < 10, puis len() pour les compter
+# assert len(...) == 2
+
+print(notes)   # la liste de départ est INTACTE : aucun effet de bord`,
+        note: "Les trois opérations du DIU : <strong>mapping</strong> (map), <strong>filtrage</strong> (filter), <strong>pliage</strong> (reduce, foldl en Haskell). Une lambda est une fonction anonyme, héritée du λ-calcul.",
+        questions: [
+          "Avant d'exécuter : que valent bonnes et meilleure ? Comment reduce calcule-t-il le maximum (déroule les 6 étapes avec acc) ?",
+          "Complète les deux « À TOI » et fais passer les asserts.",
+          "Compare avec l'étape 1 : combien de variables sont modifiées APRÈS leur création ? Pourquoi est-ce un avantage si le calcul est réparti sur plusieurs processeurs (page « programmation parallèle » du DIU) ?",
+        ],
+        correction: [
+          "bonnes = [15, 12, 19, 14] ; meilleure = 19. reduce part de acc = 8 (premier élément) puis compare : acc = 15 (15 > 8), 15 (12 non), 19 (19 > 15), 19 (6 non), 19 (14 non).",
+          {
+            code: `from functools import reduce
+notes = [8, 15, 12, 19, 6, 14]
+
+sur_100 = list(map(lambda n: n * 5, notes))
+assert sur_100 == [40, 75, 60, 95, 30, 70]
+
+faibles = list(filter(lambda n: n < 10, notes))
+assert len(faibles) == 2
+
+print(sur_100, faibles)   # [40, 75, 60, 95, 30, 70] [8, 6]
+print(notes)              # [8, 15, 12, 19, 6, 14] : toujours intacte`,
+          },
+          "Aucune : chaque nom (bonnes, meilleure, sur_100…) reçoit une valeur une fois pour toutes ; notes n'est jamais modifiée. Sans donnée partagée modifiable, deux threads ne peuvent pas se marcher dessus : c'est justement le bug (deux threads écrivant la même variable c) que le DIU montre dans sa page parallèle, et que les verrous servent à corriger.",
+        ],
+      },
+      {
+        num: "3", titre: "Objet : regrouper données et fonctions (la classe Point du DIU)", run: true,
+        code: `# ÉTAPE 3 — OBJET : données + fonctions regroupées dans une classe
+# (la classe Point du cours DIU)
+from math import sqrt
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def translater(self, dx, dy):
+        pass        # À COMPLÉTER : déplace l'objet courant de (dx, dy)
+
+    def module(self):
+        return 0    # À COMPLÉTER : distance à l'origine, sqrt(x*x + y*y)
+
+    def __str__(self):
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
+p1 = Point(3, 4)
+p2 = Point(11, 13)
+p3 = p1                 # ATTENTION : copie de la référence, pas de l'objet
+p1.translater(2, 3)
+print(p1, p2, p3)       # attendu une fois complété : (5,7) (11,13) (5,7)
+print(Point(3, 4).module())   # attendu : 5.0
+
+# Décommente quand c'est prêt :
+# assert str(p3) == "(5,7)"
+# assert Point(3, 4).module() == 5.0
+# print("Classe Point OK")`,
+        note: "Le DIU : « une méthode a accès aux champs de l'objet auquel elle est appliquée » et « les objets sont gérés par référence : la modification appliquée sur p1 se retrouve sur p3 ».",
+        questions: [
+          "Complète translater et module, puis fais passer les asserts.",
+          "Pourquoi p3 affiche-t-il (5,7) alors qu'on n'a jamais appelé p3.translater ? Dessine les variables et l'objet (ou utilise Python Tutor).",
+          "Où sont rangées les données ? Où sont les fonctions ? Que faudrait-il changer pour que translater soit « fonctionnelle » (aucune modification de l'objet) ?",
+        ],
+        correction: [
+          {
+            code: `from math import sqrt
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def translater(self, dx, dy):
+        self.x = self.x + dx     # on MODIFIE l'objet courant (style objet + impératif)
+        self.y = self.y + dy
+
+    def module(self):
+        return sqrt(self.x * self.x + self.y * self.y)
+
+    def __str__(self):
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
+p1 = Point(3, 4)
+p2 = Point(11, 13)
+p3 = p1
+p1.translater(2, 3)
+print(p1, p2, p3)             # (5,7) (11,13) (5,7)
+assert str(p3) == "(5,7)"
+assert Point(3, 4).module() == 5.0
+print("Classe Point OK")`,
+          },
+          "p3 = p1 ne crée pas de deuxième point : les deux variables contiennent la même référence (la même flèche vers l'unique objet). Modifier l'objet via p1, c'est modifier ce que p3 désigne. Pour une copie indépendante : p3 = Point(p1.x, p1.y).",
+          "Les données (x, y) sont des attributs de l'objet ; les fonctions (translater, module, __str__) sont des méthodes de la classe : tout est regroupé, c'est le principe de l'objet selon le DIU. Version fonctionnelle : translater renvoie Point(self.x + dx, self.y + dy) sans toucher à self (voir l'exercice 14 du thème).",
+        ],
+      },
+      {
+        num: "4", titre: "Bonus — événementiel : le thermostat du DIU sans Scratch", bonus: true, run: true,
+        code: `# BONUS — ÉVÉNEMENTIEL : « événement -> action » (le thermostat du DIU, en texte)
+thermostat = 20
+temperature = 17
+journal = []
+
+def chauffer():
+    global temperature
+    temperature += 1
+    journal.append("chauffage")
+
+def refroidir():
+    global temperature
+    temperature -= 1
+    journal.append("climatisation")
+
+# Les actions sont des fonctions rangées dans un dictionnaire
+reactions = {"trop froid": chauffer, "trop chaud": refroidir}
+
+def detecter():
+    if temperature < thermostat:
+        return "trop froid"
+    if temperature > thermostat:
+        return "trop chaud"
+    return "ok"
+
+# La boucle d'événements : tant qu'un événement survient, on déclenche son action
+while detecter() != "ok":
+    reactions[detecter()]()
+print(journal, "->", temperature, "°C")   # ?
+
+# À TOI : mets temperature = 23 au départ et prédis le journal AVANT d'exécuter.
+# À TOI : ajoute un événement "fenetre ouverte" (variable fenetre = True) qui
+#         déclenche fermer_fenetre() : il faut l'ajouter au dictionnaire ET le détecter.`,
+        note: "Dans le DIU, ce système de régulation est réalisé avec Scratch (« température &lt; thermostat → chauffage »), puis avec un bouton tkinter dont bind reçoit une fonction. Ici, pas de fenêtre : la boucle while joue le rôle de mainloop().",
+        questions: [
+          "Que vaut journal à la fin ? Et si temperature vaut 23 au départ ?",
+          "Ajoute l'événement « fenêtre ouverte » : quelle priorité lui donner dans detecter, et pourquoi ?",
+          "Ce programme mélange trois styles : lesquels, et où ? Pourquoi le dictionnaire reactions est-il un exemple de « fonction comme valeur » ?",
+        ],
+        correction: [
+          "['chauffage', 'chauffage', 'chauffage'] -> 20 °C. Avec 23 au départ : ['climatisation', 'climatisation', 'climatisation'] -> 20 °C.",
+          {
+            code: `thermostat = 20
+temperature = 23
+fenetre = True
+journal = []
+
+def chauffer():
+    global temperature
+    temperature += 1
+    journal.append("chauffage")
+
+def refroidir():
+    global temperature
+    temperature -= 1
+    journal.append("climatisation")
+
+def fermer_fenetre():
+    global fenetre
+    fenetre = False
+    journal.append("fenêtre fermée")
+
+reactions = {"trop froid": chauffer, "trop chaud": refroidir, "fenetre ouverte": fermer_fenetre}
+
+def detecter():
+    if fenetre:
+        return "fenetre ouverte"       # priorité : inutile de chauffer fenêtre ouverte !
+    if temperature < thermostat:
+        return "trop froid"
+    if temperature > thermostat:
+        return "trop chaud"
+    return "ok"
+
+while detecter() != "ok":
+    reactions[detecter()]()
+print(journal, "->", temperature, "°C")
+# ['fenêtre fermée', 'climatisation', 'climatisation', 'climatisation'] -> 20 °C`,
+          },
+          "Impératif : les variables globales modifiées (temperature, journal) et la boucle while. Fonctionnel : les fonctions chauffer/refroidir rangées comme valeurs dans le dictionnaire, puis appelées via reactions[e]() sans connaître leur nom. Événementiel : l'association événement → action et la boucle qui détecte puis déclenche. Le BO le dit : dans un même programme, on peut utiliser des paradigmes différents.",
+        ],
+      },
+    ],
+  },
 ];
 
 const FICHES_PLUS = [];

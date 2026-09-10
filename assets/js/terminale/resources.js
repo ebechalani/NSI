@@ -123,6 +123,24 @@ const THEME_RESSOURCES_EXT = {
       { t: "⭐ Fiches élève — Piles, files & ensembles (Terminale)", url: "tree/main/eleves" },
     ],
   },
+  "term-langages": {
+    titre: "Paradigmes de programmation (cours DIU EIL, Bloc 4 · chapitre 2)",
+    auteur: "Bruno Mermet &amp; Gaële Simon — Université Le Havre Normandie (DIU EIL, Bloc 4 « Programmation avancée et bases de données », chapitre 2 « Paradigmes de programmation »)",
+    base: "https://bases-de-donnees-26b46e.gitlab.io/",
+    note: "© Bruno Mermet, Gaële Simon — Université Le Havre Normandie, 2020-2026, licence <a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr\" target=\"_blank\" rel=\"noopener\">Creative Commons BY-NC-SA</a> (mention affichée en pied de chaque page du cours). Les sections 9 à 12, les exercices 8 à 14, les questions 11 à 15 du QCM, le TP « Un même problème, trois paradigmes » et le fichier paradigmes.py de ce thème en sont adaptés, sous la même licence. Le sommaire du chapitre ne liste que quatre pages : les pages impérative, événementielle et parallèle se découvrent avec la flèche « → » en haut de chaque page. Les exemples en Haskell, Java, Kotlin, BASIC et Prolog s'essaient dans les interpréteurs en ligne indiqués sur les pages.",
+    items: [
+      { t: "📑 Sommaire du chapitre 2 — Paradigmes de programmation", url: "indexParadigmes.html" },
+      { t: "A · Introduction aux paradigmes", url: "introductionParadigmes.html" },
+      { t: "B · Programmation impérative — le même Fibonacci en Python, Java, Kotlin et BASIC", url: "progImperative.html" },
+      { t: "C · Programmation fonctionnelle — λ-calcul, Haskell, map / filter / pliage, listes infinies", url: "progFonctionnelle.html" },
+      { t: "D · Programmation événementielle — Scratch et tkinter", url: "progEvenementielle.html" },
+      { t: "E · Programmation parallèle — threads, données partagées, verrous (lien : thème Architectures & systèmes)", url: "progParallele.html" },
+      { t: "F · Programmation logique — Prolog, faits, règles et arbre généalogique (hors programme, pour la curiosité)", url: "progLogique.html" },
+      { t: "G · Programmation orientée objet — classes, encapsulation, UML, composition, héritage", url: "progObjet.html" },
+      { t: "🐍 references.py — objets et références, à visualiser dans Python Tutor", url: "PythonObjet/2627/references.py" },
+      { t: "🌳 Arbre de résolution Prolog du but pere(gabriel, X)", url: "Arbres/pere.html" },
+    ],
+  },
   "term-archi-reseaux": {
     titre: "Systèmes & réseaux (supports DIU)",
     auteur: "Mes supports du DIU NSI — Le Havre",
@@ -1488,6 +1506,16 @@ const THEME_KITS = {
         "nom": "poo_compte_corrige.py",
         "chemin": "assets/fichiers/terminale/term-langages/poo_compte_corrige.py",
         "desc": "Corrigé prof fidèle à la Section 2 du cours (mêmes noms, même __str__), virer par réutilisation de retirer/deposer (modularité). Tous les asserts passent (vérifié en exécution)."
+      },
+      {
+        "nom": "paradigmes.py",
+        "chemin": "assets/fichiers/terminale/term-langages/paradigmes.py",
+        "desc": "Squelette élève (séance 1 ou en prolongement de la Section 9) : la suite de Fibonacci à écrire en trois styles — fibo_imperatif (boucle), fibo_fonctionnel (récursif, traduction de la ligne Haskell du DIU), classe SuiteFibonacci (l'état dans l'objet ; l'assert terme(80) impose la mémoire) — plus termes(n) par map. Asserts fournis. Adapté du chapitre « Paradigmes » du DIU EIL (Mermet & Simon, CC BY-NC-SA)."
+      },
+      {
+        "nom": "paradigmes_corrige.py",
+        "chemin": "assets/fichiers/terminale/term-langages/paradigmes_corrige.py",
+        "desc": "Corrigé prof : les trois versions de la Section 9 du cours, mot pour mot, avec commentaires sur le coût exponentiel de la version récursive naïve. Tous les asserts passent (vérifié en exécution)."
       }
     ],
     "evals": [

@@ -282,12 +282,16 @@ print(bien_parenthese("(a+[b*c)"))   # False`,
       "Récursivité coûteuse (Fibonacci) → mémoïsation (retenir les résultats) → programmation dynamique.",
       "Mise au point : assert (préconditions/tests), jeux de tests (cas simples ET limites), doctest.",
       "Calculabilité : certains problèmes sont indécidables (problème de l'arrêt, Turing 1936).",
+      "Fonctionnel en Python : une fonction est une valeur (lambda, passage en paramètre, renvoi) ; map / filter / reduce ou compréhensions ; aucune donnée modifiée (immutabilité). Le paradigme est un style, pas un langage.",
+      "Objets manipulés par référence (p3 = p1 n'est pas une copie) ; encapsulation = accès aux attributs par des accesseurs (get_x, set_y) pour garantir l'état ; en Python c'est une convention.",
     ],
     erreurs: [
       "Oublier le cas de base d'une fonction récursive → RecursionError.",
       "Croire que la récursivité est toujours efficace : sans mémoïsation, Fibonacci explose.",
       "Oublier self dans une méthode ou en accédant à un attribut.",
       "Ne tester que le cas « qui marche » : il faut tester le vide, le zéro, le négatif, le très grand.",
+      "Croire que p2 = p1 copie un objet : les deux noms désignent LE MÊME objet (copy.copy ou un nouveau constructeur pour copier).",
+      "Confondre paradigme et langage : la même boucle Fibonacci en Python, Java ou BASIC est impérative ; Python permet les trois styles.",
     ],
     exercices: [
       {
@@ -385,6 +389,122 @@ p.empiler(1)
 p.empiler(2)
 print(p.depiler(), p.est_vide())   # 2 False`,
         solution: "La classe encapsule une liste : empiler = append, depiler = pop (les deux en fin → LIFO), est_vide teste la liste. C'est l'implémentation d'une interface (la pile) par une classe.",
+      },
+      /* ---- Exercices 8 à 14 : paradigmes (d'après le chapitre « Paradigmes de
+         programmation » du DIU EIL, B. Mermet & G. Simon, CC BY-NC-SA) ---- */
+      {
+        niveau: "facile",
+        enonce: "Texte à trou (fonctionnel) — mapping et filtrage sans boucle : quelle fonction d'ordre supérieur manque ?",
+        gapcode: `prix = [4, 12, 7, 25]
+# Doubler chaque prix SANS boucle, avec une fonction d'ordre supérieur
+doubles = list(___(lambda p: p * 2, prix))
+print(doubles)                # [8, 24, 14, 50]
+# Ne garder que les prix strictement supérieurs à 10
+chers = list(___(lambda p: p > 10, prix))
+print(chers)                  # [12, 25]`,
+        gaps: ["map", "filter"],
+        solution: "map applique la fonction à chaque élément (mapping) ; filter ne garde que les éléments pour lesquels la fonction renvoie True (filtrage). Dans les deux cas, prix reste intacte.",
+      },
+      {
+        niveau: "facile",
+        enonce: "Une fonction comme valeur : trie la liste eleves (couples nom, note) par note croissante avec sorted et une lambda passée en key. Vérifie ensuite que la liste de départ n'a pas changé.",
+        code: `eleves = [("Ada", 15), ("Tim", 9), ("Lou", 18)]
+par_note = sorted(eleves, key=lambda e: e[1])   # la clé de tri est une FONCTION
+print(par_note)               # [('Tim', 9), ('Ada', 15), ('Lou', 18)]
+print(eleves)                 # inchangé : sorted crée une NOUVELLE liste`,
+        solution: "key reçoit une fonction (ici une lambda qui renvoie la note e[1]) : sorted l'appelle sur chaque élément pour savoir comment comparer. sorted renvoie une nouvelle liste (immutabilité) ; eleves.sort(...) l'aurait modifiée sur place.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Du style impératif au style fonctionnel : la boucle ci-dessous additionne les notes >= 10. Réécris le même calcul SANS boucle ni variable modifiée, avec filter (ou une compréhension) et sum.",
+        code: `notes = [8, 15, 12, 19, 6, 14]
+
+# Version impérative de départ : une variable total modifiée à chaque tour
+total = 0
+for n in notes:
+    if n >= 10:
+        total = total + n
+print(total)                                          # 60
+
+# Version fonctionnelle : filtrage puis réduction, aucune variable modifiée
+print(sum(filter(lambda n: n >= 10, notes)))          # 60
+# Variante avec une compréhension (même esprit)
+print(sum(n for n in notes if n >= 10))               # 60`,
+        solution: "On compose deux fonctions : filter garde les notes >= 10, sum les réduit à une valeur (c'est le pliage du DIU). Aucune affectation en cours de route : c'est ce qui rend le style fonctionnel plus sûr. La compréhension est l'écriture idiomatique en Python.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Fonction d'ordre supérieur : écris composer(f, g) qui renvoie la fonction x -> f(g(x)). Avec suivant (x + 1) et doubler (2x), que valent composer(doubler, suivant)(3) et composer(suivant, doubler)(3) ? (Le DIU compose de même : myst x y = somme (suivant x) (suivant y).)",
+        code: `def composer(f, g):
+    """Renvoie la fonction x -> f(g(x)) : une fonction fabriquée à partir de deux autres."""
+    return lambda x: f(g(x))
+
+suivant = lambda x: x + 1
+doubler = lambda x: 2 * x
+
+h = composer(doubler, suivant)          # h(x) = doubler(suivant(x))
+print(h(3))                             # 8
+print(composer(suivant, doubler)(3))    # 7 : l'ordre compte !`,
+        solution: "composer prend deux fonctions et en RENVOIE une (lambda x: f(g(x))) : c'est une fonction d'ordre supérieur. composer(doubler, suivant)(3) = doubler(suivant(3)) = doubler(4) = 8 ; dans l'autre ordre, suivant(doubler(3)) = suivant(6) = 7.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "Objets et références : sans exécuter, prédis ce qu'affiche print(a.valeur) après b = a puis deux b.incrementer(). Puis fabrique une VRAIE copie c avec copy.copy et vérifie que l'incrémenter ne touche pas a.",
+        code: `class Compteur:
+    def __init__(self):
+        self.valeur = 0
+    def incrementer(self):
+        self.valeur += 1
+
+a = Compteur()
+b = a                 # copie de la RÉFÉRENCE, pas de l'objet
+b.incrementer()
+b.incrementer()
+print(a.valeur)       # 2 : a et b désignent le même objet
+
+import copy
+c = copy.copy(a)      # cette fois, un NOUVEL objet (copie)
+c.incrementer()
+print(a.valeur, c.valeur)   # 2 3`,
+        solution: "b = a ne crée aucun objet : b reçoit la référence (l'adresse) du même Compteur, donc a.valeur vaut 2. copy.copy(a) construit un nouvel objet avec les mêmes attributs : incrémenter c laisse a à 2. C'est exactement le p3 = p1 de references.py du DIU.",
+      },
+      {
+        niveau: "défi",
+        enonce: "Le pliage à la main : écris plier(f, liste, init) qui combine les éléments de proche en proche comme foldl en Haskell (plier(+, [1,2,3], 0) = ((0+1)+2)+3), SANS boucle : par récursivité. Compare avec functools.reduce.",
+        code: `def plier(f, liste, init):
+    """Pliage (foldl en Haskell) : applique f de proche en proche, sans boucle."""
+    if liste == []:
+        return init
+    return plier(f, liste[1:], f(init, liste[0]))
+
+print(plier(lambda acc, x: acc + x, [1, 2, 3], 0))       # 6
+print(plier(lambda acc, x: acc * x, [1, 2, 3, 4], 1))    # 24
+print(plier(lambda acc, x: max(acc, x), [3, 9, 2], 0))   # 9
+
+from functools import reduce
+print(reduce(lambda acc, x: acc + x, [1, 2, 3], 0))      # 6 : même résultat que plier`,
+        solution: "Cas de base : liste vide, on renvoie l'accumulateur init. Sinon on combine init avec le premier élément (f(init, liste[0])) et on plie le reste. Pas de boucle ni de variable modifiée : la répétition est la récursivité, comme dans tout langage fonctionnel. reduce fait la même chose en Python.",
+      },
+      {
+        niveau: "défi",
+        enonce: "Objet ET fonctionnel : réécris la méthode translater de la classe Point pour qu'elle NE MODIFIE PAS l'objet mais renvoie un NOUVEAU Point (immutabilité). Montre qu'après p3 = p1 et p2 = p1.translater(2, 3), p1 et p3 sont intacts.",
+        code: `class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def translater(self, dx, dy):
+        # Style FONCTIONNEL : on ne modifie pas self, on renvoie un NOUVEAU Point
+        return Point(self.x + dx, self.y + dy)
+
+    def __str__(self):
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
+p1 = Point(3, 4)
+p3 = p1
+p2 = p1.translater(2, 3)
+print(p1, p2, p3)   # (3,4) (5,7) (3,4) : p1 (et donc p3) est intact`,
+        solution: "Au lieu de faire self.x += dx (effet de bord sur l'objet), translater construit et renvoie un nouveau Point. Le partage de référence entre p1 et p3 n'est plus un problème puisque personne ne modifie l'objet : c'est la réponse fonctionnelle au piège des références. Les chaînes et les tuples de Python fonctionnent ainsi.",
       },
     ],
     defi: {
