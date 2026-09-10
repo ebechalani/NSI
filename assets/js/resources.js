@@ -6242,12 +6242,17 @@ const THEME_KITS = {
       {
         "nom": "knn_rugby.py",
         "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby.py",
-        "desc": "squelette élève du TP « kNN : avant ou arrière ? » pour Thonny : 30 joueurs du XV de France, distance et vote à écrire, taux de réussite sur le jeu de test, meilleur k ; nuage de points matplotlib si la bibliothèque est installée (asserts fournis)"
+        "desc": "squelette élève du TP « kNN : avant ou arrière ? » pour Thonny : 30 joueurs du XV de France, distance et knn à écrire (comme le cours), taux_erreur et meilleur_k comme l'exercice 18 ; nuage de points matplotlib si la bibliothèque est installée (asserts fournis)"
       },
       {
         "nom": "knn_rugby_corrige.py",
         "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby_corrige.py",
-        "desc": "corrigé prof (vérifié) : mêmes fonctions que les sections 11 à 13 du cours, graphique optionnel"
+        "desc": "corrigé prof (vérifié) : distance et knn identiques au cours, taux_erreur et meilleur_k comme l'exercice 18, graphique optionnel"
+      },
+      {
+        "nom": "knn_rugby_prof.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby_prof.py",
+        "desc": "ma version complète du TP (à projeter depuis Thonny, matplotlib requis) : mélange aléatoire avec random.shuffle, vote par dictionnaire, evaluer_modele, courbe du taux d'erreur pour k impair de 1 à 15 avec annotations sur-apprentissage / sous-apprentissage"
       }
     ],
     "evals": [

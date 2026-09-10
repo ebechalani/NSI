@@ -647,7 +647,7 @@ const QUIZZES = {
     {
       q: "kNN est un algorithme d'apprentissage « supervisé » parce que…",
       choices: [
-        "il apprend à partir d'exemples dont on connaît déjà l'étiquette (la classe)",
+        "il apprend sur des exemples déjà étiquetés",
         "un professeur doit valider chaque prédiction",
         "il ne fonctionne qu'avec des nombres entiers",
         "il trie les données avant de les classer",
@@ -659,7 +659,7 @@ const QUIZZES = {
       q: "Que fait kNN pendant sa phase d'« entraînement » ?",
       choices: [
         "il calcule la classe de chaque exemple",
-        "rien de plus que stocker les exemples : tout le travail se fait au moment de prédire (algorithme paresseux)",
+        "il se contente de stocker les exemples",
         "il normalise et trie définitivement les données",
         "il choisit tout seul la meilleure valeur de k",
       ],
@@ -676,7 +676,7 @@ const QUIZZES = {
       q: "Pourquoi normaliser les colonnes (min-max) avant d'appliquer kNN ?",
       choices: [
         "pour accélérer le tri des distances",
-        "pour qu'une colonne aux grandes valeurs (un revenu en euros) n'écrase pas les autres dans le calcul de distance",
+        "pour qu'aucune colonne n'écrase les autres dans la distance",
         "parce que kNN n'accepte que des valeurs entières",
         "pour supprimer les doublons du jeu de données",
       ],
@@ -686,7 +686,7 @@ const QUIZZES = {
     {
       q: "Si k est égal au nombre total d'exemples d'entraînement, kNN prédit…",
       choices: [
-        "toujours la classe majoritaire du jeu d'entraînement, quel que soit le point",
+        "toujours la classe majoritaire du jeu d'entraînement",
         "toujours la classe du point le plus proche",
         "une classe au hasard",
         "la bonne classe à coup sûr",
