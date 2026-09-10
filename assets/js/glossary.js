@@ -68,6 +68,13 @@ const GLOSSARY = [
   { terme: "Complexité (coût)", theme: "algorithmique", def: "Nombre d'opérations en fonction de la taille n : O(1), O(log n), O(n), O(n²)." },
   { terme: "Variant de boucle", theme: "algorithmique", def: "Quantité entière positive qui décroît à chaque tour : prouve la terminaison." },
   { terme: "k plus proches voisins (kNN)", theme: "algorithmique", def: "Classer un point selon la classe majoritaire de ses k voisins les plus proches." },
+  { terme: "Apprentissage supervisé", theme: "algorithmique", def: "Apprendre à prédire une étiquette (classe) à partir d'exemples déjà étiquetés ; kNN en est l'exemple le plus simple. Classification = prédire une catégorie, régression = prédire un nombre." },
+  { terme: "Jeu d'entraînement / jeu de test", theme: "algorithmique", def: "Découpage des données : les exemples que l'algorithme peut regarder, et ceux (étiquette cachée) sur lesquels on mesure son taux de réussite. On n'évalue jamais sur l'entraînement." },
+  { terme: "Distance euclidienne", theme: "algorithmique", def: "Distance « à la règle » : racine de la somme des carrés des écarts sur chaque caractéristique (Pythagore généralisé à n dimensions)." },
+  { terme: "Distance de Manhattan", theme: "algorithmique", def: "Somme des écarts en valeur absolue sur chaque caractéristique, comme un piéton dans des rues en damier ; toujours supérieure ou égale à l'euclidienne." },
+  { terme: "Normalisation min-max", theme: "algorithmique", def: "Ramener chaque colonne entre 0 et 1 par (x − min) / (max − min), pour qu'aucune caractéristique n'écrase les autres dans la distance." },
+  { terme: "Taux d'erreur", theme: "algorithmique", def: "Proportion de mauvaises prédictions sur le jeu de test ; on le mesure pour plusieurs k et on garde le meilleur." },
+  { terme: "Sur-apprentissage", theme: "algorithmique", def: "Quand un algorithme colle trop aux exemples d'entraînement (k = 1 chez kNN) et généralise mal ; à l'inverse, un k trop grand ignore les petits groupes." },
 
   { terme: "Réseau", theme: "reseaux", def: "Ensemble de machines reliées pour échanger des données." },
   { terme: "Protocole", theme: "reseaux", def: "Ensemble de règles communes qui permettent à deux machines de se comprendre (ex. TCP/IP)." },

@@ -1019,6 +1019,393 @@ for l in fusion:
       },
     ],
   },
+
+  /* ===================== Algorithmique — kNN (d'après mon TP « XV de France » et le cours DIU de L. Amanton) ===================== */
+  {
+    id: "tp-knn-rugby",
+    theme: "algorithmique",
+    lang: "python",
+    titre: "TP — kNN : avant ou arrière ? Le XV de France classé par taille et poids",
+    intro:
+      "Objectif : écrire l'algorithme des k plus proches voisins de A à Z (capacité du BO) et l'évaluer honnêtement : découper le jeu de données en entraînement / test, coder la distance et le vote, mesurer le taux de réussite, faire varier k. Données : 30 joueurs du XV de France (taille, poids, poste). D'après mon TP et le diaporama « K plus proches voisins (KNN) » de L. Amanton (DIU EIL, Université Le Havre Normandie).",
+    steps: [
+      {
+        num: "1", titre: "Le jeu de données et son découpage entraînement / test", run: true,
+        code: `# ÉTAPE 1 — Le jeu de données : le XV de France (nom, taille en cm, poids en kg, poste)
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+avants = [j for j in joueurs if j[3] == "Avant"]
+arrieres = [j for j in joueurs if j[3] == "Arrière"]
+print(len(joueurs), "joueurs :", len(avants), "avants et", len(arrieres), "arrières")
+
+# Un nuage de points en mode texte : chaque ligne = une tranche de poids de 5 kg (A = avant, a = arrière)
+for poids_min in range(145, 75, -5):
+    ligne = ""
+    for taille in range(172, 206):
+        c = "."
+        for j in joueurs:
+            if poids_min <= j[2] < poids_min + 5 and j[1] == taille:
+                c = "A" if j[3] == "Avant" else "a"
+        ligne += c
+    print(str(poids_min).rjust(3), "kg |", ligne)
+print("            172 cm ......................... 205 cm")
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, mais on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba", "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+print("entraînement :", len(entrainement), "joueurs ; test :", len(test), "joueurs")`,
+        note: "Le « nuage de points » en mode texte remplace le graphique matplotlib du fichier knn_rugby.py (Thonny) : A = avant, a = arrière ; en haut les lourds, à droite les grands.",
+        questions: [
+          "Sur le nuage, où sont les avants ? les arrières ? Y a-t-il une zone où les deux se mélangent ?",
+          "Pourquoi mettre 8 joueurs de côté AVANT de commencer, alors qu'on connaît leur poste ?",
+          "Pourquoi le découpage est-il ici « statique » (une liste de noms) plutôt qu'aléatoire ? Quel est l'avantage, quel est le risque ?",
+        ],
+        correction: [
+          "Les avants (A) occupent le haut et la droite : lourds et grands ; les arrières (a) le bas : moins de 100 kg. La zone 105-110 kg / 181-183 cm mélange les deux (Mauvaka, Marchand, Wardi côté avants, Danty côté arrières).",
+          "Pour mesurer si l'algorithme classe BIEN des joueurs qu'il n'a jamais vus : c'est le jeu de test. Si on l'évaluait sur les joueurs d'entraînement, il aurait 100 % avec k = 1 (chaque joueur est son propre plus proche voisin) et ça ne prouverait rien.",
+          "Avantage : tout le monde obtient les mêmes résultats (reproductibilité), pratique pour un cours. Risque : le choix des 8 influence le taux mesuré (on a ici volontairement mis des cas limites comme Danty). Le bonus utilise random pour un découpage aléatoire.",
+        ],
+      },
+      {
+        num: "2", titre: "Coder la distance, puis le vote", run: true,
+        code: `# ÉTAPE 2 — Distance puis vote : complète les deux fonctions
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, mais on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba", "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne entre deux joueurs, dans le plan (taille, poids)."""
+    return 0   # À COMPLÉTER : racine de (écart de taille)² + (écart de poids)²
+
+def knn(entrainement, inconnu, k=3):
+    """Renvoie le poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return postes[0]   # À COMPLÉTER : le poste le plus fréquent dans postes (vote), pas le premier
+
+inconnu = ("Mystère", 195, 118, "?")
+print("Les 3 plus proches de Mystère :", [j[0] for j in sorted(entrainement, key=lambda j: distance(j, inconnu))[:3]])
+print("Prédiction pour Mystère :", knn(entrainement, inconnu, k=3))
+
+# Décommente quand c'est prêt :
+# assert round(distance(("A", 0, 0, ""), ("B", 3, 4, "")), 1) == 5.0
+# assert knn(entrainement, ("Test", 175, 82, ""), k=3) == "Arrière"
+# assert knn(entrainement, ("Test", 200, 130, ""), k=3) == "Avant"
+# print("distance et knn OK")`,
+        questions: [
+          "Complète distance (Pythagore sur la taille et le poids) et le vote de knn, puis fais passer les asserts.",
+          "Pourquoi la version fournie de knn (postes[0]) est-elle fausse ? Dans quel cas donnerait-elle quand même le bon résultat ?",
+          "Que valent les 3 plus proches voisins de « Mystère » (195 cm, 118 kg) une fois distance corrigée ? Et sa prédiction ?",
+        ],
+        correction: [
+          {
+            code: `joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, mais on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba", "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+inconnu = ("Mystère", 195, 118, "?")
+print("Les 3 plus proches de Mystère :", [j[0] for j in sorted(entrainement, key=lambda j: distance(j, inconnu))[:3]])
+print("Prédiction pour Mystère :", knn(entrainement, inconnu, k=3))   # Avant
+assert round(distance(("A", 0, 0, ""), ("B", 3, 4, "")), 1) == 5.0
+assert knn(entrainement, ("Test", 175, 82, ""), k=3) == "Arrière"
+assert knn(entrainement, ("Test", 200, 130, ""), k=3) == "Avant"
+print("distance et knn OK")`,
+          },
+          "postes[0] renvoie le poste du voisin le plus proche : c'est kNN avec k = 1, pas un vote. Elle donne le bon résultat quand les k voisins sont tous du même poste (cas fréquent loin de la frontière), mais pas dans la zone de mélange.",
+          "Alldritt, Ollivon et Flament (trois avants, à 5-6 kg et quelques cm) : prédiction Avant. Tant que distance renvoie 0, sorted ne change rien et les « 3 plus proches » sont juste les 3 premiers de la liste : Atonio, Baille, Flament.",
+        ],
+      },
+      {
+        num: "3", titre: "Évaluer sur le jeu de test : qui est mal classé, et pourquoi ?", run: true,
+        code: `# ÉTAPE 3 — Évaluer sur le jeu de test : qui est bien classé, qui ne l'est pas ?
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, mais on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba", "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+k = 3
+bien_classes = 0
+for joueur in test:
+    prediction = knn(entrainement, joueur, k)
+    print(joueur[0].ljust(10), "| réel :", joueur[3].ljust(7), "| prédit :", prediction.ljust(7),
+          "" if prediction == joueur[3] else "<-- erreur")
+    # À TOI : compte les bonnes prédictions dans bien_classes
+
+print("Taux de réussite :", bien_classes, "/", len(test))
+
+# À TOI : affiche, pour le joueur mal classé, ses 3 plus proches voisins avec leur poste.
+#         Pourquoi kNN se trompe-t-il ? Est-ce vraiment une « erreur » de l'algorithme ?`,
+        questions: [
+          "Complète le comptage de bien_classes. Quel taux de réussite obtiens-tu avec k = 3 ?",
+          "Quel joueur est mal classé ? Affiche ses 3 plus proches voisins avec leur poste et leur distance.",
+          "Est-ce une erreur de l'algorithme, des données, ou du choix des caractéristiques ? Quelle caractéristique ajouterais-tu pour l'aider ?",
+        ],
+        correction: [
+          "7 / 8 : il faut ajouter bien_classes += 1 sous un test if prediction == joueur[3] (ou compter les lignes sans « erreur »).",
+          {
+            code: `joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, mais on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba", "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+k = 3
+bien_classes = 0
+for joueur in test:
+    prediction = knn(entrainement, joueur, k)
+    if prediction == joueur[3]:
+        bien_classes += 1
+print("Taux de réussite :", bien_classes, "/", len(test))   # 7 / 8
+
+danty = [j for j in test if j[0] == "Danty"][0]
+voisins = sorted(entrainement, key=lambda j: distance(j, danty))[:3]
+print([(v[0], v[3], round(distance(v, danty), 1)) for v in voisins])
+# [('Wardi', 'Avant', 5.7), ('Aldegheri', 'Avant', 9.0), ('Baille', 'Avant', 9.1)]`,
+          },
+          "Danty (181 cm, 106 kg) est un centre au gabarit d'avant : ses 3 plus proches voisins sont trois avants. L'algorithme fait exactement ce qu'on lui demande ; ce sont les deux caractéristiques (taille, poids) qui ne suffisent pas à séparer les postes. On pourrait ajouter le nombre de plaquages, de ballons portés, la vitesse sur 40 m…",
+        ],
+      },
+      {
+        num: "4", titre: "Faire varier k : trop petit, trop grand ?", run: true,
+        code: `# ÉTAPE 4 — Faire varier k : trop petit, trop grand ?
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, mais on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba", "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+def taux_erreur(k):
+    erreurs = 0
+    for j in test:
+        if knn(entrainement, j, k) != j[3]:
+            erreurs += 1
+    return erreurs / len(test)
+
+for k in [1, 3, 5, 7, 9, 11, 15, 21]:
+    print("k =", str(k).rjust(2), "-> taux d'erreur :", round(100 * taux_erreur(k)), "%")
+
+# À TOI : que se passe-t-il avec k = 22 (tous les joueurs d'entraînement) ? Explique.
+# À TOI : avec k = 2, comment Python départage-t-il un vote 1 - 1 ? (regarde max(set(...), key=...))`,
+        questions: [
+          "Quels k donnent le meilleur taux ? Que se passe-t-il pour k = 7 et 9, puis pour k = 21 ?",
+          "Que renverra knn avec k = 22 (tous les joueurs d'entraînement) pour N'IMPORTE quel joueur ? Pourquoi ?",
+          "Avec k = 2, un vote peut finir à 1 - 1 : comment max(set(postes), key=postes.count) départage-t-il ? Que faut-il en conclure ?",
+        ],
+        correction: [
+          "k = 1, 3, 5 et 11 : 12 % d'erreur (Danty seulement). k = 7 et 9 : 25 %, Fickou bascule car parmi ses 7 voisins on trouve désormais des avants (Jelonch, Cros…). k = 21 : 50 %, on prend presque tous les joueurs, la classe majoritaire (12 avants contre 10 arrières) l'emporte pour tout le monde.",
+          "Toujours « Avant » : avec les 22 joueurs comme voisins, le vote est le même pour tout point, 12 avants contre 10 arrières. Un k égal au nombre d'exemples ignore complètement le point à classer.",
+          "max(set(...)) parcourt un ensemble, dont l'ordre n'est pas garanti : en cas d'égalité, le résultat est arbitraire et peut même changer d'une exécution à l'autre. C'est pour cela qu'on choisit un k IMPAIR quand il y a deux classes.",
+        ],
+      },
+      {
+        num: "5", titre: "Bonus — découpage aléatoire avec random, et normalisation", bonus: true, run: true,
+        code: `# BONUS — Découpage ALÉATOIRE entraînement / test (75 % / 25 %) avec random
+import random
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+random.seed(2026)              # même « hasard » à chaque exécution : résultats reproductibles
+melange = joueurs[:]           # une copie, pour ne pas modifier la liste de départ
+random.shuffle(melange)        # on mélange... puis on coupe aux 3/4
+coupure = 3 * len(melange) // 4
+entrainement = melange[:coupure]
+test = melange[coupure:]
+print(len(entrainement), "pour apprendre,", len(test), "pour tester :", [j[0] for j in test])
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+reussites = sum(1 for j in test if knn(entrainement, j, 5) == j[3])
+print("k = 5 :", reussites, "/", len(test), "bien classés")
+
+# À TOI : change la graine (random.seed(1), (2), (3)...) : le taux bouge-t-il ? Que faut-il en conclure
+#         sur la fiabilité d'une mesure faite sur 8 joueurs seulement ?`,
+        note: "random.seed fixe la graine du générateur : le « hasard » devient reproductible, ce qui permet de comparer les résultats entre élèves.",
+        questions: [
+          "Change la graine (1, 2, 3…) et note le taux obtenu à chaque fois. Que constates-tu ? Que faut-il en conclure sur une mesure faite sur 8 joueurs ?",
+          "Les tailles vont de 174 à 203 cm (plage de 29) et les poids de 81 à 145 kg (plage de 64). Laquelle des deux colonnes pèse le plus dans la distance ? Écris normaliser_colonnes(joueurs) qui ramène taille et poids entre 0 et 1 (formule min-max) et refais la prédiction.",
+        ],
+        correction: [
+          "Le taux varie selon la graine (par exemple 6, 7 ou 8 sur 8) : avec 8 joueurs de test, un seul joueur fait bouger la mesure de 12,5 points. Une mesure fiable demande beaucoup plus d'exemples, ou plusieurs découpages dont on fait la moyenne (c'est la validation croisée des professionnels).",
+          {
+            code: `import random
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"), ("Marchand", 181, 108, "Avant"),
+    ("Flament", 203, 116, "Avant"), ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"), ("Wardi", 185, 110, "Avant"),
+    ("Mauvaka", 183, 105, "Avant"), ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"), ("Jelonch", 193, 106, "Avant"),
+    ("Bamba", 185, 117, "Avant"), ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"), ("Danty", 181, 106, "Arrière"),
+    ("Bielle-Biarrey", 184, 82, "Arrière"), ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"), ("Depoortère", 194, 94, "Arrière"),
+    ("Lebel", 185, 93, "Arrière"), ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+def normaliser_colonnes(joueurs):
+    """Renvoie une copie des joueurs avec taille et poids ramenés entre 0 et 1 (min-max)."""
+    tailles = [j[1] for j in joueurs]
+    poids = [j[2] for j in joueurs]
+    t_min, t_max = min(tailles), max(tailles)
+    p_min, p_max = min(poids), max(poids)
+    return [(j[0], (j[1] - t_min) / (t_max - t_min), (j[2] - p_min) / (p_max - p_min), j[3]) for j in joueurs]
+
+def distance(a, b):
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+# Le poids pèse plus : sa plage (64 kg) est plus large que celle des tailles (29 cm).
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba", "Danty", "Moefana", "Fickou", "Barré"]
+for version, donnees in [("brut", joueurs), ("normalisé", normaliser_colonnes(joueurs))]:
+    test = [j for j in donnees if j[0] in noms_test]
+    entrainement = [j for j in donnees if j[0] not in noms_test]
+    reussites = sum(1 for j in test if knn(entrainement, j, 5) == j[3])
+    print(version.ljust(10), ": k = 5 ->", reussites, "/ 8")
+# brut       : k = 5 -> 7 / 8
+# normalisé  : k = 5 -> 7 / 8  (ici les deux échelles sont proches : la normalisation change peu)`,
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 /* ---------------- Fiches « pour aller plus loin » ---------------- */

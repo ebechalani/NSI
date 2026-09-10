@@ -151,6 +151,16 @@ const THEME_RESSOURCES_EXT = {
       { t: "🌐 Fiche — Repères réseaux (TCP/IP, DNS, masques, RIP, routage)", url: "assets/ressources/reseaux/Reseaux_reperes.html" },
     ],
   },
+  "term-algo": {
+    titre: "k plus proches voisins — introduction au machine learning (DIU)",
+    auteur: "Laurent Amanton — DIU EIL, Université Le Havre Normandie (diaporama « K plus proches voisins (KNN) », 2021-2026)",
+    base: "",
+    note: "📎 Pour réviser k-NN (section 7) avec l'œil « coût » de la Terminale : chaque prédiction demande n distances puis un tri. Support de formation du DIU hébergé sur le site, sans mention de licence (propriété de son auteur). Le cours complet de Première (sections 11 à 14 du thème Algorithmique : entraînement / test, distances, normalisation, choix de k, scikit-learn) est accessible en basculant sur le niveau Première.",
+    items: [
+      { t: "📕 Diaporama — K plus proches voisins (KNN), L. Amanton (PDF, 30 pages)", url: "assets/ressources/ia/DIU_KNN_Amanton.pdf" },
+      { t: "🌸 Le jeu de données des iris (UCI Machine Learning Repository)", url: "https://archive.ics.uci.edu/dataset/53/iris" },
+    ],
+  },
 };
 
 /* ---------------- Progression annuelle ---------------- */
