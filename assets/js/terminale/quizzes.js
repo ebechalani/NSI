@@ -201,6 +201,58 @@ const QUIZZES = {
       answer: 3,
       explain: "DISTINCT supprime les lignes identiques du résultat : on obtient la liste des classes réellement présentes, une fois chacune.",
     },
+    /* ---- Questions sur la ludothèque (sections 10 à 13, d'après le cours DIU EIL
+       « Bases de données », B. Mermet & G. Simon, Univ. Le Havre Normandie, CC BY-NC-SA) ---- */
+    {
+      q: "Dans la ludothèque, un jeu peut avoir plusieurs illustrateurs et un illustrateur peut dessiner plusieurs jeux. Comment représenter ce lien dans le schéma relationnel ?",
+      choices: [
+        "Une clé étrangère idIllustrateur dans la table jeu",
+        "Une clé étrangère idJeu dans la table illustrateur",
+        "Une table d'association estDessinePar(#idIllustrateur, #idJeu) dont la clé primaire est le couple",
+        "Une colonne « illustrateurs » dans jeu contenant les noms séparés par des virgules",
+      ],
+      answer: 2,
+      explain: "Un lien N-M (« plusieurs » des deux côtés) exige une table intermédiaire : une ligne par couple (jeu, illustrateur). Une clé étrangère simple ne stockerait qu'un seul illustrateur par jeu, et une colonne à valeurs multiples n'est pas atomique (schéma malade).",
+    },
+    {
+      q: "La ludothèque contient 4 jeux et 3 éditeurs. Combien de lignes renvoie SELECT * FROM jeu, editeur ; (deux tables dans FROM, sans condition) ?",
+      choices: ["4", "3", "7", "12"],
+      answer: 3,
+      explain: "Sans condition de jointure, on obtient le produit cartésien : chaque jeu est associé à chaque éditeur, soit 4 × 3 = 12 lignes, dont 8 fausses. La jointure JOIN … ON jeu.idEditeur = editeur.idEditeur (ou USING (idEditeur)) ne garde que les 4 vraies paires.",
+    },
+    {
+      q: "Quelle condition garde exactement les illustrateurs dont le prénom commence par la lettre D ?",
+      choices: [
+        "prenomIllustrateur = 'D%'",
+        "prenomIllustrateur LIKE 'D%'",
+        "prenomIllustrateur LIKE '%D'",
+        "prenomIllustrateur LIKE 'D_'",
+      ],
+      answer: 1,
+      explain: "LIKE compare à un motif : % remplace n'importe quelle suite de caractères (même vide), _ exactement un caractère. 'D%' = commence par D. Avec =, le % est un caractère ordinaire ; '%D' = finit par D ; 'D_' = exactement deux lettres.",
+    },
+    {
+      q: "En Python, pourquoi écrire connexion.execute(\"SELECT … WHERE nomEditeur = ?\", (saisie,)) plutôt que \"SELECT … WHERE nomEditeur = '\" + saisie + \"'\" ?",
+      choices: [
+        "Parce que la concaténation de chaînes est interdite en Python",
+        "Pour que la requête s'exécute plus vite",
+        "Pour que la saisie reste une donnée et ne puisse pas être interprétée comme du code SQL (injection SQL)",
+        "Parce que le point d'interrogation active la vérification des clés étrangères",
+      ],
+      answer: 2,
+      explain: "Avec la concaténation, une saisie comme x' OR '1'='1 transforme la requête et renvoie (ou détruit) toute la table : c'est l'injection SQL. Avec le paramètre ?, le SGBD traite la saisie comme une simple valeur, quoi qu'elle contienne.",
+    },
+    {
+      q: "Un programme Python exécute INSERT INTO illustrateur VALUES (7, 'Cochard', 'David', 'Française') puis se termine sans appeler connexion.commit(). Que trouve-t-on ensuite dans le fichier ludotheque.db ?",
+      choices: [
+        "La ligne est enregistrée : execute suffit",
+        "La ligne n'est pas enregistrée : la transaction n'a pas été validée",
+        "La ligne est enregistrée mais sans prénom",
+        "Le fichier est corrompu",
+      ],
+      answer: 1,
+      explain: "Les modifications restent en mémoire jusqu'au commit() : c'est le principe de la transaction, validée (ou annulée par rollback) en bloc. Sans commit, rien n'est écrit sur le disque — c'est ainsi que le SGBD garantit la cohérence.",
+    },
   ],
 
   "term-langages": [

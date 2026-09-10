@@ -2,8 +2,9 @@
    TP GUIDÉS — Terminale NSI
    TP pas-à-pas au format de la Première : énoncé + code (exécutable si
    run:true et lang python) + questions + corrections masquées.
-   Le TP SQL n'a volontairement AUCUNE cellule exécutable : Pyodide ne
-   fournit pas sqlite3 — les requêtes s'écrivent sur papier / DB Browser.
+   Les TP SQL n'ont volontairement AUCUNE cellule exécutable : Pyodide ne
+   charge pas sqlite3 par défaut (module « unvendored », import impossible
+   sans loadPackage) — les requêtes s'écrivent sur papier / DB Browser.
    Les globals LOGISIM_*, ARCHI_PDFS et MINI_PROJETS restent absents
    (gardés par typeof dans app.js) : leurs boutons restent masqués.
    ===================================================================== */
@@ -451,6 +452,180 @@ print("Épreuve pratique : réussie !")`,
           "UPDATE note SET note = 12 WHERE id_note = 4 ; — la clause WHERE cible UNE ligne grâce à la clé primaire.",
           "Le SGBD refuse la suppression : les notes 7 et 8 référencent l'élève 5 via la clé étrangère (contrainte de référence). Il faudrait d'abord supprimer ses notes.",
           "TOUTES les notes de la table seraient remplacées par 12 ! Leçon : sur INSERT/UPDATE/DELETE, relire deux fois la clause WHERE — c'est elle qui délimite les dégâts.",
+        ],
+      },
+    ],
+  },
+
+  /* TP adapté du cours DIU EIL « Bases de données » (B. Mermet & G. Simon,
+     Université Le Havre Normandie, CC BY-NC-SA) — chapitres « SQL »,
+     « Contraintes de référence » et « SQL et Python ». Toutes les requêtes
+     des corrections ont été exécutées sur ludotheque.sql (SQLite 3). */
+  {
+    id: "term-tp-ludotheque",
+    theme: "term-bdd",
+    lang: "sql",
+    titre: "TP — La ludothèque : jointures, associations N-M et SQL depuis Python",
+    intro:
+      "Deuxième base pour t'entraîner, adaptée du cours du DIU EIL (Université Le Havre Normandie, licence CC BY-NC-SA) : une ludothèque en 8 tables, avec de vraies associations N-M. Écris chaque requête sur papier, puis vérifie-la dans DB Browser for SQLite (exécute d'abord ludotheque.sql, dans le kit du thème) ou dans Thonny avec ludotheque.db et le module sqlite3. Ce TP ne s'exécute pas dans le navigateur.",
+    steps: [
+      {
+        num: "1", titre: "Découvrir la base : schéma, projection, tri",
+        note: `Le schéma complet (clé primaire soulignée, # = clé étrangère) :
+          <pre class="sql">editeur(<u>idEditeur</u>, nomEditeur, nationaliteEditeur)
+illustrateur(<u>idIllustrateur</u>, nomIllustrateur, prenomIllustrateur, nationaliteIllustrateur)
+auteur(<u>idAuteur</u>, nomAuteur, prenomAuteur)
+theme(<u>idTheme</u>, nomTheme)
+jeu(<u>idJeu</u>, nomJeu, nbJoueursMin, nbJoueursMax, duree, #idEditeur)
+estDessinePar(<u>#idIllustrateur, #idJeu</u>)
+estAuteurDe(<u>#idAuteur, #idJeu</u>)
+parleDe(<u>#idTheme, #idJeu</u>)</pre>
+          La table <strong>illustrateur</strong> :
+          <table>
+            <tr><th>idIllustrateur</th><th>nomIllustrateur</th><th>prenomIllustrateur</th><th>nationaliteIllustrateur</th></tr>
+            <tr><td>1</td><td>Delval</td><td>Julien</td><td>Française</td></tr>
+            <tr><td>2</td><td>Coimbra</td><td>Miguel</td><td>Française</td></tr>
+            <tr><td>3</td><td>Quilliams</td><td>Chris</td><td>Canadienne</td></tr>
+            <tr><td>4</td><td>Balixa</td><td>Bruno</td><td>Américaine</td></tr>
+            <tr><td>5</td><td>Alsop</td><td>Dave</td><td>Américaine</td></tr>
+            <tr><td>6</td><td>Torres</td><td>Francisco Rico</td><td>Américaine</td></tr>
+          </table>`,
+        questions: [
+          "Dans DB Browser, onglet « Exécuter le SQL », ouvre ludotheque.sql et exécute-le (F5). Combien de tables la base contient-elle ? Lesquelles sont des tables d'association, et à quoi le vois-tu dans le schéma ?",
+          "Écris la requête qui affiche toute la table illustrateur, puis celle qui n'affiche que les prénoms et noms.",
+          "Écris la requête qui affiche les prénoms et noms triés par nationalité, puis par nom en cas d'égalité. Donne le résultat.",
+          "Écris la requête qui affiche toutes les informations sur les illustrateurs par identifiant décroissant.",
+        ],
+        correction: [
+          "8 tables. Les tables d'association sont estDessinePar, estAuteurDe et parleDe : leur clé primaire est composée de deux clés étrangères (le couple est souligné et chaque attribut porte un #). Elles représentent les liens N-M (plusieurs illustrateurs par jeu, plusieurs jeux par illustrateur…).",
+          "SELECT * FROM illustrateur ; puis SELECT prenomIllustrateur, nomIllustrateur FROM illustrateur ; — le SELECT choisit les colonnes : c'est la projection.",
+          "SELECT prenomIllustrateur, nomIllustrateur FROM illustrateur ORDER BY nationaliteIllustrateur, nomIllustrateur ; — résultat : Dave Alsop, Bruno Balixa, Francisco Rico Torres (Américaine), Chris Quilliams (Canadienne), Miguel Coimbra, Julien Delval (Française). Le tri porte sur la nationalité même si elle n'est pas affichée.",
+          "SELECT * FROM illustrateur ORDER BY idIllustrateur DESC ; — DESC inverse l'ordre (Torres en premier, Delval en dernier).",
+        ],
+      },
+      {
+        num: "2", titre: "Restreindre : WHERE, LIKE, DISTINCT",
+        note: "Rappels : les constantes texte sont entre apostrophes simples et les <em>données</em> sont sensibles à la casse ('française' ne trouve rien). Dans un motif LIKE, <code>%</code> = n'importe quelle suite de caractères, <code>_</code> = exactement un caractère.",
+        questions: [
+          "Écris la requête qui affiche les illustrateurs de nationalité française. Que renvoie la même requête avec 'française' (minuscule) ? Comment rendre la comparaison insensible à la casse ?",
+          "Avant d'exécuter : quels illustrateurs renvoie SELECT nomIllustrateur FROM illustrateur WHERE nationaliteIllustrateur LIKE '%i_e%' ; ? Vérifie.",
+          "Écris la requête qui affiche tous les illustrateurs français ET les illustrateurs américains dont le prénom contient un « o » (majuscule ou minuscule). Attention aux parenthèses.",
+          "Écris la requête qui donne la liste des nationalités sans doublon, puis celle qui compte le nombre de nationalités différentes.",
+        ],
+        correction: [
+          "SELECT * FROM illustrateur WHERE nationaliteIllustrateur = 'Française' ; — Delval et Coimbra. Avec 'française' : aucune ligne (égalité stricte, sensible à la casse). Solution : WHERE upper(nationaliteIllustrateur) = upper('française').",
+          "Delval, Coimbra (Française contient « ise »), Balixa, Alsop, Torres (Américaine contient « ine ») : 5 lignes. Canadienne ne convient pas : après le i vient un e puis un n, pas i-?-e.",
+          "SELECT nomIllustrateur FROM illustrateur WHERE (nationaliteIllustrateur = 'Américaine' AND upper(prenomIllustrateur) LIKE '%O%') OR nationaliteIllustrateur = 'Française' ; — résultat : Delval, Coimbra, Balixa (Bruno), Torres (Francisco Rico). Dave Alsop est exclu (pas de o). Sans parenthèses, le AND serait évalué avant le OR : le sens changerait.",
+          "SELECT DISTINCT nationaliteIllustrateur FROM illustrateur ; — Française, Canadienne, Américaine (3 lignes au lieu de 6). Puis SELECT COUNT(DISTINCT nationaliteIllustrateur) FROM illustrateur ; — 3.",
+        ],
+      },
+      {
+        num: "3", titre: "Croiser deux tables : du produit cartésien à la jointure",
+        note: `Les tables <strong>editeur</strong> et <strong>jeu</strong> (jeu.idEditeur est une clé étrangère vers editeur) :
+          <table>
+            <tr><th>idEditeur</th><th>nomEditeur</th><th>nationaliteEditeur</th></tr>
+            <tr><td>1</td><td>Days of wonder</td><td>Française</td></tr>
+            <tr><td>2</td><td>EggertSpiele</td><td>Allemande</td></tr>
+            <tr><td>3</td><td>Iello</td><td>Française</td></tr>
+          </table>
+          <table>
+            <tr><th>idJeu</th><th>nomJeu</th><th>nbJoueursMin</th><th>nbJoueursMax</th><th>duree</th><th>idEditeur</th></tr>
+            <tr><td>1</td><td>Les chevaliers de la table ronde</td><td>3</td><td>7</td><td>90</td><td>1</td></tr>
+            <tr><td>2</td><td>Cargo Noir</td><td>2</td><td>5</td><td>60</td><td>1</td></tr>
+            <tr><td>3</td><td>Era: medieval age</td><td>1</td><td>4</td><td>50</td><td>2</td></tr>
+            <tr><td>4</td><td>Smash up</td><td>2</td><td>4</td><td>45</td><td>3</td></tr>
+          </table>`,
+        questions: [
+          "Avant d'exécuter : combien de lignes renvoie SELECT * FROM jeu, editeur ; ? Exécute, puis explique pourquoi la plupart de ces lignes sont fausses.",
+          "Écris la requête qui associe à chaque nom de jeu la nationalité de son éditeur, triée par nationalité puis nom de jeu. Donne le résultat.",
+          "Réécris la requête précédente avec USING. À quelle condition ce raccourci est-il possible ?",
+          "Écris la requête qui affiche les noms des jeux édités par un éditeur français.",
+          "Écris la requête qui affiche le nombre de jeux de chaque éditeur (nom de l'éditeur, nombre).",
+        ],
+        correction: [
+          "4 × 3 = 12 lignes : le produit cartésien combine CHAQUE jeu avec CHAQUE éditeur, sans regarder idEditeur. Seules 4 lignes sont vraies (celles où jeu.idEditeur = editeur.idEditeur).",
+          "SELECT nomJeu, nationaliteEditeur FROM jeu JOIN editeur ON jeu.idEditeur = editeur.idEditeur ORDER BY nationaliteEditeur, nomJeu ; — Era: medieval age (Allemande), puis Cargo Noir, Les chevaliers de la table ronde, Smash up (Française).",
+          "SELECT nomJeu, nationaliteEditeur FROM jeu JOIN editeur USING (idEditeur) ORDER BY nationaliteEditeur, nomJeu ; — possible seulement si la colonne de jointure porte exactement le même nom dans les deux tables et que la condition est une égalité.",
+          "SELECT nomJeu FROM jeu JOIN editeur USING (idEditeur) WHERE nationaliteEditeur = 'Française' ; — Les chevaliers de la table ronde, Cargo Noir, Smash up.",
+          "SELECT nomEditeur, COUNT(*) FROM jeu JOIN editeur USING (idEditeur) GROUP BY nomEditeur ; — Days of wonder 2, EggertSpiele 1, Iello 1. GROUP BY fait des paquets par éditeur, COUNT compte dans chaque paquet.",
+        ],
+      },
+      {
+        num: "4", titre: "Association N-M : trois tables (et plus)",
+        note: `La table d'association <strong>estDessinePar</strong> relie jeux et illustrateurs :
+          <table>
+            <tr><th>idIllustrateur</th><th>idJeu</th></tr>
+            <tr><td>1</td><td>1</td></tr><tr><td>2</td><td>2</td></tr><tr><td>3</td><td>3</td></tr>
+            <tr><td>4</td><td>4</td></tr><tr><td>5</td><td>4</td></tr><tr><td>6</td><td>4</td></tr>
+          </table>
+          De même, <strong>parleDe(#idTheme, #idJeu)</strong> relie les jeux à leurs thèmes (theme : 1 Moyen-âge, 2 Légende arthurienne, 3 Marché noir, 4 Navigation marchande, 5 Médiéval, 6 Construction, 7 Fantastique, 8 Monstre, 9 Pirate ; Cargo Noir parle des thèmes 3 et 4, Smash up des thèmes 7, 8 et 9).`,
+        questions: [
+          "Pourquoi ne peut-on pas mettre simplement une colonne idIllustrateur dans la table jeu ?",
+          "Écris la requête qui affiche, pour chaque jeu, son nom et le prénom et le nom de ses illustrateurs (tri par nom de jeu puis nom d'illustrateur). Combien de lignes ?",
+          "Écris la requête qui compte le nombre d'illustrateurs de chaque jeu, du plus illustré au moins illustré.",
+          "Défi : les jeux jouables à 4 joueurs, en une heure au plus, et portant sur la « Navigation marchande ».",
+          "Défi : les jeux dont l'éditeur a la même nationalité qu'au moins un de ses illustrateurs (chaque jeu une seule fois).",
+        ],
+        correction: [
+          "Parce que Smash up a TROIS illustrateurs : une colonne ne pourrait en stocker qu'un. Et une colonne « 4, 5, 6 » ne serait pas atomique. Le lien est N-M : il faut une table d'association, une ligne par couple (jeu, illustrateur).",
+          "SELECT nomJeu, prenomIllustrateur, nomIllustrateur FROM jeu JOIN estDessinePar USING (idJeu) JOIN illustrateur USING (idIllustrateur) ORDER BY nomJeu, nomIllustrateur ; — 6 lignes : Cargo Noir / Miguel Coimbra ; Era: medieval age / Chris Quilliams ; Les chevaliers de la table ronde / Julien Delval ; Smash up / Dave Alsop, Bruno Balixa, Francisco Rico Torres.",
+          "SELECT nomJeu, COUNT(*) AS nb FROM jeu JOIN estDessinePar USING (idJeu) GROUP BY nomJeu ORDER BY nb DESC ; — Smash up 3, puis 1 pour chacun des trois autres.",
+          "SELECT nomJeu FROM jeu JOIN parleDe USING (idJeu) JOIN theme USING (idTheme) WHERE nbJoueursMin <= 4 AND nbJoueursMax >= 4 AND duree <= 60 AND nomTheme = 'Navigation marchande' ; — Cargo Noir. Piège : « jouable à 4 » se traduit par 4 compris entre le minimum et le maximum, pas par nbJoueursMin = 4 (qui ne renverrait rien).",
+          "SELECT DISTINCT nomJeu FROM illustrateur JOIN estDessinePar USING (idIllustrateur) JOIN jeu USING (idJeu) JOIN editeur USING (idEditeur) WHERE nationaliteIllustrateur = nationaliteEditeur ; — Les chevaliers de la table ronde (Delval, Française / Days of wonder, Française) et Cargo Noir (Coimbra / Days of wonder). DISTINCT évite qu'un jeu à plusieurs illustrateurs sorte plusieurs fois.",
+        ],
+      },
+      {
+        num: "5", titre: "Modifier et protéger : INSERT, UPDATE, DELETE, PRAGMA",
+        note: "⚠️ Ces requêtes modifient la base : exécute d'abord <code>PRAGMA foreign_keys = ON ;</code> (SQLite ne vérifie pas les clés étrangères par défaut !). Quand tu as fini, relance ludotheque.sql pour tout remettre en place.",
+        questions: [
+          "Ajoute l'illustrateur n°7, David Cochard, de nationalité française. Que se passe-t-il si tu réessaies avec l'identifiant 1 ?",
+          "Ajoute l'illustrateur n°8 « Naiade », dont on ne connaît pas le prénom. Écris ensuite la requête qui trouve les illustrateurs sans prénom. Pourquoi WHERE prenomIllustrateur = NULL ne marche-t-il pas ?",
+          "Le nom de l'éditeur 1 s'écrit « Days of Wonder » avec un W majuscule : corrige-le. Pourquoi viser idEditeur plutôt que nomEditeur dans le WHERE ?",
+          "Essaie de supprimer l'éditeur n°1. Que répond SQLite ? Qu'aurait-il fait sans le PRAGMA ?",
+          "Supprime en une seule requête les deux illustrateurs ajoutés.",
+        ],
+        correction: [
+          "INSERT INTO illustrateur VALUES (7, 'Cochard', 'David', 'Française') ; — avec l'identifiant 1 : « UNIQUE constraint failed: illustrateur.idIllustrateur », la clé primaire refuse le doublon (contrainte d'entité).",
+          "INSERT INTO illustrateur (idIllustrateur, nomIllustrateur, nationaliteIllustrateur) VALUES (8, 'Naiade', 'Française') ; — ou VALUES (8, 'Naiade', NULL, 'Française'). Recherche : SELECT nomIllustrateur FROM illustrateur WHERE prenomIllustrateur IS NULL ; — NULL n'est pas une valeur mais l'absence de valeur : = NULL n'est jamais vrai, il faut IS NULL.",
+          "UPDATE editeur SET nomEditeur = 'Days of Wonder' WHERE idEditeur = 1 ; — la clé primaire cible UNE ligne à coup sûr ; un WHERE sur le nom pourrait rater la ligne (faute de frappe) ou en toucher plusieurs.",
+          "DELETE FROM editeur WHERE idEditeur = 1 ; → « FOREIGN KEY constraint failed » : les jeux 1 et 2 référencent cet éditeur, le SGBD protège l'intégrité référentielle. Sans PRAGMA foreign_keys = ON, SQLite aurait supprimé l'éditeur et laissé deux jeux orphelins : base incohérente.",
+          "DELETE FROM illustrateur WHERE idIllustrateur >= 7 ; — le WHERE délimite les dégâts : sans lui, toute la table disparaîtrait.",
+        ],
+      },
+      {
+        num: "6", titre: "Depuis Python : requête paramétrée et transaction",
+        code: `import sqlite3
+
+connexion = sqlite3.connect("ludotheque.db")
+connexion.execute("PRAGMA foreign_keys = ON")
+
+def editeurs_de_nationalite(nationalite):
+    curseur = connexion.execute(
+        """SELECT nomEditeur
+           FROM editeur
+           WHERE upper(nationaliteEditeur) = upper(?)
+           ORDER BY nomEditeur""",
+        (nationalite,))
+    return [ligne[0] for ligne in curseur]
+
+print(editeurs_de_nationalite("française"))   # ['Days of wonder', 'Iello']
+
+connexion.execute("INSERT INTO illustrateur VALUES (?, ?, ?, ?)",
+                  (7, "Cochard", "David", "Française"))
+connexion.commit()
+connexion.close()`,
+        note: "À tester dans Thonny ou Capytale (pas dans le navigateur), avec ludotheque.db dans le même dossier. Le fichier ludotheque_python.py du kit reprend ce code avec des asserts et une fonction à compléter.",
+        questions: [
+          "À quoi sert le ? dans la requête, et pourquoi écrit-on (nationalite,) avec une virgule ?",
+          "Un utilisateur tape x' OR '1'='1 comme nationalité. Que se passe-t-il avec la requête paramétrée ? Et si on avait construit la requête par concaténation de chaînes ?",
+          "Commente la ligne connexion.commit(), relance le programme, puis ouvre la base dans DB Browser : l'illustrateur 7 y est-il ? Explique.",
+          "Bonus : écris la fonction illustrateurs_du_jeu(nom_jeu) qui renvoie la liste triée des noms des illustrateurs d'un jeu (jointure à travers estDessinePar), paramétrée par le nom du jeu.",
+        ],
+        correction: [
+          "Le ? est un paramètre : le SGBD le remplace par la valeur fournie dans le tuple, en la traitant comme une donnée. (nationalite,) est un tuple à UN élément : sans la virgule, ce serait une simple chaîne entre parenthèses.",
+          "Avec le paramètre, le SGBD cherche une nationalité qui vaut littéralement x' OR '1'='1 : aucun éditeur, aucun dégât. Par concaténation, la requête deviendrait WHERE upper(nationaliteEditeur) = upper('x' OR '1'='1') : la condition est toujours vraie et renvoie toute la table — avec un DELETE, elle la viderait. C'est l'injection SQL.",
+          "Non : sans commit(), l'insertion n'a existé qu'en mémoire, dans une transaction jamais validée. Fermer la connexion l'annule. Une transaction est validée en bloc (commit) ou annulée en bloc (rollback) : c'est ce qui garantit la cohérence de la base.",
+          "def illustrateurs_du_jeu(nom_jeu): curseur = connexion.execute(\"SELECT nomIllustrateur FROM jeu JOIN estDessinePar USING (idJeu) JOIN illustrateur USING (idIllustrateur) WHERE nomJeu = ? ORDER BY nomIllustrateur\", (nom_jeu,)) ; return [ligne[0] for ligne in curseur] — illustrateurs_du_jeu('Smash up') renvoie ['Alsop', 'Balixa', 'Torres'] (vérifié dans ludotheque_python_corrige.py).",
         ],
       },
     ],

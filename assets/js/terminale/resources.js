@@ -123,6 +123,25 @@ const THEME_RESSOURCES_EXT = {
       { t: "⭐ Fiches élève — Piles, files & ensembles (Terminale)", url: "tree/main/eleves" },
     ],
   },
+  "term-bdd": {
+    titre: "Bases de données — le cours du DIU EIL (fil rouge : la ludothèque)",
+    auteur: "Bruno Mermet & Gaële Simon — DIU EIL, Université Le Havre Normandie (licence CC BY-NC-SA)",
+    base: "https://bases-de-donnees-26b46e.gitlab.io/",
+    note: "📚 « Bloc 4, chapitre 1 : Bases de données » — © Bruno Mermet, Gaële Simon, Université Le Havre Normandie, 2020-2026, licence Creative Commons BY-NC-SA. Les sections 10 à 13 du thème, le TP « Ludothèque » et les fichiers <code>ludotheque.sql</code> / <code>ludotheque.db</code> en sont adaptés. Les chapitres « dépendances fonctionnelles et formes normales », « modèle conceptuel (UML) » et « programmation web côté serveur » dépassent le programme de Terminale : à lire par curiosité.",
+    items: [
+      { t: "📑 Sommaire du chapitre Bases de données", url: "indexBD.html" },
+      { t: "🗂️ Bases de données relationnelles : la ludothèque, redondances, atomicité, formes normales (8 exercices corrigés)", url: "bdr.html" },
+      { t: "📐 Modèle conceptuel : du diagramme de classes au schéma relationnel (associations 1-N et N-M)", url: "modeleConceptuel.html" },
+      { t: "🔗 Contraintes de référence (clés étrangères) — exercice corrigé", url: "contraintesReference.html" },
+      { t: "🖥️ Notion de SGBD : caractéristiques, Oracle, MySQL, PostgreSQL, SQLite", url: "sgbd.html" },
+      { t: "⭐ SQL : projection, restriction, LIKE, DISTINCT, agrégats, produit cartésien, jointures, INSERT/UPDATE/DELETE, CREATE TABLE (11 exercices corrigés)", url: "sql.html" },
+      { t: "🐍 Interagir avec une base depuis Python : sqlite3, commit, requêtes paramétrées, injection SQL", url: "sqlEtPython.html" },
+      { t: "🌐 Programmation web côté serveur en Python (hors programme, pour aller plus loin)", url: "progWebServeur.html" },
+      { t: "📦 ludotheque.db — la base SQLite du cours (4 tables : illustrateur, editeur, jeu, estDessinePar)", url: "Ludotheque/ludotheque.db" },
+      { t: "📄 lectureLudotheque.py — taper une requête SQL depuis Python", url: "Ludotheque/lectureLudotheque.py" },
+      { t: "📄 creationTableIllustrateur.py / creationTablesEditeurJeu.py / creationTableEstDessinePar.py — créer les tables depuis Python", url: "Ludotheque/creationTableIllustrateur.py" },
+    ],
+  },
   "term-archi-reseaux": {
     titre: "Systèmes & réseaux (supports DIU)",
     auteur: "Mes supports du DIU NSI — Le Havre",
@@ -1497,7 +1516,7 @@ const THEME_KITS = {
     ]
   },
   "term-bdd": {
-    "intro": "Kit de préparation du thème « Bases de données » (18 h, 9 séances) : la base « lycée » prête pour DB Browser for SQLite (lycee.sql, mêmes tables et mêmes élèves que le cours et le TP du site), 10 requêtes à écrire avec leur corrigé vérifié, un imprimable « schéma relationnel à compléter » (clés primaires, clés étrangères, flèches) et un jeu de cartes « requête → résultat » à apparier pour les îlots. Tout est aligné sur la colonne « À préparer toi-même » du déroulé heure par heure.",
+    "intro": "Kit de préparation du thème « Bases de données » (18 h, 9 séances) : la base « lycée » prête pour DB Browser for SQLite (lycee.sql, mêmes tables et mêmes élèves que le cours et le TP du site), 10 requêtes à écrire avec leur corrigé vérifié, un imprimable « schéma relationnel à compléter » (clés primaires, clés étrangères, flèches) et un jeu de cartes « requête → résultat » à apparier pour les îlots. Tout est aligné sur la colonne « À préparer toi-même » du déroulé heure par heure. En complément, la base « ludothèque » adaptée du cours du DIU EIL (8 tables, associations N-M) sert de deuxième terrain d'entraînement : sections 10 à 13, TP « Ludothèque », 12 requêtes et un script Python sqlite3.",
     "imprimables": [
       {
         "titre": "L'énigme de lycee.db — le plan secret de la base à reconstituer (séances 1-2)",
@@ -1523,6 +1542,36 @@ const THEME_KITS = {
         "nom": "requetes_corrige.sql",
         "chemin": "assets/fichiers/terminale/term-bdd/requetes_corrige.sql",
         "desc": "Corrigé prof des 10 requêtes, vérifié par exécution sur lycee.sql (résultats conformes aux valeurs annoncées, y compris le refus du SGBD à la suppression de Sam pour cause d'intégrité référentielle — exercice 10c)."
+      },
+      {
+        "nom": "ludotheque.sql",
+        "chemin": "assets/fichiers/terminale/bases-de-donnees/ludotheque.sql",
+        "desc": "Deuxième jeu de données, adapté du cours DIU EIL « Bases de données » (B. Mermet & G. Simon, Univ. Le Havre Normandie, CC BY-NC-SA) : la ludothèque complète en 8 tables (editeur, illustrateur, auteur, theme, jeu et les trois tables d'association estDessinePar, estAuteurDe, parleDe), avec PRAGMA foreign_keys, clés primaires composées et contraintes de référence. Mêmes noms d'attributs que le cours du DIU (camelCase). Ré-exécutable (DROP puis CREATE). C'est la base des sections 10 à 13 et du TP « Ludothèque »."
+      },
+      {
+        "nom": "ludotheque.db",
+        "chemin": "assets/fichiers/terminale/bases-de-donnees/ludotheque.db",
+        "desc": "La même base déjà construite (fichier SQLite) : à déposer tel quel à côté des scripts Python sur Capytale/Thonny, ou à ouvrir dans DB Browser sans rien exécuter."
+      },
+      {
+        "nom": "ludotheque_requetes.sql",
+        "chemin": "assets/fichiers/terminale/bases-de-donnees/ludotheque_requetes.sql",
+        "desc": "Squelette élève : 12 requêtes graduées à écrire (tri multiple, LIKE, DISTINCT, COUNT DISTINCT, jointure ON/USING, association N-M, GROUP BY, deux défis à 3 et 4 tables) + 5 modifications (INSERT avec NULL, UPDATE, DELETE refusé par l'intégrité référentielle), chacune avec son résultat attendu. Rappel du schéma en tête de fichier."
+      },
+      {
+        "nom": "ludotheque_requetes_corrige.sql",
+        "chemin": "assets/fichiers/terminale/bases-de-donnees/ludotheque_requetes_corrige.sql",
+        "desc": "Corrigé prof des 17 requêtes, vérifié par exécution sur ludotheque.sql (résultats conformes, y compris l'erreur FOREIGN KEY constraint failed attendue en 13d)."
+      },
+      {
+        "nom": "ludotheque_python.py",
+        "chemin": "assets/fichiers/terminale/bases-de-donnees/ludotheque_python.py",
+        "desc": "Squelette élève pour Thonny/Capytale (à côté de ludotheque.db) : connexion sqlite3 avec PRAGMA, lecture du curseur, requête paramétrée (?), commit/rollback, IntegrityError sur clé primaire et sur clé étrangère. Une fonction à compléter (jointure N-M paramétrée) ; les asserts fournis font foi. Prolonge le TP « Ludothèque » (étape 6) et la section 13."
+      },
+      {
+        "nom": "ludotheque_python_corrige.py",
+        "chemin": "assets/fichiers/terminale/bases-de-donnees/ludotheque_python_corrige.py",
+        "desc": "Corrigé prof de ludotheque_python.py — exécuté et vérifié : tous les asserts passent, la base est laissée dans son état initial."
       }
     ],
     "evals": [

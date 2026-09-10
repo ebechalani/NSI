@@ -4023,6 +4023,7 @@ except Exception:
     wrap.appendChild(
       el("p", "extra-hint", "Le cours complet de <strong>" + R.auteur + "</strong>, en complément :")
     );
+    if (R.note) wrap.appendChild(el("p", "note", R.note)); // attribution / licence / mode d'emploi
     const row = el("div", "ext-links");
     R.items.forEach((it) => {
       const a = el("a", "ext-link");
