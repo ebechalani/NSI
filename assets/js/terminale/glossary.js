@@ -37,6 +37,11 @@ const GLOSSARY = [
   { terme: "SELECT … WHERE", theme: "term-bdd", def: "Requête d'interrogation : SELECT choisit les colonnes (projection), WHERE filtre les lignes (sélection)." },
   { terme: "Jointure (JOIN)", theme: "term-bdd", def: "Opération reliant les lignes de deux tables là où la clé étrangère correspond à la clé primaire (ON)." },
   { terme: "Agrégat", theme: "term-bdd", def: "Fonction calculant sur un ensemble de lignes : COUNT, AVG, MIN, MAX, SUM (souvent avec GROUP BY)." },
+  { terme: "Table d'association", theme: "term-bdd", def: "Table qui représente un lien N-M (plusieurs des deux côtés) : une ligne par couple, clé primaire composée de deux clés étrangères (ex. estDessinePar(#idIllustrateur, #idJeu))." },
+  { terme: "Attribut atomique", theme: "term-bdd", def: "Attribut qui ne contient qu'une seule valeur, non décomposable : pas de liste (« Monstre, Pirate ») ni de valeur composite dans une case." },
+  { terme: "Produit cartésien", theme: "term-bdd", def: "Résultat de deux tables dans FROM sans condition : toutes les combinaisons de lignes (4 × 3 = 12). La jointure est ce produit filtré par la condition ON." },
+  { terme: "Transaction (commit / rollback)", theme: "term-bdd", def: "Paquet de modifications validé en bloc par commit() ou annulé en bloc par rollback() ; sans commit, rien n'est écrit dans la base." },
+  { terme: "Injection SQL", theme: "term-bdd", def: "Attaque où une saisie utilisateur collée dans une requête devient du code SQL (x' OR '1'='1). Parade : les requêtes paramétrées (?)." },
 
   { terme: "Paradigme", theme: "term-langages", def: "Manière d'organiser un programme : impératif, fonctionnel, orienté objet." },
   { terme: "Classe / Objet", theme: "term-langages", def: "Une classe est un moule décrivant attributs et méthodes ; un objet (instance) en est fabriqué." },

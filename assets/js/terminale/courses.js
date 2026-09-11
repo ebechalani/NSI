@@ -870,8 +870,190 @@ VALUES (5, 'Margaret', 2, 17.0);</pre>
           <tr><td>Agréger par paquets</td><td><code>GROUP BY col</code></td></tr>
           <tr><td>Croiser deux tables</td><td><code>JOIN autre ON cle_etrangere = cle_primaire</code></td></tr>
           <tr><td>Ajouter / modifier / supprimer</td><td><code>INSERT INTO</code>, <code>UPDATE … SET … WHERE</code>, <code>DELETE FROM … WHERE</code></td></tr>
+          <tr><td>Sans doublon / motif / valeur absente</td><td><code>SELECT DISTINCT</code>, <code>LIKE 'a%'</code> (<code>%</code> = n'importe quoi, <code>_</code> = un caractère), <code>IS NULL</code></td></tr>
+          <tr><td>Créer / supprimer une table (structure)</td><td><code>CREATE TABLE … (col TYPE, … PRIMARY KEY …, FOREIGN KEY … REFERENCES …)</code>, <code>DROP TABLE</code></td></tr>
         </table>
-        <p class="note">🎯 Pour pratiquer du <strong>vrai</strong> SQL (et pas seulement l'équivalent Python), ouvre la base « lycée » dans <strong>DB Browser for SQLite</strong> ou avec le module <code>sqlite3</code> de Python sur Capytale/Thonny — voir l'encart « Coder pour de vrai » de la rubrique Progression.</p>`,
+        <p class="note">🎯 Pour pratiquer du <strong>vrai</strong> SQL (et pas seulement l'équivalent Python), ouvre la base « lycée » dans <strong>DB Browser for SQLite</strong> ou avec le module <code>sqlite3</code> de Python sur Capytale/Thonny — voir l'encart « Coder pour de vrai » de la rubrique Progression. Les sections suivantes, adaptées du cours du DIU, te donnent une <strong>deuxième base</strong> pour t'entraîner : la ludothèque.</p>`,
+      },
+      {
+        title: "La ludothèque du DIU : d'une table unique aux tables d'association",
+        html: `
+        <p class="note">📚 Les sections 10 à 13 sont adaptées du cours <strong>« Bases de données »</strong> du DIU <em>Enseigner l'informatique au lycée</em> (Bruno Mermet &amp; Gaële Simon, Université Le Havre Normandie, licence CC BY-NC-SA). Son fil rouge : informatiser une <strong>ludothèque</strong> (des jeux de société, leurs auteurs, éditeurs, illustrateurs et thèmes). Le lien vers le cours complet est en bas de page.</p>
+        <p>Première idée du cours : tout mettre dans <strong>une seule table</strong>. En voici un extrait :</p>
+        <table>
+          <tr><th>Nom du jeu</th><th>Auteur 1</th><th>Auteur 2</th><th>Éditeur</th><th>Nationalité éditeur</th><th>Illustrateur</th><th>Thèmes</th></tr>
+          <tr><td>Les chevaliers de la table ronde</td><td>Bruno Cathala</td><td>S. Laget</td><td>Days of wonder</td><td>Française</td><td>Julien Delval</td><td>Moyen-âge, Légende arthurienne</td></tr>
+          <tr><td>Cargo Noir</td><td>Serge Laget</td><td></td><td>Days of wonder</td><td>Française</td><td>Miguel Coimbra</td><td>Marché noir, Navigation marchande</td></tr>
+          <tr><td>Smash up</td><td>Paul Peterson</td><td></td><td>Iello</td><td>Française</td><td>Bruno Balixa, Dave Alsop, Francisco Rico Torres</td><td>Fantastique, Monstre, Pirate</td></tr>
+        </table>
+        <p>Tu reconnais le « schéma malade » de la section 4, avec trois défauts supplémentaires bien visibles :</p>
+        <ul>
+          <li><strong>Redondance</strong> : la nationalité de Days of wonder est recopiée à chaque jeu ;</li>
+          <li><strong>Nombre de colonnes figé</strong> : deux colonnes « Auteur » au maximum, et les trois illustrateurs de Smash up sont entassés dans une seule case ;</li>
+          <li><strong>Contenu libre</strong> : le même auteur apparaît sous « Serge Laget » et « S. Laget », le même thème sous « Moyen-âge » et « Médiéval » — les recherches deviennent impossibles.</li>
+        </ul>
+        <p>Le cours introduit une règle simple : un attribut doit être <strong>atomique</strong>, c'est-à-dire contenir <em>une seule</em> valeur, non décomposable. La case « Fantastique, Monstre, Pirate » viole cette règle. Le remède est toujours le même : <strong>une table par type d'objet</strong> (jeu, auteur, éditeur, illustrateur, thème), reliées par des clés. Mais comment relier ? Tout dépend de la <strong>nature du lien</strong> :</p>
+        <table>
+          <tr><th>Lien</th><th>Exemple</th><th>Traduction dans le schéma</th></tr>
+          <tr><td><strong>1-N</strong> (un côté « un », un côté « plusieurs »)</td><td>un jeu a <em>un seul</em> éditeur, un éditeur publie <em>plusieurs</em> jeux</td><td>une <strong>clé étrangère</strong> du côté « plusieurs » : <code>jeu(…, #idEditeur)</code></td></tr>
+          <tr><td><strong>N-M</strong> (« plusieurs » des deux côtés)</td><td>un jeu a <em>plusieurs</em> illustrateurs, un illustrateur dessine <em>plusieurs</em> jeux</td><td>une <strong>table d'association</strong> : <code>estDessinePar(<u>#idIllustrateur, #idJeu</u>)</code>, dont la clé primaire est le <strong>couple</strong></td></tr>
+        </table>
+        <p>Une clé étrangère dans <code>jeu</code> ne pourrait stocker qu'<em>un</em> illustrateur ; une clé étrangère dans <code>illustrateur</code> ne pourrait stocker qu'<em>un</em> jeu. Seule une table intermédiaire, avec une ligne par couple (jeu, illustrateur), représente un lien N-M sans redondance. Le schéma complet du cours (huit tables) :</p>
+        <pre class="sql">editeur(<u>idEditeur</u>, nomEditeur, nationaliteEditeur)
+illustrateur(<u>idIllustrateur</u>, nomIllustrateur, prenomIllustrateur, nationaliteIllustrateur)
+auteur(<u>idAuteur</u>, nomAuteur, prenomAuteur)
+theme(<u>idTheme</u>, nomTheme)
+jeu(<u>idJeu</u>, nomJeu, nbJoueursMin, nbJoueursMax, duree, #idEditeur)
+estDessinePar(<u>#idIllustrateur, #idJeu</u>)
+estAuteurDe(<u>#idAuteur, #idJeu</u>)
+parleDe(<u>#idTheme, #idJeu</u>)</pre>
+        <p>Chaque <code>#</code> est une <strong>contrainte de référence</strong> : le cours les note « <code>jeu(idEditeur)</code> référence <code>editeur(idEditeur)</code> ». Compte-les : il y en a <strong>sept</strong> (une pour <code>jeu</code>, deux pour chaque table d'association). La cellule Python ci-dessous montre comment une table d'association « fait le pont » entre deux tables — c'est exactement ce que fera la double jointure de la section 12.</p>`,
+        code: `# Trois tables de la ludothèque (données du cours DIU)
+jeu = [
+    {"idJeu": 1, "nomJeu": "Les chevaliers de la table ronde"},
+    {"idJeu": 2, "nomJeu": "Cargo Noir"},
+    {"idJeu": 4, "nomJeu": "Smash up"},
+]
+illustrateur = [
+    {"idIllustrateur": 1, "nom": "Delval"},
+    {"idIllustrateur": 2, "nom": "Coimbra"},
+    {"idIllustrateur": 4, "nom": "Balixa"},
+    {"idIllustrateur": 5, "nom": "Alsop"},
+    {"idIllustrateur": 6, "nom": "Torres"},
+]
+# La table d'association : une ligne par couple (illustrateur, jeu)
+estDessinePar = [(1, 1), (2, 2), (4, 4), (5, 4), (6, 4)]
+
+# Équivaut à : SELECT nomJeu, nom FROM jeu JOIN estDessinePar USING (idJeu)
+#                                           JOIN illustrateur USING (idIllustrateur)
+for j in jeu:
+    dessinateurs = []
+    for (id_ill, id_jeu) in estDessinePar:        # 1er pont : jeu -> association
+        if id_jeu == j["idJeu"]:
+            for i in illustrateur:                # 2e pont : association -> illustrateur
+                if i["idIllustrateur"] == id_ill:
+                    dessinateurs.append(i["nom"])
+    print(j["nomJeu"], "->", dessinateurs)
+# Smash up a bien ses trois illustrateurs : le lien N-M est représenté sans redondance`,
+        prof: `<p>Le chapitre « Bases de données relationnelles » du DIU va beaucoup plus loin (dépendances fonctionnelles, couverture minimale, formes normales 1FN/2FN/3FN) : c'est <strong>hors programme</strong> de Terminale, mais c'est une excellente lecture pour répondre aux « pourquoi » des élèves. Le passage du diagramme de classes UML au schéma relationnel (règles 1-N / N-M) est dans le chapitre « Modèle conceptuel ». Ne demande aux élèves que le réflexe : lien N-M = table d'association à clé composée.</p>`,
+      },
+      {
+        title: "Décrire la structure : CREATE TABLE, DROP TABLE et PRAGMA foreign_keys",
+        html: `
+        <p>Le programme te demande de <strong>distinguer la structure d'une base de son contenu</strong>. SQL aussi : le cours du DIU rappelle que SQL regroupe plusieurs langages — le langage d'<strong>interrogation</strong> (<code>SELECT</code>), le langage de <strong>manipulation</strong> des données (<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) et le langage de <strong>description</strong> des données, qui crée la structure. Voici la table <code>editeur</code> telle qu'elle est créée dans le cours :</p>
+        <pre class="sql">CREATE TABLE editeur (
+    idEditeur          INTEGER PRIMARY KEY NOT NULL,
+    nomEditeur         TEXT NOT NULL,
+    nationaliteEditeur TEXT
+);</pre>
+        <p>Chaque attribut est déclaré avec son <strong>nom</strong>, son <strong>type</strong> (le domaine : <code>INTEGER</code>, <code>TEXT</code>, <code>REAL</code> avec SQLite) et ses <strong>contraintes</strong> : <code>PRIMARY KEY</code> (unicité), <code>NOT NULL</code> (valeur obligatoire). Un éditeur sans nom n'a pas de sens, mais on peut ignorer sa nationalité : <code>nationaliteEditeur</code> accepte l'absence de valeur.</p>
+        <p>La clé étrangère se déclare avec <code>REFERENCES</code> :</p>
+        <pre class="sql">CREATE TABLE jeu (
+    idJeu        INTEGER PRIMARY KEY NOT NULL,
+    nomJeu       TEXT NOT NULL,
+    nbJoueursMin INTEGER,
+    nbJoueursMax INTEGER,
+    duree        INTEGER,
+    idEditeur    INTEGER REFERENCES editeur(idEditeur)
+);</pre>
+        <p>Et quand la clé primaire est <strong>composée</strong> de deux attributs (table d'association), on déclare les contraintes <em>à la fin</em>, en nommant les colonnes concernées :</p>
+        <pre class="sql">CREATE TABLE estDessinePar (
+    idIllustrateur INTEGER NOT NULL,
+    idJeu          INTEGER NOT NULL,
+    PRIMARY KEY (idJeu, idIllustrateur),
+    FOREIGN KEY (idJeu)          REFERENCES jeu(idJeu),
+    FOREIGN KEY (idIllustrateur) REFERENCES illustrateur(idIllustrateur)
+);</pre>
+        <p>Pour supprimer une table (structure <em>et</em> contenu) : <code>DROP TABLE nomTable</code>, ou <code>DROP TABLE IF EXISTS nomTable</code> pour ne pas provoquer d'erreur si elle n'existe pas — pratique en tête d'un script qu'on relance souvent.</p>
+        <p class="warnbox">⚠️ Piège SQLite signalé par le cours du DIU : par défaut, <strong>SQLite ne vérifie pas les clés étrangères</strong> ! Sans la ligne <code>PRAGMA foreign_keys = ON;</code> exécutée au début de la session (ou de ton programme Python), il accepterait un jeu dont l'éditeur n'existe pas, ou la suppression d'un éditeur encore référencé. Les autres SGBD (PostgreSQL, MySQL…) vérifient toujours. Regarde la première ligne de <code>lycee.sql</code> et de <code>ludotheque.sql</code> : elle est là.</p>
+        <p class="note">💡 Structure vs contenu : <code>CREATE TABLE</code> décrit la structure (le schéma), <code>INSERT</code> remplit le contenu. Un fichier <code>.sql</code> comme <code>ludotheque.sql</code> contient les deux à la suite : c'est une base entière, lisible et rejouable.</p>`,
+      },
+      {
+        title: "Affiner une requête : DISTINCT, LIKE, IS NULL, USING et le piège du produit cartésien",
+        html: `
+        <p>Toujours sur la ludothèque (section 10). Quelques outils que l'épreuve écrite aime bien, tirés du chapitre SQL du DIU.</p>
+        <p><strong>Un motif plutôt qu'une égalité : LIKE.</strong> Dans le motif, <code>%</code> remplace n'importe quelle suite de caractères (même vide) et <code>_</code> exactement un caractère.</p>
+        <pre class="sql">SELECT nomIllustrateur, nationaliteIllustrateur
+FROM   illustrateur
+WHERE  nationaliteIllustrateur LIKE '%i_e%';   -- un i, un caractère, un e</pre>
+        <p>« França<strong>ise</strong> » et « América<strong>ine</strong> » conviennent, « Canadienne » non : 5 lignes (Delval, Coimbra, Balixa, Alsop, Torres). Attention : les <em>données</em> sont sensibles à la casse (<code>'française'</code> ne trouve rien), pas les mots-clés. Pour ignorer la casse : <code>WHERE upper(nationaliteIllustrateur) = upper('française')</code>.</p>
+        <p><strong>Sans doublon : DISTINCT.</strong> <code>SELECT nationaliteIllustrateur FROM illustrateur</code> renvoie 6 lignes avec des répétitions ; <code>SELECT DISTINCT nationaliteIllustrateur FROM illustrateur</code> en renvoie 3. On peut aussi compter les valeurs différentes : <code>SELECT COUNT(DISTINCT nationaliteIllustrateur) FROM illustrateur</code> donne 3.</p>
+        <p><strong>Une valeur absente : NULL.</strong> Si le prénom d'un illustrateur est inconnu, la case contient <code>NULL</code>, qui n'est <em>pas</em> une valeur : <code>WHERE prenomIllustrateur = NULL</code> ne renvoie jamais rien. On écrit <code>WHERE prenomIllustrateur IS NULL</code> (ou <code>IS NOT NULL</code>).</p>
+        <p><strong>Le piège du produit cartésien.</strong> Que se passe-t-il si tu mets deux tables dans <code>FROM</code> sans condition ?</p>
+        <pre class="sql">SELECT * FROM jeu, editeur;          -- 4 jeux × 3 éditeurs = 12 lignes !</pre>
+        <p>Tu obtiens <em>toutes</em> les combinaisons d'un jeu et d'un éditeur, y compris les fausses. C'est le <strong>produit cartésien</strong>. La jointure, c'est ce produit <em>filtré</em> par la condition <code>ON</code> : seules restent les 4 lignes où <code>jeu.idEditeur = editeur.idEditeur</code>. Quand la colonne porte le <strong>même nom</strong> dans les deux tables, SQL offre le raccourci <code>USING</code> :</p>
+        <pre class="sql">SELECT nomJeu, nationaliteEditeur
+FROM   jeu JOIN editeur ON jeu.idEditeur = editeur.idEditeur;   -- forme générale
+
+SELECT nomJeu, nationaliteEditeur
+FROM   jeu JOIN editeur USING (idEditeur);                      -- même résultat</pre>
+        <p>La cellule ci-dessous fabrique le produit cartésien en Python puis le filtre : tu verras passer de 12 lignes à 4.</p>`,
+        code: `jeu = [
+    {"idJeu": 1, "nomJeu": "Les chevaliers de la table ronde", "idEditeur": 1},
+    {"idJeu": 2, "nomJeu": "Cargo Noir",                       "idEditeur": 1},
+    {"idJeu": 3, "nomJeu": "Era: medieval age",                "idEditeur": 2},
+    {"idJeu": 4, "nomJeu": "Smash up",                         "idEditeur": 3},
+]
+editeur = [
+    {"idEditeur": 1, "nomEditeur": "Days of wonder", "nationalite": "Française"},
+    {"idEditeur": 2, "nomEditeur": "EggertSpiele",   "nationalite": "Allemande"},
+    {"idEditeur": 3, "nomEditeur": "Iello",          "nationalite": "Française"},
+]
+
+# SELECT * FROM jeu, editeur  -> produit cartésien : TOUTES les combinaisons
+produit = [(j, e) for j in jeu for e in editeur]
+print("Produit cartésien :", len(produit), "lignes")
+
+# ... JOIN editeur ON jeu.idEditeur = editeur.idEditeur -> on ne garde que les vraies paires
+jointure = [(j, e) for (j, e) in produit if j["idEditeur"] == e["idEditeur"]]
+print("Jointure :", len(jointure), "lignes")
+for j, e in jointure:
+    print("  ", j["nomJeu"], "|", e["nomEditeur"], "|", e["nationalite"])`,
+      },
+      {
+        title: "SQL depuis Python : transaction (commit), requêtes paramétrées et injection SQL",
+        html: `
+        <p>Le programme insiste sur le <strong>rôle du SGBD</strong> : persistance, cohérence, accès concurrents, <strong>sécurité et confidentialité</strong>. On le voit très concrètement quand un programme Python dialogue avec la base. Le chapitre « Interagir avec une base de données depuis Python » du DIU résume le dialogue en cinq étapes :</p>
+        <ol>
+          <li><strong>se connecter</strong> : <code>connexion = sqlite3.connect('ludotheque.db')</code> ;</li>
+          <li><strong>exécuter</strong> une requête : <code>curseur = connexion.execute(requete)</code> ;</li>
+          <li><strong>exploiter</strong> le résultat : le curseur se parcourt avec <code>for</code>, chaque ligne est un <strong>tuple</strong> Python ;</li>
+          <li><strong>valider</strong> si la base a été modifiée : <code>connexion.commit()</code> ;</li>
+          <li><strong>se déconnecter</strong> : <code>connexion.close()</code>.</li>
+        </ol>
+        <pre class="sql">import sqlite3
+
+connexion = sqlite3.connect('ludotheque.db')
+connexion.execute('PRAGMA foreign_keys = ON')
+
+nationalite = input('Nationalité recherchée ? ')
+curseur = connexion.execute('''SELECT nomEditeur
+                               FROM editeur
+                               WHERE upper(nationaliteEditeur) = upper(?)
+                               ORDER BY nomEditeur''',
+                            (nationalite,))       # un tuple, même pour UN paramètre
+for ligne in curseur:
+    print(ligne[0])
+connexion.close()</pre>
+        <p><strong>Une transaction, ça se valide.</strong> Tant que tu n'as pas appelé <code>commit()</code>, tes <code>INSERT</code>, <code>UPDATE</code> et <code>DELETE</code> ne sont faits qu'<em>en mémoire</em> : ferme le programme sans <code>commit()</code> et rien n'est écrit dans le fichier. C'est le principe de la <strong>transaction</strong> : un paquet de modifications validé <em>en bloc</em> (ou annulé en bloc avec <code>rollback()</code>). C'est ainsi que le SGBD garantit la <strong>cohérence</strong> : pas de virement bancaire « à moitié fait ». Le script du cours le fait tester : commente le <code>commit()</code>, relance, vérifie dans DB Browser… la ligne n'y est pas.</p>
+        <p><strong>Une requête, ça se paramètre.</strong> Dans l'exemple, la saisie de l'utilisateur n'est jamais collée dans la chaîne SQL : elle est passée à part, à la place du <code>?</code>. Regarde ce qui arrive sinon — exécute la cellule ci-dessous.</p>`,
+        code: `# Deux façons de fabriquer la requête à partir d'une saisie utilisateur
+saisie_normale = "Iello"
+saisie_piegee  = "x' OR '1'='1"          # ce qu'un attaquant peut taper dans le formulaire
+
+# 1) Concaténation de chaînes : la saisie devient du CODE SQL
+for saisie in (saisie_normale, saisie_piegee):
+    requete = "SELECT * FROM editeur WHERE nomEditeur = '" + saisie + "'"
+    print("Concaténation :", requete)
+# La 2e requête est toujours vraie ('1'='1') : elle renvoie TOUTE la table.
+# Avec un DELETE, elle viderait la table : c'est une INJECTION SQL.
+
+# 2) Requête paramétrée : la saisie reste une DONNÉE, quoi qu'elle contienne
+requete = "SELECT * FROM editeur WHERE nomEditeur = ?"
+parametres = (saisie_piegee,)
+print("Paramétrée   :", requete, "avec", parametres)
+# Le SGBD cherche un éditeur dont le nom est littéralement  x' OR '1'='1  : aucun.`,
+        prof: `<p>Le module <code>sqlite3</code> n'est pas chargé dans l'éditeur Python du site (Pyodide) : les scripts de cette section se testent dans Thonny ou Capytale, avec <code>ludotheque.db</code> (kit de préparation). La cellule ci-dessus n'a volontairement <em>pas</em> besoin de sqlite3 : elle montre seulement la chaîne SQL forgée. Le chapitre « Programmation web côté serveur » du DIU (formulaire → script Python CGI → base) illustre l'injection dans un vrai contexte web ; il dépasse le programme mais parle aux élèves.</p>`,
       },
     ],
   },

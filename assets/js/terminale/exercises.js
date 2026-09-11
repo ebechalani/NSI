@@ -762,6 +762,44 @@ print(dijkstra(reseau, "A"))   # {'A': 0, 'C': 1, 'B': 3, 'D': 4}`,
         enonce: "Repère les anomalies — un club de sport range tout dans une table unique : inscription(nom_adherent, telephone, nom_activite, jour, tarif). Exemple de lignes : (Ada, 0601..., Judo, mardi, 120), (Ada, 0601..., Escalade, jeudi, 150), (Alan, 0699..., Judo, mardi, 120). Identifie au moins trois anomalies de ce schéma (redondance, mise à jour, insertion, suppression), puis propose un découpage en plusieurs tables avec clés primaires et étrangères.",
         solution: "Anomalies : (1) redondance — le téléphone d'Ada et le couple (jour, tarif) du Judo sont recopiés à chaque ligne ; (2) mise à jour — si le tarif du Judo change, il faut modifier TOUTES les lignes Judo, en oublier une crée une incohérence ; (3) insertion — impossible d'enregistrer une nouvelle activité tant que personne n'y est inscrit ; (4) suppression — si Alan se désinscrit du Judo et qu'Ada aussi, l'activité Judo disparaît de la base. Schéma sain : adherent(id, nom, telephone) ; activite(id, nom, jour, tarif) ; inscription(#id_adherent, #id_activite) — chaque information n'est écrite qu'une fois, les clés étrangères font le lien.",
       },
+      /* ---- Exercices sur la ludothèque (adaptés du cours DIU EIL « Bases de
+         données », B. Mermet & G. Simon, Univ. Le Havre Normandie, CC BY-NC-SA).
+         Schéma : voir la section 10 du cours ; requêtes vérifiées sur ludotheque.sql. ---- */
+      {
+        niveau: "facile",
+        enonce: "<strong>Ludothèque (sections 10 à 13)</strong> — table <code>illustrateur(<u>idIllustrateur</u>, nomIllustrateur, prenomIllustrateur, nationaliteIllustrateur)</code>. Écris la requête qui affiche le prénom et le nom des illustrateurs, triés par nationalité puis, à nationalité égale, par nom.",
+        solution: "SELECT prenomIllustrateur, nomIllustrateur FROM illustrateur ORDER BY nationaliteIllustrateur, nomIllustrateur; — ORDER BY accepte plusieurs colonnes : la deuxième départage les égalités de la première. Résultat : Dave Alsop, Bruno Balixa, Francisco Rico Torres (Américaine), Chris Quilliams (Canadienne), Miguel Coimbra, Julien Delval (Française).",
+      },
+      {
+        niveau: "facile",
+        enonce: "<strong>Ludothèque</strong> — table <code>jeu(<u>idJeu</u>, nomJeu, nbJoueursMin, nbJoueursMax, duree, #idEditeur)</code>, durée en minutes. Écris la requête qui donne le nom et la durée des jeux qui durent moins d'une heure, du plus court au plus long.",
+        solution: "SELECT nomJeu, duree FROM jeu WHERE duree < 60 ORDER BY duree; — résultat : Smash up (45), Era: medieval age (50). Sans ORDER BY, l'ordre des lignes n'est pas garanti.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "<strong>Ludothèque</strong> — Écris la requête qui affiche le nom des illustrateurs dont la nationalité contient un « i » puis un « e » séparés par <em>exactement</em> un caractère. Les nationalités présentes sont Française, Canadienne et Américaine : donne le résultat.",
+        solution: "SELECT nomIllustrateur FROM illustrateur WHERE nationaliteIllustrateur LIKE '%i_e%'; — le motif : % (n'importe quoi) i _ (un caractère) e % (n'importe quoi). « Française » contient « ise », « Américaine » contient « ine » ; « Canadienne » n'a que « ien » (i, e puis n). Résultat : Delval, Coimbra, Balixa, Alsop, Torres (5 lignes).",
+      },
+      {
+        niveau: "moyen",
+        enonce: "<strong>Ludothèque</strong> — tables <code>jeu(…, #idEditeur)</code> et <code>editeur(<u>idEditeur</u>, nomEditeur, nationaliteEditeur)</code>. (a) Écris la requête qui affiche le nom de chaque jeu avec la nationalité de son éditeur, triée par nationalité puis par nom de jeu. (b) Réécris-la avec le mot-clé USING. (c) Combien de lignes renverrait SELECT * FROM jeu, editeur ; sans condition, sachant qu'il y a 4 jeux et 3 éditeurs ?",
+        solution: "(a) SELECT nomJeu, nationaliteEditeur FROM jeu JOIN editeur ON jeu.idEditeur = editeur.idEditeur ORDER BY nationaliteEditeur, nomJeu; — résultat : Era: medieval age (Allemande), puis Cargo Noir, Les chevaliers de la table ronde, Smash up (Française). (b) SELECT nomJeu, nationaliteEditeur FROM jeu JOIN editeur USING (idEditeur) ORDER BY nationaliteEditeur, nomJeu; — possible car la colonne porte le même nom dans les deux tables. (c) 4 × 3 = 12 lignes : le produit cartésien associe chaque jeu à chaque éditeur, y compris les mauvais. La jointure ne garde que les 4 vraies paires.",
+      },
+      {
+        niveau: "moyen",
+        enonce: "<strong>Ludothèque</strong> — un jeu peut avoir plusieurs illustrateurs, d'où la table d'association <code>estDessinePar(<u>#idIllustrateur, #idJeu</u>)</code>. (a) Écris la requête qui affiche, pour chaque jeu, le nom du jeu et le nom de ses illustrateurs (triés par nom de jeu puis nom d'illustrateur). (b) Sachant que Smash up a trois illustrateurs et les trois autres jeux un seul, combien de lignes obtient-on ? (c) Écris la requête qui compte le nombre d'illustrateurs de chaque jeu.",
+        solution: "(a) SELECT nomJeu, nomIllustrateur FROM jeu JOIN estDessinePar USING (idJeu) JOIN illustrateur USING (idIllustrateur) ORDER BY nomJeu, nomIllustrateur; — deux jointures en chaîne : jeu → table d'association → illustrateur. (b) 6 lignes : Smash up apparaît 3 fois (Alsop, Balixa, Torres), une ligne par couple (jeu, illustrateur). (c) SELECT nomJeu, COUNT(*) FROM jeu JOIN estDessinePar USING (idJeu) GROUP BY nomJeu; — résultat : Smash up 3, les autres 1.",
+      },
+      {
+        niveau: "défi",
+        enonce: "<strong>Ludothèque</strong> — tables <code>jeu</code>, <code>theme(<u>idTheme</u>, nomTheme)</code> et <code>parleDe(<u>#idTheme, #idJeu</u>)</code>. Écris la requête qui donne les jeux jouables à 4 joueurs, en une heure au plus, et portant sur le thème « Navigation marchande ». Attention au piège : « jouable à 4 joueurs » ne veut pas dire nbJoueursMin = 4 !",
+        solution: "SELECT nomJeu FROM jeu JOIN parleDe USING (idJeu) JOIN theme USING (idTheme) WHERE nbJoueursMin <= 4 AND nbJoueursMax >= 4 AND duree <= 60 AND nomTheme = 'Navigation marchande'; — « jouable à 4 » signifie que 4 est entre le minimum et le maximum de joueurs. Résultat : Cargo Noir (2 à 5 joueurs, 60 min). Avec nbJoueursMin = 4, la requête ne renverrait rien.",
+      },
+      {
+        niveau: "défi",
+        enonce: "<strong>Ludothèque</strong> — la table d'association <code>estAuteurDe(<u>#idAuteur, #idJeu</u>)</code> relie <code>auteur(<u>idAuteur</u>, nomAuteur, prenomAuteur)</code> et <code>jeu</code>. (a) Écris l'instruction CREATE TABLE de estAuteurDe, avec sa clé primaire composée et ses deux clés étrangères. (b) Quelle instruction SQLite faut-il exécuter pour que ces clés étrangères soient réellement vérifiées ? (c) Liste les sept contraintes de référence du schéma complet de la ludothèque (section 10), avec la notation du cours « table(attribut) référence table(attribut) ».",
+        solution: "(a) CREATE TABLE estAuteurDe (idAuteur INTEGER NOT NULL, idJeu INTEGER NOT NULL, PRIMARY KEY (idJeu, idAuteur), FOREIGN KEY (idJeu) REFERENCES jeu(idJeu), FOREIGN KEY (idAuteur) REFERENCES auteur(idAuteur)); — la clé primaire est le couple (un même auteur peut signer plusieurs jeux, un jeu avoir plusieurs auteurs, mais un couple n'apparaît qu'une fois). (b) PRAGMA foreign_keys = ON; — sans elle, SQLite ne vérifie pas les contraintes de référence. (c) jeu(idEditeur) référence editeur(idEditeur) ; estDessinePar(idIllustrateur) référence illustrateur(idIllustrateur) ; estDessinePar(idJeu) référence jeu(idJeu) ; estAuteurDe(idAuteur) référence auteur(idAuteur) ; estAuteurDe(idJeu) référence jeu(idJeu) ; parleDe(idTheme) référence theme(idTheme) ; parleDe(idJeu) référence jeu(idJeu).",
+      },
     ],
     defi: {
       titre: "Mission : le tableau d'honneur",
