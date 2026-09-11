@@ -1387,3 +1387,25 @@ body.projecteur.noir .proj-stage { visibility: hidden; }
 .salle-body ul { margin: .3rem 0 .4rem; padding-left: 1.2rem; }
 .salle-body li { margin: .3rem 0; line-height: 1.5; }
 body.has-live .content { padding-bottom: 11rem; }
+
+/* Frise : mode Chrono (carte par carte) et accès à la correction */
+.frise-ok { color: var(--ok-text); font-weight: 700; }
+.frise-ko { color: var(--bad-text); font-weight: 700; }
+.frise-hint { display: block; margin-top: .3rem; font-weight: 400; color: var(--text-soft); font-size: .85rem; }
+.chrono-hand { border: 2px dashed var(--accent); border-radius: 12px; padding: .7rem .9rem; margin-bottom: 1rem; background: var(--bg-soft); }
+.chrono-label { font-weight: 700; margin-bottom: .5rem; }
+.chrono-current { cursor: default; }
+.chrono-done { font-weight: 700; color: var(--ok-text); font-size: 1.05rem; }
+.chrono-board { display: flex; flex-direction: column; gap: .3rem; }
+.chrono-card { cursor: default; }
+.chrono-slot {
+  font-family: var(--sans); font-size: .85rem; font-weight: 600; cursor: pointer; color: var(--accent);
+  background: transparent; border: 1.5px dashed var(--border); border-radius: 9px; padding: .45rem .8rem; text-align: center;
+  transition: background .15s, border-color .15s;
+}
+.chrono-slot:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+.chrono-slot:disabled { cursor: default; border-color: transparent; color: transparent; padding: .1rem; }
+.chrono-slot.good { border-color: var(--ok); background: var(--ok-soft); color: var(--ok-text); }
+.chrono-slot.bad { border-color: var(--bad); background: var(--bad-soft); color: var(--bad-text); animation: chrono-shake .35s; }
+@keyframes chrono-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.chrono-status { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; margin-top: .9rem; font-weight: 600; }

@@ -2687,34 +2687,70 @@ except Exception:
     const events = cfg.events;
     const N = events.length;
 
+    // La correction (frise expliquée, frise corrigée imprimée) n'est visible que par
+    // le prof, ou par les élèves quand il l'a poussée : « Vérifier » ne colore que
+    // les cartes (vert = à sa place, rouge = à déplacer), sans révéler les dates.
+    const FRISE_KEY = "histoire-informatique:frise";
+    const canExplain = () => P.isTeacher() || P.isCorrectionsPushed() || P.isCorrPushed(FRISE_KEY);
+
     wrap.appendChild(
       el(
         "div",
         "frise-rules",
         `🃏 <strong>Règle du jeu.</strong> Chaque carte décrit un événement de l'histoire de l'informatique, ` +
-          `<strong>sans sa date</strong>. À vous de les classer de la <strong>plus ancienne</strong> (en haut) à la ` +
-          `<strong>plus récente</strong> (en bas), en discutant des indices. Déplacez les cartes par ` +
-          `<em>glisser-déposer</em> ou avec les flèches ▲▼, puis cliquez sur <strong>Vérifier</strong>.`
+          `<strong>sans sa date</strong>. Deux façons de jouer : <strong>🧩 Reconstituer</strong> — classez toutes les cartes de la ` +
+          `<strong>plus ancienne</strong> (en haut) à la <strong>plus récente</strong> (en bas) par <em>glisser-déposer</em> ou avec les flèches ▲▼, ` +
+          `puis <strong>Vérifier</strong> : chaque carte passe au <span class="frise-ok">vert</span> si elle est à sa place, au ` +
+          `<span class="frise-ko">rouge</span> sinon (sans donner la date), à vous de réajuster ; ` +
+          `<strong>🎴 Chrono</strong> — les cartes arrivent une par une, placez chacune au bon endroit de la frise déjà posée : ` +
+          `bien placée, elle reste et dévoile sa date ; mal placée, elle repart au bas de la pile. La correction expliquée arrive quand le professeur la pousse.`
       )
     );
 
     const toolbar = el("div", "frise-toolbar");
+    const bModeR = el("button", "btn frise-mode active-filter", "🧩 Reconstituer");
+    const bModeC = el("button", "btn secondary frise-mode", "🎴 Chrono : carte par carte");
     const bShuffle = el("button", "btn secondary", "🔀 Mélanger");
     const bCheck = el("button", "btn", "✅ Vérifier la frise");
     const bExplain = el("button", "btn secondary frise-explain-btn", "📖 Correction expliquée");
-    bExplain.style.display = "none"; // n'apparaît qu'après une première vérification
+    bExplain.style.display = "none"; // après une première vérification, et seulement si la correction est disponible
     const bPrint = el("button", "btn secondary", "🖨️ Imprimer les cartes");
+    toolbar.appendChild(bModeR);
+    toolbar.appendChild(bModeC);
     toolbar.appendChild(bShuffle);
     toolbar.appendChild(bCheck);
     toolbar.appendChild(bExplain);
     toolbar.appendChild(bPrint);
+    // Prof : pousser / retirer la correction de la frise pour la classe
+    let bPush = null;
+    if (P.isTeacher()) {
+      bPush = el("button", "btn secondary frise-push");
+      bPush.addEventListener("click", () => P.setCorrPushed(FRISE_KEY, !P.isCorrPushed(FRISE_KEY, corrTargetClassId), corrTargetClassId));
+      toolbar.appendChild(bPush);
+    }
     wrap.appendChild(toolbar);
 
     const board = el("div", "frise-board");
     wrap.appendChild(board);
 
+    const chrono = el("div", "chrono hidden");
+    wrap.appendChild(chrono);
+
     const result = el("div", "frise-result");
     wrap.appendChild(result);
+
+    let verified = false; // une vérification a eu lieu (mode reconstituer)
+    function refreshAccess() {
+      const ok = canExplain();
+      bExplain.style.display = verified && ok ? "" : "none";
+      if (bPush) {
+        const pushed = P.isCorrPushed(FRISE_KEY, corrTargetClassId);
+        bPush.textContent = pushed ? "📥 Retirer la correction de la frise" : "📤 Pousser la correction de la frise";
+        bPush.classList.toggle("active-filter", pushed);
+      }
+      if (!ok) { corrWrap.innerHTML = ""; corrWrap.classList.remove("show"); }
+    }
+    wrap.__refresh = refreshAccess; // rappelé à chaque mise à jour temps réel (corrigé poussé / retiré)
 
     // Correction interactive : la frise dans l'ordre, chaque événement se déplie
     // avec son explication ; ✓/✗ selon le dernier placement de l'élève.
@@ -2867,13 +2903,14 @@ except Exception:
       order.forEach((card, i) => {
         const ok = card === sorted[i];
         lastPlacement[Number(card.dataset.year)] = ok;
-        card.classList.add("revealed");
         card.classList.toggle("good", ok);
         card.classList.toggle("bad", !ok);
-        card.querySelector(".fc-year").textContent = card.dataset.year;
+        // Pas de date révélée : vert = à sa place, rouge = à déplacer. Les dates
+        // n'apparaissent qu'avec la correction expliquée (prof / corrigé poussé).
         if (ok) wellPlaced++;
       });
-      bExplain.style.display = ""; // la correction expliquée devient disponible
+      verified = true;
+      refreshAccess();
       let pairs = 0;
       for (let i = 0; i < order.length - 1; i++) {
         if (Number(order[i].dataset.year) <= Number(order[i + 1].dataset.year))
@@ -2884,7 +2921,8 @@ except Exception:
       result.innerHTML =
         `<strong>${wellPlaced} / ${N}</strong> cartes à la bonne place · ` +
         `<strong>${pairs} / ${N - 1}</strong> paires dans le bon ordre` +
-        (perfect ? " — 🎉 Frise parfaite, bravo !" : " — réajustez les cartes rouges et revérifiez.");
+        (perfect ? " — 🎉 Frise parfaite, bravo !" : " — gardez les cartes vertes, déplacez les rouges et revérifiez.") +
+        (canExplain() ? "" : ` <span class="frise-hint">La correction expliquée arrivera quand le professeur la poussera.</span>`);
 
       // Meilleur score (par groupe / par poste)
       if (cfg.bestKey) {
@@ -2937,10 +2975,13 @@ except Exception:
           `<button class="no-print" onclick="window.print()" style="padding:.4cm .8cm;font-size:12pt;cursor:pointer">🖨️ Imprimer</button>` +
           `<h1>Frise de l'histoire de l'informatique — cartes à découper</h1>` +
           `<p class="intro">Découpez les ${N} cartes, mélangez-les, puis classez-les en équipe de la plus ancienne à la plus récente. ` +
-          `Vérifiez ensuite avec la frise corrigée (dernière page, à garder par l'enseignant).</p>` +
+          (canExplain()
+            ? `Vérifiez ensuite avec la frise corrigée (dernière page, à garder par l'enseignant).</p>`
+            : `La frise corrigée est donnée par le professeur.</p>`) +
           `<div class="grid">${recto}</div>` +
-          `<h2 style="page-break-before:always">Frise corrigée — ${N} événements</h2>` +
-          `<ol>${corrige}</ol>` +
+          (canExplain()
+            ? `<h2 style="page-break-before:always">Frise corrigée — ${N} événements</h2><ol>${corrige}</ol>`
+            : "") +
           `</body></html>`
       );
       w.document.close();
@@ -2951,7 +2992,98 @@ except Exception:
     bCheck.addEventListener("click", verify);
     bPrint.addEventListener("click", printCards);
 
+    /* ---- Mode 🎴 Chrono : carte par carte (dans l'esprit de Timeline / Chrono Pixel).
+       Une première carte est posée avec sa date ; chaque nouvelle carte se place dans
+       un des créneaux de la frise : bien placée, elle reste et dévoile sa date ;
+       mal placée, le créneau rougit et la carte repart au bas de la pile. ---- */
+    function buildChrono() {
+      chrono.innerHTML = "";
+      let pile = [...events];
+      for (let i = pile.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pile[i], pile[j]] = [pile[j], pile[i]]; }
+      const placed = [pile.shift()]; // la carte d'ancrage, date visible
+      let erreurs = 0, essais = 0;
+      const hand = el("div", "chrono-hand");
+      const cboard = el("div", "chrono-board");
+      const status = el("div", "chrono-status");
+      chrono.append(hand, cboard, status);
+
+      const cardHtml = (ev, withYear) =>
+        `<span class="fc-icon">${ev.icon}</span><span class="fc-body"><span class="fc-title">${ev.title}</span>` +
+        `<span class="fc-clue">${ev.clue}</span></span>` + (withYear ? `<span class="fc-year">${ev.year}</span>` : "");
+
+      function renderBoard(flashIdx, flashOk) {
+        cboard.innerHTML = "";
+        const current = pile[0];
+        const slot = (i) => {
+          const b = el("button", "chrono-slot", current ? "⤵ Placer ici" : "");
+          b.type = "button";
+          b.disabled = !current;
+          if (flashIdx === i) b.classList.add(flashOk ? "good" : "bad");
+          b.addEventListener("click", () => place(i));
+          return b;
+        };
+        cboard.appendChild(slot(0));
+        placed.forEach((ev, i) => {
+          cboard.appendChild(el("div", "frise-card revealed good chrono-card", cardHtml(ev, true)));
+          cboard.appendChild(slot(i + 1));
+        });
+      }
+      function renderHand(shake) {
+        const current = pile[0];
+        hand.innerHTML = "";
+        if (!current) {
+          hand.appendChild(el("div", "chrono-done", `🎉 Les ${N} cartes sont placées — ${erreurs} erreur${erreurs > 1 ? "s" : ""} en ${essais} essais.`));
+          return;
+        }
+        hand.appendChild(el("div", "chrono-label", `🎴 Carte à placer (${pile.length} restante${pile.length > 1 ? "s" : ""}) — où va-t-elle sur la frise ?`));
+        const c = el("div", "frise-card chrono-current" + (shake ? " bad" : ""), cardHtml(current, false));
+        hand.appendChild(c);
+      }
+      function renderStatus() {
+        status.textContent = `${placed.length} / ${N} cartes sur la frise · ${erreurs} erreur${erreurs > 1 ? "s" : ""}`;
+      }
+      function place(i) {
+        const current = pile[0];
+        if (!current) return;
+        essais++;
+        const before = i > 0 ? placed[i - 1].year : -Infinity;
+        const after = i < placed.length ? placed[i].year : Infinity;
+        const ok = before <= current.year && current.year <= after;
+        if (ok) {
+          pile.shift();
+          placed.splice(i, 0, current);
+          renderBoard(i, true);
+          renderHand(false);
+        } else {
+          erreurs++;
+          pile.push(pile.shift()); // la carte repart au bas de la pile
+          renderBoard(i, false);
+          renderHand(true);
+        }
+        renderStatus();
+        if (P.isStudent() && currentThemeId && !pile.length) noteActivity(currentThemeId);
+      }
+      const bRestart = el("button", "btn secondary", "🔁 Recommencer");
+      bRestart.addEventListener("click", buildChrono);
+      status.appendChild(bRestart);
+      renderBoard(-1, false); renderHand(false); renderStatus();
+    }
+    function setMode(m) {
+      const isChrono = m === "chrono";
+      chrono.classList.toggle("hidden", !isChrono);
+      board.classList.toggle("hidden", isChrono);
+      [bShuffle, bCheck, bExplain].forEach((b) => { b.style.display = isChrono ? "none" : ""; });
+      if (!isChrono) refreshAccess();
+      bModeR.classList.toggle("active-filter", !isChrono); bModeR.classList.toggle("secondary", isChrono);
+      bModeC.classList.toggle("active-filter", isChrono); bModeC.classList.toggle("secondary", !isChrono);
+      result.className = "frise-result";
+      if (isChrono && !chrono.childNodes.length) buildChrono();
+    }
+    bModeR.addEventListener("click", () => setMode("reconstituer"));
+    bModeC.addEventListener("click", () => setMode("chrono"));
+
     shuffle(); // démarre mélangé
+    refreshAccess();
     return wrap;
   }
 
@@ -6094,6 +6226,7 @@ except Exception:
     if (!P.getSession()) return;
     applyRole(); // pour l'élève : révèle/masque les corrigés poussés en direct
     refreshExoCorrections(); // corrigés d'exercices poussés/retirés en temps réel
+    document.querySelectorAll(".frise").forEach((f) => { if (f.__refresh) f.__refresh(); }); // correction de la frise poussée / retirée
     if (P.isStudent()) {
       syncStudentProgress();
       updateGlobalProgress();
