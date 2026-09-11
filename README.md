@@ -25,6 +25,10 @@ Contact : ebechalani@gmail.com
 - Espace classe : création de classes (code + nom, sans mot de passe élève),
   suivi en temps réel, matrice de réussite par thème, diagnostic par question,
   export CSV, corrigés poussés exercice par exercice ;
+- **Réponse en direct (📡)**, l'ardoise levée sur le site : le professeur pose
+  une question (choix, vrai/faux, texte court, nombre) depuis un conducteur ou
+  la barre du site, chaque élève répond depuis son poste, les réponses arrivent
+  en direct et se projettent, anonymes, sur l'écran de la classe ;
 - **Déroulés heure par heure** de chaque thème (109 séances de 2 h) avec, pour
   chaque séance : quoi utiliser sur le site, le déroulé minuté en classe, et
   le kit de préparation (27 imprimables « mission », 39 fichiers réels

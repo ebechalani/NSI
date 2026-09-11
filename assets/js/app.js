@@ -892,6 +892,299 @@
     return { send, open, ping: () => post({ type: "ping" }), isReady: () => ready, onState: (f) => stateFns.push(f) };
   })();
 
+  /* ---------------- Réponse en direct (📡) — côté prof ----------------
+     Remplace les ardoises levées : le prof pose une question (depuis une étape du
+     conducteur ou le bouton 📡 de la barre), chaque élève répond depuis son poste,
+     les réponses arrivent en direct (noms visibles par le prof seulement) et se
+     projettent, anonymes, sur la TV tactile. Données : Platform.getLive / setLive /
+     getLiveAnswers (doc classe + doc élève, écoutes temps réel existantes). */
+  const LIVE_TYPES = { choix: "Choix A / B / C / D", vraifaux: "Vrai / Faux", texte: "Texte court", nombre: "Nombre" };
+  const LIVE = (() => {
+    let panel = null, mode = "auto", prefill = null, projecting = false, showNames = true, sendTimer = null;
+    const normTxtAns = (v) => String(v == null ? "" : v).trim().toLowerCase().replace(/\s+/g, " ");
+    const normNum = (v) => { const n = parseFloat(String(v).replace(",", ".")); return isNaN(n) ? normTxtAns(v) : String(n); };
+    const stripTags = (h) => String(h || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+    const letter = (i) => "ABCD"[i] || String(i + 1);
+
+    function current() {
+      const cid = prepClasseId();
+      return { cid, live: cid ? P.getLive(cid) : null };
+    }
+    // Libellé lisible d'une valeur de réponse (indice → « B. texte », sinon le texte)
+    function valueLabel(live, v) {
+      if (live.type === "choix" || live.type === "vraifaux") {
+        const i = parseInt(v, 10);
+        const c = live.choices[i];
+        return c == null ? "—" : (live.type === "choix" ? letter(i) + ". " : "") + c;
+      }
+      return String(v == null ? "" : v);
+    }
+    function isGood(live, v) {
+      if (live.bonne == null || live.bonne === "") return null;
+      if (live.type === "choix" || live.type === "vraifaux") return String(live.bonne) === String(v);
+      return live.type === "nombre" ? normNum(live.bonne) === normNum(v) : normTxtAns(live.bonne) === normTxtAns(v);
+    }
+    function aggregate(live, answers, students) {
+      const groups = [];
+      if (live.type === "choix" || live.type === "vraifaux") {
+        live.choices.forEach((label, i) => {
+          const who = answers.filter((a) => String(a.value) === String(i));
+          groups.push({ key: String(i), label: (live.type === "choix" ? letter(i) + ". " : "") + label,
+            count: who.length, names: who.map((a) => a.name), ok: live.revealed && isGood(live, i) === true });
+        });
+      } else {
+        const map = {};
+        answers.forEach((a) => {
+          const k = live.type === "nombre" ? normNum(a.value) : normTxtAns(a.value);
+          if (!map[k]) map[k] = { key: k, label: String(a.value).trim(), count: 0, names: [] };
+          map[k].count++;
+          map[k].names.push(a.name);
+        });
+        Object.values(map).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label)).forEach((g) => {
+          g.ok = live.revealed && isGood(live, g.label) === true;
+          groups.push(g);
+        });
+      }
+      const answered = new Set(answers.map((a) => a.uid));
+      const absents = students.filter((s) => !answered.has(s.uid)).map((s) => s.name);
+      return { groups, total: answers.length, nbEleves: students.length, absents };
+    }
+    function snapshot(cid, live) {
+      const agg = aggregate(live, P.getLiveAnswers(cid, live.id), P.getStudents(cid));
+      return {
+        q: live.q, type: live.type, closed: !!live.closed, revealed: !!live.revealed,
+        total: agg.total, nbEleves: agg.nbEleves,
+        groups: agg.groups.map((g) => ({ label: g.label, count: g.count, ok: g.ok })),
+        bonneLabel: live.revealed && live.bonne != null && live.bonne !== "" ? valueLabel(live, live.bonne) : "",
+      };
+    }
+    function pushProj(cid, live) {
+      if (!projecting) return;
+      clearTimeout(sendTimer);
+      sendTimer = setTimeout(() => {
+        if (!live) { PROJ.send({ type: "noir" }); return; }
+        PROJ.send({ type: "show", kind: "live", snapshot: snapshot(cid, live) });
+      }, 200);
+    }
+    function update(cid, patch) {
+      const live = P.getLive(cid);
+      if (!live) return;
+      P.setLive(cid, Object.assign({}, live, patch));
+    }
+    function launch(cid, data) {
+      const live = {
+        id: "q" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), at: Date.now(),
+        q: data.q, type: data.type, choices: data.choices || [],
+        bonne: data.bonne == null || data.bonne === "" ? null : data.bonne, revealed: false, closed: false,
+      };
+      if (data.source) live.source = data.source;
+      if (!P.setLive(cid, live)) { toast("Impossible d'envoyer la question (classe introuvable)."); return; }
+      mode = "monitor"; prefill = null;
+      render();
+      toast("📡 Question envoyée aux élèves");
+    }
+
+    function ensurePanel() {
+      if (panel) return panel;
+      panel = el("div", "live-panel hidden");
+      panel.id = "livePanel";
+      document.body.appendChild(panel);
+      return panel;
+    }
+    function open(pre) {
+      prefill = pre || null;
+      mode = pre && (pre.q != null || pre.qcm || pre.compose) ? "compose" : "auto";
+      ensurePanel().classList.remove("hidden");
+      render();
+    }
+    function close() { if (panel) panel.classList.add("hidden"); }
+    function isOpen() { return !!panel && !panel.classList.contains("hidden"); }
+    function toggle() { if (isOpen()) close(); else open(null); }
+
+    function render() {
+      if (!isOpen()) return;
+      const { cid, live } = current();
+      panel.innerHTML = "";
+      const head = el("div", "live-head");
+      head.appendChild(el("strong", null, "📡 Réponse en direct"));
+      const mes = prepClasses();
+      if (mes.length > 1) {
+        const sel = el("select", "live-class");
+        sel.innerHTML = mes.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+        if (cid) sel.value = cid;
+        sel.addEventListener("change", () => { try { localStorage.setItem("nsi-prep-classe", sel.value); } catch (e) {} render(); });
+        head.appendChild(sel);
+      } else if (mes[0]) {
+        head.appendChild(el("span", "live-classname", escapeHtml(mes[0].name)));
+      }
+      const bClose = el("button", "live-close", "✕");
+      bClose.title = "Fermer le panneau (la question reste posée)";
+      bClose.addEventListener("click", close);
+      head.appendChild(bClose);
+      panel.appendChild(head);
+      if (!cid) {
+        panel.appendChild(el("p", "live-hint", "Crée d'abord une classe dans 🏫 Ma classe : la question est envoyée aux élèves connectés de la classe."));
+        return;
+      }
+      if (mode === "compose" || !live) renderCompose(cid, live); else renderMonitor(cid, live);
+    }
+
+    function renderCompose(cid, live) {
+      const f = el("form", "live-form");
+      const pre = prefill || {};
+      const themeId = pre.theme || currentThemeId || prepThemeId || null;
+      const qs = themeId && typeof QUIZZES !== "undefined" ? QUIZZES[themeId] || [] : [];
+      let fromQcm = "";
+      if (qs.length) {
+        fromQcm = `<label>Depuis le QCM du thème<select name="qcm"><option value="">— question à choisir —</option>` +
+          qs.map((q, i) => `<option value="${i}">${i + 1}. ${escapeHtml(stripTags(q.q)).slice(0, 70)}</option>`).join("") + `</select></label>`;
+      }
+      f.innerHTML =
+        `<label>Question<textarea name="q" rows="2" placeholder="Ex. : qu'affiche ce programme ?" required>${escapeHtml(pre.q || "")}</textarea></label>` +
+        fromQcm +
+        `<label>Type de réponse<select name="type">${Object.entries(LIVE_TYPES).map(([k, v]) => `<option value="${k}"${k === (pre.type || "texte") ? " selected" : ""}>${v}</option>`).join("")}</select></label>` +
+        `<div class="live-choices">${[0, 1, 2, 3].map((i) => `<input name="c${i}" placeholder="Choix ${letter(i)}" value="${escapeHtml((pre.choices || [])[i] || "")}">`).join("")}</div>` +
+        `<label>Réponse attendue (facultatif, révélée quand tu le décides)<input name="bonne" placeholder="Ex. : 16 / B / vrai" value="${escapeHtml(pre.bonne == null ? "" : String(pre.bonne))}"></label>` +
+        `<div class="live-actions"><button type="submit" class="btn">🚀 Lancer</button>` +
+        (live ? `<button type="button" class="btn secondary" data-act="back">↩ Suivi en cours</button>` : "") + `</div>` +
+        `<p class="live-hint">Les élèves connectés voient la question en bas de leur page et répondent depuis leur poste. Choix : la réponse attendue se note par sa lettre (A, B, C, D) ou vrai / faux.</p>`;
+      const typeSel = f.querySelector("[name=type]");
+      const choicesBox = f.querySelector(".live-choices");
+      const syncType = () => { choicesBox.style.display = typeSel.value === "choix" ? "" : "none"; };
+      syncType();
+      typeSel.addEventListener("change", syncType);
+      const qcmSel = f.querySelector("[name=qcm]");
+      if (qcmSel) {
+        const fill = () => {
+          const q = qs[+qcmSel.value];
+          if (!q) return;
+          f.querySelector("[name=q]").value = stripTags(q.q);
+          typeSel.value = "choix"; syncType();
+          q.choices.forEach((c, i) => { f.querySelector(`[name=c${i}]`).value = stripTags(c); });
+          f.querySelector("[name=bonne]").value = letter(q.answer);
+        };
+        qcmSel.addEventListener("change", fill);
+        if (pre.qcm && pre.qcmIndex != null) { qcmSel.value = String(pre.qcmIndex); fill(); }
+      }
+      const back = f.querySelector("[data-act=back]");
+      if (back) back.addEventListener("click", () => { mode = "monitor"; render(); });
+      f.addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        const fd = new FormData(f);
+        const type = fd.get("type");
+        const data = { q: String(fd.get("q") || "").trim(), type, source: pre.source || null };
+        if (!data.q) return;
+        let bonne = String(fd.get("bonne") || "").trim();
+        if (type === "choix") {
+          data.choices = [0, 1, 2, 3].map((i) => String(fd.get("c" + i) || "").trim()).filter(Boolean);
+          if (data.choices.length < 2) { toast("Donne au moins deux choix."); return; }
+          const idx = "ABCD".indexOf(bonne.toUpperCase());
+          data.bonne = bonne === "" ? null : (idx >= 0 && idx < data.choices.length ? idx : null);
+          if (bonne !== "" && data.bonne == null) { toast("Réponse attendue : indique une lettre (A, B, C ou D)."); return; }
+        } else if (type === "vraifaux") {
+          data.choices = ["Vrai", "Faux"];
+          const b = bonne.toLowerCase();
+          data.bonne = b === "" ? null : (/^v/.test(b) ? 0 : /^f/.test(b) ? 1 : null);
+          if (bonne !== "" && data.bonne == null) { toast("Réponse attendue : vrai ou faux."); return; }
+        } else {
+          data.bonne = bonne === "" ? null : bonne;
+        }
+        launch(cid, data);
+      });
+      panel.appendChild(f);
+    }
+
+    function renderMonitor(cid, live) {
+      const answers = P.getLiveAnswers(cid, live.id);
+      const agg = aggregate(live, answers, P.getStudents(cid));
+      const box = el("div", "live-monitor");
+      box.appendChild(el("p", "live-q", escapeHtml(live.q)));
+      const status = live.closed ? "🔒 question close" : "🟢 question ouverte";
+      box.appendChild(el("p", "live-status",
+        `${status} · <strong>${agg.total} / ${agg.nbEleves}</strong> ont répondu` + (live.revealed ? " · 👁️ réponse révélée" : "")));
+      const bars = el("div", "live-bars");
+      const max = Math.max(1, ...agg.groups.map((g) => g.count));
+      if (!agg.groups.length) bars.appendChild(el("p", "live-hint", "En attente des premières réponses…"));
+      agg.groups.forEach((g) => {
+        const row = el("div", "live-bar" + (g.ok ? " ok" : ""));
+        row.innerHTML =
+          `<div class="live-bar-line"><span class="live-bar-label">${escapeHtml(g.label)}</span><span class="live-bar-count">${g.count}</span></div>` +
+          `<div class="live-bar-track"><span style="width:${Math.round((100 * g.count) / max)}%"></span></div>` +
+          (showNames && g.names.length ? `<div class="live-names">${g.names.map(escapeHtml).join(", ")}</div>` : "");
+        bars.appendChild(row);
+      });
+      box.appendChild(bars);
+      if (agg.absents.length) {
+        box.appendChild(el("p", "live-absents", `⏳ Sans réponse (${agg.absents.length}) : ${showNames ? agg.absents.map(escapeHtml).join(", ") : "…"}`));
+      }
+      if (live.bonne != null && live.bonne !== "") {
+        box.appendChild(el("p", "live-hint", (live.revealed ? "✅ Réponse révélée : " : "🙈 Réponse attendue (cachée) : ") + escapeHtml(valueLabel(live, live.bonne))));
+      }
+      const act = el("div", "live-actions");
+      const mk = (txt, title, fn, cls) => {
+        const b = el("button", "btn " + (cls || "secondary"), txt);
+        b.type = "button"; b.title = title; b.addEventListener("click", fn); act.appendChild(b); return b;
+      };
+      mk(live.closed ? "🔓 Rouvrir" : "🔒 Clore", "Clore : plus aucune réponse n'est acceptée (l'ardoise levée)", () => update(cid, { closed: !live.closed }));
+      if (live.bonne != null && live.bonne !== "") {
+        mk(live.revealed ? "🙈 Cacher" : "👁️ Révéler", "Affiche la réponse attendue aux élèves et sur l'écran de projection", () => update(cid, { revealed: !live.revealed }));
+      }
+      const bp = mk(projecting ? "📽️ Projection en cours" : "📽️ Projeter", "Affiche les réponses (anonymes) sur la TV tactile via l'écran de projection", () => {
+        projecting = !projecting;
+        if (projecting) { if (!PROJ.isReady()) PROJ.open(); pushProj(cid, live); }
+        render();
+      }, projecting ? "" : "secondary");
+      bp.classList.toggle("active-filter", projecting);
+      mk(showNames ? "🙈 Masquer les noms" : "👤 Voir les noms", "Les noms ne sont jamais projetés : ce réglage ne concerne que ton écran", () => { showNames = !showNames; render(); });
+      mk("✏️ Nouvelle question", "Préparer une autre question (l'actuelle reste affichée jusqu'au lancement)", () => { mode = "compose"; prefill = { theme: (live.source || {}).theme || null }; render(); });
+      mk("🗑️ Effacer", "Retire la question chez les élèves et sur l'écran", () => { if (confirm("Effacer la question en direct ?")) { P.setLive(cid, null); projecting = false; mode = "auto"; render(); } });
+      box.appendChild(act);
+      panel.appendChild(box);
+    }
+
+    // Bouton 📡 de la barre (prof) : état = question ouverte + nombre de réponses
+    function setupButton() {
+      let b = document.getElementById("liveToggle");
+      if (!P.isTeacher() || IS_PROJ) { if (b) b.remove(); return; }
+      if (!b) {
+        b = el("button", "icon-btn live-btn");
+        b.id = "liveToggle";
+        b.setAttribute("aria-label", "Réponse en direct");
+        b.title = "📡 Réponse en direct : poser une question à la classe, voir les réponses arriver";
+        b.addEventListener("click", toggle);
+        const acc = $("#accountBox");
+        if (acc && acc.parentNode) acc.parentNode.insertBefore(b, acc); else document.querySelector(".topbar").appendChild(b);
+      }
+      const { cid, live } = current();
+      const n = live && cid ? P.getLiveAnswers(cid, live.id).length : 0;
+      b.innerHTML = "📡" + (live && !live.closed ? `<span class="live-badge">${n}</span>` : "");
+      b.classList.toggle("on", !!(live && !live.closed));
+    }
+    // Rafraîchissement temps réel (réponses des élèves, autre onglet prof…)
+    function refresh() {
+      setupButton();
+      if (isOpen() && mode !== "compose") render();
+      const { cid, live } = current();
+      pushProj(cid, live);
+    }
+    return { open, close, toggle, refresh, setupButton, isOpen };
+  })();
+
+  // Ce que la salle apporte à chaque type d'étape (salle en U, TV tactile, 4 coins équipés).
+  const SALLE_ETAPE = {
+    rituel: "📡 réponse en direct depuis les postes, réponses sur la TV tactile",
+    qcm: "📡 réponse en direct depuis les postes, résultats sur la TV tactile",
+    debranche: "îlots sur les postes voisins du U ou dans les coins équipés",
+    jeu: "îlots sur les postes voisins du U ou dans les coins équipés",
+    tp: "chacun à son poste, le prof circule au centre du U",
+    exercice: "chacun à son poste, le prof circule au centre du U",
+    demo: "TV tactile (écran de projection)",
+    explication: "TV tactile (écran de projection)",
+    noter: "TV tactile ; les élèves notent",
+    correction: "TV tactile (écran de projection)",
+    bilan: "📡 réponse en direct ou oral, TV tactile",
+  };
+
   function makeConduite(s, themeId, sIdx) {
     const wrap = el("div", "conduite");
     const canProj = themeId != null && sIdx != null && !IS_PROJ;
@@ -920,7 +1213,10 @@
       bPlan.addEventListener("click", () => projShow({ kind: "plan", theme: themeId, seance: sIdx }));
       const bNoir = el("button", "btn secondary", "⬛ Écran noir");
       bNoir.addEventListener("click", () => projShow({ type: "noir" }));
-      bar.append(bOpen, dot, status, bTitre, bPlan, bNoir);
+      const bLive = el("button", "btn secondary", "📡 Réponse en direct");
+      bLive.title = "Poser une question à la classe : chaque élève répond depuis son poste, les réponses s'affichent en direct (remplace les ardoises)";
+      bLive.addEventListener("click", () => LIVE.open({ theme: themeId, compose: true }));
+      bar.append(bOpen, dot, status, bTitre, bPlan, bNoir, bLive);
       const setState = (on) => {
         dot.classList.toggle("on", on);
         status.textContent = on ? "écran de projection connecté" : "écran non ouvert";
@@ -940,7 +1236,8 @@
       head.innerHTML =
         `<span class="cd-time">${e.t}</span>` +
         `<span class="cd-chip">${emo} ${label}</span>` +
-        `<strong class="cd-titre">${linkifyRefs(e.titre, themeId, refs)}</strong>`;
+        `<strong class="cd-titre">${linkifyRefs(e.titre, themeId, refs)}</strong>` +
+        (SALLE_ETAPE[e.type] ? `<span class="cd-salle" title="Dans la salle">🏫 ${SALLE_ETAPE[e.type]}</span>` : "");
       card.appendChild(head);
       if (e.prof) card.appendChild(el("p", "cd-prof", "👩‍🏫 " + linkifyRefs(e.prof, themeId, refs)));
       // Le pendant côté classe : ce que FONT les élèves pendant cette étape
@@ -969,6 +1266,21 @@
           bb.addEventListener("click", () => projShow({ kind: t.kind, theme: t.theme, index: t.index }));
           act.appendChild(bb);
         });
+        // 📡 La question de l'étape posée en direct (remplace l'ardoise) ; une question
+        // du QCM du thème si l'étape le cite.
+        const bq = el("button", "btn secondary cd-live", "📡 Question en direct");
+        bq.title = "Poser cette étape en question à la classe : chaque élève répond depuis son poste";
+        bq.addEventListener("click", () => LIVE.open({
+          q: String(e.titre || "").replace(/<[^>]+>/g, ""), theme: themeId,
+          source: { theme: themeId, seance: sIdx, etape: eIdx },
+        }));
+        act.appendChild(bq);
+        if (refs.some((t) => t.kind === "qcm")) {
+          const bqc = el("button", "btn secondary cd-live", "📡 QCM en direct");
+          bqc.title = "Poser une question du QCM du thème en direct (les élèves répondent depuis leur poste)";
+          bqc.addEventListener("click", () => LIVE.open({ theme: themeId, qcm: true, qcmIndex: 0, source: { theme: themeId, seance: sIdx, etape: eIdx } }));
+          act.appendChild(bqc);
+        }
         card.appendChild(act);
       }
       wrap.appendChild(card);
@@ -981,6 +1293,7 @@
     const blocs = (s.etapes || []).map((e) => {
       const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
       return `<h2>${e.t} — ${emo} ${label} · ${e.titre}</h2>` +
+        (SALLE_ETAPE[e.type] ? `<p class="intro">🏫 ${SALLE_ETAPE[e.type]}</p>` : "") +
         (e.prof ? `<p class="intro">👩‍🏫 ${e.prof}</p>` : "") +
         (e.eleves ? `<p class="intro">🧑‍🎓 Les élèves ${e.eleves}</p>` : "") +
         (e.contenu || "");
@@ -4119,6 +4432,7 @@ except Exception:
     const tt = $("#teacherToggle");
     if (tt) tt.style.display = "none"; // le rôle pilote la visibilité, plus le bouton
     renderAccountBox();
+    LIVE.setupButton(); // 📡 réponse en direct : bouton de la barre pour le prof
   }
 
   function renderAccountBox() {
@@ -4276,6 +4590,18 @@ except Exception:
     header.appendChild(el("p", "theme-intro",
       "Chaque séance réunit ici <strong>tout ce qu'il te faut</strong> : la fiche de cours à projeter, le déroulé minuté, le matériel à imprimer, les fichiers à déposer et l'évaluation du thème."));
     viewTheme.appendChild(header);
+
+    // La salle NSI telle qu'elle est, et ce que chaque outil du site y remplace.
+    const salle = el("details", "salle-info");
+    salle.innerHTML =
+      `<summary>🏫 La salle NSI et les conducteurs</summary>` +
+      `<div class="salle-body"><ul>` +
+      `<li><strong>Salle en U, un poste par élève.</strong> Les phases machine (💻 exercices, 🧪 TP) se font à son poste ; tu circules au centre du U et tu vois tous les écrans.</li>` +
+      `<li><strong>La TV tactile du bureau</strong> est l'écran de la classe : ouvre l'<em>écran de projection</em> (📽️) dessus et projette depuis le conducteur ce que la classe doit voir (étape, section, exercice, QCM) ; tu peux écrire au doigt par-dessus.</li>` +
+      `<li><strong>Les quatre coins équipés</strong> (deux fauteuils, une table, une TV HDMI) accueillent les îlots et les groupes de projet : un îlot par coin, un ordinateur branché sur la TV du coin ; les autres îlots travaillent sur les postes voisins du U.</li>` +
+      `<li><strong>Plus d'ardoises : la réponse en direct (📡).</strong> Chaque étape du conducteur a un bouton 📡 : la question part sur les postes, les élèves répondent (choix, vrai/faux, texte court, nombre), tu vois qui a répondu quoi, la TV tactile affiche les réponses anonymes, puis tu clos et tu révèles. Le bouton 📡 de la barre du site ouvre le même panneau à tout moment.</li>` +
+      `</ul><p class="live-hint">Chaque étape porte un repère 🏫 qui rappelle où elle se joue (postes, TV tactile, coins, réponse en direct).</p></div>`;
+    viewTheme.appendChild(salle);
 
     // Choix de la classe (le cahier de textes et « ma prochaine séance » en dépendent)
     const mes = prepClasses();
@@ -4643,6 +4969,13 @@ except Exception:
       P.setCorrectionsPushed(cls.id, e.target.checked);
     });
     head.appendChild(pushWrap);
+    const bLive = el("button", "btn secondary", "📡 Réponse en direct");
+    bLive.title = "Poser une question à la classe : les élèves répondent depuis leur poste (remplace les ardoises)";
+    bLive.addEventListener("click", () => {
+      try { localStorage.setItem("nsi-prep-classe", cls.id); } catch (e) {}
+      LIVE.open({ compose: true });
+    });
+    head.appendChild(bLive);
     viewTheme.appendChild(head);
 
     // Ajout d'élève
@@ -5562,6 +5895,27 @@ except Exception:
           renderQ();
           return;
         }
+        case "live": {
+          // Réponses en direct de la classe (anonymes) : l'ardoise levée sur la TV tactile.
+          const sn = m.snapshot;
+          if (!sn) return wait();
+          stage.appendChild(kicker(`📡 Réponse en direct · ${sn.total} / ${sn.nbEleves} réponses` + (sn.closed ? " · question close" : "")));
+          stage.appendChild(el("h1", null, escapeHtml(sn.q)));
+          const wrapL = el("div", "proj-live");
+          const groups = (sn.groups || []).slice(0, 10);
+          const max = Math.max(1, ...groups.map((g) => g.count));
+          groups.forEach((g) => {
+            wrapL.appendChild(el("div", "proj-live-row" + (g.ok ? " ok" : ""),
+              `<span class="proj-live-label">${escapeHtml(g.label)}</span>` +
+              `<span class="proj-live-track"><span style="width:${Math.round((100 * g.count) / max)}%"></span></span>` +
+              `<span class="proj-live-count">${g.count}</span>`));
+          });
+          if (!groups.length) wrapL.appendChild(el("p", "proj-hint", "En attente des réponses…"));
+          if ((sn.groups || []).length > groups.length) wrapL.appendChild(el("p", "proj-hint", `… et ${sn.groups.length - groups.length} autres réponses`));
+          stage.appendChild(wrapL);
+          if (sn.revealed && sn.bonneLabel) stage.appendChild(el("div", "proj-explain", "✅ Réponse attendue : " + escapeHtml(sn.bonneLabel)));
+          return;
+        }
       }
       wait();
     }
@@ -5604,6 +5958,83 @@ except Exception:
     let target = isKnownTarget(initial) ? initial : "home";
     if (target === "classe" && !P.isTeacher()) target = "home";
     navigate(target);
+    renderLiveStudent(); // 📡 une question du prof est peut-être déjà posée
+  }
+
+  /* ---------------- Réponse en direct (📡) — côté élève ----------------
+     Bandeau en bas de page, quelle que soit la page ouverte : la question du prof,
+     la saisie (choix, vrai/faux, texte, nombre), puis « réponse envoyée » et, quand
+     le prof la révèle, la réponse attendue. Re-rendu seulement si quelque chose a
+     changé (pour ne pas casser une saisie en cours). */
+  let liveStudentSig = "";
+  function renderLiveStudent() {
+    let box = document.getElementById("liveStudent");
+    const hide = () => { if (box) box.remove(); document.body.classList.remove("has-live"); liveStudentSig = ""; };
+    if (!P.isStudent() || IS_PROJ) { hide(); return; }
+    const live = P.getLive();
+    if (!live || (live.closed && !live.revealed)) { hide(); return; }
+    document.body.classList.add("has-live"); // marge basse : le bandeau ne cache pas la fin de page
+    const mine = P.myLiveAnswer(live.id);
+    const sig = [live.id, !!live.closed, !!live.revealed, mine ? String(mine.value) : "", live.q].join("|");
+    if (box && sig === liveStudentSig) return;
+    liveStudentSig = sig;
+    if (!box) { box = el("div", "live-student"); box.id = "liveStudent"; box.setAttribute("role", "status"); document.body.appendChild(box); }
+    box.innerHTML = "";
+    box.appendChild(el("div", "live-student-q", `<span class="live-student-tag">📡 Question du prof</span> ${escapeHtml(live.q)}`));
+    const isChoice = live.type === "choix" || live.type === "vraifaux";
+    const letter = (i) => "ABCD"[i] || String(i + 1);
+    const labelOf = (v) => {
+      if (isChoice) { const c = live.choices[parseInt(v, 10)]; return c == null ? "—" : (live.type === "choix" ? letter(parseInt(v, 10)) + ". " : "") + c; }
+      return String(v == null ? "" : v);
+    };
+    const good = (v) => {
+      if (live.bonne == null || live.bonne === "") return null;
+      if (isChoice) return String(live.bonne) === String(v);
+      const n = (x) => String(x).trim().toLowerCase().replace(/\s+/g, " ");
+      if (live.type === "nombre") { const a = parseFloat(String(live.bonne).replace(",", ".")), b = parseFloat(String(v).replace(",", ".")); if (!isNaN(a) && !isNaN(b)) return a === b; }
+      return n(live.bonne) === n(v);
+    };
+    const send = (v) => { if (P.answerLive(live.id, v)) toast("✓ Réponse envoyée"); };
+    const inputs = el("div", "live-student-inputs");
+    const renderInputs = () => {
+      inputs.innerHTML = "";
+      if (isChoice) {
+        live.choices.forEach((c, i) => {
+          const b = el("button", "btn secondary live-choice", (live.type === "choix" ? `<span class="lettre">${letter(i)}</span> ` : "") + escapeHtml(c));
+          b.type = "button";
+          if (mine && String(mine.value) === String(i)) b.classList.add("active-filter");
+          b.addEventListener("click", () => send(i));
+          inputs.appendChild(b);
+        });
+      } else {
+        const f = el("form", "live-student-form");
+        f.innerHTML = `<input name="v" ${live.type === "nombre" ? 'inputmode="decimal"' : ""} maxlength="80" placeholder="${live.type === "nombre" ? "Ta réponse (un nombre)" : "Ta réponse"}" autocomplete="off" required><button class="btn" type="submit">Envoyer</button>`;
+        if (mine) f.querySelector("input").value = String(mine.value);
+        f.addEventListener("submit", (ev) => { ev.preventDefault(); const v = String(f.querySelector("input").value || "").trim(); if (v) send(v); });
+        inputs.appendChild(f);
+      }
+    };
+    if (mine && !live.closed) {
+      const line = el("div", "live-student-mine", `✓ Ta réponse : <strong>${escapeHtml(labelOf(mine.value))}</strong>`);
+      const bEdit = el("button", "btn secondary", "Modifier");
+      bEdit.type = "button";
+      bEdit.addEventListener("click", () => { line.remove(); renderInputs(); box.appendChild(inputs); });
+      line.appendChild(bEdit);
+      box.appendChild(line);
+    } else if (mine) {
+      box.appendChild(el("div", "live-student-mine", `✓ Ta réponse : <strong>${escapeHtml(labelOf(mine.value))}</strong>`));
+    } else if (!live.closed) {
+      renderInputs();
+      box.appendChild(inputs);
+    } else {
+      box.appendChild(el("div", "live-student-mine", "Tu n'as pas répondu à temps."));
+    }
+    if (live.revealed && live.bonne != null && live.bonne !== "") {
+      const g = mine ? good(mine.value) : null;
+      box.appendChild(el("div", "live-student-reveal" + (g === true ? " ok" : g === false ? " ko" : ""),
+        `👁️ Réponse attendue : <strong>${escapeHtml(labelOf(live.bonne))}</strong>` + (g === true ? " · ✅ juste !" : g === false ? " · ❌ à revoir" : "")));
+    }
+    if (live.closed) box.appendChild(el("div", "live-hint", "🔒 Question close par le prof."));
   }
 
   // Données de démonstration : si le compte démo prof n'a aucune classe,
@@ -5671,7 +6102,9 @@ except Exception:
       if (active) setActiveNav(active.dataset.target);
       const noteCard = document.getElementById("studentNoteCard");
       if (noteCard) fillStudentNote(noteCard); // note mise à jour en direct
+      renderLiveStudent(); // 📡 question du prof posée / close / révélée en direct
     }
+    if (P.isTeacher()) LIVE.refresh(); // 📡 réponses des élèves qui arrivent
     if (P.isTeacher() && location.hash.replace("#", "") === "classe" && !document.querySelector(".cap-theme")) {
       // Ne pas re-rendre pendant que le prof tape une note : on diffère au blur.
       if (document.activeElement && document.activeElement.classList.contains("note-input")) {

@@ -319,6 +319,60 @@
     persistLocal(); notify();
   }
 
+  // ---- Réponse en direct (📡) : la question du prof, les réponses des élèves ----
+  // Remplace les ardoises levées : le prof pose une question, chaque élève répond
+  // depuis son poste, le prof voit les réponses arriver et les projette.
+  //   Doc classe : live = { id, at, q, type ("choix"|"vraifaux"|"texte"|"nombre"),
+  //                         choices[], bonne (indice ou texte ou null), revealed, closed, source }
+  //   Doc élève  : live = { qid, value, at }   (une seule réponse mémorisée : la dernière)
+  // Les écoutes temps réel existantes (classe côté élève, élèves côté prof) suffisent.
+  function getLive(classId) {
+    var cid = classId || (cache.session && cache.session.classId);
+    var c = getClass(cid);
+    return (c && c.live) || null;
+  }
+  function setLive(classId, live) {
+    var uid = cache.session && cache.session.fbUid;
+    var c = getClass(classId);
+    if (!c || c.teacherUid !== uid) return false;
+    if (live) c.live = live; else delete c.live;
+    persistLocal(); notify();
+    if (FB && db) {
+      try {
+        db.collection("classes").doc(c.id).update({ live: live ? live : firebase.firestore.FieldValue.delete() }).catch(fbErr);
+      } catch (e) {}
+    }
+    return true;
+  }
+  function answerLive(qid, value) {
+    if (!isStudent()) return false;
+    var s = studentByUid(cache.session.uid); if (!s) return false;
+    s.live = { qid: qid, value: value, at: Date.now() };
+    persistLocal(); notify();
+    fbSet("students", s.uid, { live: s.live }); // merge : seul le champ live est touché
+    return true;
+  }
+  function myLiveAnswer(qid) {
+    if (!isStudent()) return null;
+    var s = studentByUid(cache.session.uid);
+    return s && s.live && s.live.qid === qid ? s.live : null;
+  }
+  function getLiveAnswers(classId, qid) {
+    return getStudents(classId).filter(function (s) { return s.live && s.live.qid === qid; })
+      .map(function (s) { return { uid: s.uid, name: s.name, value: s.live.value, at: s.live.at || 0 }; });
+  }
+
+  // Mode LOCAL (sans Firebase) : deux onglets du même navigateur (prof / élève)
+  // se voient grâce à l'événement storage — la session de chaque onglet reste en mémoire.
+  if (!FB) {
+    window.addEventListener("storage", function (ev) {
+      if (!ev || (ev.key !== LS.classes && ev.key !== LS.students)) return;
+      cache.classes = loadLS(LS.classes, []);
+      cache.students = loadLS(LS.students, []);
+      notify();
+    });
+  }
+
   // ---- « Reprendre où j'en étais » (élève) ----
   function setLastTheme(themeId) {
     try { localStorage.setItem("nsi-last-theme", themeId); } catch (e) {}
@@ -578,6 +632,7 @@
     isCorrPushed: isCorrPushed, setCorrPushed: setCorrPushed,
     getSeanceEtat: getSeanceEtat, setSeanceEtat: setSeanceEtat,
     setLastTheme: setLastTheme, getLastTheme: getLastTheme,
+    getLive: getLive, setLive: setLive, answerLive: answerLive, myLiveAnswer: myLiveAnswer, getLiveAnswers: getLiveAnswers,
     exportData: exportData, importData: importData,
     saveCorriges: saveCorriges, fetchCorrige: fetchCorrige,
   };
