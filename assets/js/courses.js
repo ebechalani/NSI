@@ -4019,8 +4019,8 @@ for taille in [10, 1000, 1000000]:
       },
       /* ---- Sections 11 à 14 : kNN approfondi, d'après le diaporama « K plus proches voisins (KNN) »
          de Laurent Amanton (DIU EIL, Université Le Havre Normandie, 2021-2026) et mon TP
-         « XV de France ». Le diaporama ne porte pas de licence : plan et exemples types
-         adaptés, texte original. ---- */
+         « XV de France ». Le diaporama ne porte pas de licence (hébergé avec l'accord de
+         l'auteur) : plan et exemples types adaptés, texte original. ---- */
       {
         title: "kNN, un algorithme d'apprentissage : entraîner, tester, prédire",
         html: `

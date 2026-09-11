@@ -519,7 +519,7 @@ const THEME_RESSOURCES_EXT = {
     titre: "k plus proches voisins — introduction au machine learning (DIU)",
     auteur: "Laurent Amanton — DIU EIL, Université Le Havre Normandie (diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning », 2021-2026)",
     base: "",
-    note: "📎 Support de formation du DIU hébergé sur le site, comme mes autres supports du Havre. Le diaporama ne porte <strong>aucune mention de licence</strong> : il reste la propriété de son auteur et n'est mis à disposition qu'en complément de cours ; les sections 11 à 14 du thème s'en inspirent (plan, exemples types) sans en reprendre le texte. Le jeu de données des iris (UCI) et la bibliothèque scikit-learn sont en accès libre.",
+    note: "📎 Support de formation du DIU hébergé sur le site, comme mes autres supports du Havre. Le diaporama ne porte pas de mention de licence : il est hébergé ici <strong>avec l'accord de son auteur</strong> et reste sa propriété ; les sections 11 à 14 du thème s'en inspirent (plan, exemples types) sans en reprendre le texte. Le jeu de données des iris (UCI) et la bibliothèque scikit-learn sont en accès libre.",
     items: [
       { t: "📕 Diaporama — K plus proches voisins (KNN), L. Amanton (PDF, 30 pages)", url: "assets/ressources/ia/DIU_KNN_Amanton.pdf" },
       { t: "🌸 Le jeu de données des iris (UCI Machine Learning Repository)", url: "https://archive.ics.uci.edu/dataset/53/iris" },
