@@ -409,14 +409,14 @@ print(a)       # [1, 2, 3, 4] — surprise !</code></pre>
               <tr><td>40–55</td><td>Institutionnalisation</td><td>Trace écrite : <strong>programme</strong> = suite d'instructions précises et ordonnées ; <strong>langage de programmation</strong> = langue sans ambiguïté ; nous utiliserons <strong>Python</strong>. (Repère histoire : Python, Guido van Rossum, 1991.)</td></tr>
               <tr><td>55–85</td><td>Machine : premiers programmes</td><td>Sur le site, thème « Langages et programmation », première cellule : exécuter <code>print("Bonjour")</code>, puis <strong>modifier</strong> (son prénom, deux print, un calcul <code>print(3 * 7)</code>). Chaque élève doit faire afficher 3 choses différentes.</td></tr>
               <tr><td>85–100</td><td>⭐ Provoquer l'erreur</td><td>Consigne inhabituelle : « <strong>cassez</strong> votre programme » (enlever une parenthèse, écrire <code>Print</code>…). Lire ENSEMBLE les messages (<code>SyntaxError</code>, <code>NameError</code>) : l'erreur n'est pas une punition, c'est <em>la machine qui explique ce qu'elle n'a pas compris</em>. Réflexe à installer dès le jour 1 — c'est le meilleur prédicteur d'autonomie future.</td></tr>
-              <tr><td>100–115</td><td>Variables (découverte)</td><td>Débranché express sur ardoise : le professeur dicte <code>x = 5</code>, <code>x = x + 3</code>, <code>x = x * 2</code> ; chaque îlot suit la valeur de x (verbaliser : <code>=</code> n'est PAS l'égalité des maths, c'est « range dans la boîte »). Puis vérification sur machine.</td></tr>
+              <tr><td>100–115</td><td>Variables (découverte)</td><td>Débranché express en réponse en direct (📡) : le professeur dicte <code>x = 5</code>, <code>x = x + 3</code>, <code>x = x * 2</code> ; chaque îlot suit la valeur de x sur papier, puis chaque élève saisit seulement la valeur finale en réponse en direct (📡) ; le professeur clôt la question et affiche les réponses sur la TV tactile (verbaliser : <code>=</code> n'est PAS l'égalité des maths, c'est « range dans la boîte »). Puis vérification sur machine.</td></tr>
               <tr><td>115–120</td><td>Bilan</td><td>3 questions à l'oral : qu'est-ce qu'un programme ? que fait <code>=</code> ? que faire face à une erreur ? (→ les mêmes ouvriront la séance 2.)</td></tr>
             </table>
 
             <h3>Séance 2 (2 h) — « Des boîtes qui se souviennent, des programmes qui décident »</h3>
             <table>
               <tr><th>Temps</th><th>Phase</th><th>Déroulé</th></tr>
-              <tr><td>0–10</td><td>Rituel d'entrée</td><td>Les 3 questions du bilan S1, ardoises levées. Ré-expliquer par un élève, pas par le professeur.</td></tr>
+              <tr><td>0–10</td><td>Rituel d'entrée</td><td>Les 3 questions du bilan S1 en réponse en direct (📡) ; le professeur clôt chaque question et affiche les réponses sur la TV tactile. Ré-expliquer par un élève, pas par le professeur.</td></tr>
               <tr><td>10–30</td><td>Types de base</td><td>Le piège fondateur au tableau : que vaut <code>3 + 4</code> ? et <code>"3" + "4"</code> ? Faire parier les îlots, puis vérifier sur machine. Trace écrite : <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, et <code>type()</code> pour demander à Python.</td></tr>
               <tr><td>30–60</td><td>TP guidé sur le site</td><td>TP « <strong>Variables et types</strong> » (dans le thème) : les 4 étapes, dont le texte à trous de la calculatrice de moyenne. Travail en binômes « pilote/copilote » (on échange les rôles à mi-parcours).</td></tr>
               <tr><td>60–75</td><td>Conditions (découverte débranchée)</td><td>Jeu : le professeur pense à une règle (« si la note ≥ 10, je dis Reçu, sinon Raté ») et répond aux propositions des îlots ; ils doivent deviner la règle. Puis : comment l'écrire pour la machine ?</td></tr>
@@ -437,7 +437,7 @@ print(a)       # [1, 2, 3, 4] — surprise !</code></pre>
               <li>Noter la performance : les premières évaluations sont <strong>diagnostiques</strong> (QCM auto-corrigés, TP à barème bienveillant) ;</li>
               <li>Laisser les élèves « qui savent déjà » s'ennuyer : exercices défi + rôle de tuteur (expliquer, c'est consolider).</li>
             </ul>
-            <p class="note">📅 La suite (S2 → S6 : boucles, fonctions, débogage) est détaillée semaine par semaine dans la rubrique <strong>🗓️ Progression annuelle</strong>. Matériel : ardoises (ou feuilles A5), le site (aucune installation), et si possible Capytale/Thonny à partir de la semaine 4.</p>`,
+            <p class="note">📅 La suite (S2 → S6 : boucles, fonctions, débogage) est détaillée semaine par semaine dans la rubrique <strong>🗓️ Progression annuelle</strong>. Matériel : le site (aucune installation) avec sa réponse en direct (📡) à la place des ardoises, la TV tactile, et si possible Capytale/Thonny à partir de la semaine 4.</p>`,
         },
         {
           t: "Idées de projets NSI", file: "ideesProjets.html",
@@ -636,17 +636,17 @@ const THEME_PLANS = {
      "15–40 min : débranché « le prof-robot » (fiche Séquence 0) : les îlots écrivent la recette du carré/de la tartine, le prof exécute <strong>littéralement</strong> — leçon : la machine fait ce qu'on dit, pas ce qu'on veut dire",
      "40–55 min : institutionnalisation (trace écrite : programme, langage, Python 1991)",
      "55–85 min : sur le site, section 1 : exécuter la cellule ▶ « print », puis la <strong>modifier</strong> (prénom, deux print, un calcul) — 3 affichages différents par élève",
-     "85–100 min : « cassez votre programme » : provoquer SyntaxError et NameError, lire les messages ENSEMBLE au vidéoprojecteur",
-     "100–115 min : variables sur ardoise (x = 5 ; x = x + 3 ; x = x * 2, « = range dans la boîte ») puis vérification sur machine",
+     "85–100 min : « cassez votre programme » : provoquer SyntaxError et NameError, lire les messages ENSEMBLE sur la TV tactile",
+     "100–115 min : variables : trace de x = 5 ; x = x + 3 ; x = x * 2 sur papier, valeur finale en réponse en direct (📡), « = range dans la boîte », puis vérification sur machine",
      "115–120 min : bilan oral en 3 questions (reprises en rituel de la séance 2)"
     ],
     "aPreparer": [
      "Matériel du prof-robot : plaquette de beurre + pain (ou craie et grand tableau pour le carré)",
-     "Ardoises ou feuilles A5 par élève",
-     "Codes de classe créés à l'avance sur le site ; vidéoprojecteur testé",
+     "Questions de réponse en direct (📡) préparées : sortie des trois print, valeur finale de x",
+     "Codes de classe créés à l'avance sur le site ; TV tactile testée",
      "Trace écrite « programme / langage / erreur » à faire coller"
     ],
-    "cours": "<p><strong>📖 La notion :</strong></p><p>Un <strong>programme</strong> est une suite d'<strong>instructions précises et ordonnées</strong>, exécutées par la machine de haut en bas. La machine fait <strong>exactement</strong> ce qu'on écrit — ni plus, ni moins. Un <strong>langage de programmation</strong> est une langue <em>sans ambiguïté</em> inventée pour lui parler ; nous utiliserons <strong>Python</strong> (créé par Guido van Rossum en 1991).</p><p>Exemple déroulé à la main, sans machine — l'expérience du « prof-robot » : un îlot écrit la recette de la tartine, le professeur l'exécute <em>littéralement</em>. À la consigne « mets du beurre sur le pain », il pose la plaquette entière sur le pain. La consigne était claire pour un humain, pas pour un robot : il fallait écrire « 1. Ouvre la plaquette. 2. Prélève une noix de beurre avec le couteau. 3. Étale-la sur la face du dessus. » Leçon fondatrice : <strong>la machine fait ce qu'on dit, pas ce qu'on veut dire</strong>.</p><p><strong>🐢 Premiers programmes — pas à pas :</strong></p><pre><code>print(\"Bonjour !\")        # affiche Bonjour !\nprint(3 * 7)              # affiche 21\nprint(\"3 * 7\")            # affiche 3 * 7</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>print(...)</code> demande à Python d'<strong>afficher</strong> ce qui est entre parenthèses ;</li><li>avec des <strong>guillemets</strong>, c'est du <strong>texte</strong>, recopié tel quel ; sans guillemets, <code>3 * 7</code> est un <strong>calcul</strong>, effectué avant l'affichage (<code>*</code> est la multiplication) ;</li><li>si l'on écrit mal, Python répond par un <strong>message d'erreur</strong> : ce n'est pas une punition, c'est la machine qui explique ce qu'elle n'a pas compris.</li></ul><table><tr><th>On tape…</th><th>Python répond</th><th>Traduction</th></tr><tr><td><code>print(\"Bonjour\"</code></td><td><code>SyntaxError</code></td><td>« phrase mal formée » (parenthèse fermante oubliée)</td></tr><tr><td><code>Print(\"Bonjour\")</code></td><td><code>NameError</code></td><td>« je ne connais pas le mot <code>Print</code> » (majuscule interdite)</td></tr></table><p><strong>Les variables — une boîte qui se souvient :</strong> une <strong>variable</strong> est un nom collé sur une valeur, comme une étiquette sur une boîte. Le signe <code>=</code> n'est <strong>pas</strong> l'égalité des maths : il signifie « <strong>reçoit la valeur</strong> », autrement dit « range dans la boîte ». On lit toujours la <strong>droite</strong> d'abord, puis on range le résultat dans la variable de <strong>gauche</strong> : c'est pourquoi <code>x = x + 3</code>, absurde en maths, est normal en Python.</p><p><strong>📋 Trace d'exécution :</strong> suivi de la valeur de <code>x</code>, instruction par instruction (l'exercice de l'ardoise) :</p><table><tr><th>Instruction</th><th>On calcule (la droite)</th><th>x vaut</th></tr><tr><td><code>x = 5</code></td><td>—</td><td>5</td></tr><tr><td><code>x = x + 3</code></td><td>5 + 3 = 8</td><td>8</td></tr><tr><td><code>x = x * 2</code></td><td>8 * 2 = 16</td><td>16</td></tr></table><pre><code>x = 5\nx = x + 3\nx = x * 2\nprint(x)       # affiche 16</code></pre><p><strong>🎯 Défi élève :</strong> compléter les trois trous pour obtenir exactement les affichages annoncés.</p><pre><code>______(\"Bonjour !\")     # doit afficher Bonjour !\nprint(3 ______ 7)       # doit afficher 21\nx = 5\nx = x + ______\nprint(x)                # doit afficher 8</code></pre><p><strong>✅ Réponse :</strong></p><pre><code>print(\"Bonjour !\")     # affiche Bonjour !\nprint(3 * 7)           # affiche 21\nx = 5\nx = x + 3\nprint(x)               # affiche 8</code></pre><ul><li>La machine exécute <strong>exactement</strong> ce qui est écrit, dans l'ordre, de haut en bas.</li><li><code>=</code> se lit « reçoit la valeur » (range dans la boîte), jamais « est égal à ».</li><li>Un message d'erreur (<code>SyntaxError</code>, <code>NameError</code>) est une <strong>aide</strong> : on le lit, il indique la ligne fautive.</li></ul>",
+    "cours": "<p><strong>📖 La notion :</strong></p><p>Un <strong>programme</strong> est une suite d'<strong>instructions précises et ordonnées</strong>, exécutées par la machine de haut en bas. La machine fait <strong>exactement</strong> ce qu'on écrit — ni plus, ni moins. Un <strong>langage de programmation</strong> est une langue <em>sans ambiguïté</em> inventée pour lui parler ; nous utiliserons <strong>Python</strong> (créé par Guido van Rossum en 1991).</p><p>Exemple déroulé à la main, sans machine — l'expérience du « prof-robot » : un îlot écrit la recette de la tartine, le professeur l'exécute <em>littéralement</em>. À la consigne « mets du beurre sur le pain », il pose la plaquette entière sur le pain. La consigne était claire pour un humain, pas pour un robot : il fallait écrire « 1. Ouvre la plaquette. 2. Prélève une noix de beurre avec le couteau. 3. Étale-la sur la face du dessus. » Leçon fondatrice : <strong>la machine fait ce qu'on dit, pas ce qu'on veut dire</strong>.</p><p><strong>🐢 Premiers programmes — pas à pas :</strong></p><pre><code>print(\"Bonjour !\")        # affiche Bonjour !\nprint(3 * 7)              # affiche 21\nprint(\"3 * 7\")            # affiche 3 * 7</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>print(...)</code> demande à Python d'<strong>afficher</strong> ce qui est entre parenthèses ;</li><li>avec des <strong>guillemets</strong>, c'est du <strong>texte</strong>, recopié tel quel ; sans guillemets, <code>3 * 7</code> est un <strong>calcul</strong>, effectué avant l'affichage (<code>*</code> est la multiplication) ;</li><li>si l'on écrit mal, Python répond par un <strong>message d'erreur</strong> : ce n'est pas une punition, c'est la machine qui explique ce qu'elle n'a pas compris.</li></ul><table><tr><th>On tape…</th><th>Python répond</th><th>Traduction</th></tr><tr><td><code>print(\"Bonjour\"</code></td><td><code>SyntaxError</code></td><td>« phrase mal formée » (parenthèse fermante oubliée)</td></tr><tr><td><code>Print(\"Bonjour\")</code></td><td><code>NameError</code></td><td>« je ne connais pas le mot <code>Print</code> » (majuscule interdite)</td></tr></table><p><strong>Les variables — une boîte qui se souvient :</strong> une <strong>variable</strong> est un nom collé sur une valeur, comme une étiquette sur une boîte. Le signe <code>=</code> n'est <strong>pas</strong> l'égalité des maths : il signifie « <strong>reçoit la valeur</strong> », autrement dit « range dans la boîte ». On lit toujours la <strong>droite</strong> d'abord, puis on range le résultat dans la variable de <strong>gauche</strong> : c'est pourquoi <code>x = x + 3</code>, absurde en maths, est normal en Python.</p><p><strong>📋 Trace d'exécution :</strong> suivi de la valeur de <code>x</code>, instruction par instruction (l'exercice de trace sur papier, résultat final en réponse en direct 📡) :</p><table><tr><th>Instruction</th><th>On calcule (la droite)</th><th>x vaut</th></tr><tr><td><code>x = 5</code></td><td>—</td><td>5</td></tr><tr><td><code>x = x + 3</code></td><td>5 + 3 = 8</td><td>8</td></tr><tr><td><code>x = x * 2</code></td><td>8 * 2 = 16</td><td>16</td></tr></table><pre><code>x = 5\nx = x + 3\nx = x * 2\nprint(x)       # affiche 16</code></pre><p><strong>🎯 Défi élève :</strong> compléter les trois trous pour obtenir exactement les affichages annoncés.</p><pre><code>______(\"Bonjour !\")     # doit afficher Bonjour !\nprint(3 ______ 7)       # doit afficher 21\nx = 5\nx = x + ______\nprint(x)                # doit afficher 8</code></pre><p><strong>✅ Réponse :</strong></p><pre><code>print(\"Bonjour !\")     # affiche Bonjour !\nprint(3 * 7)           # affiche 21\nx = 5\nx = x + 3\nprint(x)               # affiche 8</code></pre><ul><li>La machine exécute <strong>exactement</strong> ce qui est écrit, dans l'ordre, de haut en bas.</li><li><code>=</code> se lit « reçoit la valeur » (range dans la boîte), jamais « est égal à ».</li><li>Un message d'erreur (<code>SyntaxError</code>, <code>NameError</code>) est une <strong>aide</strong> : on le lit, il indique la ligne fautive.</li></ul>",
     "etapes": [
      {
       "t": "0–15 min",
@@ -675,10 +675,10 @@ const THEME_PLANS = {
      {
       "t": "55–70 min",
       "type": "demo",
-      "titre": "Premier print au vidéoprojecteur",
+      "titre": "Premier print sur la TV tactile",
       "prof": "Projette la section 1 du site, exécute la cellule ▶ « print » devant la classe et commente les trois lignes : texte entre guillemets recopié tel quel, calcul sans guillemets effectué avant l'affichage.",
       "contenu": "<p><strong>🐢 Premiers programmes — pas à pas :</strong></p><pre><code>print(\"Bonjour !\")        # affiche Bonjour !\nprint(3 * 7)              # affiche 21\nprint(\"3 * 7\")            # affiche 3 * 7</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>print(...)</code> demande à Python d'<strong>afficher</strong> ce qui est entre parenthèses ;</li><li>avec des <strong>guillemets</strong>, c'est du <strong>texte</strong>, recopié tel quel ; sans guillemets, <code>3 * 7</code> est un <strong>calcul</strong>, effectué avant l'affichage (<code>*</code> est la multiplication) ;</li><li>si l'on écrit mal, Python répond par un <strong>message d'erreur</strong> : ce n'est pas une punition, c'est la machine qui explique ce qu'elle n'a pas compris.</li></ul>",
-      "eleves": "prédisent à l'ardoise la sortie des trois print avant l'exécution, puis répondent aux questions sur les guillemets."
+      "eleves": "prédisent en réponse en direct (📡) la sortie des trois print avant l'exécution, puis répondent aux questions sur les guillemets."
      },
      {
       "t": "70–85 min",
@@ -692,7 +692,7 @@ const THEME_PLANS = {
       "t": "85–100 min",
       "type": "demo",
       "titre": "Cassez votre programme",
-      "prof": "Fais provoquer volontairement une SyntaxError (parenthèse fermante oubliée) puis une NameError (Print avec majuscule), et lis les messages ENSEMBLE au vidéoprojecteur en les traduisant ligne par ligne.",
+      "prof": "Fais provoquer volontairement une SyntaxError (parenthèse fermante oubliée) puis une NameError (Print avec majuscule), et lis les messages ENSEMBLE sur la TV tactile en les traduisant ligne par ligne.",
       "contenu": "<table><tr><th>On tape…</th><th>Python répond</th><th>Traduction</th></tr><tr><td><code>print(\"Bonjour\"</code></td><td><code>SyntaxError</code></td><td>« phrase mal formée » (parenthèse fermante oubliée)</td></tr><tr><td><code>Print(\"Bonjour\")</code></td><td><code>NameError</code></td><td>« je ne connais pas le mot <code>Print</code> » (majuscule interdite)</td></tr></table>",
       "eleves": "provoquent volontairement SyntaxError puis NameError sur leur machine et traduisent les messages avec la classe."
      },
@@ -700,9 +700,9 @@ const THEME_PLANS = {
       "t": "100–110 min",
       "type": "noter",
       "titre": "Les variables : = range dans la boîte",
-      "prof": "Fais dérouler x = 5 ; x = x + 3 ; x = x * 2 sur ardoise avec le tableau de suivi, martèle « = range dans la boîte », puis fais vérifier le résultat sur machine.",
-      "contenu": "<p><strong>Les variables — une boîte qui se souvient :</strong> une <strong>variable</strong> est un nom collé sur une valeur, comme une étiquette sur une boîte. Le signe <code>=</code> n'est <strong>pas</strong> l'égalité des maths : il signifie « <strong>reçoit la valeur</strong> », autrement dit « range dans la boîte ». On lit toujours la <strong>droite</strong> d'abord, puis on range le résultat dans la variable de <strong>gauche</strong> : c'est pourquoi <code>x = x + 3</code>, absurde en maths, est normal en Python.</p><p><strong>📋 Trace d'exécution :</strong> suivi de la valeur de <code>x</code>, instruction par instruction (l'exercice de l'ardoise) :</p><table><tr><th>Instruction</th><th>On calcule (la droite)</th><th>x vaut</th></tr><tr><td><code>x = 5</code></td><td>—</td><td>5</td></tr><tr><td><code>x = x + 3</code></td><td>5 + 3 = 8</td><td>8</td></tr><tr><td><code>x = x * 2</code></td><td>8 * 2 = 16</td><td>16</td></tr></table><pre><code>x = 5\nx = x + 3\nx = x * 2\nprint(x)       # affiche 16</code></pre>",
-      "eleves": "déroulent x = 5, x = x + 3, x = x * 2 sur ardoise, puis vérifient sur machine."
+      "prof": "Fais dérouler x = 5 ; x = x + 3 ; x = x * 2 sur papier avec le tableau de suivi, fais saisir la valeur finale de x en réponse en direct (📡), martèle « = range dans la boîte », puis fais vérifier le résultat sur machine.",
+      "contenu": "<p><strong>Les variables — une boîte qui se souvient :</strong> une <strong>variable</strong> est un nom collé sur une valeur, comme une étiquette sur une boîte. Le signe <code>=</code> n'est <strong>pas</strong> l'égalité des maths : il signifie « <strong>reçoit la valeur</strong> », autrement dit « range dans la boîte ». On lit toujours la <strong>droite</strong> d'abord, puis on range le résultat dans la variable de <strong>gauche</strong> : c'est pourquoi <code>x = x + 3</code>, absurde en maths, est normal en Python.</p><p><strong>📋 Trace d'exécution :</strong> suivi de la valeur de <code>x</code>, instruction par instruction (l'exercice de trace sur papier, résultat final en réponse en direct 📡) :</p><table><tr><th>Instruction</th><th>On calcule (la droite)</th><th>x vaut</th></tr><tr><td><code>x = 5</code></td><td>—</td><td>5</td></tr><tr><td><code>x = x + 3</code></td><td>5 + 3 = 8</td><td>8</td></tr><tr><td><code>x = x * 2</code></td><td>8 * 2 = 16</td><td>16</td></tr></table><pre><code>x = 5\nx = x + 3\nx = x * 2\nprint(x)       # affiche 16</code></pre>",
+      "eleves": "déroulent x = 5, x = x + 3, x = x * 2 sur papier, saisissent la valeur finale de x en réponse en direct (📡), puis vérifient sur machine."
      },
      {
       "t": "110–115 min",
@@ -734,7 +734,7 @@ const THEME_PLANS = {
      "Exercice 2 (facile) : prédire x après trois affectations"
     ],
     "enClasse": [
-     "0–10 min : rituel — les 3 questions du bilan S1 sur ardoises levées, ré-expliquées par un élève",
+     "0–10 min : rituel — les 3 questions du bilan S1 en réponse en direct (📡), ré-expliquées par un élève",
      "10–30 min : le piège fondateur : faire parier les îlots sur 3 + 4 puis « 3 » + « 4 », vérifier sur machine ; trace int/float/str/bool et type()",
      "30–60 min : TP guidé « Variables et types », étapes 1 à 4, en binômes pilote/copilote (échange des rôles à mi-parcours)",
      "60–75 min : conditions en débranché : jeu de la règle cachée (« si la note ≥ 10 je dis Reçu ») que les îlots doivent deviner",
@@ -742,7 +742,7 @@ const THEME_PLANS = {
      "105–120 min : mini-QCM auto-corrigé (remonte dans « Ma classe ») + annonce : « et si on veut répéter 100 fois ? »"
     ],
     "aPreparer": [
-     "Ardoises ; constitution des binômes pilote/copilote",
+     "Les 3 questions du bilan S1 préparées en réponse en direct (📡) ; constitution des binômes pilote/copilote",
      "Sélection des 4–5 questions de QCM (le site permet de refaire le QCM complet plus tard)",
      "Cartes « notes » (8, 12, 15, 17…) pour le jeu de la règle cachée"
     ],
@@ -752,15 +752,15 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : les 3 questions de S1",
-      "prof": "Repose sur ardoises levées les 3 questions du bilan de la séance 1 ; fais ré-expliquer chaque réponse par un élève différent.",
-      "contenu": "<p>Ardoises levées : les 3 questions du bilan de la séance 1 (la machine exécute exactement ce qui est écrit ; <code>=</code> se lit « reçoit la valeur » ; un message d'erreur est une aide).</p>",
-      "eleves": "écrivent leurs réponses aux trois questions de S1 sur ardoise et les lèvent au signal."
+      "prof": "Repose en réponse en direct (📡) les 3 questions du bilan de la séance 1 : clôt chaque question, affiche les réponses sur la TV tactile, puis fais ré-expliquer chaque réponse par un élève différent.",
+      "contenu": "<p>Réponse en direct (📡) : les 3 questions du bilan de la séance 1 (la machine exécute exactement ce qui est écrit ; <code>=</code> se lit « reçoit la valeur » ; un message d'erreur est une aide).</p>",
+      "eleves": "répondent depuis leur poste aux trois questions de S1 en réponse en direct (📡), puis comparent avec l'histogramme affiché sur la TV tactile."
      },
      {
       "t": "10–20 min",
       "type": "explication",
       "titre": "Le piège fondateur des types",
-      "prof": "Fais parier chaque îlot sur 3 + 4 puis sur « 3 » + « 4 », note les paris au tableau, puis vérifie sur machine au vidéoprojecteur : même signe, deux sens différents.",
+      "prof": "Fais parier chaque îlot sur 3 + 4 puis sur « 3 » + « 4 », note les paris au tableau, puis vérifie en exécutant la cellule sur la TV tactile : même signe, deux sens différents.",
       "contenu": "<p><strong>📖 La notion :</strong></p><p>Une variable est une boîte étiquetée, mais toutes les boîtes ne contiennent pas la même <em>sorte</em> de valeur : chaque valeur possède un <strong>type</strong>, et c'est le type qui décide du sens des opérations. Pari à faire à la main, avant la machine : que valent <code>3 + 4</code> et <code>\"3\" + \"4\"</code> ? Pour des <strong>nombres</strong>, <code>+</code> additionne : 3 + 4 = 7. Pour du <strong>texte</strong> (les guillemets !), <code>+</code> <em>colle</em> les deux chaînes bout à bout : « 3 » collé à « 4 » donne « 34 ». Même signe, deux sens différents : c'est le type qui tranche.</p>",
       "eleves": "parient en îlot sur 3 + 4 puis sur « 3 » + « 4 », et comparent avec l'exécution."
      },
@@ -768,9 +768,9 @@ const THEME_PLANS = {
       "t": "20–30 min",
       "type": "noter",
       "titre": "Trace : les 4 types et type()",
-      "prof": "Dicte la trace écrite : le tableau des 4 types, l'interrogation avec type(), puis fais prédire sur ardoise chaque expression du tableau (17 / 5, 17 // 5, 17 % 5) avant de vérifier sur machine.",
+      "prof": "Dicte la trace écrite : le tableau des 4 types, l'interrogation avec type(), puis fais prédire en réponse en direct (📡) chaque expression du tableau (17 / 5, 17 // 5, 17 % 5), une question par expression, avant de vérifier sur machine.",
       "contenu": "<p>Les 4 types de base :</p><table><tr><th>Type</th><th>Exemple</th><th>Sert à…</th></tr><tr><td><code>int</code></td><td><code>15</code></td><td>nombres entiers</td></tr><tr><td><code>float</code></td><td><code>1.72</code></td><td>nombres à virgule (un point remplace la virgule)</td></tr><tr><td><code>str</code></td><td><code>\"Ada\"</code></td><td>chaînes de caractères (texte, entre guillemets)</td></tr><tr><td><code>bool</code></td><td><code>True</code></td><td>vrai / faux</td></tr></table><p><strong>🐢 Première méthode — demander son type à Python :</strong></p><pre><code>age = 15            # int\ntaille = 1.72       # float\nnom = \"Ada\"         # str\nmajeur = False      # bool\n\nprint(type(age))    # affiche &lt;class 'int'&gt;\nprint(type(nom))    # affiche &lt;class 'str'&gt;\nprint(\"3\" + \"4\")    # affiche 34\nprint(3 + 4)        # affiche 7</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>Python devine le type tout seul d'après la valeur affectée (<strong>typage dynamique</strong>) ; <code>type()</code> permet de l'interroger ;</li><li><code>\"15\"</code> (texte) n'est pas <code>15</code> (nombre) : les guillemets changent tout ;</li><li>la division <code>/</code> donne toujours un <code>float</code> ; <code>//</code> donne le quotient entier et <code>%</code> le reste.</li></ul><p><strong>📋 Trace d'exécution :</strong> valeurs et types prédits à la main, puis vérifiés sur machine :</p><table><tr><th>Expression</th><th>Valeur</th><th>Type</th></tr><tr><td><code>3 + 4</code></td><td><code>7</code></td><td><code>int</code></td></tr><tr><td><code>\"3\" + \"4\"</code></td><td><code>\"34\"</code></td><td><code>str</code></td></tr><tr><td><code>17 / 5</code></td><td><code>3.4</code></td><td><code>float</code></td></tr><tr><td><code>17 // 5</code></td><td><code>3</code></td><td><code>int</code></td></tr><tr><td><code>17 % 5</code></td><td><code>2</code></td><td><code>int</code></td></tr></table>",
-      "eleves": "copient le tableau des 4 types, puis prédisent 17 / 5, 17 // 5 et 17 % 5 sur ardoise."
+      "eleves": "copient le tableau des 4 types, puis prédisent 17 / 5, 17 // 5 et 17 % 5 en réponse en direct (📡)."
      },
      {
       "t": "30–60 min",
@@ -832,7 +832,7 @@ const THEME_PLANS = {
      "Exercice 1 (facile, texte à trou est_pair)"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise — prédire la sortie d'un if simple",
+     "0–10 min : rituel réponse en direct (📡) — prédire la sortie d'un if simple",
      "10–30 min : débranché : « trier les humains » — chaque élève reçoit une carte-note, se place dans la zone TB/B/AB/P selon les règles affichées ; que se passe-t-il si on teste ≥ 14 avant ≥ 16 ?",
      "30–50 min : lecture guidée section 3 + manipulation de la cellule ▶ : changer la note, inverser deux elif, observer",
      "50–85 min : TP guidé « Les conditions » étapes 1–3 en binômes",
@@ -850,9 +850,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : prédire un if",
-      "prof": "Projette un if simple au tableau, fais prédire la sortie sur ardoise levée, puis vérifie en exécutant la cellule devant la classe.",
-      "contenu": "<p>Ardoise : prédire la sortie d'un <code>if</code> simple projeté au tableau, puis vérification par exécution.</p>",
-      "eleves": "prédisent la sortie du if sur ardoise levée, puis comparent avec l'exécution projetée."
+      "prof": "Projette un if simple au tableau, fais prédire la sortie en réponse en direct (📡), clôt la question et affiche les réponses sur la TV tactile, puis vérifie en exécutant la cellule devant la classe.",
+      "contenu": "<p>Réponse en direct (📡) : prédire la sortie d'un <code>if</code> simple projeté au tableau, puis vérification par exécution.</p>",
+      "eleves": "prédisent la sortie du if en réponse en direct (📡), puis comparent avec l'exécution projetée sur la TV tactile."
      },
      {
       "t": "10–30 min",
@@ -922,7 +922,7 @@ const THEME_PLANS = {
      "Bloc « Erreurs fréquentes » du thème (deux-points oubliés, range, print/return, while infinie) et fiche-résumé"
     ],
     "enClasse": [
-     "0–15 min : rituel — dictée de code : le prof écrit 3 mini-programmes au tableau, les élèves prédisent la sortie sur ardoise",
+     "0–15 min : rituel — dictée de code : le prof écrit 3 mini-programmes au tableau, les élèves prédisent la sortie en réponse en direct (📡)",
      "15–35 min : lecture collective des « Erreurs fréquentes » du thème ; chaque îlot met en scène une erreur au tableau",
      "35–75 min : exercices 2 puis 3 en cellule vide (l'élève écrit TOUT le code) ; entraide dans l'îlot avant d'appeler le prof",
      "75–100 min : différenciation : exercice 8 (défi) pour les rapides, reprise guidée du TP « Les conditions » pour les fragiles",
@@ -938,10 +938,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Dictée de code sur ardoises",
-      "prof": "Écris trois mini-programmes au tableau (affectations successives, un petit if) ; chaque élève prédit la sortie sur son ardoise et la lève au signal, sans machine.",
-      "contenu": "<p>Dictée de code : trois mini-programmes au tableau, sortie à prédire sur ardoise avant toute exécution.</p>",
-      "eleves": "prédisent la sortie des trois mini-programmes sur ardoise et la lèvent au signal."
+      "titre": "Dictée de code en réponse en direct",
+      "prof": "Écris trois mini-programmes au tableau (affectations successives, un petit if) ; chaque élève saisit la sortie prédite en réponse en direct (📡) depuis son poste, sans exécuter ; clôt chaque question et affiche les réponses sur la TV tactile.",
+      "contenu": "<p>Dictée de code : trois mini-programmes au tableau, sortie à prédire en réponse en direct (📡) avant toute exécution.</p>",
+      "eleves": "prédisent la sortie des trois mini-programmes en réponse en direct (📡), puis comparent avec les réponses affichées sur la TV tactile."
      },
      {
       "t": "10–15 min",
@@ -1011,11 +1011,11 @@ const THEME_PLANS = {
      "Exercices 4 (table de 9) et 5 (somme des entiers de 1 à 100, accumulation)"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise (un if à prédire)",
+     "0–10 min : rituel réponse en direct (📡) : un if à prédire",
      "10–35 min : débranché : retour du « robot humain » sur quadrillage — programme long, puis raccourci avec « répète 3 fois (avance) » : la boucle naît du besoin",
      "35–55 min : section 4 : exécuter la cellule ▶, changer range(1, 11), tester range(0, 20, 2) ; verbaliser « range(n) s'arrête à n−1 »",
      "55–80 min : TP « Les boucles » étape 1, puis exercice 4 en cellule vide",
-     "80–105 min : exercice 5 : d'abord tableau de suivi de la variable total sur ardoise (débranché), puis code",
+     "80–105 min : exercice 5 : d'abord tableau de suivi de la variable total sur papier (débranché), valeur finale en réponse en direct (📡), puis code",
      "105–120 min : institutionnalisation (bornes de range, motif d'accumulation) + corrigés poussés"
     ],
     "aPreparer": [
@@ -1029,9 +1029,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : un if à prédire",
-      "prof": "Projette un if court au tableau ; chaque élève écrit la sortie prédite sur son ardoise et la lève au signal, un volontaire justifie.",
-      "contenu": "<p>Rituel ardoise : un <code>if</code> court à prédire, sans machine — justification orale par un élève.</p>",
-      "eleves": "prédisent la sortie du if sur ardoise levée ; un volontaire justifie sa réponse."
+      "prof": "Projette un if court au tableau ; chaque élève saisit la sortie prédite en réponse en direct (📡) ; clôt la question, affiche les réponses sur la TV tactile, un volontaire justifie.",
+      "contenu": "<p>Rituel réponse en direct (📡) : un <code>if</code> court à prédire, sans exécuter — justification orale par un élève.</p>",
+      "eleves": "prédisent la sortie du if en réponse en direct (📡) ; un volontaire justifie sa réponse."
      },
      {
       "t": "10–35 min",
@@ -1068,16 +1068,16 @@ const THEME_PLANS = {
      {
       "t": "80–90 min",
       "type": "noter",
-      "titre": "L'accumulation déroulée sur ardoise",
-      "prof": "Introduis le motif d'accumulation au tableau, puis fais dérouler sur ardoise la trace de la variable total, tour après tour — aucun code tant que le tableau n'est pas juste.",
+      "titre": "L'accumulation déroulée sur papier",
+      "prof": "Introduis le motif d'accumulation au tableau, puis fais dérouler sur papier la trace de la variable total, tour après tour, et fais saisir la valeur finale en réponse en direct (📡) — aucun code tant que le tableau n'est pas juste.",
       "contenu": "<p>Second motif essentiel de la séance : l'<strong>accumulation</strong>. Pour additionner des valeurs, on prépare une variable <em>avant</em> la boucle (<code>total = 0</code>), puis chaque tour ajoute sa valeur (<code>total += k</code>).</p><p><strong>📋 Trace d'exécution :</strong> déroulons à la main <code>for k in range(1, 5): total += k</code>, en partant de <code>total = 0</code>.</p><table><tr><th>tour</th><th>k</th><th>total avant</th><th>total après</th></tr><tr><td>1</td><td>1</td><td>0</td><td>0 + 1 = 1</td></tr><tr><td>2</td><td>2</td><td>1</td><td>1 + 2 = 3</td></tr><tr><td>3</td><td>3</td><td>3</td><td>3 + 3 = 6</td></tr><tr><td>4</td><td>4</td><td>6</td><td>6 + 4 = 10</td></tr></table>",
-      "eleves": "déroulent la trace de total sur ardoise, tour après tour, avant d'écrire la moindre ligne de code."
+      "eleves": "déroulent la trace de total sur papier, tour après tour, saisissent la valeur finale en réponse en direct (📡), avant d'écrire la moindre ligne de code."
      },
      {
       "t": "90–105 min",
       "type": "exercice",
       "titre": "La somme de 1 à 100",
-      "prof": "Lance l'exercice 5 en cellule : compléter les trois trous pour afficher 5050. Renvoie les élèves bloqués à leur tableau de trace sur ardoise.",
+      "prof": "Lance l'exercice 5 en cellule : compléter les trois trous pour afficher 5050. Renvoie les élèves bloqués à leur tableau de trace sur papier.",
       "contenu": "<p><strong>🎯 Défi élève :</strong> calculer la somme des entiers de 1 à 100 (exercice 5).</p><pre><code>total = ______\nfor k in range(1, ______):\n    total ______ k\nprint(total)   # affiche 5050</code></pre>",
       "eleves": "complètent les trois trous de l'exercice 5 pour afficher 5050, en s'appuyant sur leur tableau de trace."
      },
@@ -1247,7 +1247,7 @@ const THEME_PLANS = {
       "t": "105–110 min",
       "type": "correction",
       "titre": "Correction du compte à rebours",
-      "prof": "Corrige au vidéoprojecteur en faisant verbaliser le garde-fou : n change à chaque tour, donc la condition finit par devenir fausse.",
+      "prof": "Corrige sur la TV tactile en faisant verbaliser le garde-fou : n change à chaque tour, donc la condition finit par devenir fausse.",
       "contenu": "<p>✅ Réponse :</p><pre><code>def compte_a_rebours(n):\n    while n &gt; 0:\n        print(n)\n        n = n - 1\n    print(\"Décollage !\")\n\ncompte_a_rebours(3)\n# affiche :\n# 3\n# 2\n# 1\n# Décollage !</code></pre><p>Tant que <code>n &gt; 0</code>, on affiche n puis on décrémente : n change à chaque tour, donc pas de boucle infinie. Quand n atteint 0, la condition devient fausse, on sort et on affiche « Décollage ! ».</p>",
       "eleves": "comparent le corrigé avec leur code, corrigent en vert et verbalisent le garde-fou : n change à chaque tour."
      },
@@ -1271,9 +1271,9 @@ const THEME_PLANS = {
      "Bloc « Erreurs fréquentes » (boucle while infinie) en rappel"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise (prédire une boucle while courte)",
+     "0–10 min : rituel réponse en direct (📡) : prédire une boucle while courte",
      "10–30 min : débranché : jeu du devine-le-nombre en îlot — manche 1 dans l'ordre, manche 2 en coupant en deux ; on note les essais sur la feuille de score",
-     "30–70 min : exercice 7 : schéma « le plus grand vu jusqu'ici » sur ardoise, puis code en cellule vide, puis test sur une liste inventée par le voisin",
+     "30–70 min : exercice 7 : schéma « le plus grand vu jusqu'ici » sur papier (résultat en réponse en direct 📡), puis code en cellule vide, puis test sur une liste inventée par le voisin",
      "70–105 min : mission « Devine le nombre » en îlot (le prof circule, indices gradués)",
      "105–120 min : mise en commun : ~7 essais pour 100 nombres, pourquoi ? Corrigés poussés"
     ],
@@ -1287,10 +1287,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel ardoise : prédire un while",
-      "prof": "Écris une courte boucle while au tableau ; les élèves prédisent la sortie sur ardoise levée, un élève justifie.",
-      "contenu": "<p>Sur ardoise : prédire la sortie d'une courte boucle <code>while</code> écrite au tableau.</p>",
-      "eleves": "prédisent la sortie de la boucle while sur ardoise levée ; un élève justifie."
+      "titre": "Rituel réponse en direct : prédire un while",
+      "prof": "Écris une courte boucle while au tableau ; les élèves prédisent la sortie en réponse en direct (📡) ; clôt la question, affiche les réponses sur la TV tactile, un élève justifie.",
+      "contenu": "<p>En réponse en direct (📡) : prédire la sortie d'une courte boucle <code>while</code> écrite au tableau.</p>",
+      "eleves": "prédisent la sortie de la boucle while en réponse en direct (📡) ; un élève justifie."
      },
      {
       "t": "10–30 min",
@@ -1312,9 +1312,9 @@ const THEME_PLANS = {
       "t": "40–60 min",
       "type": "exercice",
       "titre": "Exercice 7 : maximum(tab) en autonomie",
-      "prof": "Fais dérouler « le plus grand vu jusqu'ici » sur ardoise, puis fais écrire le code en cellule vide ; chaque élève teste ensuite sur une liste inventée par son voisin.",
-      "contenu": "<p>Exercice 7 : dérouler « le plus grand vu jusqu'ici » sur ardoise avec [4, 9, 2, 15, 7], écrire <code>maximum(tab)</code> sans <code>max()</code> en cellule vide, puis tester sur une liste inventée par le voisin.</p>",
-      "eleves": "déroulent « le plus grand vu » sur ardoise, codent maximum(tab) en cellule vide, puis testent la liste du voisin."
+      "prof": "Fais dérouler « le plus grand vu jusqu'ici » sur papier (valeur finale de m en réponse en direct 📡), puis fais écrire le code en cellule vide ; chaque élève teste ensuite sur une liste inventée par son voisin.",
+      "contenu": "<p>Exercice 7 : dérouler « le plus grand vu jusqu'ici » sur papier avec [4, 9, 2, 15, 7] (maximum obtenu saisi en réponse en direct 📡), écrire <code>maximum(tab)</code> sans <code>max()</code> en cellule vide, puis tester sur une liste inventée par le voisin.</p>",
+      "eleves": "déroulent « le plus grand vu » sur papier, saisissent le maximum trouvé en réponse en direct (📡), codent maximum(tab) en cellule vide, puis testent la liste du voisin."
      },
      {
       "t": "60–70 min",
@@ -1344,7 +1344,7 @@ const THEME_PLANS = {
       "t": "105–115 min",
       "type": "correction",
       "titre": "Mise en commun : 7 essais suffisent",
-      "prof": "Fais comparer les scores des îlots : pourquoi jamais plus de 7 essais pour 100 nombres ? Valide avec la solution complète au vidéoprojecteur.",
+      "prof": "Fais comparer les scores des îlots : pourquoi jamais plus de 7 essais pour 100 nombres ? Valide avec la solution complète sur la TV tactile.",
       "contenu": "<p><strong>✅ Réponse :</strong></p><pre><code>def nb_essais(secret):\n    bas, haut = 1, 100\n    essais = 0\n    trouve = False\n    while not trouve:\n        milieu = (bas + haut) // 2\n        essais = essais + 1\n        if milieu == secret:\n            trouve = True\n        elif milieu &lt; secret:\n            bas = milieu + 1\n        else:\n            haut = milieu - 1\n    return essais\n\nprint(nb_essais(66))   # affiche 6</code></pre>",
       "eleves": "comparent les scores des îlots, expliquent pourquoi 7 essais suffisent, puis vérifient avec la solution projetée."
      },
@@ -1385,10 +1385,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel d'entrée sur ardoise",
-      "prof": "Lance le rituel habituel : une courte boucle à prédire sur ardoise pour réactiver for/while avant d'aborder les fonctions.",
-      "contenu": "<p>Rituel ardoise : prédire la sortie d'une courte boucle pour réactiver la séance précédente.</p>",
-      "eleves": "prédisent la sortie de la courte boucle sur ardoise pour réactiver for et while."
+      "titre": "Rituel d'entrée en réponse en direct",
+      "prof": "Lance le rituel habituel : une courte boucle à prédire en réponse en direct (📡) pour réactiver for/while avant d'aborder les fonctions.",
+      "contenu": "<p>Rituel réponse en direct (📡) : prédire la sortie d'une courte boucle pour réactiver la séance précédente.</p>",
+      "eleves": "prédisent la sortie de la courte boucle en réponse en direct (📡) pour réactiver for et while."
      },
      {
       "t": "10–30 min",
@@ -1442,7 +1442,7 @@ const THEME_PLANS = {
       "t": "110–115 min",
       "type": "correction",
       "titre": "Correction du défi somme(n)",
-      "prof": "Corrige le défi au vidéoprojecteur puis pousse les corrigés de la séance.",
+      "prof": "Corrige le défi sur la TV tactile puis pousse les corrigés de la séance.",
       "contenu": "<p><strong>✅ Réponse :</strong></p><pre><code>def somme(n):\n    total = 0\n    for k in range(1, n + 1):\n        total += k\n    return total\n\nprint(somme(100))   # affiche 5050</code></pre>",
       "eleves": "comparent le corrigé projeté avec leur code et corrigent en vert."
      },
@@ -1468,7 +1468,7 @@ const THEME_PLANS = {
     "enClasse": [
      "0–10 min : rituel",
      "10–30 min : section 7 : spécifier en français d'abord (« que promet la fonction ? que suppose-t-elle ? »), chaque îlot spécifie une fonction du quotidien (distributeur, ascenseur)",
-     "30–55 min : section 8 : chasse au bug collective sur la cellule ▶ + lecture d'un traceback au vidéoprojecteur (« 3 questions : où ? quoi ? pourquoi ? »)",
+     "30–55 min : section 8 : chasse au bug collective sur la cellule ▶ + lecture d'un traceback sur la TV tactile (« 3 questions : où ? quoi ? pourquoi ? »)",
      "55–95 min : exercice 10 en binôme : spécifier AVANT de coder, écrire les assert AVANT le corps",
      "95–115 min : échange de fonctions entre îlots : chacun fait tourner les assert des autres",
      "115–120 min : trace docstring + assert ; corrigés poussés"
@@ -1486,7 +1486,7 @@ const THEME_PLANS = {
       "titre": "Rituel d'entrée : questions flash",
       "prof": "Lance le rituel d'entrée habituel : questions flash de rappel sur les fonctions de la séance précédente (def, paramètres, return).",
       "contenu": "<p>Rituel : trois questions flash sur les fonctions — à quoi sert <code>def</code> ? que fait <code>return</code> ? quelle différence avec <code>print</code> ?</p>",
-      "eleves": "répondent sur ardoise aux questions flash sur def, return et print."
+      "eleves": "répondent en réponse en direct (📡) aux questions flash sur def, return et print."
      },
      {
       "t": "10–20 min",
@@ -1585,7 +1585,7 @@ const THEME_PLANS = {
       "titre": "Rituel d'entrée : questions flash",
       "prof": "Lance le rituel d'entrée habituel : questions flash sur la séance précédente (docstring, précondition, assert).",
       "contenu": "<p>Rituel : questions flash — que fait <code>assert</code> quand la condition est vraie ? et quand elle est fausse ? où s'écrit la spécification ?</p>",
-      "eleves": "répondent sur ardoise aux questions flash sur assert et la spécification."
+      "eleves": "répondent en réponse en direct (📡) aux questions flash sur assert et la spécification."
      },
      {
       "t": "10–20 min",
@@ -1723,7 +1723,7 @@ const THEME_PLANS = {
       "titre": "Question type : lecture de code",
       "prof": "Projette la question type « que fait ce programme ? » et déroule la trace d'exécution au tableau, ligne à ligne : c'est l'outil à dégainer au DS pour toute question de lecture.",
       "contenu": "<p><strong>❓ Question type corrigée (lecture de code, comme au DS) :</strong> que fait cette fonction, et qu'affiche le programme ?</p><pre><code>def mystere(n):\n    total = 0\n    for k in range(1, n + 1):\n        if k % 2 == 0:\n            total += k\n    return total\n\nprint(mystere(10))   # affiche 30</code></pre><p><strong>📋 Trace d'exécution :</strong> on « joue l'ordinateur » avec le tableau de suivi — l'outil à dégainer au DS pour toute question de lecture :</p><table><tr><th>k</th><th>k % 2 == 0 ?</th><th>total</th></tr><tr><td>1</td><td>non</td><td>0</td></tr><tr><td>2</td><td>oui</td><td>0 + 2 = 2</td></tr><tr><td>3</td><td>non</td><td>2</td></tr><tr><td>4</td><td>oui</td><td>2 + 4 = 6</td></tr><tr><td>5</td><td>non</td><td>6</td></tr><tr><td>6</td><td>oui</td><td>6 + 6 = 12</td></tr><tr><td>7</td><td>non</td><td>12</td></tr><tr><td>8</td><td>oui</td><td>12 + 8 = 20</td></tr><tr><td>9</td><td>non</td><td>20</td></tr><tr><td>10</td><td>oui</td><td>20 + 10 = 30</td></tr></table><p><strong>✅ Réponse :</strong> la fonction additionne les <code>k</code> pairs entre 1 et n inclus : elle renvoie la <strong>somme des entiers pairs de 1 à n</strong>. <code>mystere(10)</code> vaut 2 + 4 + 6 + 8 + 10 = 30, et le programme affiche 30.</p>",
-      "eleves": "complètent le tableau de suivi de mystere(10) sur ardoise avant la validation au tableau."
+      "eleves": "complètent le tableau de suivi de mystere(10) dans leur cahier, saisissent la valeur affichée en réponse en direct (📡), avant la validation au tableau."
      },
      {
       "t": "60–115 min",
@@ -1761,16 +1761,16 @@ const THEME_PLANS = {
     ],
     "enClasse": [
      "0–10 min : rituel d'entrée — « à votre avis, l'informatique commence quand ? » (votes, on y répondra en fin d'heure)",
-     "10–35 min : débranché : frise à reconstituer en îlots avec cartes imprimées (événements et dates séparés), puis vérification en jouant le jeu du site au vidéoprojecteur",
+     "10–35 min : débranché : frise à reconstituer en îlots avec cartes imprimées (événements et dates séparés), puis vérification en jouant le jeu du site sur la TV tactile",
      "35–70 min : îlots-experts : chaque îlot lit UNE section (2 à 7) et la présente en 2 min avec un objet/mime ; le prof recolle le récit",
-     "70–85 min : exercice 1 à l'ardoise (chronologie) — retour sur le vote initial : l'informatique précède l'ordinateur",
+     "70–85 min : exercice 1 (chronologie) en réponse en direct (📡) — retour sur le vote initial : l'informatique précède l'ordinateur",
      "85–110 min : exercice 4 en cellule ▶ : compléter et interroger le dictionnaire des inventeurs (on réinvestit les dictionnaires en histoire)",
      "110–120 min : institutionnalisation : lancement de la frise murale de classe (les cartes validées y sont épinglées)"
     ],
     "aPreparer": [
      "Cartes-événements imprimées et plastifiées (dates séparées des événements), un jeu par îlot",
      "Frise murale : ficelle + pinces à linge + étiquettes, qui restera affichée toute l'année pour les rituels",
-     "Trace écrite (frise simplifiée à coller) ; vidéoprojecteur"
+     "Trace écrite (frise simplifiée à coller) ; TV tactile"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>L'informatique n'est pas apparue avec les ordinateurs : elle est l'aboutissement de siècles de recherches en <strong>mathématiques</strong>, en <strong>logique</strong> et en <strong>technique</strong>. Pour s'y repérer, on construit une <strong>frise chronologique</strong> : situer chaque innovation dans le temps et l'associer à sa figure fondatrice. Le mot <strong>« algorithme »</strong> lui-même vient du savant perse <strong>Al-Khwârizmî</strong> (IXᵉ siècle) : il est bien plus vieux que la première machine.</p><p>Exemple déroulé à la main — classer <em>Web, transistor, Pascaline, machine de Turing</em> sans connaître les dates par cœur. On raisonne par familles : la Pascaline est <strong>mécanique</strong> (roues dentées), donc avant toute électronique ; la machine de Turing est un modèle <strong>théorique</strong> imaginé avant les ordinateurs réels ; le <strong>transistor</strong> est le composant électronique qui remplace les tubes à vide ; le <strong>Web</strong> suppose des ordinateurs déjà reliés en réseau, il arrive donc en dernier. Ordre : Pascaline (1642) → machine de Turing (1936) → transistor (1947) → Web (1989).</p><p><strong>🃏 Les grands repères (Antiquité → 1970) :</strong></p><p>Cette frise, reconstituée en îlots avec les cartes, lance la frise murale de la classe :</p><table><tr><th>Date</th><th>Événement</th><th>Figure</th></tr><tr><td>≈ −300</td><td>algorithme d'Euclide (calcul du PGCD)</td><td>Euclide</td></tr><tr><td>IXᵉ s.</td><td>traités de calcul → mot « algorithme »</td><td>Al-Khwârizmî</td></tr><tr><td>1642</td><td>Pascaline, machine à additionner</td><td>Blaise Pascal</td></tr><tr><td>1703</td><td>arithmétique binaire (des 0 et des 1)</td><td>Leibniz</td></tr><tr><td>1801</td><td>métier à tisser à cartes perforées</td><td>Jacquard</td></tr><tr><td>1837</td><td>machine analytique (jamais achevée)</td><td>Charles Babbage</td></tr><tr><td>1843</td><td>premier algorithme destiné à une machine</td><td>Ada Lovelace</td></tr><tr><td>1847</td><td>algèbre de Boole (vrai/faux)</td><td>George Boole</td></tr><tr><td>1936</td><td>machine de Turing, modèle abstrait du calcul</td><td>Alan Turing</td></tr><tr><td>1945</td><td>ENIAC ; architecture à programme enregistré</td><td>von Neumann</td></tr><tr><td>1947</td><td>le transistor (Bell Labs)</td><td>—</td></tr><tr><td>1958</td><td>le circuit intégré</td><td>—</td></tr></table><p><strong>🐢 Coder, même en histoire — le dictionnaire des inventeurs :</strong></p><p>On mémorise les couples inventeur → invention dans un <strong>dictionnaire</strong> Python (réinvestissement du thème « Types construits ») :</p><pre><code>inventions = {\"Pascal\": \"Pascaline\",\n              \"Babbage\": \"machine analytique\",\n              \"Turing\": \"machine de Turing\"}\ninventions[\"Berners-Lee\"] = \"Web\"   # ajout d'une paire\nprint(inventions[\"Turing\"])         # affiche machine de Turing\nprint(\"Pascal\" in inventions)       # affiche True</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>un dictionnaire associe une <strong>clé</strong> (l'inventeur) à une <strong>valeur</strong> (l'invention) : <code>{clé: valeur}</code> ;</li><li><code>inventions[\"Berners-Lee\"] = \"Web\"</code> ajoute une nouvelle paire : c'est la syntaxe <code>d[clé] = valeur</code> ;</li><li><code>\"Pascal\" in inventions</code> teste si <code>\"Pascal\"</code> est une <strong>clé</strong> du dictionnaire (pas une valeur) et renvoie un booléen.</li></ul><p><strong>🎯 Défi élève :</strong></p><p>Compléter les trous pour que les affichages annoncés soient corrects :</p><pre><code>inventions = {\"Pascal\": \"______\",\n              \"Babbage\": \"machine analytique\",\n              \"Turing\": \"machine de Turing\"}\ninventions[\"______\"] = \"Web\"\nprint(inventions[\"______\"])      # doit afficher machine de Turing\nprint(\"Pascal\" ______ inventions)  # doit afficher True</code></pre><p>✅ Réponse :</p><pre><code>inventions = {\"Pascal\": \"Pascaline\",\n              \"Babbage\": \"machine analytique\",\n              \"Turing\": \"machine de Turing\"}\ninventions[\"Berners-Lee\"] = \"Web\"\nprint(inventions[\"Turing\"])       # affiche machine de Turing\nprint(\"Pascal\" in inventions)     # affiche True</code></pre><ul><li>L'informatique <strong>précède l'ordinateur</strong> : algorithme d'Euclide (≈ −300), mot « algorithme » venu d'Al-Khwârizmî, binaire de Leibniz (1703).</li><li><strong>Ada Lovelace</strong> écrit en 1843 le premier algorithme destiné à être exécuté par une machine : on la considère comme la première programmeuse.</li><li>Piège : dans un dictionnaire, <code>in</code> teste les <strong>clés</strong>, jamais les valeurs.</li></ul>",
     "etapes": [
@@ -1778,16 +1778,16 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Vote d'entrée : quand commence l'informatique ?",
-      "prof": "Pose la question « à votre avis, l'informatique commence quand ? » et fais voter (main levée ou ardoise). Note les hypothèses dans un coin du tableau : on y répondra en fin d'heure.",
+      "prof": "Pose la question « à votre avis, l'informatique commence quand ? » et fais voter en réponse en direct (📡, bouton de l'étape) : chaque élève saisit sa date depuis son poste. Clôt la question, affiche l'histogramme sur la TV tactile et note les hypothèses dans un coin du tableau : on y répondra en fin d'heure.",
       "contenu": "<p>Vote d'entrée : « L'informatique commence quand ? » — les hypothèses restent affichées au tableau, la réponse viendra avec l'exercice 1.</p>",
-      "eleves": "votent à l'ardoise leur hypothèse sur la date de naissance de l'informatique et la justifient en une phrase."
+      "eleves": "votent en réponse en direct (📡), depuis leur poste, leur hypothèse sur la date de naissance de l'informatique et la justifient à l'oral en une phrase."
      },
      {
       "t": "10–35 min",
       "type": "jeu",
       "titre": "La frise à reconstituer, cartes puis jeu",
-      "prof": "Distribue à chaque îlot les cartes imprimées (événements et dates séparés) et fais reconstituer la frise en débranché. Puis projette le jeu du site « 🃏 Jeu : la frise à reconstituer » au vidéoprojecteur pour vérifier les propositions des îlots.",
-      "contenu": "<p>Jeu d'introduction du thème « 🃏 Jeu : la frise à reconstituer » : d'abord en version cartes papier en îlots, puis en version interactive au vidéoprojecteur pour valider.</p>",
+      "prof": "Installe les îlots (aux coins ou sur les postes voisins) et distribue à chacun les cartes imprimées (événements et dates séparés) ; fais reconstituer la frise en débranché. Puis projette le jeu du site « 🃏 Jeu : la frise à reconstituer » sur la TV tactile pour vérifier les propositions des îlots.",
+      "contenu": "<p>Jeu d'introduction du thème « 🃏 Jeu : la frise à reconstituer » : d'abord en version cartes papier en îlots, puis en version interactive sur la TV tactile pour valider.</p>",
       "eleves": "reconstituent la frise en îlot avec les cartes sans les dates, puis vérifient leur ordre pendant le jeu projeté."
      },
      {
@@ -1801,10 +1801,10 @@ const THEME_PLANS = {
      {
       "t": "70–78 min",
       "type": "exercice",
-      "titre": "Exercice 1 : chronologie à l'ardoise",
-      "prof": "Fais classer à l'ardoise Web, transistor, Pascaline et machine de Turing (exercice 1 du site), sans donner les dates. Relève les propositions des îlots au tableau.",
-      "contenu": "<p>Exercice 1 du site (facile) : ordonner chronologiquement <em>Web, transistor, Pascaline, machine de Turing</em>, à l'ardoise, sans consulter les dates.</p>",
-      "eleves": "classent Web, transistor, Pascaline et machine de Turing à l'ardoise, sans consulter les dates."
+      "titre": "Exercice 1 : chronologie en réponse en direct",
+      "prof": "Lance une question en réponse en direct (📡) : chaque élève saisit depuis son poste, en texte court, son classement de Web, transistor, Pascaline et machine de Turing (exercice 1 du site), sans donner les dates. Clôt la question et affiche les classements proposés sur la TV tactile.",
+      "contenu": "<p>Exercice 1 du site (facile) : ordonner chronologiquement <em>Web, transistor, Pascaline, machine de Turing</em>, en réponse en direct (📡), sans consulter les dates.</p>",
+      "eleves": "classent Web, transistor, Pascaline et machine de Turing en réponse en direct (📡) depuis leur poste, sans consulter les dates."
      },
      {
       "t": "78–85 min",
@@ -1828,7 +1828,7 @@ const THEME_PLANS = {
       "titre": "Démo : le dictionnaire des inventeurs",
       "prof": "Ouvre une cellule ▶ et construis le dictionnaire des inventeurs en direct ; fais commenter chaque ligne par les élèves (ajout d'une paire, test d'appartenance aux clés).",
       "contenu": "<p><strong>🐢 Coder, même en histoire — le dictionnaire des inventeurs :</strong></p><p>On mémorise les couples inventeur → invention dans un <strong>dictionnaire</strong> Python (réinvestissement du thème « Types construits ») :</p><pre><code>inventions = {\"Pascal\": \"Pascaline\",\n              \"Babbage\": \"machine analytique\",\n              \"Turing\": \"machine de Turing\"}\ninventions[\"Berners-Lee\"] = \"Web\"   # ajout d'une paire\nprint(inventions[\"Turing\"])         # affiche machine de Turing\nprint(\"Pascal\" in inventions)       # affiche True</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>un dictionnaire associe une <strong>clé</strong> (l'inventeur) à une <strong>valeur</strong> (l'invention) : <code>{clé: valeur}</code> ;</li><li><code>inventions[\"Berners-Lee\"] = \"Web\"</code> ajoute une nouvelle paire : c'est la syntaxe <code>d[clé] = valeur</code> ;</li><li><code>\"Pascal\" in inventions</code> teste si <code>\"Pascal\"</code> est une <strong>clé</strong> du dictionnaire (pas une valeur) et renvoie un booléen.</li></ul>",
-      "eleves": "commentent chaque ligne du dictionnaire et prédisent à l'ardoise les affichages avant l'exécution de la cellule."
+      "eleves": "commentent chaque ligne du dictionnaire et prédisent en réponse en direct (📡), affichage par affichage, ce que produira chaque print avant l'exécution de la cellule."
      },
      {
       "t": "98–110 min",
@@ -1861,7 +1861,7 @@ const THEME_PLANS = {
      "Évaluation : sujet « DS — Histoire de l'informatique » (40 min, /20) de la rubrique Évaluations"
     ],
     "enClasse": [
-     "0–10 min : rituel — quiz-éclair sur la frise murale (ardoises)",
+     "0–10 min : rituel — quiz-éclair sur la frise murale (en réponse en direct 📡)",
      "10–35 min : îlots-experts sur les sections 8 à 12 + mini-débat tranché par l'exercice 5 : « Internet et le Web, deux choses différentes ? » (dates, inventeurs, une phrase chacun)",
      "35–60 min : codage : cellule ▶ de la section « Construire et trier une frise » puis exercices 3 et 7 (réinvestissement du tri et des compréhensions vus dans les autres thèmes)",
      "60–75 min : jeu d'évasion « la salle des machines » en îlots (chronométré)",
@@ -1879,9 +1879,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Quiz-éclair sur la frise murale",
-      "prof": "Interroge à l'ardoise sur la frise murale de la séance précédente (dates, figures, inventions) ; corrige oralement au fil des réponses.",
-      "contenu": "<p>Quiz-éclair sur ardoises : retrouver dates et figures de la frise murale (Pascaline, machine de Turing, transistor…).</p>",
-      "eleves": "écrivent sur l'ardoise les dates, figures et inventions demandées et la lèvent à chaque question du quiz."
+      "prof": "Interroge en réponse en direct (📡) sur la frise murale de la séance précédente (dates, figures, inventions), une question à la fois ; clôt chaque question, affiche les réponses sur la TV tactile et corrige oralement au fil des réponses.",
+      "contenu": "<p>Quiz-éclair en réponse en direct (📡) : retrouver dates et figures de la frise murale (Pascaline, machine de Turing, transistor…).</p>",
+      "eleves": "saisissent depuis leur poste, en réponse en direct (📡), les dates, figures et inventions demandées à chaque question du quiz, puis comparent avec la réponse révélée sur la TV tactile."
      },
      {
       "t": "10–25 min",
@@ -1905,7 +1905,7 @@ const THEME_PLANS = {
       "titre": "Cellule ▶ : trier et filtrer la frise",
       "prof": "Projette la cellule ▶ de la section « Construire et trier une frise » : exécute le tri avec sorted, fais expliciter la lambda, puis déroule la compréhension du XXᵉ siècle avec sa trace d'exécution.",
       "contenu": "<p><strong>🐢 Manipulation — la frise comme table de données :</strong></p><p>On représente la frise comme une <strong>liste de dictionnaires</strong> (thème « Données en tables ») et on la trie par date :</p><pre><code>frise = [\n    {\"annee\": 1971, \"evenement\": \"Microprocesseur Intel 4004\"},\n    {\"annee\": 1642, \"evenement\": \"Pascaline (Pascal)\"},\n    {\"annee\": 1991, \"evenement\": \"Le World Wide Web\"},\n    {\"annee\": 1936, \"evenement\": \"Machine de Turing\"},\n]\nfor e in sorted(frise, key=lambda x: x[\"annee\"]):\n    print(e[\"annee\"], \"—\", e[\"evenement\"])\n# affiche 1642 — Pascaline (Pascal)\n# puis    1936 — Machine de Turing\n# puis    1971 — Microprocesseur Intel 4004\n# puis    1991 — Le World Wide Web</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>chaque événement est un <strong>dictionnaire</strong> à deux clés (<code>\"annee\"</code>, <code>\"evenement\"</code>) ; la frise est une liste de dictionnaires, c'est-à-dire une table ;</li><li><code>sorted(frise, key=lambda x: x[\"annee\"])</code> trie selon la colonne <code>\"annee\"</code> : la fonction <code>lambda</code> indique à <code>sorted</code> quelle valeur comparer ;</li><li>une fois la frise <strong>triée</strong>, la recherche dichotomique devient possible (exercice 6, pour les rapides).</li></ul><p>Pour extraire les événements du XXᵉ siècle, une <strong>compréhension de liste</strong> filtre la frise en une ligne :</p><pre><code>frise = [(1642, \"Pascaline\"), (1843, \"1er algorithme\"),\n         (1936, \"machine de Turing\"), (1947, \"transistor\"),\n         (1971, \"microprocesseur\"), (1989, \"Web\"), (2007, \"smartphone\")]\nxxe = [e for (an, e) in frise if 1900 &lt;= an &lt;= 1999]\nprint(xxe)  # affiche ['machine de Turing', 'transistor', 'microprocesseur', 'Web']</code></pre><p><strong>📋 Trace d'exécution :</strong></p><table><tr><th>(an, e)</th><th>1900 &lt;= an &lt;= 1999 ?</th><th>gardé ?</th></tr><tr><td>(1642, Pascaline)</td><td>faux (1642 &lt; 1900)</td><td>non</td></tr><tr><td>(1843, 1er algorithme)</td><td>faux</td><td>non</td></tr><tr><td>(1936, machine de Turing)</td><td>vrai</td><td>oui</td></tr><tr><td>(1947, transistor)</td><td>vrai</td><td>oui</td></tr><tr><td>(1971, microprocesseur)</td><td>vrai</td><td>oui</td></tr><tr><td>(1989, Web)</td><td>vrai</td><td>oui</td></tr><tr><td>(2007, smartphone)</td><td>faux (2007 &gt; 1999)</td><td>non</td></tr></table>",
-      "eleves": "prédisent à l'ardoise l'ordre affiché par sorted, explicitent la lambda et complètent la trace d'exécution."
+      "eleves": "prédisent en réponse en direct (📡) l'ordre affiché par sorted, explicitent la lambda, puis complètent la trace d'exécution dans le cahier et saisissent seulement la liste finale en réponse en direct (📡)."
      },
      {
       "t": "48–56 min",
@@ -1927,7 +1927,7 @@ const THEME_PLANS = {
       "t": "60–75 min",
       "type": "jeu",
       "titre": "Jeu d'évasion : la salle des machines",
-      "prof": "Lance le jeu « 🔓 Bonus — Jeu d'évasion : la salle des machines » en îlots, chronomètre affiché au vidéoprojecteur ; le premier îlot sorti gagne.",
+      "prof": "Lance le jeu « 🔓 Bonus — Jeu d'évasion : la salle des machines » en îlots (aux coins ou sur les postes voisins), chronomètre affiché sur la TV tactile ; le premier îlot sorti gagne.",
       "contenu": "<p>Jeu du site « 🔓 Bonus — Jeu d'évasion : la salle des machines », en îlots, chronométré (15 min).</p>",
       "eleves": "résolvent en îlot les énigmes de la salle des machines, en course contre le chronomètre projeté."
      },
@@ -2015,9 +2015,9 @@ const THEME_PLANS = {
       "t": "70–95 min",
       "type": "exercice",
       "titre": "Exercices 1 et 3, défi à trous",
-      "prof": "Lance les exercices 1 et 3 en cellule et circule entre les îlots. Projette ensuite le défi à trous, fais-le compléter à l'ardoise avant de dévoiler la réponse.",
+      "prof": "Lance les exercices 1 et 3 en cellule et circule entre les îlots. Projette ensuite le défi à trous sur la TV tactile, fais compléter les trous en réponse en direct (📡, un trou par question), puis clôt et dévoile la réponse.",
       "contenu": "<p>Donne les exercices 1 (facile, texte à trous <code>2 ** bits</code>) et 3 (facile : valeurs codables sur 5 puis 12 bits) à faire en cellule, puis le défi à trous de la fiche :</p><p><strong>🎯 Défi élève :</strong> compléter les trous.</p><pre><code>nb_cartes = 5\nnb_valeurs = 2 ** ______\nprint(nb_valeurs)       # affiche 32\n\n# Un octet = ______ bits\nprint(2 ** 8)           # affiche ______\n\n# Plus grand entier codable sur un octet\nprint(2 ** 8 - ______)  # affiche 255</code></pre><p>✅ Réponse :</p><pre><code>nb_cartes = 5\nnb_valeurs = 2 ** nb_cartes\nprint(nb_valeurs)       # affiche 32\n\n# Un octet = 8 bits\nprint(2 ** 8)           # affiche 256\n\n# Plus grand entier codable sur un octet\nprint(2 ** 8 - 1)       # affiche 255</code></pre>",
-      "eleves": "font les exercices 1 et 3 en cellule sur leur compte, puis complètent le défi à trous à l'ardoise."
+      "eleves": "font les exercices 1 et 3 en cellule sur leur compte, puis complètent le défi à trous en réponse en direct (📡) depuis leur poste."
      },
      {
       "t": "95–110 min",
@@ -2046,15 +2046,15 @@ const THEME_PLANS = {
      "Exercices 2 (facile : 1011 en décimal, vérification 0b1011), 4 (facile : 38 par divisions successives, vérification bin(38)) et 5 (moyen : fonction nb_bits(v))"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise — lire une configuration de cartes binaires",
+     "0–10 min : rituel réponse en direct (📡) — lire une configuration de cartes binaires",
      "10–30 min : section 3 : décortiquer 2025 en base 10 (poids des positions), puis transférer le principe à la base 2",
-     "30–55 min : débranché : batterie de conversions à l'ardoise dans les deux sens (tableau des poids / tableau des restes), vérifications avec les cellules ▶ des sections 4–5",
+     "30–55 min : débranché : batterie de conversions sur papier dans les deux sens (tableau des poids / tableau des restes), résultats saisis en réponse en direct (📡), vérifications avec les cellules ▶ des sections 4–5",
      "55–85 min : exercices 2 et 4 : TOUJOURS papier d'abord, Python ensuite pour vérifier",
      "85–110 min : exercice 5 en binômes (première fonction du thème, réinvestit while)",
      "110–120 min : trace des deux méthodes + corrigés poussés"
     ],
     "aPreparer": [
-     "Ardoises ; tableau des poids (…| 16 | 8 | 4 | 2 | 1) imprimé",
+     "Questions du rituel et de la batterie prêtes en réponse en direct (📡) ; tableau des poids (…| 16 | 8 | 4 | 2 | 1) imprimé",
      "Batterie de conversions différenciées (3 niveaux)",
      "Trace écrite méthodes de conversion"
     ],
@@ -2063,10 +2063,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel ardoise : lire des cartes binaires",
-      "prof": "Projette une configuration de cartes binaires et fais écrire sa valeur décimale sur l'ardoise ; fais lever les ardoises ensemble avant de valider.",
-      "contenu": "<p>Rituel ardoise : lire une configuration de cartes binaires (poids 16-8-4-2-1) et écrire sa valeur décimale.</p>",
-      "eleves": "écrivent sur l'ardoise la valeur décimale de la configuration de cartes projetée et la lèvent au signal."
+      "titre": "Rituel réponse en direct : lire des cartes binaires",
+      "prof": "Projette une configuration de cartes binaires sur la TV tactile et fais saisir sa valeur décimale en réponse en direct (📡) ; clôt la question et affiche l'histogramme des réponses avant de valider.",
+      "contenu": "<p>Rituel réponse en direct (📡) : lire une configuration de cartes binaires (poids 16-8-4-2-1) et saisir sa valeur décimale depuis son poste.</p>",
+      "eleves": "saisissent en réponse en direct (📡) la valeur décimale de la configuration de cartes projetée sur la TV tactile, avant la clôture de la question."
      },
      {
       "t": "10–20 min",
@@ -2074,7 +2074,7 @@ const THEME_PLANS = {
       "titre": "Décortiquer 2025 : le poids des positions",
       "prof": "Décortique 2025 au tableau (section 3) pour faire émerger le poids des positions, puis transfère le principe à la base 2.",
       "contenu": "<p><strong>📖 La notion :</strong></p><p>Pourquoi écrit-on « 2025 » ? Parce que la <strong>position</strong> de chaque chiffre lui donne un <em>poids</em>, une puissance de 10 : 2×10³ + 0×10² + 2×10¹ + 5×10⁰ = 2000 + 0 + 20 + 5 = 2025. En <strong>base 2</strong>, c'est exactement le même principe avec seulement deux chiffres (0 et 1) et des poids en <strong>puissances de 2</strong> : …, 32, 16, 8, 4, 2, 1.</p>",
-      "eleves": "décomposent 2025 sur l'ardoise en puissances de 10, puis proposent le transfert du principe à la base 2."
+      "eleves": "décomposent 2025 sur papier en puissances de 10, puis proposent le transfert du principe à la base 2."
      },
      {
       "t": "20–30 min",
@@ -2087,10 +2087,10 @@ const THEME_PLANS = {
      {
       "t": "30–45 min",
       "type": "debranche",
-      "titre": "Batterie de conversions à l'ardoise",
-      "prof": "Lance la batterie de conversions à l'ardoise dans les deux sens (tableau des poids / tableau des restes) et fais lever les ardoises entre chaque nombre.",
-      "contenu": "<p>Batterie de conversions à l'ardoise dans les deux sens : binaire → décimal avec le tableau des poids, décimal → binaire avec le tableau des restes.</p>",
-      "eleves": "convertissent chaque nombre de la batterie sur l'ardoise dans les deux sens et la lèvent entre chaque nombre."
+      "titre": "Batterie de conversions en réponse en direct",
+      "prof": "Lance la batterie de conversions dans les deux sens (tableau des poids / tableau des restes) : le calcul se fait sur papier, seul le résultat est saisi en réponse en direct (📡) ; clôt la question et affiche les réponses sur la TV tactile entre chaque nombre.",
+      "contenu": "<p>Batterie de conversions dans les deux sens (calcul sur papier, résultat saisi en réponse en direct 📡) : binaire → décimal avec le tableau des poids, décimal → binaire avec le tableau des restes.</p>",
+      "eleves": "convertissent chaque nombre de la batterie sur papier dans les deux sens et saisissent le résultat en réponse en direct (📡) entre chaque nombre."
      },
      {
       "t": "45–55 min",
@@ -2098,7 +2098,7 @@ const THEME_PLANS = {
       "titre": "Vérification avec les cellules Python",
       "prof": "Exécute les cellules ▶ des sections 4 et 5 pour vérifier les conversions de la batterie, puis déroule la trace de dec_vers_bin(42) ligne à ligne.",
       "contenu": "<p><strong>🐢 Première méthode — binaire → décimal en Python :</strong></p><pre><code>def bin_vers_dec(chaine):\n    total = 0\n    for bit in chaine:          # on lit de gauche à droite\n        total = total * 2 + int(bit)\n    return total\n\nprint(bin_vers_dec(\"101010\"))    # affiche 42\nprint(bin_vers_dec(\"11111111\"))  # affiche 255\n\n# Vérification avec l'outil intégré de Python\nprint(int(\"101010\", 2))          # affiche 42</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>À chaque nouveau bit lu, <code>total = total * 2 + int(bit)</code> décale tout ce qui est déjà lu d'un cran vers la gauche (×2) puis ajoute le bit : c'est l'algorithme de Horner.</li><li><code>int(bit)</code> transforme le caractère <code>\"1\"</code> en nombre 1.</li><li><code>int(chaine, 2)</code> est l'outil intégré : on l'utilise pour <em>vérifier</em> son calcul papier, pas pour le remplacer.</li></ul><p><strong>🐢 Dans l'autre sens — décimal → binaire :</strong></p><pre><code>def dec_vers_bin(n):\n    if n == 0:\n        return \"0\"\n    bits = \"\"\n    while n &gt; 0:\n        bits = str(n % 2) + bits   # le reste, ajouté DEVANT\n        n = n // 2                 # division entière\n    return bits\n\nprint(dec_vers_bin(42))   # affiche 101010\nprint(dec_vers_bin(38))   # affiche 100110</code></pre><p>Deux idées clés : <code>n % 2</code> donne le reste de la division par 2 (le bit le plus à droite) et <code>n // 2</code> est la division entière (on « retire » ce bit). Comme les restes sortent dans le mauvais ordre, on les ajoute <em>devant</em> la chaîne.</p><p><strong>📋 Trace d'exécution — dec_vers_bin(42) :</strong></p><table><tr><th>n</th><th>n % 2 (reste)</th><th>bits après l'étape</th></tr><tr><td>42</td><td>0</td><td>0</td></tr><tr><td>21</td><td>1</td><td>10</td></tr><tr><td>10</td><td>0</td><td>010</td></tr><tr><td>5</td><td>1</td><td>1010</td></tr><tr><td>2</td><td>0</td><td>01010</td></tr><tr><td>1</td><td>1</td><td>101010</td></tr><tr><td>0</td><td>Stop</td><td>on renvoie « 101010 »</td></tr></table>",
-      "eleves": "prédisent chaque résultat à l'ardoise avant l'exécution, puis suivent la trace de dec_vers_bin(42) ligne à ligne."
+      "eleves": "prédisent chaque résultat en réponse en direct (📡) avant l'exécution, puis suivent la trace de dec_vers_bin(42) ligne à ligne."
      },
      {
       "t": "55–85 min",
@@ -2144,10 +2144,10 @@ const THEME_PLANS = {
      "Exercices 6 (moyen : octet 11001010 → hexa CA par quartets) et 7 (moyen : décomposer la couleur #1E90FF en R, V, B)"
     ],
     "enClasse": [
-     "0–10 min : rituel conversion à l'ardoise",
-     "10–30 min : débranché : découper des octets en deux quartets sur ardoise, construire ensemble la table 0–F",
+     "0–10 min : rituel conversion en réponse en direct (📡)",
+     "10–30 min : débranché : découper des octets en deux quartets sur papier (résultat saisi en réponse en direct 📡), construire ensemble la table 0–F",
      "30–55 min : section 6 + cellule ▶, puis exercice 6 en cellule",
-     "55–75 min : exercice 7 : ouvrir une pipette de couleurs au vidéoprojecteur, décoder #1E90FF — l'hexa sert à quelque chose de visible",
+     "55–75 min : exercice 7 : ouvrir une pipette de couleurs sur la TV tactile, décoder #1E90FF — l'hexa sert à quelque chose de visible",
      "75–105 min : section 7 : complément à deux pas à pas avec les cartes (le poids fort devient −128), cellule ▶ manipulée, plage −128..+127 découverte en îlot",
      "105–120 min : trace + corrigés poussés"
     ],
@@ -2161,18 +2161,18 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel conversion à l'ardoise",
-      "prof": "Projette une conversion binaire ↔ décimal et fais répondre à l'ardoise ; valide en rappelant le tableau des poids et les divisions successives.",
-      "contenu": "<p>Rituel : une conversion binaire ↔ décimal à l'ardoise pour réactiver la séance précédente.</p>",
-      "eleves": "réalisent la conversion projetée sur l'ardoise et la lèvent avant la validation collective."
+      "titre": "Rituel conversion en réponse en direct",
+      "prof": "Projette une conversion binaire ↔ décimal sur la TV tactile et fais répondre en réponse en direct (📡) ; clôt la question, affiche les réponses et valide en rappelant le tableau des poids et les divisions successives.",
+      "contenu": "<p>Rituel : une conversion binaire ↔ décimal en réponse en direct (📡) pour réactiver la séance précédente.</p>",
+      "eleves": "réalisent sur papier la conversion projetée sur la TV tactile et saisissent le résultat en réponse en direct (📡) avant la validation collective."
      },
      {
       "t": "10–20 min",
       "type": "debranche",
       "titre": "Découper des octets en quartets",
-      "prof": "Fais découper des octets en deux quartets sur l'ardoise et construis la table 0–F au tableau avec la classe.",
-      "contenu": "<p>Débranché : découper des octets en deux quartets sur l'ardoise, puis construire ensemble la table 0–F au tableau.</p>",
-      "eleves": "découpent des octets en deux quartets sur l'ardoise et proposent les valeurs de la table 0–F."
+      "prof": "Fais découper des octets en deux quartets sur papier, fais saisir le chiffre hexa obtenu en réponse en direct (📡), et construis la table 0–F au tableau avec la classe.",
+      "contenu": "<p>Débranché : découper des octets en deux quartets sur papier et saisir le résultat hexa en réponse en direct (📡), puis construire ensemble la table 0–F au tableau.</p>",
+      "eleves": "découpent des octets en deux quartets sur papier, saisissent le résultat en réponse en direct (📡) et proposent les valeurs de la table 0–F."
      },
      {
       "t": "20–30 min",
@@ -2202,8 +2202,8 @@ const THEME_PLANS = {
       "t": "55–75 min",
       "type": "exercice",
       "titre": "Exercice 7 : décoder la couleur #1E90FF",
-      "prof": "Ouvre une pipette de couleurs au vidéoprojecteur et lance l'exercice 7 : l'hexa sert à quelque chose de visible.",
-      "contenu": "<p>Exercice 7 (moyen) : décomposer la couleur <code>#1E90FF</code> en R, V, B — vérifier le résultat avec la pipette de couleurs projetée au vidéoprojecteur.</p>",
+      "prof": "Ouvre une pipette de couleurs sur la TV tactile et lance l'exercice 7 : l'hexa sert à quelque chose de visible.",
+      "contenu": "<p>Exercice 7 (moyen) : décomposer la couleur <code>#1E90FF</code> en R, V, B — vérifier le résultat avec la pipette de couleurs affichée sur la TV tactile.</p>",
       "eleves": "décomposent #1E90FF en R, V, B en cellule et vérifient leurs valeurs avec la pipette projetée."
      },
      {
@@ -2218,9 +2218,9 @@ const THEME_PLANS = {
       "t": "105–115 min",
       "type": "correction",
       "titre": "Défi à trous : correction commune",
-      "prof": "Projette le défi à trous, fais-le compléter à l'ardoise, puis dévoile la réponse en insistant sur −128.",
+      "prof": "Projette le défi à trous sur la TV tactile, fais compléter les trous en réponse en direct (📡), puis clôt la question et dévoile la réponse en insistant sur −128.",
       "contenu": "<p><strong>🎯 Défi élève :</strong> compléter les trous.</p><pre><code>def complement_a_deux(n):\n    if n ______ 0:\n        n = 2 ** 8 ______ n\n    return format(n, \"08b\")\n\nprint(complement_a_deux(5))      # affiche 00000101\nprint(complement_a_deux(-5))     # affiche ______\nprint(complement_a_deux(-128))   # affiche 10000000</code></pre><p>✅ Réponse :</p><pre><code>def complement_a_deux(n):\n    if n &lt; 0:\n        n = 2 ** 8 + n\n    return format(n, \"08b\")\n\nprint(complement_a_deux(5))      # affiche 00000101\nprint(complement_a_deux(-5))     # affiche 11111011\nprint(complement_a_deux(-128))   # affiche 10000000</code></pre>",
-      "eleves": "complètent le défi à trous sur l'ardoise, puis comparent avec la réponse projetée et corrigent en vert."
+      "eleves": "complètent le défi à trous en réponse en direct (📡) depuis leur poste, puis comparent avec la réponse projetée sur la TV tactile et corrigent en vert."
      },
      {
       "t": "115–120 min",
@@ -2247,7 +2247,7 @@ const THEME_PLANS = {
      "10–35 min : section 8 : image du compteur kilométrique qui « tourne », cellule ▶ puis exercice 8 (prédire add8(255, 1) avant d'exécuter)",
      "35–65 min : section 9 : faire PARIER la classe sur 0.1 + 0.2 == 0.3, exécuter, expliquer l'approximation ; exercice 9 en cellule",
      "65–95 min : section 10 en débranché d'abord : tables de vérité jouées debout/assis (deux élèves = deux entrées, l'îlot vote la sortie), puis cellule ▶ pour vérifier",
-     "95–115 min : mini-parcours de 4 questions type DS sur ardoise (une par section du jour)",
+     "95–115 min : mini-parcours de 4 questions type DS en réponse en direct (📡, une par section du jour)",
      "115–120 min : trace + corrigés poussés"
     ],
     "aPreparer": [
@@ -2260,10 +2260,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel de conversions à l'ardoise",
-      "prof": "Lance le rituel d'entrée pendant que tu fais l'appel : quelques conversions rapides à l'ardoise pour réactiver les séances 2 et 3.",
-      "contenu": "<p>Rituel : convertir à l'ardoise deux ou trois nombres (binaire → décimal, décimal → binaire, un octet en hexadécimal).</p>",
-      "eleves": "réalisent les conversions du rituel sur l'ardoise pendant l'appel et les lèvent pour validation."
+      "titre": "Rituel de conversions en réponse en direct",
+      "prof": "Lance le rituel d'entrée pendant que tu fais l'appel : quelques conversions rapides en réponse en direct (📡) pour réactiver les séances 2 et 3 ; clôt et affiche les réponses sur la TV tactile après l'appel.",
+      "contenu": "<p>Rituel en réponse en direct (📡) : convertir sur papier deux ou trois nombres (binaire → décimal, décimal → binaire, un octet en hexadécimal).</p>",
+      "eleves": "réalisent les conversions du rituel sur papier pendant l'appel et saisissent chaque résultat en réponse en direct (📡) pour validation."
      },
      {
       "t": "10–25 min",
@@ -2271,7 +2271,7 @@ const THEME_PLANS = {
       "titre": "Le débordement : le compteur qui tourne",
       "prof": "Projette la section 8, raconte l'image du compteur kilométrique qui « tourne », exécute la cellule ▶ add8 devant la classe et fais noter la notion et le code.",
       "contenu": "<p><strong>📖 La notion 1 — le débordement (overflow) :</strong></p><p>Un nombre de bits fixé impose une <strong>limite</strong>. Si un calcul la dépasse, le résultat « tourne », comme le <strong>compteur kilométrique</strong> d'une voiture qui repasse à 000000 après 999999. Déroulons à la main sur un octet non signé (0 à 255) : 250 + 10 = 260, mais 260 est impossible à écrire sur 8 bits ; la machine ne garde que 260 − 256 = <strong>4</strong>. De même, 255 + 1 donne 0. C'est un <strong>débordement</strong> (<em>overflow</em>), source de bugs célèbres. En Python, les entiers sont de taille illimitée (pas de débordement), mais dans la plupart des langages (C, Java…) et dans le matériel, la taille est fixe.</p><p><strong>🐢 Simuler un octet en Python :</strong></p><pre><code>def add8(a, b):\n    return (a + b) % 256\n\nprint(add8(250, 10))    # affiche 4\nprint(add8(255, 1))     # affiche 0  (déborde !)\nprint(add8(200, 100))   # affiche 44\n\n# Python pur, lui, ne déborde jamais :\nprint(2 ** 100)   # affiche 1267650600228229401496703205376</code></pre><p><strong>🔍 Comment ça marche :</strong> <code>% 256</code> ne garde que le reste de la division par 256 : tout ce qui dépasse 255 « retombe » au début, exactement comme le 9ᵉ bit, qui n'existe pas, disparaît.</p>",
-      "eleves": "prédisent add8(250, 10) à l'ardoise avant l'exécution, puis notent la notion et le code dans le cahier."
+      "eleves": "prédisent add8(250, 10) en réponse en direct (📡) avant l'exécution, puis notent la notion et le code dans le cahier."
      },
      {
       "t": "25–35 min",
@@ -2317,9 +2317,9 @@ const THEME_PLANS = {
       "t": "95–110 min",
       "type": "exercice",
       "titre": "Mini-parcours type DS et défi",
-      "prof": "Lance le mini-parcours de quatre questions type DS à l'ardoise (une par section du jour), puis projette le défi à trous à compléter individuellement.",
-      "contenu": "<p>Quatre questions type DS à l'ardoise (une par section du jour), puis le défi à trous :</p><p><strong>🎯 Défi élève :</strong> compléter les trous.</p><pre><code>def add8(a, b):\n    return (a + b) % ______\n\nprint(add8(250, 10))            # affiche ______\n\ndef proche(a, b, eps=1e-9):\n    return ______(a - b) &lt; eps\n\nprint(proche(0.1 + 0.2, 0.3))   # affiche ______</code></pre>",
-      "eleves": "répondent aux quatre questions type DS à l'ardoise, puis complètent individuellement le défi à trous."
+      "prof": "Lance le mini-parcours de quatre questions type DS en réponse en direct (📡, une par section du jour) : clôt et affiche les réponses sur la TV tactile après chacune, puis projette le défi à trous à compléter individuellement.",
+      "contenu": "<p>Quatre questions type DS en réponse en direct (📡, une par section du jour), puis le défi à trous :</p><p><strong>🎯 Défi élève :</strong> compléter les trous.</p><pre><code>def add8(a, b):\n    return (a + b) % ______\n\nprint(add8(250, 10))            # affiche ______\n\ndef proche(a, b, eps=1e-9):\n    return ______(a - b) &lt; eps\n\nprint(proche(0.1 + 0.2, 0.3))   # affiche ______</code></pre>",
+      "eleves": "répondent aux quatre questions type DS en réponse en direct (📡) depuis leur poste, puis complètent individuellement le défi à trous."
      },
      {
       "t": "110–120 min",
@@ -2358,10 +2358,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel d'entrée à l'ardoise",
-      "prof": "Lance le rituel d'entrée pendant l'appel : deux conversions rapides à l'ardoise pour réactiver les séances précédentes.",
-      "contenu": "<p>Rituel : convertir à l'ardoise un octet en hexadécimal et un entier négatif en complément à deux (réactivation de la séance 3).</p>",
-      "eleves": "convertissent à l'ardoise un octet en hexadécimal et un entier négatif en complément à deux."
+      "titre": "Rituel d'entrée en réponse en direct",
+      "prof": "Lance le rituel d'entrée pendant l'appel : deux conversions rapides en réponse en direct (📡) pour réactiver les séances précédentes ; clôt et affiche les réponses sur la TV tactile.",
+      "contenu": "<p>Rituel en réponse en direct (📡) : convertir sur papier un octet en hexadécimal et un entier négatif en complément à deux (réactivation de la séance 3).</p>",
+      "eleves": "convertissent sur papier un octet en hexadécimal et un entier négatif en complément à deux, puis saisissent chaque résultat en réponse en direct (📡)."
      },
      {
       "t": "10–22 min",
@@ -2391,7 +2391,7 @@ const THEME_PLANS = {
       "t": "40–48 min",
       "type": "correction",
       "titre": "Correction du décodeur et UTF-8",
-      "prof": "Corrige au vidéoprojecteur : la boucle accumulateur, la version experte avec join, la trace pas à pas, puis termine par la cellule ▶ de la section 12 sur le mot « été ».",
+      "prof": "Corrige sur la TV tactile : la boucle accumulateur, la version experte avec join, la trace pas à pas, puis termine par la cellule ▶ de la section 12 sur le mot « été ».",
       "contenu": "<p><strong>🐢 Première méthode — simple à comprendre :</strong> le décodeur secret avec une boucle.</p><pre><code>print(ord(\"A\"), ord(\"a\"), ord(\"0\"))   # affiche 65 97 48\nprint(chr(78), chr(83), chr(73))      # affiche N S I\n\ncodes = [72, 73, 32, 78, 83, 73]\nmessage = \"\"\nfor c in codes:\n    message = message + chr(c)\nprint(message)                        # affiche HI NSI</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>ord</code> et <code>chr</code> sont <strong>inverses</strong> l'un de l'autre : <code>chr(ord(\"A\"))</code> redonne <code>\"A\"</code>.</li><li>La boucle utilise <code>message</code> comme <strong>accumulateur</strong> : on part de la chaîne vide et on colle un caractère à chaque tour, comme on additionnait dans une somme.</li><li><code>ord(\"é\")</code> vaut 233 : au-delà de 127, on quitte l'ASCII, Unicode prend le relais.</li></ul><p><strong>⚡ Méthode plus efficace :</strong></p><pre><code>codes = [72, 73, 32, 78, 83, 73]\nprint(\"\".join(chr(c) for c in codes))   # affiche HI NSI</code></pre><p><code>join</code> assemble tous les caractères en une seule ligne : c'est la version experte de la mission « Le décodeur secret » du site, plus courte mais identique sur le fond.</p><p><strong>📋 Trace d'exécution :</strong> la boucle du décodeur, pas à pas.</p><table><tr><th>c</th><th>chr(c)</th><th>message après le tour</th></tr><tr><td>72</td><td>H</td><td>\"H\"</td></tr><tr><td>73</td><td>I</td><td>\"HI\"</td></tr><tr><td>32</td><td>(espace)</td><td>\"HI \"</td></tr><tr><td>78</td><td>N</td><td>\"HI N\"</td></tr><tr><td>83</td><td>S</td><td>\"HI NS\"</td></tr><tr><td>73</td><td>I</td><td>\"HI NSI\"</td></tr></table><p><strong>🌍 UTF-8 en pratique :</strong> le nombre d'octets n'est <strong>pas</strong> le nombre de caractères.</p><pre><code>mot = \"été\"\nprint(len(mot))                   # affiche 3  (Python compte les CARACTÈRES)\nprint(len(mot.encode(\"utf-8\")))   # affiche 5  (octets : é=2, t=1, é=2)</code></pre><p>Une lettre accentuée « pèse » 2 octets en UTF-8. Les fameux « Ã© » apparaissent quand un texte UTF-8 est relu avec un <em>mauvais</em> codage.</p>",
       "eleves": "comparent leur boucle avec le corrigé, notent la version join et prédisent len(\"été\") avant l'exécution."
      },
@@ -2452,7 +2452,7 @@ const THEME_PLANS = {
       "titre": "Synthèse : le fil rouge 77",
       "prof": "Déroule au tableau le fil rouge 77 dans les quatre représentations (binaire, hexadécimal, complément à deux, ASCII) et annonce le déroulé des deux heures.",
       "contenu": "<p><strong>📖 La notion :</strong></p><p>Dernière séance du thème : pas de notion nouvelle, mais un bouclage complet avant le DS n°2. L'idée directrice : <strong>un même nombre possède plusieurs représentations</strong>, et le thème a appris à passer de l'une à l'autre. Déroulons le fil rouge à la main avec <strong>77</strong>. En binaire : 77 = 64 + 8 + 4 + 1, soit <code>01001101</code> sur un octet. En hexadécimal, on découpe en quartets : <code>0100</code> = 4 et <code>1101</code> = 13 = D, donc <strong>4D</strong>. Pour −77 en complément à deux : on inverse <code>01001101</code> → <code>10110010</code>, puis on ajoute 1 → <code>10110011</code>. Et comme caractère, la table ASCII donne 77 → « M ». Quatre séances traversées avec un seul nombre : c'est exactement l'esprit du DS.</p><p>La première heure s'organise en trois temps : un <strong>quiz-relais</strong> en îlots construit sur la fiche-résumé (5 points) et les « Erreurs fréquentes » du site (chaque îlot rédige 2 questions pour les autres), le <strong>QCM de 18 questions</strong> en autonomie (résultats remontés dans « Ma classe »), puis la <strong>remédiation</strong> en groupes de besoin pendant que les plus solides avancent sur le mini-projet « Conversion de bases ». La seconde heure est consacrée au <strong>DS n°2 « Représentation des données »</strong> (55 min sur table, /20).</p>",
-      "eleves": "calculent chaque représentation du fil rouge 77 sur l'ardoise avant la validation au tableau."
+      "eleves": "calculent chaque représentation du fil rouge 77 sur papier et saisissent le résultat en réponse en direct (📡) avant la validation au tableau."
      },
      {
       "t": "10–20 min",
@@ -2482,9 +2482,9 @@ const THEME_PLANS = {
       "t": "55–60 min",
       "type": "correction",
       "titre": "Quiz éclair des pièges avant DS",
-      "prof": "Fais prédire les cinq affichages à l'ardoise, révèle les réponses, puis fais réciter les pièges juste avant de distribuer le DS.",
+      "prof": "Fais prédire les cinq affichages en réponse en direct (📡, une question par ligne), clôt et révèle les réponses sur la TV tactile, puis fais réciter les pièges juste avant de distribuer le DS.",
       "contenu": "<p><strong>🎯 Défi élève :</strong> le quiz des erreurs fréquentes — prédire chaque affichage <strong>avant</strong> d'exécuter, comme au quiz-relais.</p><pre><code>print(2 ** 4)                      # affiche ______  (piège : pas 8 !)\nprint(int(\"11111111\", 2))          # affiche ______\nprint(len(\"été\"))                  # affiche ______\nprint(len(\"été\".encode(\"utf-8\")))  # affiche ______\nprint(0.1 + 0.2 == 0.3)            # affiche ______</code></pre><p><strong>✅ Réponse :</strong></p><pre><code>print(2 ** 4)                      # affiche 16  (piège : pas 8 !)\nprint(int(\"11111111\", 2))          # affiche 255\nprint(len(\"été\"))                  # affiche 3\nprint(len(\"été\".encode(\"utf-8\")))  # affiche 5\nprint(0.1 + 0.2 == 0.3)            # affiche False</code></pre><p>2⁴ = 2 × 2 × 2 × 2 = 16 (et non 2 × 4 = 8) ; <code>11111111</code> est l'octet plein, 255 ; « été » compte 3 caractères mais pèse 5 octets en UTF-8 (chaque « é » en occupe 2). Toute erreur à ce quiz désigne la section précise à revoir en remédiation : c'est le principe des groupes de besoin construits à partir du QCM et de la matrice « Ma classe ».</p><ul><li>Les pièges à réciter avant le DS : un octet = 8 bits mais 2⁸ = 256 valeurs ; 2⁴ = 16 (et non 8) ; jamais <code>==</code> entre deux flottants ; les restes des divisions successives se lisent de bas en haut.</li><li>Relire la fiche-résumé (5 points) et refaire le QCM de 18 questions : chaque question ratée pointe la section du cours à retravailler.</li><li>Au DS, le papier d'abord : tableau des poids pour binaire → décimal, divisions successives pour décimal → binaire, quartets pour l'hexadécimal, recette « inverser puis ajouter 1 » pour les négatifs.</li></ul>",
-      "eleves": "prédisent les cinq affichages à l'ardoise, corrigent en vert et récitent les pièges avant le DS."
+      "eleves": "prédisent les cinq affichages en réponse en direct (📡) depuis leur poste, corrigent en vert et récitent les pièges avant le DS."
      },
      {
       "t": "60–115 min",
@@ -2530,7 +2530,7 @@ const THEME_PLANS = {
     "aPreparer": [
      "5 enveloppes/boîtes numérotées 0–4 avec des cartes-valeurs à l'intérieur (débranché des indices)",
      "Trace écrite à coller (tableau des 3 structures — reprendre celui de la section 1, bouton 🖨️ du site)",
-     "Vidéoprojecteur + comptes élèves prêts (les cellules ▶ tournent dans le navigateur, prévoir Capytale en secours)",
+     "TV tactile + comptes élèves prêts (les cellules ▶ tournent dans le navigateur, prévoir Capytale en secours)",
      "Impression des exercices 1, 2, 4, 8 pour les élèves sans poste"
     ],
     "cours": "<p><strong>📖 La notion :</strong> jusqu'ici, une variable ne contient qu'une <em>seule</em> valeur : un entier, un flottant, un booléen. Comment alors stocker les 30 moyennes de la classe ? Créer trente variables est impraticable. Les <strong>types construits</strong> permettent d'assembler plusieurs valeurs dans une seule structure. On en étudie trois, à bien distinguer :</p>\n<table>\n<tr><th>Structure</th><th>Forme</th><th>Modifiable ?</th><th>On accède par…</th></tr>\n<tr><td><strong>tuple</strong> (p-uplet)</td><td><code>(3, 5)</code></td><td>non (immuable)</td><td>position</td></tr>\n<tr><td><strong>liste</strong> (tableau)</td><td><code>[12, 15, 9]</code></td><td>oui</td><td>indice (position)</td></tr>\n<tr><td><strong>dictionnaire</strong></td><td><code>{\"nom\": \"Ada\"}</code></td><td>oui</td><td>clé (nom)</td></tr>\n</table>\n<p>Déroulons une liste <em>à la main</em> avec le jeu des casiers : cinq enveloppes numérotées 0, 1, 2, 3, 4 contiennent les notes 12, 15, 9, 18, 11. L'enveloppe 0 contient 12 : <strong>le premier indice est 0</strong>, pas 1. L'enveloppe -1 est la dernière : elle contient 11. La tranche 1:3 désigne les enveloppes 1 et 2 (la borne 3 est <strong>exclue</strong>) : on lit 15 et 9. Enfin, cinq enveloppes numérotées à partir de 0 : le dernier indice est 5 − 1 = 4.</p>\n<p><strong>🐢 Première méthode — simple à comprendre :</strong> le tuple, une séquence <strong>ordonnée</strong> et <strong>immuable</strong> (non modifiable), écrite entre parenthèses — parfait pour des coordonnées ou une date qui ne doivent pas changer.</p>\n<pre><code>point = (3, 5)                  # un couple (x, y)\nprint(\"abscisse :\", point[0])   # affiche abscisse : 3\nprint(\"ordonnée :\", point[1])   # affiche ordonnée : 5\n\nx, y = point                    # déballage (unpacking)\nprint(\"x =\", x, \"| y =\", y)     # affiche x = 3 | y = 5\n\n# point[0] = 9 lèverait TypeError : le tuple est immuable !</code></pre>\n<p>Puis la liste, une séquence ordonnée et <strong>modifiable</strong>, écrite entre crochets :</p>\n<pre><code>notes = [12, 15, 9, 18, 11]\nprint(notes[0])      # affiche 12   (le premier : indice 0)\nprint(notes[-1])     # affiche 11   (le dernier)\nprint(len(notes))    # affiche 5    (le nombre d'éléments)\nprint(notes[1:3])    # affiche [15, 9]   (indices 1 et 2, pas 3)\n\n# notes[5] lèverait IndexError : le dernier indice est 4 !</code></pre>\n<p><strong>🔍 Comment ça marche :</strong></p>\n<ul>\n<li><code>point[0]</code> lit l'élément par sa <strong>position</strong>, en commençant à 0 ; <code>x, y = point</code> <strong>déballe</strong> le tuple : les deux valeurs sont distribuées d'un coup dans deux variables.</li>\n<li><code>len(notes)</code> compte les éléments (5) ; le dernier indice valide est donc <code>len(notes) - 1</code>, et l'indice négatif <code>-1</code> part de la fin.</li>\n<li>Dans la tranche <code>notes[1:3]</code>, la borne de droite est <strong>exclue</strong> : on obtient les indices 1 et 2 seulement.</li>\n</ul>\n<p><strong>📋 Trace — la liste déroulée à la main :</strong></p>\n<table>\n<tr><th>Liste <code>notes</code></th><td>12</td><td>15</td><td>9</td><td>18</td><td>11</td></tr>\n<tr><th>Indice</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>\n<tr><th>Indice négatif</th><td>-5</td><td>-4</td><td>-3</td><td>-2</td><td>-1</td></tr>\n</table>\n<p><strong>🎯 Défi élève :</strong> compléter les 4 trous, prédire l'affichage <em>par écrit</em>, puis vérifier en exécutant.</p>\n<pre><code>notes = [12, 15, 9]\nnotes.______(20)         # ajoute 20 à la fin\nprint(notes[______])     # affiche le dernier : 20\n\na = 10\nb = 20\na, b = ______, ______    # échange en une ligne, sans variable temporaire\nprint(a, b)              # affiche 20 10</code></pre>\n<p><strong>✅ Réponse :</strong></p>\n<pre><code>notes = [12, 15, 9]\nnotes.append(20)         # append ajoute toujours à la fin\nprint(notes[-1])         # affiche 20\n\na = 10\nb = 20\na, b = b, a              # Python fabrique le tuple (b, a) puis le déballe\nprint(a, b)              # affiche 20 10</code></pre>\n<ul>\n<li>Le premier indice est <strong>0</strong> ; le dernier est <code>len(t) - 1</code>, ou plus simplement <code>t[-1]</code>.</li>\n<li>Un tuple est <strong>immuable</strong> : <code>point[0] = 9</code> lève <code>TypeError</code> ; le tuple d'un seul élément s'écrit <code>(42,)</code>, la virgule est obligatoire.</li>\n<li>Vocabulaire du programme (BO) : « p-uplet » = <code>tuple</code> Python ; « tableau » = <code>list</code> Python.</li>\n</ul>",
@@ -2573,7 +2573,7 @@ const THEME_PLANS = {
       "titre": "Manipulation : lire une liste",
       "prof": "Enchaîne sur la section 3 : les élèves exécutent la cellule ▶ sur les indices et les tranches. Provoque notes[5] et lis le message IndexError ensemble.",
       "contenu": "<p>Puis la liste, une séquence ordonnée et <strong>modifiable</strong>, écrite entre crochets :</p>\n<pre><code>notes = [12, 15, 9, 18, 11]\nprint(notes[0])      # affiche 12   (le premier : indice 0)\nprint(notes[-1])     # affiche 11   (le dernier)\nprint(len(notes))    # affiche 5    (le nombre d'éléments)\nprint(notes[1:3])    # affiche [15, 9]   (indices 1 et 2, pas 3)\n\n# notes[5] lèverait IndexError : le dernier indice est 4 !</code></pre>",
-      "eleves": "exécutent la cellule ▶ de la section 3, prédisent notes[5] à l'ardoise puis lisent l'IndexError."
+      "eleves": "exécutent la cellule ▶ de la section 3, prédisent notes[5] en réponse en direct (📡) puis lisent l'IndexError."
      },
      {
       "t": "55–70 min",
@@ -2619,7 +2619,7 @@ const THEME_PLANS = {
      "Exercices 3, 5 et 6 : carrés de 1 à 5 par compréhension (facile), moyenne par accumulation sans sum (moyen), fonction nb_pairs (moyen)"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise — 4 questions flash sur la séance 1 (t[0] ?, t[-1] ?, len ?, tranche ?).",
+     "0–10 min : rituel réponse en direct (📡) — 4 questions flash sur la séance 1 (t[0] ?, t[-1] ?, len ?, tranche ?).",
      "10–25 min : <strong>débranché</strong> — la « file humaine » : 6 élèves alignés sont la liste ; on joue append (un élève arrive en bout), t[2] = v (remplacement), remove ; la classe prédit l'état après chaque opération.",
      "25–50 min : <strong>manipulation</strong> — sections 4 et 5 : cellules ▶ exécutées par les élèves, distinguer parcours « par éléments » et « par indices ».",
      "50–65 min : <strong>institutionnalisation</strong> — section 6 : lire une compréhension à voix haute (« la liste des n·n POUR n allant de… SI… ») ; gabarit [expr for x in iterable if cond] dans le cahier.",
@@ -2628,7 +2628,7 @@ const THEME_PLANS = {
     ],
     "aPreparer": [
      "6 cartes-valeurs grand format pour la file humaine (débranché)",
-     "Ardoises + feutres pour le rituel",
+     "Les 4 questions flash du rituel préparées en réponse en direct (📡), réponse courte ou nombre",
      "Impression du TP guidé « Séquences » exercices 1–3 (bouton 🖨️) pour travailler cahier fermé",
      "Trace écrite : gabarit de la compréhension + les 3 opérations de modification"
     ],
@@ -2637,10 +2637,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel ardoise : questions flash",
-      "prof": "Écris une liste au tableau et pose les quatre questions flash de la séance 1, réponse sur ardoise levée : t[0] ?, t[-1] ?, len(t) ?, une tranche ? Corrige immédiatement après chaque question.",
-      "contenu": "<p>Quatre questions flash sur la séance 1, réponse sur ardoise : t[0] ?, t[-1] ?, len(t) ?, t[1:3] ?</p>",
-      "eleves": "écrivent leurs réponses aux quatre questions flash sur l'ardoise et la lèvent à chaque question."
+      "titre": "Rituel réponse en direct : questions flash",
+      "prof": "Écris une liste au tableau et pose les quatre questions flash de la séance 1 en réponse en direct (📡, texte court saisi depuis le poste) : t[0] ?, t[-1] ?, len(t) ?, une tranche ? Après chaque question, clos-la, affiche les réponses sur la TV tactile et corrige immédiatement.",
+      "contenu": "<p>Quatre questions flash sur la séance 1, réponse en direct (📡) : t[0] ?, t[-1] ?, len(t) ?, t[1:3] ?</p>",
+      "eleves": "saisissent depuis leur poste leur réponse à chacune des quatre questions flash en réponse en direct (📡) et comparent avec la correction affichée sur la TV tactile."
      },
      {
       "t": "10–20 min",
@@ -2730,7 +2730,7 @@ const THEME_PLANS = {
     ],
     "aPreparer": [
      "Feuilles quadrillées + grilles de bataille navale (débranché matrices)",
-     "Vidéoprojecteur pour la démonstration Python Tutor du piège des alias",
+     "TV tactile pour la démonstration Python Tutor du piège des alias",
      "Impression de la fiche + « Valeur vs référence » à coller dans le cahier (🖨️)",
      "Cahier des charges d'une page pour le Morpion (différenciation des rapides)"
     ],
@@ -2774,7 +2774,7 @@ const THEME_PLANS = {
       "titre": "Démonstration : le piège des alias",
       "prof": "C'est LA démonstration spectaculaire de la séance : construis [[0]*3]*2, modifie une seule case… et deux lignes changent ! Fais réagir la classe avant d'expliquer alias, copie et référence.",
       "contenu": "<p><strong>⚠️ Le piège des alias — copie ou référence :</strong> copier une variable de liste ne copie pas la liste, seulement une <strong>référence</strong> vers le même objet. C'est LA démonstration de la séance :</p>\n<pre><code>a = [1, 2, 3]\nb = a                # b et a désignent le MÊME objet (alias)\nb.append(4)\nprint(a)             # affiche [1, 2, 3, 4]   : a aussi a changé !\n\nc = a.copy()         # vraie copie indépendante\nc.append(99)\nprint(a)             # affiche [1, 2, 3, 4]   : a est intact</code></pre>\n<pre><code>piege = [[0] * 3] * 2      # DEUX références vers la MÊME ligne !\npiege[0][0] = 9\nprint(piege)               # affiche [[9, 0, 0], [9, 0, 0]]\n\ngrille = [[0 for _ in range(3)] for _ in range(2)]   # lignes indépendantes\ngrille[0][0] = 9\nprint(grille)              # affiche [[9, 0, 0], [0, 0, 0]]</code></pre>",
-      "eleves": "prédisent à l'ardoise l'effet de piege[0][0] = 9, réagissent aux deux lignes changées et expliquent l'alias."
+      "eleves": "prédisent en réponse en direct (📡) l'effet de piege[0][0] = 9, réagissent aux deux lignes changées et expliquent l'alias."
      },
      {
       "t": "55–70 min",
@@ -2821,7 +2821,7 @@ const THEME_PLANS = {
      "Exercices 7, 9 et 10 : dictionnaire élève + clé mention (moyen), inventaire du jeu avec .get (moyen), occurrences de « mississippi » (défi)"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise — liste ou tuple ? 4 situations à trancher.",
+     "0–10 min : rituel réponse en direct (📡) — liste ou tuple ? 4 situations à trancher.",
      "10–30 min : <strong>débranché</strong> — la « carte d'identité » : chaque îlot reçoit des étiquettes clé (nom, classe, moyenne) et des étiquettes valeur à apparier ; comparer avec la liste : « pourquoi chercher par CLÉ est plus lisible que par position ? ».",
      "30–60 min : <strong>manipulation</strong> — sections 8 à 10 : cellules ▶ exécutées (accès d[clé], ajout, .items()) ; provoquer un KeyError et le lire ensemble.",
      "60–75 min : <strong>institutionnalisation</strong> — trace écrite : d[clé], d[clé] = v, .get(clé, defaut), parcours .items() ; motif du comptage de la section 12.",
@@ -2839,10 +2839,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel ardoise : liste ou tuple ?",
-      "prof": "Projette les 4 situations à trancher : chaque élève écrit « liste » ou « tuple » sur son ardoise et justifie d'un mot. Corrige au fil, en rappelant le critère : modifiable ou figé ?",
-      "contenu": "<p>Quatre situations à trancher à l'ardoise : liste ou tuple ? Chacun lève son ardoise et justifie d'un mot.</p>",
-      "eleves": "écrivent « liste » ou « tuple » sur l'ardoise pour chacune des quatre situations et justifient d'un mot."
+      "titre": "Rituel réponse en direct : liste ou tuple ?",
+      "prof": "Projette les 4 situations à trancher sur la TV tactile : pour chacune, lance une réponse en direct (📡, choix A « liste » / B « tuple »), chaque élève répond depuis son poste et justifie d'un mot à l'oral. Clos, affiche l'histogramme sur la TV tactile et corrige au fil, en rappelant le critère : modifiable ou figé ?",
+      "contenu": "<p>Quatre situations à trancher en réponse en direct (📡) : liste ou tuple ? Chacun répond depuis son poste et justifie d'un mot.</p>",
+      "eleves": "choisissent « liste » ou « tuple » en réponse en direct (📡) pour chacune des quatre situations et justifient d'un mot."
      },
      {
       "t": "10–30 min",
@@ -2922,9 +2922,9 @@ const THEME_PLANS = {
      "TP guidé « Dictionnaires » exercice 4 (ensembles) pour les rapides"
     ],
     "enClasse": [
-     "0–10 min : rituel — question flash dictionnaire (.get) au vidéoprojecteur.",
+     "0–10 min : rituel — question flash dictionnaire (.get) sur la TV tactile, réponse en direct (📡).",
      "10–25 min : <strong>manipulation</strong> — section 14 (sets) : cellule ▶ puis exercices 13 et 14 en direct.",
-     "25–40 min : <strong>institutionnalisation</strong> — section 16 : jeu de l'ardoise « quelle structure pour… ? » (coordonnées GPS, inventaire, notes de la classe, invités sans doublon).",
+     "25–40 min : <strong>institutionnalisation</strong> — section 16 : jeu en réponse en direct (📡) « quelle structure pour… ? » (coordonnées GPS, inventaire, notes de la classe, invités sans doublon).",
      "40–55 min : <strong>projet, phases 1–2</strong> — en îlot sur papier : définir 2–3 règles d'équilibre, décrire la stratégie gloutonne « distribuer comme des cartes ».",
      "55–105 min : <strong>projet, phases 3–4</strong> — coder former_groupes(eleves, nb_groupes) à partir du code de départ du site, puis dérouler les 3 tests fournis (chacun placé une fois, tailles proches, niveaux mélangés).",
      "105–120 min : <strong>phase 5</strong> — présentation éclair (2 min/îlot) : justifier les règles ; le prof remplit la grille d'évaluation de projet ; exercice 12 et défi « carnet de classe » donnés en devoir."
@@ -2941,9 +2941,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Question flash dictionnaire (.get)",
-      "prof": "Projette la question flash au vidéoprojecteur : un dictionnaire et un appel à .get(clé, défaut). Réponse sur ardoise, correction immédiate.",
-      "contenu": "<p>Question flash au vidéoprojecteur : que renvoie <code>.get(clé, défaut)</code> sur ce dictionnaire ? Chacun écrit le résultat sur l'ardoise.</p>",
-      "eleves": "écrivent sur l'ardoise le résultat de .get(clé, défaut) et la lèvent pour la correction."
+      "prof": "Projette la question flash sur la TV tactile : un dictionnaire et un appel à .get(clé, défaut). Réponse en direct (📡) depuis les postes ; clos la question, affiche les réponses sur la TV tactile et corrige immédiatement.",
+      "contenu": "<p>Question flash sur la TV tactile : que renvoie <code>.get(clé, défaut)</code> sur ce dictionnaire ? Chacun saisit le résultat en réponse en direct (📡).</p>",
+      "eleves": "saisissent en réponse en direct (📡) le résultat de .get(clé, défaut) et comparent avec la correction affichée sur la TV tactile."
      },
      {
       "t": "10–25 min",
@@ -2964,10 +2964,10 @@ const THEME_PLANS = {
      {
       "t": "33–40 min",
       "type": "jeu",
-      "titre": "Ardoise : quelle structure pour… ?",
-      "prof": "Anime le jeu de l'ardoise de la section 16 : pour chaque besoin, chacun brandit tuple, liste, dict ou set et justifie son choix en une phrase.",
-      "contenu": "<p>Jeu de l'ardoise « quelle structure pour… ? » : coordonnées GPS, inventaire, notes de la classe, invités sans doublon.</p>",
-      "eleves": "brandissent l'ardoise tuple, liste, dict ou set pour chaque besoin et justifient leur choix en une phrase."
+      "titre": "Réponse en direct : quelle structure pour… ?",
+      "prof": "Anime le jeu de la section 16 en réponse en direct (📡, choix A tuple / B liste / C dict / D set) : pour chaque besoin, chacun répond depuis son poste ; clos, affiche l'histogramme sur la TV tactile et fais justifier le choix en une phrase.",
+      "contenu": "<p>Jeu en réponse en direct (📡) « quelle structure pour… ? » : coordonnées GPS, inventaire, notes de la classe, invités sans doublon.</p>",
+      "eleves": "choisissent tuple, liste, dict ou set en réponse en direct (📡) pour chaque besoin et justifient leur choix en une phrase."
      },
      {
       "t": "40–50 min",
@@ -3021,7 +3021,7 @@ const THEME_PLANS = {
      "Sujet EVALUATIONS « TP noté — Types construits » (1 h sur poste, /20, corrigé fourni) ; le « DS — Types construits » (50 min) reste en réserve pour une évaluation papier ultérieure"
     ],
     "enClasse": [
-     "0–15 min : rituel bilan — relecture guidée du résumé (6 points) et des 3 erreurs fréquentes ; 3 questions flash ardoise.",
+     "0–15 min : rituel bilan — relecture guidée du résumé (6 points) et des 3 erreurs fréquentes ; 3 questions flash en réponse en direct (📡).",
      "15–35 min : <strong>QCM en autonomie</strong> — les 10 questions du site, chacun note son score ; le prof relève les questions les plus ratées (diagnostic par question).",
      "35–55 min : <strong>remédiation</strong> — groupes de besoin d'après le diagnostic : indices → refaire exercice 2 ; compréhension → exercice 3 ; dictionnaires → exercice 10 ; les solides aident ou avancent sur le Morpion.",
      "55–115 min : <strong>TP noté sur poste</strong> (1 h) — sujet « TP noté — Types construits » du site : max/min sans fonctions, moyenne, compréhension, dictionnaire bilan, bonus occurrences.",
@@ -3046,10 +3046,10 @@ const THEME_PLANS = {
      {
       "t": "10–15 min",
       "type": "rituel",
-      "titre": "Trois questions flash à l'ardoise",
-      "prof": "Pose 3 questions flash sur ardoise pour vérifier la relecture ; correction immédiate avant de lancer le QCM.",
-      "contenu": "<p>Trois questions flash à l'ardoise, tirées du résumé qui vient d'être relu.</p>",
-      "eleves": "répondent aux trois questions flash sur l'ardoise et corrigent immédiatement leurs erreurs."
+      "titre": "Trois questions flash en réponse en direct",
+      "prof": "Pose 3 questions flash en réponse en direct (📡) pour vérifier la relecture ; clos chaque question, affiche les réponses sur la TV tactile et corrige immédiatement avant de lancer le QCM.",
+      "contenu": "<p>Trois questions flash en réponse en direct (📡), tirées du résumé qui vient d'être relu.</p>",
+      "eleves": "répondent aux trois questions flash en réponse en direct (📡) depuis leur poste et corrigent immédiatement leurs erreurs."
      },
      {
       "t": "15–35 min",
@@ -3109,7 +3109,7 @@ const THEME_PLANS = {
      "Réactivation : exercice 12 du thème « types construits » (liste de dictionnaires, meilleure moyenne)"
     ],
     "enClasse": [
-     "0–10 min : rituel — réactivation dictionnaires (ardoise : lire e[\"nom\"], ajouter une clé).",
+     "0–10 min : rituel — réactivation dictionnaires (réponse en direct 📡 : lire e[\"nom\"], ajouter une clé).",
      "10–35 min : <strong>débranché</strong> — chaque îlot reçoit 5 fiches cartonnées « élève » (nom, classe, note) en désordre : reconstituer le tableau au sol, nommer les colonnes ; introduire les mots <strong>enregistrement</strong> (une fiche) et <strong>descripteur</strong> (un nom de colonne).",
      "35–60 min : <strong>manipulation</strong> — sections 1–2 : cellule ▶ exécutée ; faire le lien fiche ↔ dictionnaire, pile de fiches ↔ liste.",
      "60–75 min : <strong>institutionnalisation</strong> — trace écrite : table = liste de dictionnaires ; 1 ligne = 1 dict ; colonnes = clés de la première ligne.",
@@ -3120,7 +3120,7 @@ const THEME_PLANS = {
      "Jeux de 5 fiches cartonnées « élève » par îlot (le site n'a pas d'activité débranchée pour ce thème : matériel à fabriquer)",
      "Trace écrite à coller (vocabulaire + schéma fiche↔dictionnaire)",
      "Billets de sortie (petits papiers pour la question finale)",
-     "Vidéoprojecteur + postes avec accès au site"
+     "TV tactile + postes avec accès au site"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Listes d'élèves, résultats sportifs, relevés météo, jeux de données ouverts (<em>open data</em>)… une immense partie de l'information du monde se présente sous forme de <strong>tables</strong>. Une table est un tableau régulier dans lequel :</p><ul><li>chaque <strong>ligne</strong> est un <strong>enregistrement</strong> (une « fiche ») ;</li><li>chaque <strong>colonne</strong> est un <strong>descripteur</strong> (un nom d'information) ;</li><li>toutes les lignes ont <em>les mêmes</em> descripteurs.</li></ul><p>Exemple déroulé à la main, avec trois pionniers de l'informatique :</p><table><tr><th>nom</th><th>naissance</th><th>pays</th></tr><tr><td>Turing</td><td>1912</td><td>UK</td></tr><tr><td>Lovelace</td><td>1815</td><td>UK</td></tr><tr><td>Hopper</td><td>1906</td><td>USA</td></tr></table><p>Cette table compte 3 enregistrements et 3 descripteurs (<em>nom</em>, <em>naissance</em>, <em>pays</em>). Pour répondre à « quel est le pays de Hopper ? », on repère la fiche de Hopper (3ᵉ ligne) puis on lit la colonne <em>pays</em> : USA. Or une fiche qui associe des clés (les descripteurs) à des valeurs, c'est exactement un <strong>dictionnaire</strong> Python. Une table se représente donc par une <strong>liste de dictionnaires</strong> : la liste contient les lignes, et chaque ligne est un dictionnaire dont les <strong>clés sont les noms de colonnes</strong>.</p><p><strong>🐢 Première méthode — simple à comprendre :</strong></p><pre><code>table = [\n    {\"nom\": \"Turing\",   \"naissance\": 1912, \"pays\": \"UK\"},\n    {\"nom\": \"Lovelace\", \"naissance\": 1815, \"pays\": \"UK\"},\n    {\"nom\": \"Hopper\",   \"naissance\": 1906, \"pays\": \"USA\"},\n]\n\nprint(len(table))          # affiche 3\nprint(table[0][\"nom\"])     # affiche Turing\nprint(table[2][\"pays\"])    # affiche USA\n\nfor ligne in table:\n    print(ligne[\"nom\"], \"-\", ligne[\"naissance\"])\n# affiche :\n# Turing - 1912\n# Lovelace - 1815\n# Hopper - 1906</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>len(table)</code> compte les éléments de la liste, donc le nombre de lignes ;</li><li><code>table[0]</code> est le premier dictionnaire — attention, les indices commencent à 0 : la fiche de Hopper est <code>table[2]</code> ;</li><li><code>table[2][\"pays\"]</code> enchaîne les deux accès : d'abord la ligne (par son indice), puis la cellule (par sa clé) ;</li><li>la boucle <code>for</code> parcourt les fiches une par une, comme on feuillette la pile de fiches cartonnées de l'activité débranchée.</li></ul><p><strong>📋 Trace d'exécution :</strong> déroulons la boucle à la main.</p><table><tr><th>tour</th><th>ligne</th><th>affichage</th></tr><tr><td>1</td><td>{\"nom\": \"Turing\", \"naissance\": 1912, \"pays\": \"UK\"}</td><td>Turing - 1912</td></tr><tr><td>2</td><td>{\"nom\": \"Lovelace\", \"naissance\": 1815, \"pays\": \"UK\"}</td><td>Lovelace - 1815</td></tr><tr><td>3</td><td>{\"nom\": \"Hopper\", \"naissance\": 1906, \"pays\": \"USA\"}</td><td>Hopper - 1906</td></tr></table><p><strong>🎯 Défi élève :</strong> compléter pour afficher le nombre de lignes, la liste des colonnes, puis ajouter un enregistrement.</p><pre><code>table = [\n    {\"nom\": \"Turing\",   \"naissance\": 1912, \"pays\": \"UK\"},\n    {\"nom\": \"Lovelace\", \"naissance\": 1815, \"pays\": \"UK\"},\n    {\"nom\": \"Hopper\",   \"naissance\": 1906, \"pays\": \"USA\"},\n]\nprint(\"Nombre de lignes :\", ______(table))\nprint(\"Colonnes :\", list(table[0].______()))\ntable.______({\"nom\": \"Hamilton\", \"naissance\": 1936, \"pays\": \"USA\"})\nprint(table[______][\"nom\"])        # affiche Hamilton</code></pre><p>✅ Réponse :</p><pre><code>table = [\n    {\"nom\": \"Turing\",   \"naissance\": 1912, \"pays\": \"UK\"},\n    {\"nom\": \"Lovelace\", \"naissance\": 1815, \"pays\": \"UK\"},\n    {\"nom\": \"Hopper\",   \"naissance\": 1906, \"pays\": \"USA\"},\n]\nprint(\"Nombre de lignes :\", len(table))     # affiche Nombre de lignes : 3\nprint(\"Colonnes :\", list(table[0].keys()))  # affiche Colonnes : ['nom', 'naissance', 'pays']\ntable.append({\"nom\": \"Hamilton\", \"naissance\": 1936, \"pays\": \"USA\"})\nprint(table[3][\"nom\"])                      # affiche Hamilton</code></pre><ul><li>Vocabulaire à fixer une fois pour toutes : 1 ligne = 1 <strong>enregistrement</strong> = 1 dictionnaire ; 1 colonne = 1 <strong>descripteur</strong> = 1 clé.</li><li>Accès à une cellule : <code>table[i][\"colonne\"]</code> — l'indice d'abord, la clé ensuite ; les indices commencent à 0.</li><li>Toutes les lignes doivent avoir les mêmes clés : les colonnes de la table sont les clés de la première ligne, <code>list(table[0].keys())</code>.</li></ul>",
     "etapes": [
@@ -3128,9 +3128,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : réactivation des dictionnaires",
-      "prof": "Distribue les ardoises et projette deux questions flash : que renvoie e[\"nom\"] ? comment ajouter une clé à un dictionnaire ? Corrige à main levée en deux minutes.",
-      "contenu": "<p>Sur ardoise : que renvoie <code>e[\"nom\"]</code> ? Comment ajouter une clé à un dictionnaire ? Réactivation possible : exercice 12 du thème « types construits » (meilleure moyenne dans une liste de dictionnaires).</p>",
-      "eleves": "écrivent sur l'ardoise ce que renvoie e[\"nom\"] et comment ajouter une clé, puis se corrigent à main levée."
+      "prof": "Lance deux questions flash en réponse en direct (📡) : que renvoie e[\"nom\"] ? comment ajouter une clé à un dictionnaire ? Clos les questions, affiche les réponses sur la TV tactile et corrige en deux minutes.",
+      "contenu": "<p>En réponse en direct (📡) : que renvoie <code>e[\"nom\"]</code> ? Comment ajouter une clé à un dictionnaire ? Réactivation possible : exercice 12 du thème « types construits » (meilleure moyenne dans une liste de dictionnaires).</p>",
+      "eleves": "saisissent en réponse en direct (📡), depuis leur poste, ce que renvoie e[\"nom\"] et comment ajouter une clé, puis se corrigent quand la réponse est révélée sur la TV tactile."
      },
      {
       "t": "10–35 min",
@@ -3154,7 +3154,7 @@ const THEME_PLANS = {
       "titre": "Démo : la table en Python",
       "prof": "Fais exécuter la cellule ▶ de la section 2 « Représenter une table en Python ». Verbalise le lien : une fiche = un dictionnaire, la pile de fiches = la liste.",
       "contenu": "<p><strong>🐢 Première méthode — simple à comprendre :</strong></p><pre><code>table = [\n    {\"nom\": \"Turing\",   \"naissance\": 1912, \"pays\": \"UK\"},\n    {\"nom\": \"Lovelace\", \"naissance\": 1815, \"pays\": \"UK\"},\n    {\"nom\": \"Hopper\",   \"naissance\": 1906, \"pays\": \"USA\"},\n]\n\nprint(len(table))          # affiche 3\nprint(table[0][\"nom\"])     # affiche Turing\nprint(table[2][\"pays\"])    # affiche USA\n\nfor ligne in table:\n    print(ligne[\"nom\"], \"-\", ligne[\"naissance\"])\n# affiche :\n# Turing - 1912\n# Lovelace - 1815\n# Hopper - 1906</code></pre>",
-      "eleves": "exécutent la cellule ▶ de la section 2 et prédisent chaque affichage à l'ardoise avant de vérifier."
+      "eleves": "exécutent la cellule ▶ de la section 2 et prédisent chaque affichage en réponse en direct (📡) avant de vérifier."
      },
      {
       "t": "60–75 min",
@@ -3228,9 +3228,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : questions flash séance 1",
-      "prof": "Pose trois questions flash sur la séance 1, réponses sur ardoise : un enregistrement ? un descripteur ? que renvoie table[0][\"nom\"] ? Corrige à main levée.",
+      "prof": "Pose trois questions flash sur la séance 1, réponses en direct (📡) : un enregistrement ? un descripteur ? que renvoie table[0][\"nom\"] ? Clos chaque question et révèle la réponse sur la TV tactile.",
       "contenu": "<p>Trois questions flash sur la séance 1 : qu'est-ce qu'un enregistrement ? qu'est-ce qu'un descripteur ? que renvoie <code>table[0][\"nom\"]</code> ?</p>",
-      "eleves": "répondent sur l'ardoise aux trois questions flash sur la séance 1 et se corrigent à main levée."
+      "eleves": "répondent depuis leur poste, en réponse en direct (📡), aux trois questions flash sur la séance 1 et se corrigent à la révélation sur la TV tactile."
      },
      {
       "t": "10–30 min",
@@ -3254,7 +3254,7 @@ const THEME_PLANS = {
       "titre": "Le piège : tout est chaîne",
       "prof": "Mets en scène le piège : fais taper \"17\" + 1 pour provoquer le TypeError devant la classe, puis répare avec int(...). Enchaîne sur la section 4 : vérifier la cohérence (même nombre de colonnes partout).",
       "contenu": "<p><strong>⚠️ Piège n°1 du thème — un CSV ne livre que des chaînes :</strong></p><p>Le type affiché est <code>&lt;class 'str'&gt;</code> : la valeur lue est <code>\"1912\"</code>, pas le nombre <code>1912</code>. Additionner <code>\"17\"</code> et <code>1</code> provoque une erreur <code>TypeError</code>. Avant tout calcul, il faut donc <strong>convertir</strong> avec <code>int(...)</code> ou <code>float(...)</code> :</p><pre><code>naissances = [int(l[\"naissance\"]) for l in table]\nprint(min(naissances))    # affiche 1815</code></pre>",
-      "eleves": "prédisent à l'ardoise le résultat de \"17\" + 1, constatent le TypeError puis proposent la réparation avec int(...)."
+      "eleves": "prédisent en réponse en direct (📡) le résultat de \"17\" + 1, constatent le TypeError puis proposent la réparation avec int(...)."
      },
      {
       "t": "55–70 min",
@@ -3309,7 +3309,7 @@ const THEME_PLANS = {
      "Erreur fréquente n°2 : « trier sans key »"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise — lire un DictReader, convertir une note.",
+     "0–10 min : rituel réponse en direct (📡) — lire un DictReader, convertir une note.",
      "10–30 min : <strong>débranché</strong> — avec les fiches cartonnées de la séance 1 : chaque îlot exécute à la main « garde les notes ≥ 10 » (filtre : on écarte des fiches) puis « range par note décroissante » (tri : on réordonne TOUTES les fiches) ; verbaliser la différence filtre/tri.",
      "30–55 min : <strong>manipulation</strong> — sections 5–6 : cellules ▶ exécutées ; montrer l'erreur du tri sans key.",
      "55–70 min : <strong>institutionnalisation</strong> — les 2 gabarits au cahier : [l for l in table if ...] et sorted(table, key=lambda l: ..., reverse=True) ; règle : on construit une NOUVELLE table.",
@@ -3320,17 +3320,17 @@ const THEME_PLANS = {
      "Les jeux de fiches cartonnées de la séance 1 (réutilisés pour filtre/tri à la main)",
      "Affiche A3 des deux gabarits filtrer/trier pour le mur",
      "Impression des exercices 1, 2, 4, 7 (🖨️) pour préparation cahier fermé",
-     "Ardoises pour le rituel"
+     "Questions du rituel prêtes en réponse en direct (📡)"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Deux traitements fondamentaux sur une table, à ne pas confondre :</p><ul><li><strong>filtrer</strong> (rechercher) : ne <strong>garder</strong> que les lignes qui vérifient une condition — on écarte des fiches, le résultat a <em>moins</em> de lignes ;</li><li><strong>trier</strong> : <strong>réordonner toutes</strong> les lignes selon une colonne — aucune fiche ne disparaît, elles changent seulement d'ordre.</li></ul><p>À la main, avec les fiches Turing (1912, UK), Lovelace (1815, UK) et Hopper (1906, USA) : le filtre « pays égal à UK » garde Turing et Lovelace et écarte Hopper — 2 fiches sur 3. Le tri « par naissance croissante » range les 3 fiches dans l'ordre 1815, 1906, 1912, c'est-à-dire Lovelace, puis Hopper, puis Turing. Dans les deux cas, on construit une <strong>nouvelle</strong> table : la table d'origine reste intacte.</p><p><strong>🐢 Filtrer avec une compréhension — simple à comprendre :</strong> le gabarit est <code>[l for l in table if condition]</code>, la compréhension de liste du thème « types construits ».</p><pre><code>table = [\n    {\"nom\": \"Turing\",   \"naissance\": 1912, \"pays\": \"UK\"},\n    {\"nom\": \"Lovelace\", \"naissance\": 1815, \"pays\": \"UK\"},\n    {\"nom\": \"Hopper\",   \"naissance\": 1906, \"pays\": \"USA\"},\n]\n\nuk = [l for l in table if l[\"pays\"] == \"UK\"]\nprint([l[\"nom\"] for l in uk])       # affiche ['Turing', 'Lovelace']\n\nrecents = [l for l in table if l[\"naissance\"] &gt; 1900]\nprint(len(recents))                 # affiche 2</code></pre><p><strong>🔍 Comment ça marche :</strong> la condition porte sur une colonne (<code>l[\"pays\"] == \"UK\"</code>) et peut en combiner plusieurs avec <code>and</code> / <code>or</code>. Le résultat est encore une table : on peut compter ses lignes avec <code>len(...)</code> ou la refiltrer.</p><p><strong>🗂️ Trier avec sorted et key :</strong> <code>sorted(table, key=...)</code> renvoie une <em>nouvelle</em> table triée. Le paramètre <strong><code>key</code></strong> indique sur quelle colonne trier : <code>lambda l: l[\"naissance\"]</code> se lit « pour une ligne <code>l</code>, renvoyer <code>l[\"naissance\"]</code> ». <code>reverse=True</code> trie en ordre décroissant.</p><pre><code>par_annee = sorted(table, key=lambda l: l[\"naissance\"])\nprint([l[\"nom\"] for l in par_annee])\n# affiche ['Lovelace', 'Hopper', 'Turing']\n\nrecent = sorted(table, key=lambda l: l[\"naissance\"], reverse=True)\nprint([l[\"nom\"] for l in recent])\n# affiche ['Turing', 'Hopper', 'Lovelace']</code></pre><p>Attention : sans <code>key</code>, <code>sorted(table)</code> provoque une erreur, car Python ne sait pas comparer deux dictionnaires — c'est l'erreur fréquente n°2 du thème.</p><p><strong>📋 Trace d'exécution :</strong> le filtre <code>l[\"pays\"] == \"UK\"</code> examiné fiche par fiche.</p><table><tr><th>ligne examinée</th><th>l[\"pays\"] == \"UK\"</th><th>gardée ?</th></tr><tr><td>Turing</td><td>True</td><td>oui</td></tr><tr><td>Lovelace</td><td>True</td><td>oui</td></tr><tr><td>Hopper</td><td>False</td><td>non</td></tr></table><p><strong>🎯 Défi élève :</strong> compléter pour compter les élèves reçus (note ≥ 10) puis afficher la major.</p><pre><code>notes = [\n    {\"nom\": \"Ada\",   \"note\": 17},\n    {\"nom\": \"Alan\",  \"note\": 12},\n    {\"nom\": \"Grace\", \"note\": 19},\n    {\"nom\": \"Linus\", \"note\": 8},\n]\nrecus = [l ______ l in notes ______ l[\"note\"] &gt;= 10]\nprint(len(recus))                   # affiche 3\nclassement = sorted(notes, ______=lambda l: l[\"note\"], reverse=______)\nprint(classement[0][\"nom\"])         # affiche Grace</code></pre><p>✅ Réponse :</p><pre><code>notes = [\n    {\"nom\": \"Ada\",   \"note\": 17},\n    {\"nom\": \"Alan\",  \"note\": 12},\n    {\"nom\": \"Grace\", \"note\": 19},\n    {\"nom\": \"Linus\", \"note\": 8},\n]\nrecus = [l for l in notes if l[\"note\"] &gt;= 10]\nprint(len(recus))                   # affiche 3\nclassement = sorted(notes, key=lambda l: l[\"note\"], reverse=True)\nprint(classement[0][\"nom\"])         # affiche Grace</code></pre><ul><li>Les deux gabarits du cahier : <code>[l for l in table if ...]</code> (filtrer) et <code>sorted(table, key=lambda l: ..., reverse=True)</code> (trier).</li><li>Filtrer et trier construisent une <strong>nouvelle</strong> table : la table d'origine n'est jamais modifiée.</li><li>Trier sans <code>key</code> est l'erreur fréquente n°2 : toujours indiquer la colonne de tri.</li></ul>",
     "etapes": [
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel ardoise : DictReader et conversion",
-      "prof": "Sur ardoise : fais écrire la ligne qui charge un CSV avec DictReader et la conversion int(l[\"note\"]). Corrige à main levée.",
-      "contenu": "<p>Sur ardoise : écrire la lecture d'un CSV avec <code>csv.DictReader</code> (séparateur point-virgule) et la conversion <code>int(l[\"note\"])</code>.</p>",
-      "eleves": "écrivent sur l'ardoise la lecture d'un CSV avec DictReader et la conversion int(l[\"note\"])."
+      "titre": "Rituel réponse en direct : DictReader et conversion",
+      "prof": "En réponse en direct (📡, texte court) : fais saisir la ligne qui charge un CSV avec DictReader et la conversion int(l[\"note\"]). Clos la question, affiche les réponses sur la TV tactile et corrige.",
+      "contenu": "<p>En réponse en direct (📡) : saisir la lecture d'un CSV avec <code>csv.DictReader</code> (séparateur point-virgule) et la conversion <code>int(l[\"note\"])</code>.</p>",
+      "eleves": "saisissent en réponse en direct (📡), depuis leur poste, la lecture d'un CSV avec DictReader et la conversion int(l[\"note\"])."
      },
      {
       "t": "10–25 min",
@@ -3408,7 +3408,7 @@ const THEME_PLANS = {
      "Exercices 8, 9 et 10 (défis) : année de naissance moyenne, jointure {classe → prof}, pipeline complet filtrer→trier→classer"
     ],
     "enClasse": [
-     "0–10 min : rituel — filtre et tri à écrire sur ardoise (gabarits de la séance 3).",
+     "0–10 min : rituel — filtre et tri à saisir en réponse en direct 📡 (gabarits de la séance 3).",
      "10–25 min : <strong>débranché</strong> — jointure physique : deux paquets de fiches (élèves / affichette classe→prof) ; chaque îlot apparie par la colonne commune et « enrichit » ses fiches au crayon.",
      "25–50 min : <strong>manipulation</strong> — sections 7–8 : cellules ▶ exécutées (moyenne, min/max, jointure par dictionnaire).",
      "50–65 min : <strong>institutionnalisation</strong> — section 9 : schéma de la chaîne charger → vérifier → filtrer/trier/calculer collé dans le cahier ; chaque étape produit une NOUVELLE table.",
@@ -3426,10 +3426,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel ardoise : gabarits filtre et tri",
-      "prof": "Fais écrire sur l'ardoise les deux gabarits de la séance 3 : un filtre par compréhension et un tri avec sorted. Corrige à main levée avant de passer à la suite.",
-      "contenu": "<p>Sur l'ardoise : écrire un filtre <code>[l for l in table if ...]</code> et un tri <code>sorted(table, key=lambda l: ..., reverse=True)</code> (gabarits de la séance 3).</p>",
-      "eleves": "écrivent sur l'ardoise un filtre par compréhension et un tri avec sorted, puis se corrigent à main levée."
+      "titre": "Rituel réponse en direct : gabarits filtre et tri",
+      "prof": "Lance deux questions en réponse en direct (📡, texte court) sur les gabarits de la séance 3 : un filtre par compréhension et un tri avec sorted. Clos, affiche les réponses sur la TV tactile et corrige avant de passer à la suite.",
+      "contenu": "<p>En réponse en direct (📡) : saisir un filtre <code>[l for l in table if ...]</code> et un tri <code>sorted(table, key=lambda l: ..., reverse=True)</code> (gabarits de la séance 3).</p>",
+      "eleves": "saisissent en réponse en direct (📡), depuis leur poste, un filtre par compréhension et un tri avec sorted, puis se corrigent quand les réponses s'affichent sur la TV tactile."
      },
      {
       "t": "10–25 min",
@@ -3445,7 +3445,7 @@ const THEME_PLANS = {
       "titre": "Statistiques et jointure à la main",
       "prof": "Projette la section 7 et déroule au tableau les statistiques à la main (effectif, somme, moyenne, min, max), puis raconte la jointure avec l'annuaire des codes pays en la reliant à l'activité débranchée.",
       "contenu": "<p><strong>📖 La notion :</strong></p><p>Dernières briques de la chaîne de traitement : <strong>résumer</strong> une colonne (statistiques) et <strong>croiser</strong> deux tables (jointure).</p><p>Statistiques à la main sur la table des notes — Ada 17, Alan 12, Grace 19, Linus 14. Effectif : 4 lignes. Somme : 17 + 12 + 19 + 14 = 62. Moyenne : 62 ÷ 4 = 15,5. Minimum : 12 ; maximum : 19, obtenu par Grace — la major.</p><p>Jointure à la main : souvent l'information est répartie dans <strong>deux tables</strong> qui partagent une colonne commune, la <strong>clé</strong>. Exemple : une table de personnes contient un <em>code pays</em> (Turing → UK, Hopper → US) et un annuaire donne le nom complet de chaque code (UK → Royaume-Uni, US → États-Unis). Pour chaque fiche, on cherche son code dans l'annuaire et on recopie le nom complet sur la fiche : Turing est ainsi <em>enrichi</em> en « Turing, Royaume-Uni ». <strong>Combiner</strong> deux tables ainsi s'appelle une <strong>jointure</strong> — le principe au cœur des bases de données.</p>",
-      "eleves": "refont à l'ardoise les calculs à la main (somme, moyenne, min, max) et relient la jointure à leurs fiches."
+      "eleves": "refont au brouillon les calculs à la main (somme, moyenne, min, max), saisissent la moyenne obtenue en réponse en direct (📡) et relient la jointure à leurs fiches."
      },
      {
       "t": "35–45 min",
@@ -3694,7 +3694,7 @@ const THEME_PLANS = {
      "Exercices 1 et 3 (facile) : HTML, CSS ou JS ? ; page minimale « Club NSI » sur papier"
     ],
     "enClasse": [
-     "0–10 min : rituel — afficher le code source d'un site connu au vidéoprojecteur : « quelqu'un a ÉCRIT tout ça ».",
+     "0–10 min : rituel — afficher le code source d'un site connu sur la TV tactile : « quelqu'un a ÉCRIT tout ça ».",
      "10–35 min : <strong>débranché</strong> — jeu de rôle client/serveur : un élève « navigateur » écrit une requête sur papier (URL), un élève « serveur » pioche la bonne fiche-réponse et la renvoie ; introduire requête/réponse, puis les 3 langages (structure/habillage/interaction) avec l'analogie de la maison.",
      "35–55 min : <strong>manipulation</strong> — sections 3–4 : chaque élève modifie les démos interactives (changer le titre, ajouter un paragraphe, une image, un lien).",
      "55–70 min : <strong>institutionnalisation</strong> — squelette HTML au cahier + tableau des 3 langages.",
@@ -3706,7 +3706,7 @@ const THEME_PLANS = {
      "Fiches-réponses papier pour le jeu client/serveur (le site n'a pas d'activité débranchée pour ce thème : à fabriquer)",
      "Feuilles A3 + feutres pour les maquettes ; pochette pour les archiver jusqu'au projet",
      "Trace écrite : squelette HTML + tableau des 3 langages",
-     "Vidéoprojecteur (code source d'un site réel)"
+     "TV tactile (code source d'un site réel à afficher)"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Le Web fonctionne sur un modèle <strong>client-serveur</strong>, comme au restaurant : le client commande, la cuisine prépare et sert. Ici, le client est le <strong>navigateur</strong> (Chrome, Firefox…) : il envoie une <strong>requête</strong> ; un <strong>serveur</strong> (un ordinateur distant qui héberge le site) renvoie une <strong>réponse</strong>, le plus souvent une page HTML. Cet échange suit un protocole commun, <strong>HTTP</strong> (ou HTTPS, sa version sécurisée), et l'adresse demandée est une <strong>URL</strong>.</p><p>Déroulons à la main ce qui se passe quand on tape <code>https://www.exemple.fr/recherche?ville=Beyrouth</code> : le navigateur découpe l'URL — protocole <code>https</code>, domaine <code>www.exemple.fr</code>, chemin <code>/recherche</code>, paramètres après le <code>?</code> (<code>ville=Beyrouth</code>) — puis demande cette ressource au serveur, qui répond en envoyant… du <strong>texte</strong>. Une page reçue est juste du texte HTML que le navigateur sait afficher : c'est ce texte qu'on apprend à écrire.</p><p>Une page combine trois langages aux rôles bien distincts — c'est <em>la</em> distinction fondatrice du thème :</p><table><tr><th>Langage</th><th>Rôle</th><th>Analogie (une maison)</th></tr><tr><td><strong>HTML</strong></td><td>le contenu et la structure (titres, paragraphes, images, liens)</td><td>les murs, le squelette</td></tr><tr><td><strong>CSS</strong></td><td>la présentation (couleurs, polices, mise en page)</td><td>la peinture, la déco</td></tr><tr><td><strong>JavaScript</strong></td><td>l'interactivité (réagir aux actions de l'utilisateur)</td><td>l'électricité, les interrupteurs</td></tr></table><p><strong>🐢 Première méthode — une page construite balise par balise :</strong></p><p>HTML organise le contenu avec des <strong>balises</strong>, le plus souvent par <strong>paires</strong> : une ouvrante <code>&lt;p&gt;</code> et une fermante <code>&lt;/p&gt;</code> qui encadrent un contenu. Voici la page complète minimale, à connaître par cœur :</p><pre><code>&lt;!DOCTYPE html&gt;\n&lt;html lang=\"fr\"&gt;\n  &lt;head&gt;\n    &lt;meta charset=\"UTF-8\"&gt;\n    &lt;title&gt;Ma page&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;h1&gt;Bonjour la NSI&lt;/h1&gt;\n    &lt;p&gt;Mon premier &lt;strong&gt;paragraphe&lt;/strong&gt;.&lt;/p&gt;\n    &lt;a href=\"https://eduscol.education.fr\"&gt;Un lien&lt;/a&gt;\n  &lt;/body&gt;\n&lt;/html&gt;</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>Deux zones : le <code>&lt;head&gt;</code> contient les <strong>métadonnées</strong> (titre de l'onglet, encodage — non affichées dans la page) ; le <code>&lt;body&gt;</code> contient tout ce qui est <strong>affiché</strong>.</li><li>Le <code>href</code> du lien est un <strong>attribut</strong> : une information ajoutée dans la balise ouvrante sous la forme <code>nom=\"valeur\"</code>. De même <code>src</code> et <code>alt</code> pour une image <code>&lt;img&gt;</code>.</li><li>Les balises s'<strong>imbriquent comme des poupées russes</strong> : pas de chevauchement, ce qui est ouvert en dernier se ferme en premier.</li><li>Autres balises à connaître : <code>&lt;h1&gt;</code> à <code>&lt;h6&gt;</code> (titres : une <strong>hiérarchie</strong>, pas une taille), <code>&lt;ul&gt;</code> et <code>&lt;li&gt;</code> (liste à puces), <code>&lt;img&gt;</code> (balise seule, sans fermante).</li></ul><p><strong>🎯 Défi élève :</strong> compléter la page minimale « Club NSI » (exercice 3 du thème).</p><pre><code>&lt;!DOCTYPE ______&gt;\n&lt;html lang=\"fr\"&gt;\n  &lt;head&gt;\n    &lt;meta charset=\"______\"&gt;\n    &lt;______&gt;Club&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;______&gt;\n    &lt;h1&gt;Club NSI&lt;/h1&gt;\n    &lt;p&gt;Bienvenue !&lt;/p&gt;\n  &lt;/body&gt;\n&lt;/html&gt;</code></pre><p>✅ Réponse :</p><pre><code>&lt;!DOCTYPE html&gt;\n&lt;html lang=\"fr\"&gt;\n  &lt;head&gt;\n    &lt;meta charset=\"UTF-8\"&gt;\n    &lt;title&gt;Club&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;h1&gt;Club NSI&lt;/h1&gt;\n    &lt;p&gt;Bienvenue !&lt;/p&gt;\n  &lt;/body&gt;\n&lt;/html&gt;</code></pre><ul><li>Une page web reçue du serveur est <strong>du texte HTML</strong> : requête (client) → réponse (serveur), via HTTP.</li><li>HTML = structure, CSS = présentation, JavaScript = interactivité : trois langages, trois rôles séparés.</li><li>L'attribut <code>alt</code> d'une image est important pour l'<strong>accessibilité</strong> (lecteurs d'écran) et s'affiche si l'image ne charge pas.</li></ul>",
     "etapes": [
@@ -3714,7 +3714,7 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Le code source dévoilé",
-      "prof": "Projette le code source d'un site connu au vidéoprojecteur (clic droit → « Afficher le code source ») et laisse monter l'étonnement : « quelqu'un a ÉCRIT tout ça ». Annonce l'objectif : à la fin du thème, eux aussi sauront en écrire.",
+      "prof": "Projette sur la TV tactile le code source d'un site connu (clic droit → « Afficher le code source ») et laisse monter l'étonnement : « quelqu'un a ÉCRIT tout ça ». Annonce l'objectif : à la fin du thème, eux aussi sauront en écrire.",
       "contenu": "<p>Affiche le code source d'un site que les élèves connaissent : tout ce texte a été écrit à la main — et c'est exactement ce qu'on apprend dans ce thème.</p>",
       "eleves": "observent le code source projeté et répondent à l'oral : qui a écrit ça, dans quel langage ?."
      },
@@ -3732,7 +3732,7 @@ const THEME_PLANS = {
       "titre": "Requête, réponse et trois langages",
       "prof": "Reprends le jeu au tableau pour formaliser requête/réponse et décortiquer une URL, puis introduis les trois langages avec l'analogie de la maison. Appuie-toi sur les sections 1 et 2 du site projetées.",
       "contenu": "<p><strong>📖 La notion :</strong></p><p>Le Web fonctionne sur un modèle <strong>client-serveur</strong>, comme au restaurant : le client commande, la cuisine prépare et sert. Ici, le client est le <strong>navigateur</strong> (Chrome, Firefox…) : il envoie une <strong>requête</strong> ; un <strong>serveur</strong> (un ordinateur distant qui héberge le site) renvoie une <strong>réponse</strong>, le plus souvent une page HTML. Cet échange suit un protocole commun, <strong>HTTP</strong> (ou HTTPS, sa version sécurisée), et l'adresse demandée est une <strong>URL</strong>.</p><p>Déroulons à la main ce qui se passe quand on tape <code>https://www.exemple.fr/recherche?ville=Beyrouth</code> : le navigateur découpe l'URL — protocole <code>https</code>, domaine <code>www.exemple.fr</code>, chemin <code>/recherche</code>, paramètres après le <code>?</code> (<code>ville=Beyrouth</code>) — puis demande cette ressource au serveur, qui répond en envoyant… du <strong>texte</strong>. Une page reçue est juste du texte HTML que le navigateur sait afficher : c'est ce texte qu'on apprend à écrire.</p><p>Une page combine trois langages aux rôles bien distincts — c'est <em>la</em> distinction fondatrice du thème :</p><table><tr><th>Langage</th><th>Rôle</th><th>Analogie (une maison)</th></tr><tr><td><strong>HTML</strong></td><td>le contenu et la structure (titres, paragraphes, images, liens)</td><td>les murs, le squelette</td></tr><tr><td><strong>CSS</strong></td><td>la présentation (couleurs, polices, mise en page)</td><td>la peinture, la déco</td></tr><tr><td><strong>JavaScript</strong></td><td>l'interactivité (réagir aux actions de l'utilisateur)</td><td>l'électricité, les interrupteurs</td></tr></table>",
-      "eleves": "répondent aux questions, décomposent une URL sur l'ardoise et complètent le tableau des trois langages."
+      "eleves": "répondent aux questions, décomposent une URL en réponse en direct (📡) — le morceau demandé : protocole, domaine, chemin ou paramètres — et complètent le tableau des trois langages."
      },
      {
       "t": "35–55 min",
@@ -3787,7 +3787,7 @@ const THEME_PLANS = {
      "Exercice 2 (facile) : que ciblent .menu et #menu ?"
     ],
     "enClasse": [
-     "0–10 min : rituel ardoise — HTML, CSS ou JS ? (réactivation exercice 1).",
+     "0–10 min : rituel réponse en direct (📡) — HTML, CSS ou JS ? (réactivation exercice 1).",
      "10–25 min : <strong>débranché</strong> — « relooking papier » : sur la maquette de la séance 1, surligner en deux couleurs ce qui relève du contenu (HTML) et de l'habillage (CSS) ; discuter « même contenu, deux habillages ».",
      "25–55 min : <strong>manipulation</strong> — sections 5 à 7 : modifier les démos (changer une couleur, cibler .menu puis #titre) ; section 8 : schéma du modèle de boîte.",
      "55–70 min : <strong>institutionnalisation</strong> — les 3 sélecteurs (p / .classe / #id) + le modèle de boîte au cahier.",
@@ -3805,10 +3805,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "HTML, CSS ou JS sur ardoise",
-      "prof": "Projette des extraits de code et fais lever les ardoises : HTML, CSS ou JS ? C'est la réactivation directe de l'exercice 1 de la séance précédente.",
-      "contenu": "<p>Ardoise : pour chaque extrait de code projeté, écrire HTML, CSS ou JS (réactivation de l'exercice 1).</p>",
-      "eleves": "lèvent l'ardoise à chaque extrait projeté — HTML, CSS ou JS — avec un mot de justification."
+      "titre": "HTML, CSS ou JS en réponse en direct",
+      "prof": "Projette des extraits de code sur la TV tactile et lance pour chacun une réponse en direct (📡) à choix A/B/C : HTML, CSS ou JS ? Clos la question, affiche l'histogramme, puis révèle la réponse. C'est la réactivation directe de l'exercice 1 de la séance précédente.",
+      "contenu": "<p>Réponse en direct (📡) : pour chaque extrait de code projeté, choisir HTML, CSS ou JS (réactivation de l'exercice 1).</p>",
+      "eleves": "répondent depuis leur poste à chaque extrait projeté — HTML, CSS ou JS — et donnent un mot de justification à la révélation de la réponse."
      },
      {
       "t": "10–25 min",
@@ -3824,7 +3824,7 @@ const THEME_PLANS = {
       "titre": "Lire une règle, trois sélecteurs",
       "prof": "Projette la section 5 et lis à voix haute la règle sur h1 en la décomposant sélecteur/propriétés, puis fais distinguer les trois types de sélecteurs avant de lâcher les élèves sur les démos.",
       "contenu": "<p><strong>📖 La notion :</strong></p><p>Le HTML dit <em>quoi</em> afficher ; le CSS décrit <strong>comment</strong> l'afficher. Une <strong>règle</strong> CSS = un <strong>sélecteur</strong> (quels éléments ?) suivi de <strong>propriétés</strong> entre accolades (quel style ?) : <code>selecteur { propriete: valeur; }</code>.</p><p>Lisons à la main la règle <code>h1 { color: indigo; text-align: center; }</code> : le sélecteur <code>h1</code> vise <em>tous</em> les titres <code>&lt;h1&gt;</code> de la page ; chacun devient indigo et centré. Même contenu, autre habillage : on change la règle sans toucher au HTML. Trois types de sélecteurs, à bien distinguer :</p><table><tr><th>Sélecteur</th><th>Cible</th><th>Côté HTML</th></tr><tr><td><code>p</code></td><td>toutes les balises de ce type</td><td><code>&lt;p&gt;…&lt;/p&gt;</code></td></tr><tr><td><code>.important</code> (point)</td><td>tous les éléments d'une <strong>classe</strong> (réutilisable)</td><td><code>&lt;p class=\"important\"&gt;</code></td></tr><tr><td><code>#menu</code> (dièse)</td><td>l'élément d'un <strong>identifiant</strong> (unique)</td><td><code>&lt;div id=\"menu\"&gt;</code></td></tr></table>",
-      "eleves": "décomposent la règle sur h1 en sélecteur et propriétés, puis distinguent sur ardoise les trois types de sélecteurs."
+      "eleves": "décomposent la règle sur h1 en sélecteur et propriétés, puis distinguent en réponse en direct (📡) les trois types de sélecteurs (élément, classe ou id ?)."
      },
      {
       "t": "35–55 min",
@@ -3879,16 +3879,16 @@ const THEME_PLANS = {
      "Exercices 4, 5 et 6 (moyen) : URL → dictionnaire Python, GET ou POST pour un mot de passe, formulaire sur papier"
     ],
     "enClasse": [
-     "0–10 min : rituel — 3 sélecteurs à décoder sur ardoise.",
+     "0–10 min : rituel — 3 sélecteurs à décoder en réponse en direct (📡).",
      "10–30 min : <strong>manipulation</strong> — sections 10–11 + exo 🏆 « la cascade » : parier sur la couleur gagnante avant de vérifier.",
-     "30–45 min : <strong>débranché</strong> — chaque élève écrit une URL à paramètres sur ardoise (recherche?q=…&tri=…), le voisin la décompose en chemin + paramètres ; section 20 projetée en appui.",
+     "30–45 min : <strong>débranché</strong> — chaque élève écrit une URL à paramètres sur papier (recherche?q=…&tri=…), le voisin la décompose en chemin + paramètres et saisit le chemin trouvé en réponse en direct (📡) ; section 20 projetée en appui.",
      "45–60 min : <strong>institutionnalisation</strong> — GET = paramètres visibles dans l'URL, POST = corps de la requête ; règle en rouge : jamais un mot de passe en GET (erreur fréquente n°3 du thème).",
      "60–100 min : <strong>pratique</strong> — exercice guidé du formulaire, étapes 1 à 13 en binômes (un div par champ, label relié à l'input, types email/password/date/radio) ; exécuter le code final assemblé.",
      "100–115 min : exercices 4, 5, 6 (le 4 se code en Python dans une cellule ; les 5 et 6 sur papier).",
      "115–120 min : corrigés poussés."
     ],
     "aPreparer": [
-     "Ardoises pour le débranché des URL",
+     "Feuilles de brouillon pour le débranché des URL (vérification en réponse en direct 📡)",
      "Impression de l'exercice guidé du formulaire (🖨️) comme fiche de route des binômes",
      "Trace écrite GET/POST (tableau comparatif)",
      "Ressource complémentaire éventuelle : PDF « Client / serveur » du cours DIU lié au thème (rubrique ressources)"
@@ -3899,9 +3899,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Trois sélecteurs à décoder",
-      "prof": "Projette trois sélecteurs (élément, .classe, #id) et fais lever les ardoises : que cible chacun ? Corrige oralement en dix secondes par sélecteur.",
-      "contenu": "<p>Ardoise : décoder 3 sélecteurs projetés — dire précisément ce que chacun cible.</p>",
-      "eleves": "écrivent sur l'ardoise ce que cible chaque sélecteur projeté, puis valident à la correction orale."
+      "prof": "Projette trois sélecteurs (élément, .classe, #id) sur la TV tactile et lance pour chacun une réponse en direct (📡) en texte court : que cible-t-il ? Clos la question, affiche les réponses, puis corrige oralement en dix secondes par sélecteur.",
+      "contenu": "<p>Réponse en direct (📡) : décoder 3 sélecteurs projetés — écrire précisément ce que chacun cible.</p>",
+      "eleves": "saisissent en réponse en direct (📡) ce que cible chaque sélecteur projeté, puis valident à la correction orale."
      },
      {
       "t": "10–20 min",
@@ -3922,10 +3922,10 @@ const THEME_PLANS = {
      {
       "t": "30–45 min",
       "type": "debranche",
-      "titre": "URL à paramètres sur ardoise",
-      "prof": "Chaque élève écrit une URL à paramètres sur son ardoise, puis le voisin la décompose en chemin + paramètres. Projette la section 20 en appui pour valider le vocabulaire.",
-      "contenu": "<p>Sur ardoise : écrire une URL à paramètres (<code>recherche?q=…&amp;tri=…</code>) ; le voisin la décompose en chemin + paramètres.</p>",
-      "eleves": "écrivent une URL à paramètres sur l'ardoise, puis décomposent celle du voisin en chemin et paramètres."
+      "titre": "URL à paramètres sur papier",
+      "prof": "Chaque élève écrit une URL à paramètres sur une feuille, puis le voisin la décompose en chemin + paramètres ; lance ensuite une réponse en direct (📡) où chacun saisit le chemin de l'URL reçue. Projette la section 20 sur la TV tactile en appui pour valider le vocabulaire.",
+      "contenu": "<p>Sur papier : écrire une URL à paramètres (<code>recherche?q=…&amp;tri=…</code>) ; le voisin la décompose en chemin + paramètres, puis saisit le chemin trouvé en réponse en direct (📡).</p>",
+      "eleves": "écrivent une URL à paramètres sur papier, décomposent celle du voisin en chemin et paramètres, puis saisissent le chemin trouvé en réponse en direct (📡)."
      },
      {
       "t": "45–60 min",
@@ -3949,7 +3949,7 @@ const THEME_PLANS = {
       "titre": "L'analyseur d'URL en Python",
       "prof": "Projette l'analyseur d'URL en Python et déroule la trace d'exécution ligne par ligne : c'est exactement le travail du serveur, et la base de l'exercice 4 qui suit.",
       "contenu": "<p><strong>🐢 Première méthode — l'analyseur d'URL en Python :</strong> retrouver les paramètres d'une URL, c'est exactement ce que fait le serveur en recevant la requête.</p><pre><code>url = \"recherche?ville=Beyrouth&amp;jour=lundi&amp;age=15\"\n\nchemin, requete = url.split(\"?\")        # sépare avant/après le ?\nparametres = {}\nfor couple in requete.split(\"&amp;\"):       # chaque \"clé=valeur\"\n    cle, valeur = couple.split(\"=\")\n    parametres[cle] = valeur\n\nprint(\"Page :\", chemin)   # affiche Page : recherche\nprint(\"Paramètres :\", parametres)\n# affiche Paramètres : {'ville': 'Beyrouth', 'jour': 'lundi', 'age': '15'}</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>url.split(\"?\")</code> coupe l'URL en deux : le <strong>chemin</strong> (la page demandée) et la <strong>requête</strong> (tout ce qui suit le <code>?</code>).</li><li><code>requete.split(\"&amp;\")</code> donne la liste des couples <code>\"clé=valeur\"</code> ; un dernier <code>split(\"=\")</code> sépare la clé de la valeur.</li><li>Chaque paire est rangée dans le <strong>dictionnaire</strong> <code>parametres</code> : la structure clé → valeur vue au thème précédent.</li></ul><p><strong>📋 Trace d'exécution</strong> (une ligne par tour de boucle) :</p><table><tr><th>couple</th><th>cle</th><th>valeur</th><th>parametres après le tour</th></tr><tr><td>\"ville=Beyrouth\"</td><td>\"ville\"</td><td>\"Beyrouth\"</td><td>{'ville': 'Beyrouth'}</td></tr><tr><td>\"jour=lundi\"</td><td>\"jour\"</td><td>\"lundi\"</td><td>{'ville': 'Beyrouth', 'jour': 'lundi'}</td></tr><tr><td>\"age=15\"</td><td>\"age\"</td><td>\"15\"</td><td>{'ville': 'Beyrouth', 'jour': 'lundi', 'age': '15'}</td></tr></table>",
-      "eleves": "prédisent sur ardoise le résultat de chaque ligne de l'analyseur avant son exécution projetée."
+      "eleves": "prédisent sur papier le résultat de chaque ligne de l'analyseur et saisissent en réponse en direct (📡) le résultat final prédit (le contenu de parametres), avant de comparer avec l'exécution projetée."
      },
      {
       "t": "105–115 min",
@@ -4001,9 +4001,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : retour éclair sur le formulaire",
-      "prof": "Interroge la classe à l'oral : à quoi sert le for d'un label, que fait required ? Réponses éclair sur ardoise ou à main levée.",
-      "contenu": "<p>Questions éclair : à quoi sert l'attribut <code>for</code> d'un <code>&lt;label&gt;</code> ? Que fait <code>required</code> ? Réponses sur ardoise.</p>",
-      "eleves": "répondent sur ardoise ou à main levée : rôle du for d'un label, effet de required."
+      "prof": "Interroge la classe à l'oral : à quoi sert le for d'un label, que fait required ? Réponses éclair en réponse en direct (📡, texte court) ou à main levée.",
+      "contenu": "<p>Questions éclair : à quoi sert l'attribut <code>for</code> d'un <code>&lt;label&gt;</code> ? Que fait <code>required</code> ? Réponse en direct (📡), en texte court.</p>",
+      "eleves": "répondent en réponse en direct (📡) ou à main levée : rôle du for d'un label, effet de required."
      },
      {
       "t": "10–25 min",
@@ -4017,9 +4017,9 @@ const THEME_PLANS = {
       "t": "25–35 min",
       "type": "demo",
       "titre": "Les bases JS dans la console",
-      "prof": "Ouvre la console du navigateur (F12) au vidéoprojecteur et tape le code en direct : variable, condition, fonction. Fais prédire chaque affichage avant d'appuyer sur Entrée.",
+      "prof": "Ouvre la console du navigateur (F12) sur la TV tactile et tape le code en direct : variable, condition, fonction. Fais prédire chaque affichage avant d'appuyer sur Entrée.",
       "contenu": "<p><strong>🐢 Première méthode — les bases dans la console</strong> (touche F12 → onglet Console) :</p><pre><code>let note = 14;\nif (note &gt;= 10) {\n  console.log(\"Reçu\");      // affiche Reçu\n} else {\n  console.log(\"Ajourné\");\n}\n\nfunction carre(x) { return x * x; }\nconsole.log(\"carre(5) =\", carre(5));   // affiche carre(5) = 25</code></pre>",
-      "eleves": "prédisent à l'ardoise chaque affichage de la console avant l'exécution, puis valident ou corrigent leur prédiction."
+      "eleves": "prédisent en réponse en direct (📡) chaque affichage de la console avant l'exécution, puis valident ou corrigent leur prédiction quand la réponse est révélée."
      },
      {
       "t": "35–50 min",
@@ -4074,7 +4074,7 @@ const THEME_PLANS = {
      "Projet îlot « Mini-site d'inscription » : phases 1 à 3, code de départ HTML/JS fourni (formulaire + écouteur submit)"
     ],
     "enClasse": [
-     "0–10 min : rituel — le trio JS sur ardoise.",
+     "0–10 min : rituel — le trio JS de mémoire, en réponse en direct (📡).",
      "10–30 min : <strong>manipulation</strong> — section « Valider un formulaire » : lire la démo ensemble, repérer preventDefault et le test du champ vide ; débat oral sur l'exercice 9 (contourner le JS ? → le serveur revérifie TOUJOURS).",
      "30–40 min : <strong>culture</strong> — section « Cookies, traces et vie privée » (10 min, lien EMC/RGPD).",
      "40–55 min : <strong>projet, phases 1–2</strong> — ressortir les maquettes de la séance 1 ; chaque îlot arrête sa liste de champs et ses vérifications.",
@@ -4092,10 +4092,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Rituel : le trio JS sur ardoise",
-      "prof": "Fais écrire de mémoire, sur ardoise, le mini-code du trio getElementById / addEventListener / textContent. Vérifie d'un coup d'œil et corrige les parenthèses oubliées.",
-      "contenu": "<p>Sur ardoise, de mémoire : le code qui écrit un texte dans le paragraphe <code>#msg</code> au clic sur le bouton <code>#b</code> (trio <code>getElementById</code> / <code>addEventListener</code> / <code>textContent</code>).</p>",
-      "eleves": "écrivent de mémoire sur l'ardoise le trio getElementById, addEventListener, textContent, parenthèses comprises."
+      "titre": "Rituel : le trio JS en réponse en direct",
+      "prof": "Fais écrire de mémoire, au brouillon, le mini-code du trio getElementById / addEventListener / textContent, puis lance une réponse en direct (📡) en texte court où chacun saisit la ligne de l'écouteur (addEventListener). Affiche les réponses sur la TV tactile et corrige les parenthèses oubliées.",
+      "contenu": "<p>Au brouillon, de mémoire : le code qui écrit un texte dans le paragraphe <code>#msg</code> au clic sur le bouton <code>#b</code> (trio <code>getElementById</code> / <code>addEventListener</code> / <code>textContent</code>) ; la ligne <code>addEventListener</code> est saisie en réponse en direct (📡).</p>",
+      "eleves": "écrivent de mémoire au brouillon le trio getElementById, addEventListener, textContent, parenthèses comprises, et saisissent la ligne addEventListener en réponse en direct (📡)."
      },
      {
       "t": "10–20 min",
@@ -4203,7 +4203,7 @@ const THEME_PLANS = {
       "titre": "Qu'est-ce qu'un test réussi ?",
       "prof": "Explique ce qu'est un test — une entrée choisie et un résultat attendu — et déroule le test 1 à la main au tableau. Annonce les tests croisés : chaque îlot testera le site d'un autre.",
       "contenu": "<p><strong>📖 La notion :</strong> Un programme qui « a l'air de marcher » n'est pas un programme vérifié : il faut le <strong>tester</strong>. Un test = une <strong>entrée choisie</strong> + le <strong>résultat attendu</strong> ; le test réussit si le comportement observé correspond exactement. Pour la phase 4 du projet « Mini-site d'inscription », le site fournit la grille de tests :</p><table><tr><th>Test</th><th>Entrée</th><th>Résultat attendu</th></tr><tr><td>1</td><td>champ vide, clic sur « S'inscrire »</td><td>message d'erreur affiché</td></tr><tr><td>2</td><td>champ rempli (ex. Tux)</td><td>message de succès</td></tr><tr><td>3</td><td>dans les deux cas</td><td>la page ne se recharge <strong>pas</strong></td></tr></table><p>Déroulons le test 1 à la main sur le code de la séance précédente : clic sans rien saisir → l'événement <code>submit</code> se déclenche → <code>preventDefault()</code> bloque le rechargement → <code>nom</code> vaut <code>\"\"</code> → branche d'erreur → « ❌ Le nom est obligatoire. » s'affiche et l'URL n'a pas changé : test réussi. Les <strong>tests croisés</strong> (chaque îlot teste le site d'un autre îlot) trouvent les oublis que l'auteur ne voit plus.</p>",
-      "eleves": "déroulent le test 1 avec le prof, puis proposent sur ardoise d'autres couples entrée-résultat attendu."
+      "eleves": "déroulent le test 1 avec le prof, puis proposent en réponse en direct (📡, texte court) d'autres couples entrée-résultat attendu."
      },
      {
       "t": "18–38 min",
@@ -4280,8 +4280,8 @@ const THEME_PLANS = {
      "QCM du thème (8 questions) : projeter les questions 1–2 (UAL, programme enregistré) en bilan"
     ],
     "enClasse": [
-     "0–15 min : rituel + accroche débranchée : une vieille tour ouverte circule d'îlot en îlot ; chaque îlot nomme ce qu'il reconnaît sur une ardoise (RAM, disque, ventilateur du CPU…).",
-     "15–40 min : mise en commun sur le vrai matériel, puis lecture guidée de la Section 1 au vidéoprojecteur ; les élèves remplissent le tableau composant/rôle/analogie sur leur fiche.",
+     "0–15 min : rituel + accroche débranchée : une vieille tour ouverte circule d'îlot en îlot ; chaque îlot nomme ce qu'il reconnaît (RAM, disque, ventilateur du CPU…) et envoie sa liste en réponse en direct (📡) depuis un poste.",
+     "15–40 min : mise en commun sur le vrai matériel, puis lecture guidée de la Section 1 sur la TV tactile ; les élèves remplissent le tableau composant/rôle/analogie sur leur fiche.",
      "40–70 min : institutionnalisation Section 2 : schéma de von Neumann au tableau (UC, UAL, mémoire, E/S) ; insister sur la warnbox « l'UC décode, l'UAL calcule » et sur l'idée révolutionnaire du programme enregistré.",
      "70–95 min : sur postes, en binômes : Exercice 1 (facile) puis Exercice 8 (défi) — réponses argumentées à l'écrit avant de déplier la solution.",
      "95–110 min : jeu de tri débranché : cartes « RAM / disque / UC / UAL / capteur / écran » à classer en volatile/permanent, entrée/sortie, calcule/commande.",
@@ -4289,9 +4289,9 @@ const THEME_PLANS = {
     ],
     "aPreparer": [
      "Une vieille unité centrale ouverte (ou barrette de RAM, disque dur, CPU déclipsé) — le site ne fournit que le tableau, pas le matériel réel",
-     "Ardoises + jeu de cartes composants à fabriquer (une planche par îlot)",
+     "Jeu de cartes composants à fabriquer (une planche par îlot) ; questions de réponse en direct (📡) prêtes pour l'accroche et le défi éclair",
      "Trace écrite à trous (schéma von Neumann à légender) à photocopier",
-     "Vidéoprojecteur pour projeter les Sections 1–2 du site"
+     "TV tactile pour projeter les Sections 1–2 du site"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Un ordinateur est constitué de quelques grands organes qui coopèrent. Pour les comprendre, déroulons à la main une scène familière grâce à l'analogie du bureau : pour travailler sur un document, on le sort de l'armoire (le <strong>disque</strong>, qui conserve tout même machine éteinte) et on l'étale sur le bureau (la <strong>RAM</strong>, rapide mais de taille limitée) ; la personne qui travaille (le <strong>processeur</strong>) lit, calcule, écrit ; si l'on quitte la pièce sans ranger dans l'armoire (« enregistrer »), tout ce qui était sur le bureau est perdu — la RAM est <strong>volatile</strong>.</p><table><tr><th>Composant</th><th>Rôle</th><th>Analogie (un bureau)</th></tr><tr><td><strong>Processeur (CPU)</strong></td><td>exécute les instructions, calcule</td><td>la personne qui travaille</td></tr><tr><td><strong>Mémoire vive (RAM)</strong></td><td>stocke temporairement programme et données en cours</td><td>le bureau où l'on étale ses feuilles</td></tr><tr><td><strong>Stockage (disque/SSD)</strong></td><td>conserve les données même éteint</td><td>les tiroirs, les armoires</td></tr><tr><td><strong>Entrées / sorties</strong></td><td>communiquent avec l'extérieur</td><td>clavier, écran, réseau</td></tr></table><p><strong>🏛️ Le modèle de von Neumann :</strong></p><p>Proposé en 1945 par John von Neumann, ce modèle décrit presque tous les ordinateurs actuels. Il distingue quatre composants :</p><ul><li>l'<strong>unité de commande (UC)</strong> — lit et <em>décode</em> les instructions du programme, orchestre le reste ;</li><li>l'<strong>unité arithmétique et logique (UAL)</strong> — <em>effectue</em> les calculs (additions, comparaisons, et/ou/non) ; UC + UAL forment le <strong>processeur (CPU)</strong> ;</li><li>la <strong>mémoire</strong> — stocke à la fois le <em>programme</em> et les <em>données</em> ;</li><li>les <strong>entrées / sorties (E/S)</strong> — échangent avec l'extérieur (clavier, écran, disque).</li></ul><p>L'idée révolutionnaire est le <strong>programme enregistré</strong> : le programme est rangé en mémoire <em>comme</em> des données. On peut donc charger un nouveau programme sans recâbler la machine — c'est ce qui rend l'ordinateur <em>universel</em>. Le processeur répète sans cesse un cycle à trois temps : <strong>charger</strong> (lire l'instruction en mémoire) → <strong>décoder</strong> (la comprendre : rôle de l'UC) → <strong>exécuter</strong> (calculer : rôle de l'UAL), puis recommencer.</p><p><strong>📋 Le jeu de tri :</strong> chaque composant se classe en répondant à trois questions — volatile ou permanent ? entrée ou sortie ? commande ou calcule ?</p><table><tr><th>Composant</th><th>Famille</th><th>Justification</th></tr><tr><td>RAM</td><td>mémoire volatile</td><td>effacée à l'extinction</td></tr><tr><td>disque / SSD</td><td>mémoire permanente</td><td>conserve les données machine éteinte</td></tr><tr><td>UC</td><td>processeur — commande</td><td>décode les instructions</td></tr><tr><td>UAL</td><td>processeur — calcul</td><td>additionne, compare</td></tr><tr><td>clavier, capteur</td><td>périphérique d'entrée</td><td>information vers la machine</td></tr><tr><td>écran</td><td>périphérique de sortie</td><td>information vers l'extérieur</td></tr></table><p><strong>🎯 Défi élève :</strong> compléter le texte à trous.</p><pre><code>1. Le programme et les données sont rangés ensemble dans la ______.\n2. Dans le processeur, l'______ décode les instructions\n   et l'______ effectue les calculs.\n3. La RAM est rapide mais ______ : effacée à l'extinction.\n4. Le disque est lent mais ______ : il conserve tout, machine éteinte.</code></pre><p><strong>✅ Réponse :</strong></p><pre><code>1. mémoire\n2. UC (unité de commande) ; UAL (unité arithmétique et logique)\n3. volatile\n4. permanent</code></pre><ul><li>⚠️ Distinction fréquemment demandée : l'<strong>UC</strong> <em>commande et décode</em>, l'<strong>UAL</strong> <em>calcule</em>. Ne pas confondre.</li><li>Enregistrer un travail, c'est le copier de la RAM (volatile) vers le disque (permanent).</li><li>Le système d'exploitation n'est pas un composant : c'est un logiciel qui <em>pilote</em> le matériel (séance 4).</li></ul>",
     "etapes": [
@@ -4299,9 +4299,9 @@ const THEME_PLANS = {
       "t": "0–15 min",
       "type": "debranche",
       "titre": "Accroche débranchée : la tour ouverte",
-      "prof": "Accueille la classe avec le rituel, puis fais circuler la vieille tour ouverte d'îlot en îlot. Chaque îlot nomme sur son ardoise ce qu'il reconnaît (RAM, disque, ventilateur du CPU…).",
-      "contenu": "<p>Sur l'ardoise de l'îlot : nommez tout ce que vous reconnaissez à l'intérieur de la tour (barrettes, disques, ventilateurs…).</p>",
-      "eleves": "nomment sur l'ardoise de l'îlot les composants reconnus dans la tour ouverte (RAM, disque, ventilateur…)."
+      "prof": "Accueille la classe avec le rituel, puis fais circuler la vieille tour ouverte d'îlot en îlot. Chaque îlot nomme ce qu'il reconnaît (RAM, disque, ventilateur du CPU…) et envoie sa liste en réponse en direct (📡) depuis un poste ; les listes s'affichent sur la TV tactile.",
+      "contenu": "<p>En réponse en direct (📡), depuis un poste de l'îlot : nommez tout ce que vous reconnaissez à l'intérieur de la tour (barrettes, disques, ventilateurs…).</p>",
+      "eleves": "nomment en réponse en direct (📡), depuis un poste de l'îlot, les composants reconnus dans la tour ouverte (RAM, disque, ventilateur…)."
      },
      {
       "t": "15–40 min",
@@ -4347,9 +4347,9 @@ const THEME_PLANS = {
       "t": "110–115 min",
       "type": "exercice",
       "titre": "Défi éclair : texte à trous",
-      "prof": "Projette le texte à trous de la fiche ; chaque élève le complète sur son ardoise en une minute, puis comparaison avec le voisin.",
+      "prof": "Projette le texte à trous de la fiche sur la TV tactile ; chaque élève saisit ses réponses (texte court) en réponse en direct (📡) en une minute, puis comparaison avec le voisin.",
       "contenu": "<p><strong>🎯 Défi élève :</strong> compléter le texte à trous.</p><pre><code>1. Le programme et les données sont rangés ensemble dans la ______.\n2. Dans le processeur, l'______ décode les instructions\n   et l'______ effectue les calculs.\n3. La RAM est rapide mais ______ : effacée à l'extinction.\n4. Le disque est lent mais ______ : il conserve tout, machine éteinte.</code></pre>",
-      "eleves": "complètent le texte à trous sur leur ardoise en une minute puis comparent avec le voisin."
+      "eleves": "complètent le texte à trous en réponse en direct (📡) en une minute puis comparent avec le voisin."
      },
      {
       "t": "115–120 min",
@@ -4371,7 +4371,7 @@ const THEME_PLANS = {
      "QCM question « Avec mem = [7, 5], que vaut l'accumulateur après LOAD 0 puis ADD 1 ? »"
     ],
     "enClasse": [
-     "0–10 min : rituel : 3 questions flash sur von Neumann (ardoise) — qui décode ? qui calcule ? où est rangé le programme ?",
+     "0–10 min : rituel : 3 questions flash sur von Neumann (réponse en direct 📡) — qui décode ? qui calcule ? où est rangé le programme ?",
      "10–35 min : débranché « je suis le processeur » : au tableau, 3 cases mémoire dessinées + une boîte ACC + un curseur PC ; un élève-UC lit l'instruction, un élève-UAL calcule, la classe suit l'état. Dérouler LOAD 0 ; ADD 1 ; STORE 2 ; HALT.",
      "35–55 min : institutionnalisation : le tableau PC/instruction/ACC/mémoire de la Section 3 est recopié comme trace écrite ; lien explicite avec charger → décoder → exécuter.",
      "55–85 min : sur postes : les élèves exécutent la cellule ▶ du simulateur, puis la MODIFIENT : changer mem, ajouter une instruction ADD, faire calculer mem[2] = mem[0] + mem[1] + mem[1].",
@@ -4389,9 +4389,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Questions flash sur von Neumann",
-      "prof": "Lance les 3 questions flash, réponses sur ardoise levée, correction immédiate.",
-      "contenu": "<p>Sur l'ardoise : qui décode ? qui calcule ? où est rangé le programme ?</p>",
-      "eleves": "répondent sur ardoise levée aux trois questions flash sur von Neumann."
+      "prof": "Lance les 3 questions flash en réponse en direct (📡) ; clôt chaque question, affiche les réponses sur la TV tactile et corrige immédiatement.",
+      "contenu": "<p>En réponse en direct (📡) : qui décode ? qui calcule ? où est rangé le programme ?</p>",
+      "eleves": "répondent depuis leur poste, en réponse en direct (📡), aux trois questions flash sur von Neumann."
      },
      {
       "t": "10–20 min",
@@ -4437,9 +4437,9 @@ const THEME_PLANS = {
       "t": "110–115 min",
       "type": "qcm",
       "titre": "Question QCM en bilan",
-      "prof": "Projette la question du QCM du thème et fais voter la classe à l'ardoise avant de révéler la réponse.",
+      "prof": "Projette la question du QCM du thème sur la TV tactile et fais voter la classe en réponse en direct (📡, choix A/B/C/D) ; clôt la question, affiche l'histogramme puis révèle la réponse.",
       "contenu": "<p>QCM du thème : « Avec mem = [7, 5], que vaut l'accumulateur après LOAD 0 puis ADD 1 ? »</p>",
-      "eleves": "votent à l'ardoise la réponse à la question QCM avant la révélation."
+      "eleves": "votent en réponse en direct (📡) la réponse à la question QCM avant la révélation."
      },
      {
       "t": "115–120 min",
@@ -4462,7 +4462,7 @@ const THEME_PLANS = {
      "Rubrique Logisim Evolution du thème : circuits fournis « Additionneurs & soustracteur » (Addition.circ) et « UAL » (ALU.circ), + PDF « 4 — Logique combinatoire »"
     ],
     "enClasse": [
-     "0–10 min : rituel : rappel algèbre de Boole (thème « Représentation des données ») : tables de ET, OU, NON sur ardoise.",
+     "0–10 min : rituel : rappel algèbre de Boole (thème « Représentation des données ») : tables de ET, OU, NON dans le cahier, colonne de sortie de chaque table saisie en réponse en direct (📡).",
      "10–35 min : débranché « portes humaines » : deux élèves-entrées lèvent (1) ou baissent (0) le bras, un élève-porte applique sa règle ; la classe prédit la sortie. Enchaîner ET, OU, XOR.",
      "35–55 min : institutionnalisation Section 4 (transistor = interrupteur, milliards par processeur) puis Section 5 : construire ensemble la table 1+1 → somme 0, retenue 1 ; faire RECONNAÎTRE que somme = XOR et retenue = ET.",
      "55–85 min : sur postes : cellule ▶ du demi-additionneur exécutée puis modifiée ; Exercice 5 (moyen) ; les élèves écrivent ensuite XOR uniquement avec ET/OU/NON dans une cellule vide.",
@@ -4481,9 +4481,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : tables de vérité",
-      "prof": "Fais refaire sur ardoise les tables de ET, OU, NON (rappel du thème « Représentation des données ») ; correction éclair au tableau.",
-      "contenu": "<p>Sur l'ardoise : les tables de vérité de ET, OU et NON.</p>",
-      "eleves": "refont sur ardoise les tables de vérité de ET, OU et NON."
+      "prof": "Fais refaire dans le cahier les tables de ET, OU, NON (rappel du thème « Représentation des données ») ; chaque élève saisit en réponse en direct (📡) la colonne de sortie de chaque table (ex. ET → 0001) ; correction éclair sur la TV tactile.",
+      "contenu": "<p>Dans le cahier : les tables de vérité de ET, OU et NON ; en réponse en direct (📡) : la colonne de sortie de chaque table (ex. ET → 0001).</p>",
+      "eleves": "refont dans le cahier les tables de vérité de ET, OU et NON et saisissent chaque colonne de sortie en réponse en direct (📡)."
      },
      {
       "t": "10–35 min",
@@ -4491,7 +4491,7 @@ const THEME_PLANS = {
       "titre": "Débranché : les portes humaines",
       "prof": "Lance « portes humaines » : deux élèves-entrées lèvent (1) ou baissent (0) le bras, un élève-porte applique sa règle et la classe prédit la sortie. Enchaîne ET, OU puis XOR.",
       "contenu": "<p>Prédisez la sortie de chaque porte humaine avant qu'elle ne réponde ; on passe de ET à OU puis à XOR en changeant seulement la règle de l'élève-porte.</p>",
-      "eleves": "jouent les élèves-entrées ou l'élève-porte, et prédisent à l'ardoise la sortie de chaque porte humaine."
+      "eleves": "jouent les élèves-entrées ou l'élève-porte, et prédisent depuis leur poste, en réponse en direct (📡, 0 ou 1), la sortie de chaque porte humaine."
      },
      {
       "t": "35–55 min",
@@ -4572,8 +4572,8 @@ const THEME_PLANS = {
       "type": "rituel",
       "titre": "Rituel : citez trois systèmes d'exploitation",
       "prof": "Écris « citez 3 OS » au tableau et recueille les réponses des élèves (Windows, Android, Linux…). Fais émerger que le smartphone en a un aussi.",
-      "contenu": "<p>Question flash : « Citez trois systèmes d'exploitation. » Réponses sur ardoise, recueil au tableau.</p>",
-      "eleves": "écrivent trois systèmes d'exploitation sur leur ardoise et complètent le recueil au tableau."
+      "contenu": "<p>Question flash : « Citez trois systèmes d'exploitation. » Chacun répond en réponse en direct (📡, texte court), recueil au tableau.</p>",
+      "eleves": "envoient trois systèmes d'exploitation en réponse en direct (📡) et complètent le recueil au tableau."
      },
      {
       "t": "10–30 min",
@@ -4597,7 +4597,7 @@ const THEME_PLANS = {
       "titre": "Démonstration du thermostat en Python",
       "prof": "Projette la cellule ▶ du thermostat, exécute-la et commente ligne à ligne : la liste est le capteur, le test est le traitement, la variable est l'actionneur. Appuie-toi sur la trace d'exécution pour valider les quatre mesures.",
       "contenu": "<p><strong>🐢 Première méthode — simple à comprendre :</strong> le thermostat simulé en Python.</p><pre><code>CONSIGNE = 19.0                     # température souhaitée (°C)\nmesures = [21.5, 18.9, 17.4, 19.6]  # valeurs lues par le capteur\nfor t in mesures:\n    if t &lt; CONSIGNE:\n        chauffage = True            # décision : trop froid, on chauffe\n    else:\n        chauffage = False           # assez chaud, on coupe\n    print(t, \"-&gt;\", chauffage)\n\n# affiche :\n# 21.5 -&gt; False\n# 18.9 -&gt; True\n# 17.4 -&gt; True\n# 19.6 -&gt; False</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>la liste <code>mesures</code> joue le rôle du <strong>capteur</strong> : une grandeur physique convertie en valeurs numériques ;</li><li>le test <code>t &lt; CONSIGNE</code> est le <strong>traitement</strong> : la décision prise par le programme ;</li><li>la variable <code>chauffage</code> représente l'<strong>actionneur</strong> : une commande numérique qui déclenche une action physique. Des cartes comme <strong>micro:bit</strong> ou Arduino permettent de câbler cette chaîne pour de vrai.</li></ul><p><strong>📋 Trace d'exécution :</strong></p><table><tr><th>t (capteur)</th><th>t &lt; CONSIGNE ?</th><th>chauffage (actionneur)</th></tr><tr><td>21.5</td><td>False</td><td>False (éteint)</td></tr><tr><td>18.9</td><td>True</td><td>True (allumé)</td></tr><tr><td>17.4</td><td>True</td><td>True (allumé)</td></tr><tr><td>19.6</td><td>False</td><td>False (éteint)</td></tr></table>",
-      "eleves": "prédisent à l'ardoise l'affichage du thermostat pour chaque mesure avant l'exécution projetée."
+      "eleves": "prédisent dans le cahier l'affichage du thermostat pour chaque mesure, saisissent en réponse en direct (📡, vrai/faux) la valeur de chauffage pour la dernière mesure, puis comparent avec l'exécution sur la TV tactile."
      },
      {
       "t": "48–55 min",
@@ -4652,8 +4652,8 @@ const THEME_PLANS = {
      "Projet îlot « Mission terminal » (niveau facile, 1 séance) : phases 1–5 + simulateur Python fourni ; Exercice 9 (défi) y renvoie"
     ],
     "enClasse": [
-     "0–10 min : rituel : projeter la « Session type » de la Section 9 ; chaque élève prédit sur ardoise ce qu'affichent les 6 commandes (départ /home/ada) ; correction avec l'onglet prof.",
-     "10–20 min : distribution du Mémo Linux imprimé ; démonstration au vidéoprojecteur d'un vrai terminal : pwd, ls, cd, l'invite, la casse.",
+     "0–10 min : rituel : projeter la « Session type » de la Section 9 sur la TV tactile ; chaque élève prédit dans le cahier ce qu'affichent les 6 commandes (départ /home/ada) et saisit en réponse en direct (📡) le répertoire courant final ; correction avec l'onglet prof.",
+     "10–20 min : distribution du Mémo Linux imprimé ; démonstration sur la TV tactile d'un vrai terminal : pwd, ls, cd, l'invite, la casse.",
      "20–55 min : TP guidé « Se repérer dans l'arborescence » étapes 1–3 en binômes sur vrai terminal ; le prof circule ; verbaliser « où suis-je ? » avant chaque commande.",
      "55–80 min : TP guidé « Manipuler des fichiers » étapes 1–2 (création du fichier eleves.txt, cp/mv/renommage) ; avertir : mv écrase, rm est irréversible.",
      "80–110 min : projet « Mission terminal » en îlots : phase 1 (dessiner l'arborescence), phase 2 (suite de commandes sur papier), phases 3–4 (simulateur Python du site : retrouver secret.txt), phase 5 éclair (expliquer .. à l'oral).",
@@ -4671,15 +4671,15 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : prédire la session type",
-      "prof": "Projette la « Session type — à toi de prédire » de la Section 9 : chaque élève écrit sur ardoise ce qu'affichent les 6 commandes (départ /home/ada). Corrige avec l'onglet prof.",
-      "contenu": "<p>Prédis sur ardoise l'affichage des 6 commandes de la « Session type — à toi de prédire » (départ <code>/home/ada</code>) ; correction immédiate avec l'onglet prof.</p>",
-      "eleves": "prédisent sur ardoise l'affichage des 6 commandes de la session type puis se corrigent."
+      "prof": "Projette la « Session type — à toi de prédire » de la Section 9 sur la TV tactile : chaque élève écrit dans le cahier ce qu'affichent les 6 commandes (départ /home/ada) et saisit en réponse en direct (📡) le répertoire courant final. Clôt la question, affiche les réponses et corrige avec l'onglet prof.",
+      "contenu": "<p>Prédis dans le cahier l'affichage des 6 commandes de la « Session type — à toi de prédire » (départ <code>/home/ada</code>) et saisis en réponse en direct (📡) le répertoire courant à la fin de la session ; correction immédiate avec l'onglet prof.</p>",
+      "eleves": "prédisent dans le cahier l'affichage des 6 commandes de la session type, saisissent le répertoire final en réponse en direct (📡) puis se corrigent."
      },
      {
       "t": "10–20 min",
       "type": "demo",
       "titre": "Mémo Linux et démonstration au terminal",
-      "prof": "Distribue le Mémo Linux imprimé (bouton 🖨️ du site), puis démontre un vrai terminal au vidéoprojecteur : pwd, ls, cd, l'invite $, la casse. Déroule l'exemple « lire nsi.py depuis la racine » en direct.",
+      "prof": "Distribue le Mémo Linux imprimé (bouton 🖨️ du site), puis démontre un vrai terminal sur la TV tactile : pwd, ls, cd, l'invite $, la casse. Déroule l'exemple « lire nsi.py depuis la racine » en direct.",
       "contenu": "<p><strong>📖 La notion :</strong></p><p>Le <strong>terminal</strong> permet de piloter l'ordinateur en <em>tapant</em> des commandes, sans souris. C'est puissant, rapide, et indispensable sur les serveurs, qui n'ont souvent pas d'écran graphique. L'invite <code>$</code> attend une commande ; la casse compte. Les commandes Unix/Linux essentielles de la séance :</p><table><tr><th>Commande</th><th>Rôle</th></tr><tr><td><code>pwd</code></td><td><em>print working directory</em> : où suis-je ?</td></tr><tr><td><code>ls</code></td><td>lister le contenu du dossier courant</td></tr><tr><td><code>cd dossier</code></td><td>se déplacer (<code>cd ..</code> pour remonter d'un cran)</td></tr><tr><td><code>mkdir nom</code></td><td>créer un dossier</td></tr><tr><td><code>cat fichier</code></td><td>afficher le contenu d'un fichier</td></tr><tr><td><code>cp</code> / <code>mv</code> / <code>rm</code></td><td>copier / déplacer ou renommer / supprimer</td></tr></table><p>Exemple déroulé à la main dans l'arborescence du cours (<code>/home/ada</code> contient <code>photos</code> et <code>cours</code>, et <code>nsi.py</code> est dans <code>cours</code>) : pour lire <code>nsi.py</code> depuis la racine :</p><pre><code>$ pwd\n/\n$ cd home/ada/cours\n$ ls\nnsi.py\n$ cat nsi.py</code></pre>",
       "eleves": "suivent la démonstration avec le Mémo Linux en main et prédisent l'effet de chaque commande avant sa frappe."
      },
@@ -4745,7 +4745,7 @@ const THEME_PLANS = {
      "Évaluation : TP noté « Permissions et portes logiques » (EVALUATIONS du site, 1 h sur poste, /20, corrigé prof fourni)"
     ],
     "enClasse": [
-     "0–25 min : rituel puis Section 10 : décoder rwxr-x--- ensemble, règle r=4/w=2/x=1 ; TP guidé « Droits et permissions » étapes 1–2 sur terminal ; Exercice 2 en ardoise.",
+     "0–25 min : rituel puis Section 10 : décoder rwxr-x--- ensemble, règle r=4/w=2/x=1 ; TP guidé « Droits et permissions » étapes 1–2 sur terminal ; Exercice 2 en réponse en direct (📡).",
      "25–40 min : sur postes : cellule ▶ permissions_vers_octal exécutée et modifiée ; Exercices 4 puis 7 en cellule vide (les rapides font l'étape 3 bonus du TP : script bash).",
      "40–50 min : consolidation : relire le résumé (6 points) et les 3 erreurs fréquentes du site ; Section 11 projetée : la pile transistors → portes → processeur → OS → applications.",
      "50–65 min : QCM du thème (8 questions) en autonomie individuelle sur le site.",
@@ -4764,9 +4764,9 @@ const THEME_PLANS = {
       "t": "0–5 min",
       "type": "rituel",
       "titre": "Rituel : questions flash sur le terminal",
-      "prof": "Lance trois questions flash sur ardoise pour réactiver la séance précédente, puis annonce le programme : permissions, QCM, TP noté.",
-      "contenu": "<p>Questions flash sur ardoise : à quoi sert <code>pwd</code> ? où mène <code>cd ..</code> ? par quoi commence un chemin absolu ?</p>",
-      "eleves": "répondent sur ardoise aux trois questions flash sur le terminal."
+      "prof": "Lance trois questions flash en réponse en direct (📡) pour réactiver la séance précédente ; clôt, affiche les réponses sur la TV tactile, puis annonce le programme : permissions, QCM, TP noté.",
+      "contenu": "<p>Questions flash en réponse en direct (📡) : à quoi sert <code>pwd</code> ? où mène <code>cd ..</code> ? par quoi commence un chemin absolu ?</p>",
+      "eleves": "répondent en réponse en direct (📡) aux trois questions flash sur le terminal."
      },
      {
       "t": "5–15 min",
@@ -4780,9 +4780,9 @@ const THEME_PLANS = {
       "t": "15–25 min",
       "type": "tp",
       "titre": "TP droits et Exercice 2",
-      "prof": "Lance le TP guidé « Droits et permissions », étapes 1 et 2, sur terminal. En parallèle, fais faire l'Exercice 2 en ardoise pour vérifier la règle 4-2-1.",
-      "contenu": "<p>TP guidé « TP — Droits et permissions », étapes 1–2 (lire, modifier les permissions) ; Exercice 2 (facile) sur ardoise : <code>rwxr-x---</code> → <code>750</code>.</p>",
-      "eleves": "font les étapes 1–2 du TP droits sur terminal et convertissent rwxr-x--- en 750 sur ardoise."
+      "prof": "Lance le TP guidé « Droits et permissions », étapes 1 et 2, sur terminal. En parallèle, fais faire l'Exercice 2 en réponse en direct (📡, nombre) pour vérifier la règle 4-2-1.",
+      "contenu": "<p>TP guidé « TP — Droits et permissions », étapes 1–2 (lire, modifier les permissions) ; Exercice 2 (facile) en réponse en direct (📡) : <code>rwxr-x---</code> → <code>750</code>.</p>",
+      "eleves": "font les étapes 1–2 du TP droits sur terminal et convertissent rwxr-x--- en 750 en réponse en direct (📡)."
      },
      {
       "t": "25–32 min",
@@ -4790,7 +4790,7 @@ const THEME_PLANS = {
       "titre": "Démonstration de permissions_vers_octal",
       "prof": "Projette et exécute la cellule ▶ permissions_vers_octal ; explique le découpage en trois blocs et la somme des valeurs à l'aide de la trace d'exécution, puis envoie les élèves l'exécuter et la modifier sur postes.",
       "contenu": "<p><strong>🐢 Première méthode — simple à comprendre :</strong> traduire les lettres en octal avec Python.</p><pre><code>def permissions_vers_octal(droits):    # ex. \"rwxr-x---\"\n    valeurs = {\"r\": 4, \"w\": 2, \"x\": 1, \"-\": 0}\n    octal = \"\"\n    for debut in [0, 3, 6]:            # les trois blocs de 3 lettres\n        bloc = droits[debut:debut+3]   # ex. \"rwx\", puis \"r-x\", puis \"---\"\n        total = 0\n        for lettre in bloc:\n            total = total + valeurs[lettre]\n        octal = octal + str(total)\n    return octal\n\nprint(permissions_vers_octal(\"rwxr-x---\"))   # affiche 750\nprint(permissions_vers_octal(\"rw-r--r--\"))   # affiche 644</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>le dictionnaire <code>valeurs</code> associe chaque lettre à sa valeur : <code>r</code> → 4, <code>w</code> → 2, <code>x</code> → 1, <code>-</code> → 0 ;</li><li><code>droits[debut:debut+3]</code> découpe la chaîne en trois blocs de 3 caractères : propriétaire, groupe, autres ;</li><li>pour chaque bloc, on <strong>additionne</strong> les valeurs des trois caractères : c'est le chiffre octal du triplet ;</li><li><code>octal + str(total)</code> colle les trois chiffres dans l'ordre propriétaire, groupe, autres.</li></ul><p><strong>📋 Trace d'exécution :</strong> pour <code>permissions_vers_octal(\"rwxr-x---\")</code>.</p><table><tr><th>Bloc</th><th>Lettres</th><th>Calcul</th><th>Chiffre</th></tr><tr><td>propriétaire</td><td><code>rwx</code></td><td>4 + 2 + 1</td><td><strong>7</strong></td></tr><tr><td>groupe</td><td><code>r-x</code></td><td>4 + 0 + 1</td><td><strong>5</strong></td></tr><tr><td>autres</td><td><code>---</code></td><td>0 + 0 + 0</td><td><strong>0</strong></td></tr></table><p>La fonction renvoie bien <code>\"750\"</code> ; pour <code>\"rw-r--r--\"</code>, le même calcul donne 6, 4 et 4, soit <code>644</code> — les droits classiques d'un fichier de texte.</p>",
-      "eleves": "prédisent la sortie de permissions_vers_octal à l'ardoise puis exécutent et modifient la cellule sur postes."
+      "eleves": "prédisent la sortie de permissions_vers_octal en réponse en direct (📡) puis exécutent et modifient la cellule sur postes."
      },
      {
       "t": "32–40 min",
@@ -4851,17 +4851,17 @@ const THEME_PLANS = {
     "enClasse": [
      "0–15 min : rituel + accroche : « dictez-moi la recette pour trouver le plus grand nombre d'une liste que je lis à voix haute » — le prof exécute LITTÉRALEMENT ce que disent les élèves, les ambiguïtés sautent aux yeux.",
      "15–35 min : institutionnalisation Section 1 : algorithme (l'idée, en français) vs programme (la traduction Python) ; correct + se termine ; la démarche îlot du site : toujours écrire l'algorithme en étapes numérotées AVANT de coder.",
-     "35–60 min : débranché : chaque îlot reçoit 8 cartes-nombres faces cachées ; retourner une carte à la fois et tenir « le plus grand vu » sur ardoise — c'est maximum() joué à la main ; même chose pour la somme.",
+     "35–60 min : débranché : chaque îlot reçoit 8 cartes-nombres faces cachées ; retourner une carte à la fois et tenir « le plus grand vu » au brouillon — c'est maximum() joué à la main ; même chose pour la somme ; chaque îlot saisit son résultat final en réponse en direct (📡).",
      "60–90 min : sur postes : cellule ▶ de la Section 2 exécutée puis modifiée (chercher une valeur absente → −1) ; puis Exercices 2 et 4 en cellule vide (l'algorithme en français d'abord, sur le cahier).",
      "90–110 min : différenciation : les rapides écrivent compter_pairs(tab) et minimum(tab) sans aide ; les autres refont maximum() en le déroulant sur la fiche trace.",
      "110–120 min : bilan : « combien d'opérations pour un tableau de n éléments ? » → faire dire « environ n » (linéaire) ; le prof pousse les corrigés ; trace écrite : les 4 schémas de parcours."
     ],
     "aPreparer": [
-     "Jeux de 8 cartes-nombres par îlot (à fabriquer) + ardoises",
+     "Jeux de 8 cartes-nombres par îlot (à fabriquer) + feuilles de brouillon ; questions 📡 (réponse en direct) préparées pour les prédictions de la séance",
      "Fiche trace « les 4 schémas de parcours » (rechercher/compter/accumuler/max) à photocopier — la fiche méthode du site « Parcourir un tableau : les 4 schémas » peut servir de source, à imprimer",
-     "Vidéoprojecteur ; prévoir la reprise des exercices sur Capytale pour l'entraînement maison"
+     "TV tactile avec l'écran de projection du site ; prévoir la reprise des exercices sur Capytale pour l'entraînement maison"
     ],
-    "cours": "<p><strong>📖 La notion :</strong></p><p>Un <strong>algorithme</strong> est une suite <strong>finie</strong> et <strong>précise</strong> d'instructions qui, à partir de données d'entrée, produit un résultat. Une recette de cuisine, un itinéraire sont des algorithmes du quotidien. À ne pas confondre : l'<strong>algorithme</strong> est l'<em>idée</em>, la méthode, indépendante du langage — on peut l'écrire en français ; le <strong>programme</strong> est sa <em>traduction</em> en Python. Un bon algorithme doit être <strong>correct</strong> (il donne le bon résultat) et <strong>se terminer</strong>. Démarche de la classe : écrire l'algorithme en étapes numérotées <strong>avant</strong> de coder.</p><p>Exemple déroulé à la main — trouver le plus grand nombre d'une liste lue à voix haute : 8, 15, 4, 42, 16, 23. On tient sur l'ardoise « le plus grand vu » : on entend 8 → plus grand vu : 8 ; 15 → 15 ; 4 → rien (plus petit) ; 42 → 42 ; 16 → rien ; 23 → rien. Réponse : <strong>42</strong>. La liste a été parcourue <em>une seule fois</em>, du début à la fin : c'est un <strong>parcours séquentiel</strong>, l'algorithme le plus fondamental.</p><p><strong>🐢 Première méthode — la recherche séquentielle :</strong></p><pre><code>def recherche(tab, cible):\n    for i in range(len(tab)):\n        if tab[i] == cible:\n            return i          # trouvé : on sort tout de suite\n    return -1                 # parcouru sans trouver\n\ndonnees = [4, 8, 15, 16, 23, 42]\nprint(recherche(donnees, 16))   # affiche 3\nprint(recherche(donnees, 99))   # affiche -1</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>for i in range(len(tab))</code> fait défiler tous les <strong>indices</strong> du tableau, de 0 au dernier ;</li><li>dès que <code>tab[i] == cible</code> est vrai, <code>return i</code> renvoie l'indice et arrête tout ;</li><li>si la boucle se termine sans succès, on renvoie <strong>−1</strong> : c'est la <strong>convention</strong> « absent » (aucun indice ne vaut −1).</li></ul><p><strong>Les quatre schémas de parcours :</strong> selon ce que l'on calcule pendant le parcours, on obtient quatre variantes : <strong>rechercher</strong> (ci-dessus), <strong>compter</strong> les éléments vérifiant une condition, <strong>accumuler</strong> (somme, moyenne), trouver le <strong>maximum</strong>. Voici le maximum — exactement le jeu des cartes retournées une à une :</p><pre><code>def maximum(tab):\n    m = tab[0]                # on suppose que le 1er est le max\n    for x in tab:\n        if x &gt; m:\n            m = x             # on garde le plus grand vu\n    return m\n\nprint(maximum([4, 8, 15, 16, 23, 42]))   # affiche 42</code></pre><p><strong>📋 Trace d'exécution :</strong> déroulé de <code>recherche(donnees, 16)</code> à la main :</p><table><tr><th>i</th><th>tab[i]</th><th>tab[i] == 16 ?</th><th>action</th></tr><tr><td>0</td><td>4</td><td>non</td><td>on continue</td></tr><tr><td>1</td><td>8</td><td>non</td><td>on continue</td></tr><tr><td>2</td><td>15</td><td>non</td><td>on continue</td></tr><tr><td>3</td><td>16</td><td>oui</td><td>renvoie 3 — terminé</td></tr></table><p>Dans le pire cas (valeur absente), on fait <em>n</em> comparaisons pour un tableau de <em>n</em> éléments : le coût est <strong>linéaire</strong> — « environ n opérations ».</p><p><strong>🎯 Défi élève :</strong> compléter <code>somme(tab)</code> (sans utiliser <code>sum</code>) pour obtenir l'affichage annoncé.</p><pre><code>def somme(tab):\n    total = ______              # valeur de départ de l'accumulateur\n    for x in tab:\n        total = total ______ x  # on accumule\n    return ______\n\nprint(somme([4, 8, 15, 16, 23, 42]))   # doit afficher 108</code></pre><p><strong>✅ Réponse :</strong></p><pre><code>def somme(tab):\n    total = 0\n    for x in tab:\n        total = total + x\n    return total\n\nprint(somme([4, 8, 15, 16, 23, 42]))   # affiche 108</code></pre><ul><li>Algorithme = l'idée (en français, étapes numérotées) ; programme = sa traduction en Python.</li><li>Une recherche qui échoue renvoie <strong>−1</strong>, jamais 0 : 0 est un indice valide !</li><li>Rechercher, compter, accumuler, maximum : un seul passage sur le tableau, coût <strong>linéaire</strong> (environ n opérations).</li></ul>",
+    "cours": "<p><strong>📖 La notion :</strong></p><p>Un <strong>algorithme</strong> est une suite <strong>finie</strong> et <strong>précise</strong> d'instructions qui, à partir de données d'entrée, produit un résultat. Une recette de cuisine, un itinéraire sont des algorithmes du quotidien. À ne pas confondre : l'<strong>algorithme</strong> est l'<em>idée</em>, la méthode, indépendante du langage — on peut l'écrire en français ; le <strong>programme</strong> est sa <em>traduction</em> en Python. Un bon algorithme doit être <strong>correct</strong> (il donne le bon résultat) et <strong>se terminer</strong>. Démarche de la classe : écrire l'algorithme en étapes numérotées <strong>avant</strong> de coder.</p><p>Exemple déroulé à la main — trouver le plus grand nombre d'une liste lue à voix haute : 8, 15, 4, 42, 16, 23. On tient au brouillon « le plus grand vu » : on entend 8 → plus grand vu : 8 ; 15 → 15 ; 4 → rien (plus petit) ; 42 → 42 ; 16 → rien ; 23 → rien. Réponse : <strong>42</strong>. La liste a été parcourue <em>une seule fois</em>, du début à la fin : c'est un <strong>parcours séquentiel</strong>, l'algorithme le plus fondamental.</p><p><strong>🐢 Première méthode — la recherche séquentielle :</strong></p><pre><code>def recherche(tab, cible):\n    for i in range(len(tab)):\n        if tab[i] == cible:\n            return i          # trouvé : on sort tout de suite\n    return -1                 # parcouru sans trouver\n\ndonnees = [4, 8, 15, 16, 23, 42]\nprint(recherche(donnees, 16))   # affiche 3\nprint(recherche(donnees, 99))   # affiche -1</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>for i in range(len(tab))</code> fait défiler tous les <strong>indices</strong> du tableau, de 0 au dernier ;</li><li>dès que <code>tab[i] == cible</code> est vrai, <code>return i</code> renvoie l'indice et arrête tout ;</li><li>si la boucle se termine sans succès, on renvoie <strong>−1</strong> : c'est la <strong>convention</strong> « absent » (aucun indice ne vaut −1).</li></ul><p><strong>Les quatre schémas de parcours :</strong> selon ce que l'on calcule pendant le parcours, on obtient quatre variantes : <strong>rechercher</strong> (ci-dessus), <strong>compter</strong> les éléments vérifiant une condition, <strong>accumuler</strong> (somme, moyenne), trouver le <strong>maximum</strong>. Voici le maximum — exactement le jeu des cartes retournées une à une :</p><pre><code>def maximum(tab):\n    m = tab[0]                # on suppose que le 1er est le max\n    for x in tab:\n        if x &gt; m:\n            m = x             # on garde le plus grand vu\n    return m\n\nprint(maximum([4, 8, 15, 16, 23, 42]))   # affiche 42</code></pre><p><strong>📋 Trace d'exécution :</strong> déroulé de <code>recherche(donnees, 16)</code> à la main :</p><table><tr><th>i</th><th>tab[i]</th><th>tab[i] == 16 ?</th><th>action</th></tr><tr><td>0</td><td>4</td><td>non</td><td>on continue</td></tr><tr><td>1</td><td>8</td><td>non</td><td>on continue</td></tr><tr><td>2</td><td>15</td><td>non</td><td>on continue</td></tr><tr><td>3</td><td>16</td><td>oui</td><td>renvoie 3 — terminé</td></tr></table><p>Dans le pire cas (valeur absente), on fait <em>n</em> comparaisons pour un tableau de <em>n</em> éléments : le coût est <strong>linéaire</strong> — « environ n opérations ».</p><p><strong>🎯 Défi élève :</strong> compléter <code>somme(tab)</code> (sans utiliser <code>sum</code>) pour obtenir l'affichage annoncé.</p><pre><code>def somme(tab):\n    total = ______              # valeur de départ de l'accumulateur\n    for x in tab:\n        total = total ______ x  # on accumule\n    return ______\n\nprint(somme([4, 8, 15, 16, 23, 42]))   # doit afficher 108</code></pre><p><strong>✅ Réponse :</strong></p><pre><code>def somme(tab):\n    total = 0\n    for x in tab:\n        total = total + x\n    return total\n\nprint(somme([4, 8, 15, 16, 23, 42]))   # affiche 108</code></pre><ul><li>Algorithme = l'idée (en français, étapes numérotées) ; programme = sa traduction en Python.</li><li>Une recherche qui échoue renvoie <strong>−1</strong>, jamais 0 : 0 est un indice valide !</li><li>Rechercher, compter, accumuler, maximum : un seul passage sur le tableau, coût <strong>linéaire</strong> (environ n opérations).</li></ul>",
     "etapes": [
      {
       "t": "0–15 min",
@@ -4876,16 +4876,16 @@ const THEME_PLANS = {
       "type": "noter",
       "titre": "Algorithme vs programme : la trace écrite",
       "prof": "Institutionnalise la Section 1 du site : les élèves notent la définition, la distinction algorithme/programme et la démarche îlot (l'algorithme en étapes numérotées AVANT de coder). Rejoue à l'oral l'exemple déroulé pour l'ancrer sur l'accroche.",
-      "contenu": "<p><strong>📖 La notion :</strong></p><p>Un <strong>algorithme</strong> est une suite <strong>finie</strong> et <strong>précise</strong> d'instructions qui, à partir de données d'entrée, produit un résultat. Une recette de cuisine, un itinéraire sont des algorithmes du quotidien. À ne pas confondre : l'<strong>algorithme</strong> est l'<em>idée</em>, la méthode, indépendante du langage — on peut l'écrire en français ; le <strong>programme</strong> est sa <em>traduction</em> en Python. Un bon algorithme doit être <strong>correct</strong> (il donne le bon résultat) et <strong>se terminer</strong>. Démarche de la classe : écrire l'algorithme en étapes numérotées <strong>avant</strong> de coder.</p><p>Exemple déroulé à la main — trouver le plus grand nombre d'une liste lue à voix haute : 8, 15, 4, 42, 16, 23. On tient sur l'ardoise « le plus grand vu » : on entend 8 → plus grand vu : 8 ; 15 → 15 ; 4 → rien (plus petit) ; 42 → 42 ; 16 → rien ; 23 → rien. Réponse : <strong>42</strong>. La liste a été parcourue <em>une seule fois</em>, du début à la fin : c'est un <strong>parcours séquentiel</strong>, l'algorithme le plus fondamental.</p>",
+      "contenu": "<p><strong>📖 La notion :</strong></p><p>Un <strong>algorithme</strong> est une suite <strong>finie</strong> et <strong>précise</strong> d'instructions qui, à partir de données d'entrée, produit un résultat. Une recette de cuisine, un itinéraire sont des algorithmes du quotidien. À ne pas confondre : l'<strong>algorithme</strong> est l'<em>idée</em>, la méthode, indépendante du langage — on peut l'écrire en français ; le <strong>programme</strong> est sa <em>traduction</em> en Python. Un bon algorithme doit être <strong>correct</strong> (il donne le bon résultat) et <strong>se terminer</strong>. Démarche de la classe : écrire l'algorithme en étapes numérotées <strong>avant</strong> de coder.</p><p>Exemple déroulé à la main — trouver le plus grand nombre d'une liste lue à voix haute : 8, 15, 4, 42, 16, 23. On tient au brouillon « le plus grand vu » : on entend 8 → plus grand vu : 8 ; 15 → 15 ; 4 → rien (plus petit) ; 42 → 42 ; 16 → rien ; 23 → rien. Réponse : <strong>42</strong>. La liste a été parcourue <em>une seule fois</em>, du début à la fin : c'est un <strong>parcours séquentiel</strong>, l'algorithme le plus fondamental.</p>",
       "eleves": "écrivent dans le cahier la définition d'algorithme, la distinction algorithme/programme et la démarche en étapes numérotées."
      },
      {
       "t": "35–60 min",
       "type": "debranche",
       "titre": "Cartes faces cachées : maximum et somme",
-      "prof": "Distribue 8 cartes-nombres faces cachées par îlot : on retourne une carte à la fois et on tient « le plus grand vu » sur l'ardoise — c'est maximum() joué à la main. Refais un tour complet avec la somme ; circule entre les îlots.",
-      "contenu": "<p>Chaque îlot rejoue l'algorithme du maximum avec ses 8 cartes (une seule carte visible à la fois, l'ardoise tient la mémoire), puis recommence avec la somme.</p>",
-      "eleves": "retournent les cartes une à une en îlot et tiennent « le plus grand vu », puis la somme, sur l'ardoise."
+      "prof": "Distribue 8 cartes-nombres faces cachées par îlot (aux coins ou sur les postes voisins) : on retourne une carte à la fois et on tient « le plus grand vu » au brouillon — c'est maximum() joué à la main ; lance une question 📡 pour que chaque îlot saisisse son résultat final en réponse en direct. Refais un tour complet avec la somme ; circule entre les îlots.",
+      "contenu": "<p>Chaque îlot rejoue l'algorithme du maximum avec ses 8 cartes (une seule carte visible à la fois, le brouillon tient la mémoire), puis recommence avec la somme ; le résultat final de chaque manche est saisi en réponse en direct (📡).</p>",
+      "eleves": "retournent les cartes une à une en îlot, tiennent « le plus grand vu », puis la somme, au brouillon et saisissent le résultat final en réponse en direct (📡)."
      },
      {
       "t": "60–70 min",
@@ -4893,7 +4893,7 @@ const THEME_PLANS = {
       "titre": "Cellule ▶ : la recherche séquentielle",
       "prof": "Sur postes : fais exécuter la cellule ▶ de la Section 2, puis fais modifier l'appel pour chercher une valeur absente — le −1 apparaît. Commente le code ligne à ligne avec la classe.",
       "contenu": "<p><strong>🐢 Première méthode — la recherche séquentielle :</strong></p><pre><code>def recherche(tab, cible):\n    for i in range(len(tab)):\n        if tab[i] == cible:\n            return i          # trouvé : on sort tout de suite\n    return -1                 # parcouru sans trouver\n\ndonnees = [4, 8, 15, 16, 23, 42]\nprint(recherche(donnees, 16))   # affiche 3\nprint(recherche(donnees, 99))   # affiche -1</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>for i in range(len(tab))</code> fait défiler tous les <strong>indices</strong> du tableau, de 0 au dernier ;</li><li>dès que <code>tab[i] == cible</code> est vrai, <code>return i</code> renvoie l'indice et arrête tout ;</li><li>si la boucle se termine sans succès, on renvoie <strong>−1</strong> : c'est la <strong>convention</strong> « absent » (aucun indice ne vaut −1).</li></ul>",
-      "eleves": "exécutent la cellule ▶, prédisent à l'ardoise le résultat pour une valeur absente, puis vérifient le −1."
+      "eleves": "exécutent la cellule ▶, prédisent en réponse en direct (📡) le résultat pour une valeur absente, puis vérifient le −1."
      },
      {
       "t": "70–80 min",
@@ -4901,7 +4901,7 @@ const THEME_PLANS = {
       "titre": "Les quatre schémas et la trace",
       "prof": "Projette les quatre schémas de parcours et le code de maximum() — exactement le jeu des cartes. Déroule la trace de recherche(donnees, 16) au tableau et fais verbaliser le pire cas (valeur absente).",
       "contenu": "<p><strong>Les quatre schémas de parcours :</strong> selon ce que l'on calcule pendant le parcours, on obtient quatre variantes : <strong>rechercher</strong> (ci-dessus), <strong>compter</strong> les éléments vérifiant une condition, <strong>accumuler</strong> (somme, moyenne), trouver le <strong>maximum</strong>. Voici le maximum — exactement le jeu des cartes retournées une à une :</p><pre><code>def maximum(tab):\n    m = tab[0]                # on suppose que le 1er est le max\n    for x in tab:\n        if x &gt; m:\n            m = x             # on garde le plus grand vu\n    return m\n\nprint(maximum([4, 8, 15, 16, 23, 42]))   # affiche 42</code></pre><p><strong>📋 Trace d'exécution :</strong> déroulé de <code>recherche(donnees, 16)</code> à la main :</p><table><tr><th>i</th><th>tab[i]</th><th>tab[i] == 16 ?</th><th>action</th></tr><tr><td>0</td><td>4</td><td>non</td><td>on continue</td></tr><tr><td>1</td><td>8</td><td>non</td><td>on continue</td></tr><tr><td>2</td><td>15</td><td>non</td><td>on continue</td></tr><tr><td>3</td><td>16</td><td>oui</td><td>renvoie 3 — terminé</td></tr></table><p>Dans le pire cas (valeur absente), on fait <em>n</em> comparaisons pour un tableau de <em>n</em> éléments : le coût est <strong>linéaire</strong> — « environ n opérations ».</p>",
-      "eleves": "suivent la trace projetée en prédisant chaque ligne à l'ardoise et verbalisent le pire cas."
+      "eleves": "suivent la trace projetée sur la TV tactile en prédisant chaque ligne au brouillon, saisissent la valeur renvoyée en réponse en direct (📡) et verbalisent le pire cas."
      },
      {
       "t": "80–90 min",
@@ -4933,7 +4933,7 @@ const THEME_PLANS = {
       "titre": "Bilan : environ n opérations",
       "prof": "Demande : « combien d'opérations pour un tableau de n éléments ? » et fais dire « environ n » (linéaire). Trace écrite : les trois points à retenir et les 4 schémas de parcours.",
       "contenu": "<ul><li>Algorithme = l'idée (en français, étapes numérotées) ; programme = sa traduction en Python.</li><li>Une recherche qui échoue renvoie <strong>−1</strong>, jamais 0 : 0 est un indice valide !</li><li>Rechercher, compter, accumuler, maximum : un seul passage sur le tableau, coût <strong>linéaire</strong> (environ n opérations).</li></ul>",
-      "eleves": "répondent « environ n » à l'ardoise puis copient les trois points et les 4 schémas de parcours."
+      "eleves": "répondent « environ n » en réponse en direct (📡) puis copient les trois points et les 4 schémas de parcours."
      }
     ]
    },
@@ -4966,8 +4966,8 @@ const THEME_PLANS = {
       "type": "rituel",
       "titre": "Rituel : recherche séquentielle de tête",
       "prof": "Fais refaire une recherche séquentielle de tête sur 5 valeurs dictées et fais rappeler la convention −1 pour « absent ».",
-      "contenu": "<p>Cinq valeurs au tableau, une cible : les élèves donnent l'indice ou −1 sur ardoise, en verbalisant le parcours.</p>",
-      "eleves": "déroulent de tête la recherche sur les 5 valeurs et lèvent l'ardoise avec l'indice ou −1."
+      "contenu": "<p>Cinq valeurs au tableau, une cible : les élèves donnent l'indice ou −1 en réponse en direct (📡), en verbalisant le parcours.</p>",
+      "eleves": "déroulent de tête la recherche sur les 5 valeurs et saisissent l'indice ou −1 en réponse en direct (📡)."
      },
      {
       "t": "10–40 min",
@@ -4975,7 +4975,7 @@ const THEME_PLANS = {
       "titre": "Jeu : au hasard vs dichotomie",
       "prof": "Lance l'activité débranchée « Recherche : au hasard vs dichotomie » du site : manche 1 deviner dans l'ordre en comptant les essais, manche 2 en coupant en deux. Compare ~50 contre ~7 et fais émerger POURQUOI il faut que ce soit trié.",
       "contenu": "<p>Activité débranchée « Recherche : au hasard vs dichotomie » (déroulé complet, variante annuaire et notes prof fournis sur le site) : compter les essais des deux manches, afficher les scores, conclure sur la nécessité du tri.</p>",
-      "eleves": "jouent les deux manches en comptant leurs essais sur l'ardoise, puis expliquent pourquoi le tableau doit être trié."
+      "eleves": "jouent les deux manches en comptant leurs essais au brouillon, saisissent leur nombre d'essais en réponse en direct (📡) pour afficher les scores sur la TV tactile, puis expliquent pourquoi le tableau doit être trié."
      },
      {
       "t": "40–55 min",
@@ -4991,7 +4991,7 @@ const THEME_PLANS = {
       "titre": "Le code de la dichotomie",
       "prof": "Projette côte à côte la recherche séquentielle et la dichotomie, commente la boucle while et le calcul du milieu avec //. Insiste : 1 000 000 d'éléments → environ 20 comparaisons.",
       "contenu": "<p><strong>🐢 Première méthode — simple à comprendre :</strong> la recherche séquentielle de la séance précédente fonctionne toujours… mais elle n'exploite pas du tout le fait que le tableau est trié.</p><pre><code>def recherche(tab, cible):\n    for i in range(len(tab)):\n        if tab[i] == cible:\n            return i\n    return -1\n\nt = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nprint(recherche(t, 23))   # affiche 5</code></pre><p><strong>🔍 Comment ça marche :</strong> elle examine les éléments un par un ; dans le pire cas, elle fait <em>n</em> comparaisons. Sur un tableau trié, on peut faire beaucoup mieux.</p><p><strong>⚡ Méthode plus efficace — la dichotomie :</strong></p><pre><code>def dichotomie(tab, cible):\n    \"\"\"tab doit être trié dans l'ordre croissant. Renvoie l'indice ou -1.\"\"\"\n    gauche, droite = 0, len(tab) - 1\n    while gauche &lt;= droite:\n        milieu = (gauche + droite) // 2\n        if tab[milieu] == cible:\n            return milieu\n        elif tab[milieu] &lt; cible:\n            gauche = milieu + 1     # la cible est à droite\n        else:\n            droite = milieu - 1     # la cible est à gauche\n    return -1\n\nt = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nprint(dichotomie(t, 23))   # affiche 5\nprint(dichotomie(t, 17))   # affiche -1</code></pre><p>À chaque tour, la zone de recherche est divisée par deux : le coût est <strong>logarithmique</strong>. Pour 1 000 000 d'éléments, la recherche séquentielle peut faire 1 000 000 de comparaisons ; la dichotomie environ <strong>20</strong>. Le milieu se calcule avec <code>//</code> (division <strong>entière</strong>), car un indice doit être un entier : (0 + 9) // 2 = 4.</p>",
-      "eleves": "comparent les deux codes projetés et prédisent à l'ardoise le nombre de comparaisons pour 1 000 000 d'éléments."
+      "eleves": "comparent les deux codes projetés sur la TV tactile et prédisent en réponse en direct (📡) le nombre de comparaisons pour 1 000 000 d'éléments."
      },
      {
       "t": "65–80 min",
@@ -5197,7 +5197,7 @@ const THEME_PLANS = {
       "titre": "Trace du tri par sélection",
       "prof": "Exécute la cellule ▶ tri_selection en ajoutant un print du tableau à chaque tour i, et fais le lien ligne à ligne avec la trace : la partie gauche triée grandit tour après tour.",
       "contenu": "<p><strong>📋 Trace d'exécution :</strong> tri par sélection de <code>[5, 2, 9, 1, 7]</code>, un tour de boucle par ligne :</p><table><tr><th>tour i</th><th>minimum du reste</th><th>échange</th><th>tableau après le tour</th></tr><tr><td>0</td><td>1</td><td>5 ↔ 1</td><td>[1, 2, 9, 5, 7]</td></tr><tr><td>1</td><td>2</td><td>déjà en place</td><td>[1, 2, 9, 5, 7]</td></tr><tr><td>2</td><td>5</td><td>9 ↔ 5</td><td>[1, 2, 5, 9, 7]</td></tr><tr><td>3</td><td>7</td><td>9 ↔ 7</td><td>[1, 2, 5, 7, 9]</td></tr><tr><td>4</td><td>9</td><td>déjà en place</td><td>[1, 2, 5, 7, 9]</td></tr></table>",
-      "eleves": "prédisent à l'ardoise le tableau après chaque tour i avant l'affichage du print."
+      "eleves": "prédisent au brouillon le tableau après chaque tour i avant l'affichage du print, et saisissent en réponse en direct (📡) le tableau du tour désigné par le prof."
      },
      {
       "t": "80–95 min",
@@ -5244,7 +5244,7 @@ const THEME_PLANS = {
      "QCM questions « coût du tri par sélection » et « pour prouver qu'une boucle se termine… »"
     ],
     "enClasse": [
-     "0–10 min : rituel : classer 4 situations (accès tab[i], parcours, dichotomie, tri) de la plus rapide à la plus lente, sur ardoise.",
+     "0–10 min : rituel : classer 4 situations (accès tab[i], parcours, dichotomie, tri) de la plus rapide à la plus lente, en réponse en direct (📡, texte court).",
      "10–35 min : institutionnalisation Section 8 : le tableau des coûts recopié ; commenter la ligne n² = 10¹² « énorme » ; sur postes, cellule ▶ des coûts exécutée pour n = 10, 1000, 1 000 000.",
      "35–60 min : Section 9 : définition du variant (entier, positif, strictement décroissant) ; Exercice 7 rédigé individuellement puis confronté en binôme ; chercher le variant de la dichotomie (droite − gauche).",
      "60–90 min : débranché argumentation : chaque îlot reçoit l'invariant d'UN des deux tris (texte des Sections 4/5 imprimé) et doit l'expliquer à un îlot voisin avec 5 cartes en main ; faire toucher la différence « place définitive ou pas ».",
@@ -5262,9 +5262,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Rituel : classer quatre situations",
-      "prof": "Fais classer sur ardoise, de la plus rapide à la plus lente : accès tab[i], parcours, dichotomie, tri. Recueille les réponses sans corriger tout de suite.",
-      "contenu": "<p>Sur ardoise : classer de la plus rapide à la plus lente les quatre situations — accès <code>tab[i]</code>, parcours d'un tableau, recherche dichotomique, tri.</p>",
-      "eleves": "classent sur l'ardoise les quatre situations de la plus rapide à la plus lente."
+      "prof": "Lance une question 📡 (texte court) et fais classer, de la plus rapide à la plus lente : accès tab[i], parcours, dichotomie, tri. Clôs la question et affiche les réponses sur la TV tactile sans corriger tout de suite.",
+      "contenu": "<p>En réponse en direct (📡) : classer de la plus rapide à la plus lente les quatre situations — accès <code>tab[i]</code>, parcours d'un tableau, recherche dichotomique, tri.</p>",
+      "eleves": "classent depuis leur poste, en réponse en direct (📡), les quatre situations de la plus rapide à la plus lente."
      },
      {
       "t": "10–25 min",
@@ -5328,7 +5328,7 @@ const THEME_PLANS = {
       "titre": "Bilan : variant contre invariant",
       "prof": "Fais noter la distinction variant/terminaison contre invariant/correction, projette les deux questions du QCM (« coût du tri par sélection », « pour prouver qu'une boucle se termine… ») et pousse les corrigés.",
       "contenu": "<ul><li>Ne pas confondre : le <strong>variant</strong> prouve la <em>terminaison</em>, l'<strong>invariant</strong> prouve la <em>correction</em>.</li><li>Pour n = 1 000 000, un tri en n² représente 10¹² opérations : le choix de l'algorithme est décisif.</li><li>Sélection : éléments à leur place définitive ; insertion : tranche seulement triée — deux invariants différents.</li></ul>",
-      "eleves": "notent la distinction variant/invariant dans le cahier et répondent aux deux questions du QCM à l'ardoise."
+      "eleves": "notent la distinction variant/invariant dans le cahier et répondent aux deux questions du QCM en réponse en direct (📡, choix A/B/C/D)."
      }
     ]
    },
@@ -5427,7 +5427,7 @@ const THEME_PLANS = {
       "titre": "Bilan : rapide mais pas optimal",
       "prof": "Fais noter les trois points à retenir, projette la question QCM « un algorithme glouton… », pousse les corrigés et annonce le kNN de la prochaine séance.",
       "contenu": "<ul><li>Glouton = le meilleur choix <em>local</em> à chaque étape, jamais de retour en arrière.</li><li>Erreur fréquente : croire que le glouton donne toujours l'optimum — contre-exemple : rendre 6 avec [1, 3, 4].</li><li>Avec le système de pièces de l'euro, le glouton est bien optimal.</li></ul>",
-      "eleves": "notent les trois points à retenir, répondent à la question QCM à l'ardoise et notent l'annonce du kNN."
+      "eleves": "notent les trois points à retenir, répondent à la question QCM en réponse en direct (📡) et notent l'annonce du kNN."
      }
     ]
    },
@@ -5533,7 +5533,7 @@ const THEME_PLANS = {
      "Évaluation : TP noté — Algorithmique (EVALUATIONS du site, 1 h sur poste, /20, corrigé prof) ; le DS n°4 — Algorithmique (1 h, sujet fourni) à programmer sur un créneau suivant"
     ],
     "enClasse": [
-     "0–15 min : rituel bilan : le tableau de la Section 10 projeté COLONNES MASQUÉES ; les élèves complètent algorithme et coût sur ardoise, ligne par ligne.",
+     "0–15 min : rituel bilan : le tableau de la Section 10 projeté sur la TV tactile COLONNES MASQUÉES ; les élèves complètent algorithme et coût en réponse en direct (📡), ligne par ligne.",
      "15–30 min : relecture active du résumé et des 4 erreurs fréquentes ; chaque élève écrit SA question restante sur un post-it (mur des questions, traité à l'oral).",
      "30–45 min : QCM du thème (6 questions) en autonomie individuelle sur le site.",
      "45–60 min : remédiation ciblée : via la matrice/diagnostic par question, le prof constitue 2 groupes (souvent : dichotomie sur non-trié, glouton « toujours optimal ») et fait refaire les exercices 3, 5 ou 8 du site ; les autres s'échauffent sur le défi « Mission : duel d'algorithmes ».",
@@ -5550,10 +5550,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Synthèse sur ardoise, colonnes masquées",
-      "prof": "Projette le tableau de la Section 10 avec les colonnes algorithme et coût masquées ; ligne par ligne, chaque élève complète sur ardoise et tu valides à main levée.",
+      "titre": "Synthèse en réponse en direct, colonnes masquées",
+      "prof": "Projette sur la TV tactile le tableau de la Section 10 avec les colonnes algorithme et coût masquées ; ligne par ligne, lance une question 📡, chaque élève répond depuis son poste, puis tu clos la question, affiches les réponses et révèles la ligne.",
       "contenu": "<p>Pour chaque problème affiché, retrouver de mémoire l'algorithme du thème et son coût.</p>",
-      "eleves": "complètent sur l'ardoise, ligne par ligne, l'algorithme et le coût des colonnes masquées."
+      "eleves": "complètent en réponse en direct (📡), ligne par ligne, l'algorithme et le coût des colonnes masquées."
      },
      {
       "t": "10–15 min",
@@ -5585,7 +5585,7 @@ const THEME_PLANS = {
       "titre": "Compter pour retrouver n(n−1)/2",
       "prof": "Projette et exécute la cellule tri_selection_compte, fais varier la taille du tableau et fais constater que le compteur retrouve exactement la formule n(n−1)/2.",
       "contenu": "<p><strong>Révision sur machine — compter pour retrouver le coût :</strong> le tri par sélection compare chaque paire d'éléments exactement une fois, soit n(n−1)/2 comparaisons, quel que soit le tableau :</p><pre><code>def tri_selection_compte(tab):\n    n = len(tab)\n    comparaisons = 0\n    for i in range(n):\n        i_min = i\n        for j in range(i + 1, n):\n            comparaisons = comparaisons + 1   # une comparaison de plus\n            if tab[j] &lt; tab[i_min]:\n                i_min = j\n        tab[i], tab[i_min] = tab[i_min], tab[i]\n    return tab, comparaisons\n\nprint(tri_selection_compte([5, 2, 9, 1, 7]))   # affiche ([1, 2, 5, 7, 9], 10)</code></pre><p><strong>📋 Le compteur retrouve la formule n(n−1)/2 :</strong></p><table><tr><th>n (cartes)</th><th>comparaisons</th></tr><tr><td>5</td><td>10</td></tr><tr><td>7</td><td>21</td></tr><tr><td>100</td><td>4 950</td></tr><tr><td>1 000</td><td>499 500</td></tr></table>",
-      "eleves": "prédisent le nombre de comparaisons à l'ardoise avant l'exécution et vérifient la formule n(n−1)/2."
+      "eleves": "prédisent le nombre de comparaisons en réponse en direct (📡, nombre) avant l'exécution et vérifient la formule n(n−1)/2."
      },
      {
       "t": "52–60 min",
@@ -5641,7 +5641,7 @@ const THEME_PLANS = {
      "Cartes-paquets à fabriquer (n° + un mot au feutre, 5 par message, 2 jeux) — le site donne le déroulé, pas le matériel",
      "Plan de classe dégagé pour la chaîne de routeurs humains",
      "Trace écrite : schéma d'encapsulation à compléter, à photocopier",
-     "Vidéoprojecteur pour la cellule ▶ en correction collective"
+     "TV tactile pour projeter la cellule ▶ en correction collective"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Un <strong>réseau</strong> relie des machines pour qu'elles échangent des données. Pour se comprendre, elles doivent suivre les mêmes règles : c'est un <strong>protocole</strong>, un ensemble de conventions sur le <em>format</em> des messages et l'<em>ordre</em> des échanges. Analogie postale : envoyer une lettre suppose un format commun (adresse au bon endroit, timbre, enveloppe) ; sans ce « protocole postal » partagé, la lettre n'arriverait pas. Internet repose sur la famille de protocoles <strong>TCP/IP</strong>, et chaque machine y possède une <strong>adresse IP</strong> (ex. <code>192.168.1.10</code>) qui l'identifie de façon unique, comme une adresse postale.</p><p>Idée centrale : un message n'est <strong>pas</strong> envoyé d'un seul bloc, mais découpé en <strong>paquets</strong>. Déroulons à la main l'envoi de « Bonjour le monde » de la machine <code>192.168.1.10</code> vers <code>172.16.0.3</code> :</p><ul><li>découpage en trois morceaux : « Bonjour », « le », « monde » ;</li><li>chaque morceau reçoit un <strong>en-tête</strong> : adresse source (src), adresse destination (dst) et <strong>numéro d'ordre</strong> (num) — paquet n°1 : « Bonjour », paquet n°2 : « le », paquet n°3 : « monde » ;</li><li>les paquets voyagent séparément et arrivent par exemple dans l'ordre 3, 1, 2 : le destinataire les <strong>retrie par numéro</strong> et retrouve « Bonjour le monde ».</li></ul><p>Un paquet = <strong>en-tête + données</strong>, comme une enveloppe : le contenu, plus les informations de livraison écrites dessus. En réalité, les enveloppes s'emboîtent — c'est l'<strong>encapsulation</strong> : les données sont glissées dans un <strong>segment TCP</strong> (qui ajoute le numéro), lui-même dans un <strong>paquet IP</strong> (qui ajoute les adresses source et destination), lui-même dans une <strong>trame</strong> pour voyager sur le câble ou le Wi-Fi. À l'arrivée, on ouvre les enveloppes une à une, dans l'ordre inverse.</p><p><strong>🐢 Première méthode — simple à comprendre :</strong> un paquet se représente par un dictionnaire <code>{src, dst, num, data}</code> (vu au thème « Types construits »).</p><pre><code>message = \"Bonjour le monde\"\nmots = message.split(\" \")\npaquets = []\nfor i in range(len(mots)):\n    p = {\"src\": \"192.168.1.10\", \"dst\": \"172.16.0.3\", \"num\": i + 1, \"data\": mots[i]}\n    paquets.append(p)\nfor p in paquets:\n    print(p)\n\n# affiche :\n# {'src': '192.168.1.10', 'dst': '172.16.0.3', 'num': 1, 'data': 'Bonjour'}\n# {'src': '192.168.1.10', 'dst': '172.16.0.3', 'num': 2, 'data': 'le'}\n# {'src': '192.168.1.10', 'dst': '172.16.0.3', 'num': 3, 'data': 'monde'}</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>message.split(\" \")</code> découpe la chaîne à chaque espace : on obtient la liste <code>[\"Bonjour\", \"le\", \"monde\"]</code> ;</li><li><code>i + 1</code> donne le numéro d'ordre : les paquets sont numérotés à partir de 1 ;</li><li>chaque dictionnaire réunit l'en-tête (<code>src</code>, <code>dst</code>, <code>num</code>) et les données (<code>data</code>) : l'enveloppe et son contenu.</li></ul><p><strong>📋 Trace d'exécution :</strong> déroulé de la boucle de découpage.</p><table><tr><th>i</th><th>mots[i]</th><th>num</th><th>paquet créé</th></tr><tr><td>0</td><td>« Bonjour »</td><td>1</td><td>en-tête (src, dst, 1) + « Bonjour »</td></tr><tr><td>1</td><td>« le »</td><td>2</td><td>en-tête (src, dst, 2) + « le »</td></tr><tr><td>2</td><td>« monde »</td><td>3</td><td>en-tête (src, dst, 3) + « monde »</td></tr></table><p><strong>🎯 Défi élève :</strong> les paquets arrivent dans le désordre ; compléter la reconstruction du message.</p><pre><code>paquets = [\n    {\"num\": 2, \"data\": \"le\"},\n    {\"num\": ______, \"data\": \"monde\"},\n    {\"num\": 1, \"data\": \"Bonjour\"},\n]\ntries = sorted(paquets, key=lambda p: p[\"______\"])\nmorceaux = []\nfor p in tries:\n    morceaux.append(p[\"______\"])\nprint(\" \".join(______))\n# affiche Bonjour le monde</code></pre><p>✅ Réponse :</p><pre><code>paquets = [\n    {\"num\": 2, \"data\": \"le\"},\n    {\"num\": 3, \"data\": \"monde\"},\n    {\"num\": 1, \"data\": \"Bonjour\"},\n]\ntries = sorted(paquets, key=lambda p: p[\"num\"])\nmorceaux = []\nfor p in tries:\n    morceaux.append(p[\"data\"])\nprint(\" \".join(morceaux))\n# affiche Bonjour le monde</code></pre><ul><li>Un <strong>paquet = en-tête + données</strong> ; l'en-tête contient au minimum les adresses source et destination et le numéro d'ordre.</li><li>Un <strong>protocole</strong> n'est pas un logiciel : c'est un ensemble de <strong>règles communes</strong> que toutes les machines respectent.</li><li>Sans le <strong>numéro d'ordre</strong>, impossible de recoller un message arrivé dans le désordre.</li></ul>",
     "etapes": [
@@ -5722,7 +5722,7 @@ const THEME_PLANS = {
      "QCM questions « que fait un routeur » et « paquets dans le désordre »"
     ],
     "enClasse": [
-     "0–10 min : rituel : re-dicter les 3 incidents et leur remède, sur ardoise (le tableau de la Section 5 en autocontrôle).",
+     "0–10 min : rituel : re-dicter les 3 incidents et leur remède, en réponse en direct (📡, texte court, une question par incident) ; le prof clôt et affiche les réponses sur la TV tactile (le tableau de la Section 5 en autocontrôle).",
      "10–30 min : débranché routage : la variante « panne » de l'activité réseau vivant : un élève-routeur « tombe en panne », les cartes passent par un autre chemin ; relier au schéma A/B/C/D de la Section 4 ; Exercice 9 traité à l'oral.",
      "30–50 min : institutionnalisation Section 4 : routage de proche en proche, plusieurs chemins, robustesse (conçu pour ça) ; bien poser la limite du programme : les protocoles de routage (RIP/OSPF), c'est la Terminale.",
      "50–80 min : sur postes : Section 5, cellule ▶ reconstruire() exécutée sur le cas désordre + doublon ; les élèves cassent le jeu de paquets (retirer le n°2) et observent le message d'alerte ; Exercices 4 puis 5 en cellule vide.",
@@ -5739,10 +5739,10 @@ const THEME_PLANS = {
      {
       "t": "0–10 min",
       "type": "rituel",
-      "titre": "Les trois incidents sur ardoise",
-      "prof": "Fais re-dicter sur ardoise les 3 incidents de la dernière séance et leur remède, puis laisse les élèves s'autocontrôler avec le tableau de la Section 5.",
-      "contenu": "<p>Sur ardoise : les trois incidents (désordre, perte, doublon) et leur remède — autocontrôle avec le tableau de la Section 5.</p>",
-      "eleves": "réécrivent sur ardoise les trois incidents et leur remède, puis s'autocontrôlent avec le tableau de la Section 5."
+      "titre": "Les trois incidents en réponse en direct",
+      "prof": "Fais re-dicter en réponse en direct (📡, texte court, une question par incident) les 3 incidents de la dernière séance et leur remède ; clos chaque question et affiche les réponses sur la TV tactile, puis laisse les élèves s'autocontrôler avec le tableau de la Section 5.",
+      "contenu": "<p>En réponse en direct (📡, texte court, une question par incident) : les trois incidents (désordre, perte, doublon) et leur remède, réponses affichées sur la TV tactile — autocontrôle avec le tableau de la Section 5.</p>",
+      "eleves": "saisissent en réponse en direct (📡) les trois incidents et leur remède, puis s'autocontrôlent avec le tableau de la Section 5 affiché sur la TV tactile."
      },
      {
       "t": "10–30 min",
@@ -5821,7 +5821,7 @@ const THEME_PLANS = {
      "QCM questions « rôle de l'ACK » et « pourquoi l'alternance 0/1 distingue un doublon »"
     ],
     "enClasse": [
-     "0–10 min : rituel : rejouer sur ardoise la détection d'une perte (numéro manquant) — « détecter, oui ; mais réparer ? ».",
+     "0–10 min : rituel : rejouer en réponse en direct (📡, réponse « nombre ») la détection d'une perte : suite de numéros reçus sur la TV tactile, quel numéro manque ? — le prof clôt, révèle la réponse, puis « détecter, oui ; mais réparer ? ».",
      "10–35 min : débranché bit alterné : deux élèves jouent Alice et Bob avec des cartes « paquet bit 0/1 » et « ACK 0/1 » ; le prof intercepte tantôt un paquet, tantôt un ACK ; la classe suit le chronogramme au tableau (les 3 scénarios de la Section 6).",
      "35–55 min : institutionnalisation : les 3 règles (bit qui alterne, ACK, timeout/retransmission) ; pourquoi le bit démasque le doublon quand c'est l'ACK qui s'est perdu ; Section 7 : IP achemine sans garantie, TCP fiabilise — Exercice 6 rédigé en une phrase.",
      "55–80 min : sur postes : cellule ▶ de la simulation déterministe : exécuter, puis MODIFIER le scénario (mettre deux paquet_perdu de suite, déplacer l'ack_perdu) et prédire la sortie avant chaque exécution ; Exercice 10 sur papier ensuite.",
@@ -5839,9 +5839,9 @@ const THEME_PLANS = {
       "t": "0–10 min",
       "type": "rituel",
       "titre": "Détecter, oui ; réparer ?",
-      "prof": "Fais rejouer sur ardoise la détection d'une perte : quel numéro manque ? Puis lance la question du jour : « détecter, oui ; mais réparer ? ».",
-      "contenu": "<p>Sur ardoise : retrouver le numéro manquant dans une suite de paquets reçus. Question de relance : « détecter, oui ; mais réparer ? »</p>",
-      "eleves": "retrouvent sur ardoise le numéro manquant, puis proposent des idées pour réparer une perte automatiquement."
+      "prof": "Fais rejouer en réponse en direct (📡, réponse « nombre ») la détection d'une perte : projette une suite de numéros reçus sur la TV tactile, quel numéro manque ? Clos la question, révèle la réponse, puis lance la question du jour : « détecter, oui ; mais réparer ? ».",
+      "contenu": "<p>En réponse en direct (📡, nombre) : retrouver le numéro manquant dans une suite de paquets reçus affichée sur la TV tactile. Question de relance : « détecter, oui ; mais réparer ? »</p>",
+      "eleves": "retrouvent le numéro manquant et le saisissent en réponse en direct (📡), puis proposent des idées pour réparer une perte automatiquement."
      },
      {
       "t": "10–35 min",
