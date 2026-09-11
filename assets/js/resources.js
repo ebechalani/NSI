@@ -515,6 +515,17 @@ const THEME_RESSOURCES_EXT = {
       { t: "🖥️ Diaporama — Caractères (PDF)", url: "prez-representation-caracteres.prez.pdf" },
     ],
   },
+  "algorithmique": {
+    titre: "k plus proches voisins — introduction au machine learning (DIU)",
+    auteur: "Laurent Amanton — DIU EIL, Université Le Havre Normandie (diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning », 2021-2026)",
+    base: "",
+    note: "📎 Support de formation du DIU hébergé sur le site, comme mes autres supports du Havre. Le diaporama ne porte pas de mention de licence : il est hébergé ici <strong>avec l'accord de son auteur</strong> et reste sa propriété ; les sections 11 à 14 du thème s'en inspirent (plan, exemples types) sans en reprendre le texte. Le jeu de données des iris (UCI) et la bibliothèque scikit-learn sont en accès libre.",
+    items: [
+      { t: "📕 Diaporama — K plus proches voisins (KNN), L. Amanton (PDF, 30 pages)", url: "assets/ressources/ia/DIU_KNN_Amanton.pdf" },
+      { t: "🌸 Le jeu de données des iris (UCI Machine Learning Repository)", url: "https://archive.ics.uci.edu/dataset/53/iris" },
+      { t: "🧰 Documentation scikit-learn — KNeighborsClassifier", url: "https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html" },
+    ],
+  },
 };
 
 /* ---------------- Progression annuelle indicative ---------------- */
@@ -6227,6 +6238,21 @@ const THEME_KITS = {
         "nom": "recherche_tris_corrige.py",
         "chemin": "assets/fichiers/premiere/algorithmique/recherche_tris_corrige.py",
         "desc": "corrigé prof (vérifié)"
+      },
+      {
+        "nom": "knn_rugby.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby.py",
+        "desc": "squelette élève du TP « kNN : avant ou arrière ? » pour Thonny : 30 joueurs du XV de France, distance et knn à écrire (comme le cours), taux_erreur et meilleur_k comme l'exercice 18 ; nuage de points matplotlib si la bibliothèque est installée (asserts fournis)"
+      },
+      {
+        "nom": "knn_rugby_corrige.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby_corrige.py",
+        "desc": "corrigé prof (vérifié) : distance et knn identiques au cours, taux_erreur et meilleur_k comme l'exercice 18, graphique optionnel"
+      },
+      {
+        "nom": "knn_rugby_prof.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby_prof.py",
+        "desc": "ma version complète du TP (à projeter depuis Thonny, matplotlib requis) : mélange aléatoire avec random.shuffle, vote par dictionnaire, evaluer_modele, courbe du taux d'erreur pour k impair de 1 à 15 avec annotations sur-apprentissage / sous-apprentissage"
       }
     ],
     "evals": [

@@ -4017,6 +4017,216 @@ for taille in [10, 1000, 1000000]:
         </table>
         <p>Deux projets prolongent directement ce thème : <strong>« Recherche séquentielle vs dichotomique »</strong> (mesurer le coût) et <strong>« Classer avec les k plus proches voisins »</strong>.</p>`,
       },
+      /* ---- Sections 11 à 14 : kNN approfondi, d'après le diaporama « K plus proches voisins (KNN) »
+         de Laurent Amanton (DIU EIL, Université Le Havre Normandie, 2021-2026) et mon TP
+         « XV de France ». Le diaporama ne porte pas de licence (hébergé avec l'accord de
+         l'auteur) : plan et exemples types adaptés, texte original. ---- */
+      {
+        title: "kNN, un algorithme d'apprentissage : entraîner, tester, prédire",
+        html: `
+        <p class="note">📌 <strong>Approfondissement.</strong> Le programme de Première demande d'écrire l'algorithme kNN (section 7). Les sections 11 à 13 vont plus loin, d'après un cours du DIU : comment évaluer honnêtement ce que l'algorithme prédit, quelle distance choisir, comment choisir k. Rien de tout cela n'est exigible, tout est utile pour comprendre ce que tu codes.</p>
+        <p>La section 7 t'a montré le cœur de kNN : une distance, k voisins, un vote. Le cours DIU de L. Amanton le replace dans son vrai contexte, l'<strong>apprentissage automatique</strong> (<em>machine learning</em>). kNN est un algorithme d'<strong>apprentissage supervisé</strong> : on lui fournit des exemples déjà <strong>étiquetés</strong> (c'est la « supervision »), et il doit prédire l'étiquette d'exemples nouveaux. Deux familles de problèmes : la <strong>classification</strong> (prédire une catégorie : avant ou arrière, spam ou non, quelle espèce de fleur) et la <strong>régression</strong> (prédire un nombre : un prix, une température). kNN sert surtout à classer.</p>
+        <p>Sa devise tient en un proverbe : <em>« qui se ressemble s'assemble »</em>. Et il a une particularité amusante : c'est un algorithme <strong>paresseux</strong> (<em>lazy learning</em>). Pendant l'« entraînement », il n'apprend rien du tout, il se contente de <strong>stocker</strong> les exemples ; tout le travail (distances, tri, vote) se fait au moment de <strong>prédire</strong>. Malgré cette simplicité, la méthode est utilisée pour la reconnaissance de caractères et de visages, les recommandations de films ou l'analyse de données génétiques.</p>
+        <p>Comment savoir si l'algorithme classe <em>bien</em> ? Le protocole du machine learning : on coupe les données en un <strong>jeu d'entraînement</strong> (les exemples que kNN a le droit de regarder) et un <strong>jeu de test</strong> (des exemples dont on connaît l'étiquette, mais qu'on cache à l'algorithme). On prédit l'étiquette de chaque exemple de test, on compare à la vraie, et on obtient un <strong>taux de réussite</strong>. Règle d'or : ne jamais évaluer kNN sur ses propres exemples d'entraînement, il aurait 100 % avec k = 1 puisque chaque point est son propre plus proche voisin !</p>
+        <p>Le jeu de données ci-dessous, c'est le XV de France : 30 joueurs décrits par leur taille et leur poids, avec leur poste (Avant ou Arrière). 22 servent à apprendre, 8 à tester. Avant d'exécuter, parie : lequel des 8 sera mal classé, et pourquoi ?</p>
+        <p class="warnbox">⚠️ kNN ne « voit » que la taille et le poids. Un joueur au gabarit atypique pour son poste sera mal classé, et cette « erreur » en dira plus sur les <strong>données choisies</strong> que sur l'algorithme.</p>
+        <p class="note">📎 Source : d'après le diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning » de <strong>Laurent Amanton</strong> (DIU EIL, Université Le Havre Normandie, 2021-2026), disponible dans « Pour aller plus loin » en bas du thème. Le jeu de données du XV de France est celui de mon TP.</p>`,
+        code: `# Le XV de France comme jeu de données : (nom, taille en cm, poids en kg, poste)
+# Question : peut-on DEVINER le poste (Avant / Arrière) d'un joueur à partir
+# de sa taille et de son poids, en s'inspirant des joueurs déjà connus ?
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"),
+    ("Marchand", 181, 108, "Avant"), ("Flament", 203, 116, "Avant"),
+    ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"),
+    ("Wardi", 185, 110, "Avant"), ("Mauvaka", 183, 105, "Avant"),
+    ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"),
+    ("Jelonch", 193, 106, "Avant"), ("Bamba", 185, 117, "Avant"),
+    ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"),
+    ("Danty", 181, 106, "Arrière"), ("Bielle-Biarrey", 184, 82, "Arrière"),
+    ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"),
+    ("Depoortère", 194, 94, "Arrière"), ("Lebel", 185, 93, "Arrière"),
+    ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba",
+             "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+# La phase d'« apprentissage » de kNN ne fait rien : il garde juste les exemples.
+# La PRÉDICTION se fait sur les joueurs du jeu de test, que l'algorithme n'a jamais vus.
+reussites = 0
+for joueur in test:
+    prediction = knn(entrainement, joueur, k=3)
+    verdict = "ok" if prediction == joueur[3] else "ERREUR"
+    print(joueur[0].ljust(10), joueur[1], "cm", joueur[2], "kg ->", prediction, verdict)
+    reussites += prediction == joueur[3]
+print("Taux de réussite sur le jeu de test :", reussites, "/", len(test))   # ?`,
+        prof:
+          "Faire parier la classe AVANT d'exécuter : les élèves connaissent les joueurs, et l'erreur sur Danty (centre au gabarit d'avant) lance la discussion « quelles caractéristiques faudrait-il ajouter ? ». Le vocabulaire supervisé / paresseux / régression est de la culture, pas une attente du BO de Première ; en revanche la séparation entraînement / test est indispensable pour parler honnêtement de taux de réussite. Kit : knn_rugby.py reprend ce jeu de données avec un nuage de points matplotlib pour Thonny.",
+      },
+      {
+        title: "La distance : euclidienne, Manhattan… et le piège des échelles",
+        html: `
+        <p>kNN repose entièrement sur une mesure de <strong>ressemblance</strong> entre deux exemples : une <strong>distance</strong>. La plus courante est la distance <strong>euclidienne</strong>, celle qu'on mesurerait à la règle. Avec deux caractéristiques, c'est le théorème de Pythagore ; avec n caractéristiques, on additionne les n carrés des écarts avant de prendre la racine : d(X, Y) = √( (x₁ − y₁)² + (x₂ − y₂)² + … + (xₙ − yₙ)² ).</p>
+        <p>Ce n'est pas la seule. La distance de <strong>Manhattan</strong> additionne simplement les écarts, comme un piéton qui suit les rues d'une ville en damier : |x₁ − y₁| + … + |xₙ − yₙ|. Le cours du DIU en cite bien d'autres (Minkowski, qui généralise les deux précédentes ; Hamming, qui compte les bits différents entre deux mots binaires ; cosinus, Jaccard…). Retiens l'idée : <strong>la distance se choisit selon les données</strong>.</p>
+        <p>Vient alors un piège classique, celui des <strong>échelles</strong>. Exemple du cours : le poids d'un patient en kg (de 50 à 200) et un dosage sanguin (de −3 à 3). Dans la distance, un écart de 1 kg pèse autant qu'un écart de 1 unité de dosage… alors que les kilos varient sur une plage 25 fois plus large. Résultat : <em>la colonne aux grandes valeurs domine la décision</em>, et les autres ne comptent presque plus.</p>
+        <p>La parade s'appelle la <strong>normalisation min-max</strong> : pour chaque colonne, on ramène toutes les valeurs entre 0 et 1 avec x<sub>nouveau</sub> = (x − min) / (max − min). Le minimum observé devient 0, le maximum devient 1, et une valeur normalisée se lit comme un pourcentage de la plage : 0,25 = « au quart entre le plus petit et le plus grand ». On normalise <em>avant</em> de calculer les distances, avec les min et max du jeu d'entraînement.</p>
+        <p>La cellule le montre sur un exemple de banque : un client de 27 ans, 25 000 € de revenu, mais déjà <strong>4 crédits</strong> en cours. Sans normalisation, le revenu écrase tout et kNN le range avec les bons payeurs ; une fois les colonnes normalisées, ses 4 crédits comptent enfin et le verdict bascule.</p>
+        <p class="note">📎 Source : d'après le diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning » de <strong>Laurent Amanton</strong> (DIU EIL, Université Le Havre Normandie, 2021-2026), disponible dans « Pour aller plus loin » en bas du thème. Le jeu de données du XV de France est celui de mon TP.</p>`,
+        code: `# 1) La distance euclidienne se généralise à n caractéristiques (Pythagore en n dim.)
+def euclidienne(a, b):
+    return sum((a[i] - b[i]) ** 2 for i in range(len(a))) ** 0.5
+
+# 2) La distance de Manhattan : on additionne les écarts (rues d'une ville en damier)
+def manhattan(a, b):
+    return sum(abs(a[i] - b[i]) for i in range(len(a)))
+
+print(euclidienne((1, 2, 3), (4, 6, 3)))   # 5.0  (3-4-5 : Pythagore)
+print(manhattan((1, 2, 3), (4, 6, 3)))     # 7
+
+# 3) Le piège des échelles : clients d'une banque
+#    (âge, revenu annuel en euros, nb de crédits en cours) -> a remboursé son prêt ?
+clients = [
+    (25, 21000, 0, "oui"), (32, 24000, 1, "oui"),
+    (45, 26000, 0, "oui"), (51, 23000, 1, "oui"),
+    (23, 52000, 3, "non"), (29, 48000, 4, "non"),
+    (38, 55000, 3, "non"), (35, 47000, 4, "non"),
+]
+inconnu = (27, 25000, 4)   # 27 ans, 25 000 €, déjà 4 crédits en cours...
+
+def knn(exemples, point, dist, k=3):
+    voisins = sorted(exemples, key=lambda e: dist(e[:3], point))[:k]
+    classes = [v[3] for v in voisins]
+    return max(set(classes), key=classes.count)
+
+verdict = knn(clients, inconnu, euclidienne)
+print("Sans normalisation :", verdict)      # oui (le revenu écrase tout)
+
+# 4) Normalisation min-max : chaque colonne est ramenée entre 0 et 1
+def normaliser(exemples, point):
+    """Renvoie les exemples et le point avec chaque colonne ramenée dans [0, 1]."""
+    n = len(point)
+    mini = [min(e[i] for e in exemples) for i in range(n)]
+    maxi = [max(e[i] for e in exemples) for i in range(n)]
+    norme = lambda v, i: (v - mini[i]) / (maxi[i] - mini[i])
+    exemples_n = []
+    for e in exemples:
+        exemples_n.append(tuple(norme(e[i], i) for i in range(n)) + (e[n],))
+    point_n = tuple(norme(point[i], i) for i in range(n))
+    return exemples_n, point_n
+
+clients_n, inconnu_n = normaliser(clients, inconnu)
+print("Client normalisé   :", [round(v, 2) for v in inconnu_n])   # [0.14, 0.12, 1.0]
+verdict = knn(clients_n, inconnu_n, euclidienne)
+print("Avec normalisation :", verdict)      # non (les 4 crédits comptent enfin)`,
+        prof:
+          "Faire retrouver la formule min-max par les élèves : « que devient le minimum ? le maximum ? une valeur au milieu ? ». La figure « Fonctions de distance » du diaporama (9 distances illustrées) fait un bon support de projection pour « la distance se choisit ». Sur le XV de France (tailles 174-203, poids 81-145), la normalisation change peu la classification : c'est l'objet du bonus du TP.",
+      },
+      {
+        title: "Choisir k et mesurer l'erreur",
+        html: `
+        <p>Le choix de k décide de la façon dont kNN se <strong>généralise</strong> à de nouvelles données. Avec k = 1, un seul exemple mal placé (un joueur atypique, une erreur de saisie) suffit à faire basculer la décision : l'algorithme <strong>colle trop</strong> aux exemples, on parle de <strong>sur-apprentissage</strong>. Avec un k très grand, il lisse tout et finit par ignorer les petits groupes pourtant réels ; à la limite, quand k vaut le nombre d'exemples, il répond <em>toujours</em> la classe majoritaire du jeu d'entraînement. Le cours du DIU appelle cet équilibre le compromis <em>biais-variance</em>.</p>
+        <p>Les règles pratiques du cours : k se situe le plus souvent <strong>entre 3 et 10</strong> ; une habitude courante est de prendre k proche de la <strong>racine carrée du nombre d'exemples</strong> d'entraînement (15 exemples → environ 4 ; nos 22 joueurs → environ 5). Le diaporama s'en tient là, et son exemple retient d'ailleurs k = 4. J'y ajoute une habitude qui n'est pas dans le cours mais que tu as vue en section 7 : avec deux classes, prendre un k <strong>impair</strong>, pour qu'un vote ne finisse jamais à égalité.</p>
+        <p>Mais la vraie méthode, c'est de <strong>mesurer</strong> : pour chaque valeur de k, on calcule le <strong>taux d'erreur</strong> sur le jeu de test (nombre de mauvaises prédictions divisé par le nombre d'exemples testés), puis on choisit le k qui le minimise. Tracé en fonction de k, ce taux dessine typiquement une courbe qui descend puis remonte : trop petit à gauche, trop grand à droite.</p>
+        <p class="warnbox">⚠️ Avec seulement 8 joueurs de test, chaque erreur vaut 12,5 points : la courbe avance par marches et deux k voisins peuvent sembler « meilleurs » par hasard. Les vrais projets mesurent sur des centaines d'exemples, ou répètent la mesure avec plusieurs découpages.</p>
+        <p class="note">📎 Source : d'après le diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning » de <strong>Laurent Amanton</strong> (DIU EIL, Université Le Havre Normandie, 2021-2026), disponible dans « Pour aller plus loin » en bas du thème. Le jeu de données du XV de France est celui de mon TP.</p>`,
+        code: `# Quel k choisir ? On mesure le TAUX D'ERREUR sur le jeu de test pour chaque k.
+joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"),
+    ("Marchand", 181, 108, "Avant"), ("Flament", 203, 116, "Avant"),
+    ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"),
+    ("Wardi", 185, 110, "Avant"), ("Mauvaka", 183, 105, "Avant"),
+    ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"),
+    ("Jelonch", 193, 106, "Avant"), ("Bamba", 185, 117, "Avant"),
+    ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"),
+    ("Danty", 181, 106, "Arrière"), ("Bielle-Biarrey", 184, 82, "Arrière"),
+    ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"),
+    ("Depoortère", 194, 94, "Arrière"), ("Lebel", 185, 93, "Arrière"),
+    ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba",
+             "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+for k in [1, 3, 5, 7, 11, 15, 21]:
+    erreurs = [j[0] for j in test if knn(entrainement, j, k) != j[3]]
+    taux = round(100 * len(erreurs) / len(test))
+    print("k =", str(k).rjust(2), "| erreur :", str(taux).rjust(3), "% |", erreurs)
+
+# Racine carrée du nombre d'exemples d'entraînement (règle pratique du cours DIU) :
+racine = len(entrainement) ** 0.5
+print("racine de", len(entrainement), "=", round(racine, 1), "-> k = 5 (impair)")`,
+        prof:
+          "La courbe « taux d'erreur en fonction de k » est LA figure du diaporama (pages 19 et 29) : la projeter après la cellule. Les marches de 12,5 % avec 8 joueurs sont un bon prétexte pour parler de taille d'échantillon. L'étape 4 du TP mesure l'erreur pour chaque k ; l'exercice 18 et le kit (knn_rugby.py) automatisent le choix du meilleur k ; le bonus du TP fait varier le découpage aléatoire avec random.seed. Ma version complète du TP avec la courbe matplotlib du taux d'erreur (mélange aléatoire, k impairs de 1 à 15, annotations sur-apprentissage / sous-apprentissage) est dans le kit : knn_rugby_prof.py, à projeter depuis Thonny.",
+      },
+      {
+        title: "kNN dans la vraie vie : forces, faiblesses et scikit-learn",
+        html: `
+        <p><strong>Points forts</strong>, d'après le cours : kNN est très simple et intuitif, il fonctionne quelle que soit la forme des groupes de données, et il classe bien dès que les exemples sont assez nombreux. <strong>Points faibles</strong> : il est <em>lent à prédire</em>, puisque chaque nouvel exemple exige de calculer sa distance à <strong>tous</strong> les exemples connus puis de trier ; choisir un bon k est délicat ; et sa précision dépend du nombre d'exemples étiquetés… or étiqueter des données coûte du travail humain.</p>
+        <p>Le premier point faible se relit avec la section 8 sur le coût : pour n exemples d'entraînement, une prédiction demande n calculs de distance, puis un tri. Avec un million d'exemples et mille points à classer, cela fait un milliard de distances. C'est le prix de la paresse : rien n'a été préparé à l'entraînement.</p>
+        <p>En pratique, personne ne recode kNN à la main : on utilise la bibliothèque <strong>scikit-learn</strong>. Le cours le montre sur le jeu de données le plus célèbre du machine learning, les <strong>iris</strong> : 150 fleurs, 4 mesures (longueur et largeur des sépales et des pétales) et 3 espèces à reconnaître. Le programme tient en quelques lignes, à essayer sur un vrai Python (Thonny, après installation de scikit-learn ; ça ne s'exécute pas dans le navigateur) :</p>
+        <pre><code>from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+X, y = load_iris(return_X_y=True)               # 150 fleurs, 4 mesures ; 3 espèces
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)  # 80 % / 20 %
+scaler = StandardScaler().fit(X_train)          # mise à l'échelle : centrer-réduire (autre méthode que le min-max)
+X_train, X_test = scaler.transform(X_train), scaler.transform(X_test)
+
+classifieur = KNeighborsClassifier(n_neighbors=5)
+classifieur.fit(X_train, y_train)               # « apprendre » : kNN se contente de stocker
+y_pred = classifieur.predict(X_test)            # prédire les espèces du jeu de test
+print(accuracy_score(y_test, y_pred))           # taux de réussite (souvent > 0.9)</code></pre>
+        <p>Tu reconnais chaque étape du thème : découpage entraînement / test, mise à l'échelle des colonnes (ici en centrant et réduisant, une autre méthode que le min-max, pour le même but), choix de k, prédiction, mesure. Ce que tu as codé toi-même, c'est exactement ce que la bibliothèque fait, en plus rapide et en plus général.</p>
+        <p class="note">📌 Hors programme de Première : scikit-learn, iris et le vocabulaire sur-apprentissage / biais-variance sont là pour la culture, un projet personnel ou un futur Grand oral. Ce qui est attendu au BO : écrire l'algorithme kNN (section 7, étapes 2 et 3 du TP) et comprendre le rôle de k. Le reste des sections 11 à 13 (entraînement / test, autres distances, normalisation, choix de k par le taux d'erreur) est un approfondissement qui t'apprend à utiliser kNN honnêtement, pas une exigence du programme.</p>
+        <p class="note">📎 Source : d'après le diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning » de <strong>Laurent Amanton</strong> (DIU EIL, Université Le Havre Normandie, 2021-2026), disponible dans « Pour aller plus loin » en bas du thème. Le jeu de données du XV de France est celui de mon TP.</p>`,
+        code: `# Le prix de la paresse : combien de distances pour classer m points avec n exemples ?
+def nb_distances(n_exemples, m_nouveaux):
+    return n_exemples * m_nouveaux
+
+print(nb_distances(22, 8))                 # 176 : notre XV de France
+print(nb_distances(120, 30))               # 3600 : les iris (120 appris, 30 testés)
+print(nb_distances(1000000, 1000))         # 1000000000 : un milliard de distances !
+# Sans compter le tri des n distances pour CHAQUE nouveau point : kNN est lent à prédire.`,
+        prof:
+          "Le diaporama consacre 7 pages (23 à 29) à l'implémentation en Python sur les iris (lecture avec pandas, StandardScaler, KNeighborsClassifier, matrice de confusion, courbe d'erreur pour k de 1 à 40). À montrer en démonstration sur Thonny si scikit-learn est installé, pas à faire coder en Première. Le lien vers le jeu de données iris (UCI) est dans « Pour aller plus loin ».",
+      },
     ],
   },
 

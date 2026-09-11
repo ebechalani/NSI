@@ -1307,6 +1307,205 @@ exec(programme)
 # (le code source) et l'exécuter. Programme = donnée -> une machine peut
 # recevoir un programme en entrée... d'où le problème de l'arrêt.`,
       },
+
+      /* ---- Sections 9 à 12 : adaptées du chapitre « Paradigmes de programmation »
+         du DIU EIL (B. Mermet & G. Simon, Univ. Le Havre Normandie, CC BY-NC-SA)
+         https://bases-de-donnees-26b46e.gitlab.io/indexParadigmes.html ---- */
+      {
+        title: "Impératif, fonctionnel, objet : le même Fibonacci trois fois",
+        html: `
+        <p>La section 1 comparait les paradigmes sur la somme des carrés. Le cours du DIU EIL du Havre prend un autre <strong>fil rouge</strong> : la suite de <strong>Fibonacci</strong>, réécrite dans chaque paradigme, et même dans plusieurs langages. Sa définition de l'impératif est à retenir : <em>« un programme est une succession d'instructions qui peuvent modifier l'état de la mémoire et qui peuvent interagir avec des effets de bord (affichage à l'écran, lecture au clavier, etc.) »</em>. Affectations, tests, boucles, et dans les vieux langages le fameux <code>GOTO</code>.</p>
+        <p>Première leçon du DIU : <strong>le paradigme n'est pas le langage</strong>. La même boucle de Fibonacci y est écrite en Python, en Java, en Kotlin et en BASIC de 1963 (avec des lignes numérotées et des <code>GOTO</code>) : quatre langages, un seul style, l'impératif. À l'inverse, Python permet les trois paradigmes du programme, et un même programme peut les mélanger.</p>
+        <p>En <strong>fonctionnel</strong>, le DIU explique que <em>« comme les langages fonctionnels ne connaissent que la composition de fonctions, il n'y a pas de boucle, et la répétition s'effectue donc par récursivité »</em>. Sa version Haskell tient en une ligne : <code>fibo n = if (n &lt; 2) then 1 else fibo(n-1) + fibo(n-2)</code>. En <strong>objet</strong>, on regroupe les données et les fonctions qui les manipulent : <em>« plutôt que d'avoir d'un côté des types de données, et de l'autre côté des fonctions pour manipuler les données, on va regrouper le tout »</em>. Le DIU précise que l'objet est un paradigme <em>secondaire</em> : il se combine avec l'impératif (Java) ou avec le fonctionnel (OCaml).</p>
+        <p class="warnbox">⚠️ <strong>Deux conventions pour Fibonacci.</strong> Le DIU (et cette section) démarre la suite à <code>fibo(0) = fibo(1) = 1</code> : 1, 1, 2, 3, 5, 8, 13… La section 4 prenait <code>fib(0) = 0</code>. Les deux existent dans les sujets : lis toujours la définition donnée par l'énoncé.</p>
+        <p class="note">📎 Source : chapitre « Paradigmes de programmation » du DIU EIL, pages <a href="https://bases-de-donnees-26b46e.gitlab.io/progImperative.html" target="_blank" rel="noopener">Programmation impérative</a> et <a href="https://bases-de-donnees-26b46e.gitlab.io/progFonctionnelle.html" target="_blank" rel="noopener">Programmation fonctionnelle</a> (B. Mermet &amp; G. Simon, Université Le Havre Normandie, CC BY-NC-SA).</p>`,
+        code: `# Fil rouge du cours DIU (Mermet & Simon) : la suite de Fibonacci
+# 1, 1, 2, 3, 5, 8, 13... écrite dans chacun des trois paradigmes.
+
+# 1) IMPÉRATIF : des variables dont l'état change pas à pas (boucle)
+def fibo_imperatif(n):
+    ua, ub = 1, 1
+    for indice in range(2, n + 1):
+        ua, ub = ub, ua + ub          # l'état de la mémoire est modifié
+    return ub
+
+# 2) FONCTIONNEL : aucune variable modifiée ; la répétition = récursivité
+#    (traduction de la version Haskell du cours :
+#     fibo n = if (n < 2) then 1 else fibo(n-1) + fibo(n-2))
+def fibo_fonctionnel(n):
+    return 1 if n < 2 else fibo_fonctionnel(n - 1) + fibo_fonctionnel(n - 2)
+
+# 3) OBJET : les données (les termes déjà calculés) et les fonctions
+#    qui les manipulent sont regroupées dans une classe
+class SuiteFibonacci:
+    def __init__(self):
+        self.calcules = {0: 1, 1: 1}     # l'état de l'objet (attribut)
+
+    def terme(self, n):                  # une méthode
+        if n not in self.calcules:
+            self.calcules[n] = self.terme(n - 1) + self.terme(n - 2)
+        return self.calcules[n]
+
+print(fibo_imperatif(6), fibo_fonctionnel(6), SuiteFibonacci().terme(6))   # 13 13 13
+print([fibo_imperatif(k) for k in range(7)])   # [1, 1, 2, 3, 5, 8, 13]
+print(SuiteFibonacci().terme(80))              # 37889062373143906 (grâce à la mémoire de l'objet)`,
+        prof:
+          "Projeter la page « Programmation impérative » du DIU : les quatre versions (Python, Java, Kotlin, BASIC) de la même boucle font passer en 5 minutes l'idée « paradigme ≠ langage » (capacité du BO : distinguer les paradigmes SUR DES EXEMPLES). Faire remarquer que la version objet est la mémoïsation de la section 4, avec l'état rangé dans l'objet au lieu d'un paramètre memo. Le squelette paradigmes.py du kit reprend exactement ces trois versions avec des asserts.",
+      },
+      {
+        title: "Le style fonctionnel en Python : des fonctions comme valeurs",
+        html: `
+        <p>Le DIU fait remonter le fonctionnel au <strong>λ-calcul</strong> d'Alonzo Church (années 1930) : <em>« le principe du λ-calcul consiste à considérer les fonctions comme des données comme les autres »</em>. Une fonction anonyme s'y note <code>λx.(x + 1)</code>, ce que les mathématiciens écrivent x ↦ x + 1 et que Python écrit… <code>lambda x: x + 1</code>. Le mot-clé vient de là.</p>
+        <p>Conséquence : une fonction est une <strong>valeur</strong>. On peut la ranger dans une variable, la passer en paramètre, ou la <strong>renvoyer</strong>. Le DIU montre la <em>curryfication</em> : la fonction <code>λ(x)(λ(y).(x + y))</code> appliquée à 3 seulement renvoie une nouvelle fonction, « ajouter 3 ». Les fonctions qui prennent ou renvoient des fonctions s'appellent des <strong>fonctions d'ordre supérieur</strong>.</p>
+        <p>Le DIU liste quatre traits des langages fonctionnels : les données sont <strong>immuables</strong> (<em>« les fonctions peuvent créer de nouvelles données, mais pas en modifier. On obtient ainsi un code beaucoup plus sûr »</em>) ; les <strong>effets de bord</strong> sont isolés ; l'<em>évaluation paresseuse</em> ne calcule une valeur que si on en a besoin ; l'<em>inférence de type</em> devine les types. Et trois opérations reviennent partout, en Haskell comme en Python :</p>
+        <ul>
+          <li><strong>mapping</strong> (<code>map</code>) : appliquer une fonction à chaque élément et renvoyer la liste des résultats ;</li>
+          <li><strong>filtrage</strong> (<code>filter</code>) : ne garder que les éléments qui vérifient un critère ;</li>
+          <li><strong>pliage ou réduction</strong> (<code>reduce</code>, <code>foldl</code> en Haskell) : combiner de proche en proche tous les éléments en une seule valeur, comme une somme.</li>
+        </ul>
+        <p>Une <strong>compréhension</strong> de liste fait le travail de <code>map</code> + <code>filter</code> en une expression lisible : c'est la forme la plus courante en Python. Dans tous les cas, la liste de départ reste intacte.</p>
+        <p class="note">📎 Source : page <a href="https://bases-de-donnees-26b46e.gitlab.io/progFonctionnelle.html" target="_blank" rel="noopener">Programmation fonctionnelle</a> du DIU EIL (λ-calcul, Haskell : map, filter, foldl, listes infinies) — B. Mermet &amp; G. Simon, CC BY-NC-SA. Les exemples Haskell s'essaient en ligne (lien sur la page).</p>`,
+        code: `# Une fonction est une VALEUR comme une autre (idée du lambda-calcul de Church)
+def doubler(x):
+    return x + x
+
+f = doubler                 # on range la fonction dans une variable...
+print(f(21))                # 42
+print(type(doubler))        # <class 'function'>
+
+# lambda : une fonction anonyme, écrite en une seule expression
+carre = lambda x: x * x
+print(carre(7))             # 49
+
+# Curryfication (cours DIU : f = λ(x)(λ(y).(x + y)) puis g = f 3) :
+# une fonction qui RENVOIE une fonction
+def ajouter(x):
+    return lambda y: x + y
+
+g = ajouter(3)              # g est la fonction « ajouter 3 »
+print(g(5))                 # 8
+
+# Fonctions d'ordre supérieur : elles prennent une fonction en paramètre
+nombres = [1, 2, 3, 4, 5, 6]
+print(list(map(doubler, nombres)))                    # mapping  : [2, 4, 6, 8, 10, 12]
+print(list(filter(lambda x: x % 2 == 0, nombres)))    # filtrage : [2, 4, 6]
+from functools import reduce
+print(reduce(lambda acc, x: acc + x, nombres, 0))     # pliage   : 21 (foldl (+) 0 en Haskell)
+
+# La compréhension : l'équivalent « pythonique » de map + filter
+print([doubler(x) for x in nombres if x % 2 == 0])    # [4, 8, 12]
+
+# Immutabilité : la liste de départ n'a PAS changé (aucun effet de bord)
+print(nombres)                                        # [1, 2, 3, 4, 5, 6]`,
+        prof:
+          "Le BO demande de « distinguer sur des exemples » : faire réécrire en binôme une boucle d'accumulation en map/filter/sum (exercices 10 et 13). Insister sur sorted (crée une liste) contre sort (modifie) pour matérialiser l'immutabilité. Le λ-calcul et la curryfication sont hors programme : les citer comme origine du mot lambda suffit. Pour les curieux, la page DIU montre les listes infinies et l'évaluation paresseuse en Haskell.",
+      },
+      {
+        title: "Choisir son paradigme selon le champ d'application",
+        html: `
+        <p>Le programme demande de <strong>choisir le paradigme selon le champ d'application</strong>. Le DIU donne les repères, en présentant même deux paradigmes de plus que les trois du programme :</p>
+        <ul>
+          <li><strong>Impératif</strong> : un algorithme décrit pas à pas, un script, un calcul numérique. C'est le style « naturel » de Python et de la plupart des langages.</li>
+          <li><strong>Fonctionnel</strong> : un traitement de données en chaîne (filtrer, transformer, agréger), et tout ce qui doit être <em>sûr</em> : sans données modifiées, pas de bug d'effet de bord, et plusieurs processeurs peuvent travailler en parallèle sans se gêner. C'est exactement le problème que le DIU montre dans sa page « programmation parallèle » : deux threads qui modifient la même variable.</li>
+          <li><strong>Objet</strong> : les grosses applications, les simulations et les jeux où l'on manipule beaucoup d'entités avec un état (comptes, joueurs, points, files), les bibliothèques réutilisables.</li>
+          <li><strong>Événementiel</strong> (DIU, hors programme mais partout dans la vie réelle) : <em>« l'exécution d'actions est déclenchée automatiquement lorsqu'un événement survient »</em>, noté <strong>événement → action</strong>. Deux champs : les <em>interfaces graphiques</em> (chaque clic est un événement, comme en JavaScript ou en Scratch) et les <em>automates de régulation</em> : « température &lt; 20 → déclencher chauffage ».</li>
+          <li><strong>Logique</strong> (DIU, hors programme) : Prolog, où l'on décrit des faits et des règles et où l'interpréteur <em>déduit</em> les réponses. Utilisé en intelligence artificielle et en traitement du langage.</li>
+        </ul>
+        <p>Le DIU termine sa page événementielle par un bouton <code>tkinter</code> dont la méthode <code>bind</code> reçoit <strong>une fonction en paramètre</strong> : <em>« cela illustre l'aspect fonctionnel du langage Python »</em>. Un programme d'interface graphique mélange donc des objets (le bouton, la fenêtre), des événements (le clic) et des fonctions passées comme valeurs. C'est la règle plus que l'exception : <strong>dans un même programme, on peut utiliser plusieurs paradigmes</strong>.</p>
+        <p>La cellule ci-dessous simule le thermostat du DIU sans fenêtre (tkinter ne fonctionne pas dans le navigateur) : une table <em>événement → action</em> dont les valeurs sont des fonctions, et une boucle d'événements qui détecte et déclenche.</p>
+        <p class="note">📎 Source : pages <a href="https://bases-de-donnees-26b46e.gitlab.io/progEvenementielle.html" target="_blank" rel="noopener">Programmation événementielle</a>, <a href="https://bases-de-donnees-26b46e.gitlab.io/progParallele.html" target="_blank" rel="noopener">Programmation parallèle</a> et <a href="https://bases-de-donnees-26b46e.gitlab.io/progLogique.html" target="_blank" rel="noopener">Programmation logique</a> du DIU EIL — B. Mermet &amp; G. Simon, CC BY-NC-SA.</p>`,
+        code: `# Programmation ÉVÉNEMENTIELLE sans interface graphique : « événement -> action »
+# (le thermostat du cours DIU, réalisé avec Scratch dans l'original)
+thermostat = 20          # température désirée
+temperature = 17         # température de la pièce
+
+def chauffer():
+    global temperature
+    temperature += 1
+    print("   chauffage ON  ->", temperature, "°C")
+
+def refroidir():
+    global temperature
+    temperature -= 1
+    print("   climatisation ON ->", temperature, "°C")
+
+# Table des associations événement -> action : les actions sont des FONCTIONS
+reactions = {"trop froid": chauffer, "trop chaud": refroidir}
+
+def detecter():
+    if temperature < thermostat:
+        return "trop froid"
+    if temperature > thermostat:
+        return "trop chaud"
+    return None
+
+# La boucle d'événements (comme mainloop() de tkinter) : attendre, détecter, déclencher
+for tour in range(10):
+    e = detecter()
+    print("tour", tour, ": événement =", e)
+    if e is None:
+        break               # plus rien à faire
+    reactions[e]()          # on déclenche l'action associée à l'événement`,
+        prof:
+          "Question orale efficace : « pour un jeu vidéo, une appli bancaire, un script qui renomme 1000 fichiers, un traitement de 10 millions de mesures : quel paradigme et pourquoi ? ». Sur un vrai Python (Thonny), faire tourner l'exemple tkinter de la page DIU (bouton, bind sur Enter et Button-1) : les élèves voient un vrai événement. La programmation parallèle du DIU (threads, verrous) se rattache au thème Architectures & systèmes (processus, interblocage), pas à celui-ci.",
+      },
+      {
+        title: "Objets : références, encapsulation et accesseurs",
+        html: `
+        <p>Trois idées de la page « Programmation objet » du DIU complètent la section 2. La première est un piège de bac : <strong>les objets sont manipulés par référence</strong>. Après <code>p3 = p1</code>, il n'y a toujours <em>qu'un seul</em> objet, avec deux noms : <em>« la modification appliquée sur p1 se retrouve sur p3 »</em>. C'est le même phénomène que <code>b = a</code> sur les listes (section 7). Le DIU propose de l'observer dans <a href="https://pythontutor.com/visualize.html" target="_blank" rel="noopener">Python Tutor</a>.</p>
+        <p>La deuxième est l'<strong>encapsulation</strong> : <em>« interdire, depuis l'extérieur d'un objet, tout accès direct, que ce soit en lecture ou en écriture, aux variables d'instance de l'objet. La seule façon d'y accéder consiste à passer par des méthodes »</em>. Deux intérêts : <strong>garantir l'état</strong> des objets (par exemple refuser une ordonnée négative) et pouvoir <strong>changer la structure interne</strong> sans casser le code qui utilise la classe. Tu reconnais la séparation interface / implémentation du thème Structures de données.</p>
+        <p>Ces méthodes dédiées sont les <strong>accesseurs</strong> : en lecture (<code>get_x</code>) et en écriture (<code>set_y</code>, qui peut vérifier la nouvelle valeur). Le DIU compare les langages : en Java l'encapsulation se déclare (<code>private</code> / <code>public</code>), en Python elle est <em>« purement conventionnelle »</em>. Un attribut dont le nom commence par <code>__</code> est simplement renommé <code>_Point__x</code> : il est caché, pas protégé.</p>
+        <p class="note">📌 La page du DIU va plus loin (diagrammes de classes UML, composition d'une classe Segment à partir de deux Points, <strong>héritage</strong> Personne → Élève / Professeur avec <code>super()</code>). L'héritage est <strong>hors programme</strong> de Terminale : lis-le par curiosité, on ne te le demandera pas au bac.</p>
+        <p class="note">📎 Source : page <a href="https://bases-de-donnees-26b46e.gitlab.io/progObjet.html" target="_blank" rel="noopener">Programmation orientée objet</a> et fichier <a href="https://bases-de-donnees-26b46e.gitlab.io/PythonObjet/2627/references.py" target="_blank" rel="noopener">references.py</a> du DIU EIL — B. Mermet &amp; G. Simon, CC BY-NC-SA.</p>`,
+        code: `from math import sqrt
+
+class Point:
+    """La classe Point du cours DIU, avec encapsulation : x et y ne se lisent
+    et ne se modifient qu'à travers des méthodes (les accesseurs)."""
+
+    def __init__(self, x, y):
+        self.__x = x            # __ : attribut « caché » (renommé _Point__x)
+        self.__y = 0
+        self.set_y(y)           # on passe par l'accesseur en écriture
+
+    def get_x(self):            # accesseur en lecture
+        return self.__x
+
+    def get_y(self):
+        return self.__y
+
+    def set_y(self, valeur):    # accesseur en écriture : il GARANTIT l'état
+        if valeur >= 0:
+            self.__y = valeur
+        else:
+            print("Refusé : ordonnée négative")
+
+    def translater(self, dx, dy):
+        self.__x += dx
+        self.set_y(self.__y + dy)
+
+    def module(self):           # distance à l'origine
+        return sqrt(self.__x * self.__x + self.__y * self.__y)
+
+    def __str__(self):
+        return "(" + str(self.__x) + "," + str(self.__y) + ")"
+
+p1 = Point(3, 4)
+print(p1, p1.module())      # (3,4) 5.0
+p1.set_y(-2)                # Refusé : ordonnée négative
+print(p1.get_y())           # 4 : l'état est resté valide
+
+# Les objets sont manipulés PAR RÉFÉRENCE : p3 n'est pas une copie !
+p3 = p1
+p1.translater(2, 3)
+print(p1, p3)               # (5,7) (5,7) : le même objet porte deux noms
+
+# L'attribut « caché » n'est pas vraiment privé : en Python, l'encapsulation
+# est une CONVENTION (on peut, mais on ne doit pas, contourner les accesseurs)
+print(p1.__dict__)          # {'_Point__x': 5, '_Point__y': 7}`,
+        prof:
+          "Le BO (Structures de données) exclut explicitement héritage et polymorphisme : rester sur encapsulation + accesseurs + références, qui tombent dans les sujets (« que vaut p3 après … ? »). Faire exécuter references.py du DIU dans Python Tutor sur le TBI : la flèche unique vers l'objet vaut toutes les explications. L'exercice 14 propose la réponse fonctionnelle au problème des références (translater renvoie un nouveau Point).",
+      },
     ],
   },
 

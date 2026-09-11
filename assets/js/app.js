@@ -3378,9 +3378,9 @@ except Exception:
       <h2>Crédits</h2>
       <ul>
         <li>Contenus rédigés d'après les <strong>programmes officiels</strong> de NSI (Bulletins officiels).</li>
-        <li>Certaines ressources <em>liées</em> (jamais copiées) proviennent du <strong>DIU « Enseigner l'informatique au lycée »</strong>
-          — Université Le Havre Normandie : Bruno Mermet (didactique), Yoann Pigné (structures de données),
-          Jean-Matthieu Barbier (web, représentation des données). Merci à eux.</li>
+        <li>Certaines ressources <em>liées</em> ou <em>hébergées avec attribution</em> (aucune licence n'est revendiquée sur ces supports, qui restent la propriété de leurs auteurs) proviennent du <strong>DIU « Enseigner l'informatique au lycée »</strong>
+          — Université Le Havre Normandie : Bruno Mermet et Gaële Simon (didactique, bases de données, paradigmes), Yoann Pigné (structures de données),
+          Jean-Matthieu Barbier (web, représentation des données), Laurent Amanton (k plus proches voisins). Merci à eux.</li>
         <li>Technologies : <strong>Pyodide</strong> (Python dans le navigateur), <strong>Firebase</strong> (comptes et progression),
           <strong>GitHub Pages</strong> (hébergement).</li>
       </ul>
@@ -4023,6 +4023,8 @@ except Exception:
     wrap.appendChild(
       el("p", "extra-hint", "Le cours complet de <strong>" + R.auteur + "</strong>, en complément :")
     );
+    // Attribution et licence de la ressource (obligatoires pour une reprise CC BY-NC-SA)
+    if (R.note) wrap.appendChild(el("p", "extra-hint ext-note", R.note));
     const row = el("div", "ext-links");
     R.items.forEach((it) => {
       const a = el("a", "ext-link");
