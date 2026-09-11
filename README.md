@@ -61,6 +61,6 @@ Voir `SETUP-FIREBASE.md` (règles à publier, modèle de données, limites).
 ## Licences
 
 - **Code** : MIT — **Contenus pédagogiques** : CC BY-NC-SA 4.0 (voir `LICENSE`).
-- Certaines ressources **liées** (jamais copiées) restent la propriété de leurs
-  auteurs : supports du DIU « Enseigner l'informatique au lycée » (Université
-  Le Havre Normandie — B. Mermet, Y. Pigné, J.-M. Barbier).
+- Certaines ressources **liées ou hébergées avec attribution** restent la propriété
+  de leurs auteurs : supports du DIU « Enseigner l'informatique au lycée » (Université
+  Le Havre Normandie — B. Mermet, G. Simon, Y. Pigné, J.-M. Barbier, L. Amanton).

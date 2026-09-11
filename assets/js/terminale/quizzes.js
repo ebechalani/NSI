@@ -360,6 +360,63 @@ const QUIZZES = {
       explain:
         "Ce qui est calculable en Python l'est en C, en Java ou sur une machine de Turing, et réciproquement. Le problème de l'arrêt reste indécidable dans TOUS les langages.",
     },
+    /* ---- Questions 11 à 15 : paradigmes (d'après le chapitre « Paradigmes de
+       programmation » du DIU EIL, B. Mermet & G. Simon, CC BY-NC-SA) ---- */
+    {
+      q: "D'après le cours du DIU, quelle caractéristique est typique des langages FONCTIONNELS ?",
+      choices: [
+        "Les données sont immuables : une fonction crée de nouvelles données, elle n'en modifie pas",
+        "Le programme est une suite d'affectations et de GOTO",
+        "Les données et les méthodes sont regroupées dans des classes",
+        "Les actions sont déclenchées par des événements",
+      ],
+      answer: 0,
+      explain:
+        "Immutabilité, effets de bord isolés, évaluation paresseuse, inférence de type : ce sont les quatre traits cités par le DIU. Les autres réponses décrivent l'impératif (BASIC), l'objet et l'événementiel.",
+    },
+    {
+      q: "Que vaut list(map(lambda x: x * 2, filter(lambda x: x % 2 == 1, [1, 2, 3, 4, 5]))) ?",
+      choices: ["[2, 6, 10]", "[2, 4, 6, 8, 10]", "[1, 3, 5]", "[4, 8]"],
+      answer: 0,
+      explain:
+        "filter garde les impairs [1, 3, 5] (filtrage), puis map les double (mapping) : [2, 6, 10]. En compréhension : [x * 2 for x in t if x % 2 == 1].",
+    },
+    {
+      q: "p1 = Point(3, 4) ; p3 = p1 ; p1.translater(2, 3) (translater modifie l'objet). Qu'affiche print(p3) ?",
+      choices: [
+        "(3,4) : p3 est une copie faite avant la translation",
+        "(5,7) : p3 et p1 désignent le même objet",
+        "Une erreur : on ne peut pas affecter un objet à deux variables",
+        "(2,3) : p3 reçoit le déplacement",
+      ],
+      answer: 1,
+      explain:
+        "Les objets sont manipulés par référence : p3 = p1 copie l'adresse, pas l'objet. « La modification appliquée sur p1 se retrouve sur p3 » (DIU, references.py à visualiser dans Python Tutor).",
+    },
+    {
+      q: "Un programme qui réagit aux clics de l'utilisateur dans une interface graphique (Scratch, tkinter, JavaScript) relève surtout du paradigme…",
+      choices: [
+        "logique : on décrit des faits et des règles",
+        "événementiel : à chaque événement est associée une action",
+        "impératif pur : une seule suite d'instructions du début à la fin",
+        "aucun : c'est le matériel qui gère les clics",
+      ],
+      answer: 1,
+      explain:
+        "Événement → action : le clic déclenche la fonction associée (bind en tkinter). Ce paradigme est hors programme mais le BO demande de choisir le paradigme selon le champ d'application : les interfaces graphiques en sont l'exemple type.",
+    },
+    {
+      q: "Le DIU écrit le MÊME calcul itératif de Fibonacci en Python, Java, Kotlin et BASIC. Qu'est-ce que cela montre ?",
+      choices: [
+        "Seul Python est un langage impératif",
+        "Le paradigme est un style indépendant du langage : ces quatre versions sont toutes impératives",
+        "BASIC est un langage fonctionnel",
+        "Java, étant orienté objet, ne peut pas être impératif",
+      ],
+      answer: 1,
+      explain:
+        "Quatre langages, un seul style (variables modifiées dans une boucle). Réciproquement, un même langage comme Python permet plusieurs paradigmes, et un même programme peut les mélanger.",
+    },
   ],
 
   "term-algo": [

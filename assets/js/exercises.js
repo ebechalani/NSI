@@ -325,12 +325,15 @@ const THEME_EXTRAS = {
       "Glouton : meilleur choix local, sans retour arrière.",
       "kNN : classer selon la classe majoritaire des k plus proches voisins.",
       "Coût (complexité) : O(1), O(log n), O(n), O(n²) ; terminaison = variant.",
+      "kNN approfondi : apprentissage supervisé et paresseux ; on évalue sur un jeu de TEST séparé ; normaliser les colonnes (min-max) quand les échelles diffèrent ; k impair entre 3 et 10 (environ racine de n), choisi par le taux d'erreur.",
     ],
     erreurs: [
       "Appliquer la dichotomie sur un tableau NON trié.",
       "Confondre indice (position) et valeur de l'élément.",
       "Oublier l'échange tab[i], tab[j] = tab[j], tab[i] dans un tri.",
       "Croire que le glouton donne toujours l'optimum.",
+      "Évaluer kNN sur ses propres exemples d'entraînement : 100 % garanti avec k = 1, ça ne prouve rien.",
+      "Oublier de normaliser quand une colonne a de grandes valeurs (revenu en euros) : elle écrase les autres dans la distance.",
     ],
     exercices: [
       { niveau: "facile", enonce: "Texte à trou — calcul du milieu en recherche dichotomique.",
@@ -384,6 +387,140 @@ print("Tous les tests passent ✔")`,
         solution: "On garde deux indices : <code>i</code> parcourt la liste à partir de la 2ᵉ case (la 1ʳᵉ, seule, est triée), et <code>j</code> recule dans la partie triée. Tant que <code>j &gt;= 0</code> et que <code>tab[j]</code> est plus grand que la carte, on copie <code>tab[j]</code> une case à droite (<code>tab[j + 1] = tab[j]</code>) puis <code>j -= 1</code>. Quand la boucle <code>while</code> s'arrête, le trou est en <code>j + 1</code> : on y pose la carte. Trace sur <code>[5, 2, 9, 1, 7]</code> : i = 1, carte 2 : 5 décalé → <code>[2, 5, 9, 1, 7]</code> ; i = 2, carte 9 : aucun décalage ; i = 3, carte 1 : 9, 5, 2 décalés → <code>[1, 2, 5, 9, 7]</code> ; i = 4, carte 7 : 9 décalé → <code>[1, 2, 5, 7, 9]</code>. Les cas limites passent sans code particulier : pour <code>[]</code> et <code>[4]</code>, <code>range(1, len(tab))</code> est vide et la boucle <code>for</code> ne tourne pas ; les doublons sont conservés car on décale seulement les éléments <em>strictement</em> plus grands (<code>&gt;</code>, pas <code>&gt;=</code>). Coût : dans le pire cas (liste triée à l'envers), le tour i fait i décalages, soit 1 + 2 + … + (n − 1) ≈ n²/2 opérations, d'ordre n² ; dans le meilleur cas (liste déjà triée), aucun décalage : n − 1 comparaisons seulement." },
       { niveau: "moyen", enonce: "<strong>Sur papier — pourquoi les tris se terminent-ils ?</strong> Dans le tri par insertion du cours, la boucle interne est <code>while j &gt;= 0 and tab[j] &gt; cle:</code> et son corps se termine par <code>j -= 1</code>. (a) Donne un <strong>variant de boucle</strong> qui prouve qu'elle se termine : une quantité entière, positive ou nulle, qui décroît strictement à chaque tour. Justifie les trois propriétés. (b) Pourquoi la boucle <code>for i in range(1, len(tab))</code> du tri par insertion, et les deux boucles <code>for</code> du tri par sélection, se terminent-elles forcément ? Combien de tours fait chacune ? (c) Bonus : énonce l'<strong>invariant</strong> « au début du tour i, … » du tri par insertion et celui du tri par sélection, puis explique en quoi ils diffèrent.",
         solution: "<strong>(a)</strong> Variant : <code>j + 1</code> (ou simplement <code>j</code>, en acceptant qu'il atteigne −1 à la sortie). Entier : <code>j</code> est un indice. Positif ou nul : tant qu'on est dans la boucle, la condition <code>j &gt;= 0</code> est vraie, donc <code>j + 1 &gt;= 1</code>. Strictement décroissant : chaque tour fait <code>j -= 1</code>, et rien d'autre ne modifie <code>j</code>. Un entier positif qui perd 1 à chaque tour ne peut pas descendre indéfiniment : au plus <code>i</code> tours, puis <code>j</code> vaut −1 et <code>j &gt;= 0</code> devient faux. Remarque : grâce à l'évaluation séquentielle de <code>and</code>, <code>tab[j]</code> n'est jamais lu quand <code>j</code> vaut −1 (thème « types de base »). <strong>(b)</strong> Une boucle <code>for</code> sur un <code>range</code> est <strong>bornée</strong> : le nombre de tours est fixé avant d'entrer dans la boucle et ne dépend pas de ce qui se passe dedans. Le variant est « le nombre d'éléments du range qu'il reste à parcourir ». Tri par insertion : <code>n − 1</code> tours (i de 1 à n − 1). Tri par sélection : la boucle externe fait <code>n</code> tours (ou n − 1 selon l'écriture) et la boucle interne, au tour i, fait <code>n − 1 − i</code> tours ; au total environ n²/2 comparaisons. <strong>(c)</strong> Insertion : « au début du tour i, <code>tab[0..i-1]</code> est triée » — triée <em>entre ses éléments</em> seulement : ils ne sont pas forcément les plus petits de la liste et peuvent encore bouger. Sélection : « au début du tour i, <code>tab[0..i-1]</code> contient les i plus petits éléments de la liste, dans l'ordre, à leur place <em>définitive</em> ». Dans les deux cas, à la fin (i = n) l'invariant dit que toute la liste est triée : c'est ce qui prouve que le tri est <strong>correct</strong>, alors que le variant prouve qu'il <strong>s'arrête</strong>." },
+      /* ---- Exercices 13 à 18 : kNN approfondi (distances, normalisation, évaluation),
+         d'après le cours DIU de L. Amanton et mon TP « XV de France » ---- */
+      { niveau: "facile", enonce: "Texte à trou — la distance euclidienne entre deux points ayant n coordonnées (Pythagore généralisé) : quel exposant pour le carré, quel exposant pour la racine ?",
+        gapcode: `def euclidienne(a, b):
+    return sum((a[i] - b[i]) ** ___ for i in range(len(a))) ** ___
+
+print(euclidienne((0, 0), (3, 4)))          # 5.0
+print(euclidienne((1, 2, 3), (4, 6, 3)))    # 5.0`,
+        gaps: ["2", ["0.5", ".5", "(1/2)"]],
+        solution: "On élève chaque écart au carré (** 2), on additionne, puis on prend la racine carrée (** 0.5). (3, 4) donne 5 ; en 3D, les écarts 3, 4 et 0 donnent aussi 5." },
+      { niveau: "facile", enonce: "Écris manhattan(a, b) qui renvoie la distance de Manhattan (somme des écarts en valeur absolue) entre deux points, et compare-la à la distance euclidienne pour (1, 1) et (4, 5).",
+        code: `def manhattan(a, b):
+    """Somme des écarts sur chaque coordonnée (trajet dans une ville en damier)."""
+    return sum(abs(a[i] - b[i]) for i in range(len(a)))
+
+def euclidienne(a, b):
+    return sum((a[i] - b[i]) ** 2 for i in range(len(a))) ** 0.5
+
+p, q = (1, 1), (4, 5)
+print(manhattan(p, q))     # 7  (3 blocs vers la droite + 4 blocs vers le haut)
+print(euclidienne(p, q))   # 5.0 (à vol d'oiseau : toujours plus courte ou égale)`,
+        solution: "abs(4 - 1) + abs(5 - 1) = 3 + 4 = 7 : c'est le trajet d'un piéton dans des rues en damier. La distance euclidienne (à vol d'oiseau) vaut 5 : elle est toujours inférieure ou égale à celle de Manhattan." },
+      { niveau: "moyen", enonce: "Écris normaliser_colonne(valeurs) qui renvoie la liste des valeurs ramenées entre 0 et 1 par la formule min-max (x - min) / (max - min). Teste sur [50, 100, 200] puis sur les tailles et les poids de quatre joueurs.",
+        code: `def normaliser_colonne(valeurs):
+    """Ramène chaque valeur entre 0 (le minimum) et 1 (le maximum) : min-max."""
+    mini, maxi = min(valeurs), max(valeurs)
+    return [(v - mini) / (maxi - mini) for v in valeurs]
+
+print(normaliser_colonne([50, 100, 200]))      # [0.0, 0.3333333333333333, 1.0]
+print(normaliser_colonne([174, 203, 188.5]))   # [0.0, 1.0, 0.5]
+tailles = [196, 174, 203, 181]
+poids = [145, 85, 116, 106]
+print([round(t, 2) for t in normaliser_colonne(tailles)])   # [0.76, 0.0, 1.0, 0.24]
+print([round(p, 2) for p in normaliser_colonne(poids)])     # [1.0, 0.0, 0.52, 0.35]`,
+        solution: "Le minimum devient 0, le maximum devient 1, et chaque valeur devient sa position dans la plage : 100 est au tiers entre 50 et 200 → 0.33. Après normalisation, tailles et poids sont comparables : un écart de 0.5 « vaut » la même chose dans les deux colonnes." },
+      { niveau: "moyen", enonce: "Écris taux_de_reussite(predictions, reelles) qui renvoie la proportion (entre 0 et 1) de prédictions justes, puis déduis-en le taux d'erreur. Teste avec predites = [\"Avant\", \"Avant\", \"Arrière\", \"Avant\", \"Arrière\", \"Arrière\", \"Avant\", \"Arrière\"] et reelles = [\"Avant\", \"Avant\", \"Avant\", \"Avant\", \"Arrière\", \"Arrière\", \"Arrière\", \"Arrière\"].",
+        code: `def taux_de_reussite(predictions, reelles):
+    """Proportion de prédictions justes (entre 0 et 1)."""
+    justes = 0
+    for i in range(len(reelles)):
+        if predictions[i] == reelles[i]:
+            justes += 1
+    return justes / len(reelles)
+
+predites = ["Avant", "Avant", "Arrière", "Avant",
+            "Arrière", "Arrière", "Avant", "Arrière"]
+reelles = ["Avant", "Avant", "Avant", "Avant",
+           "Arrière", "Arrière", "Arrière", "Arrière"]
+print(taux_de_reussite(predites, reelles))   # 0.75 (6 justes sur 8)
+print("Taux d'erreur :", 1 - taux_de_reussite(predites, reelles))   # 0.25`,
+        solution: "On compte les indices i où predictions[i] == reelles[i] : 6 sur 8, soit 0.75. Le taux d'erreur est le complément : 1 - 0.75 = 0.25. C'est la mesure que l'on compare d'un k à l'autre." },
+      { niveau: "défi", enonce: "kNN en n dimensions avec normalisation : écris knn(exemples, point, k) pour des exemples de la forme (x1, ..., xn, classe), puis normaliser_tout(exemples, point) qui ramène chaque colonne entre 0 et 1. Montre sur les clients de la banque (âge, revenu, nb de crédits ; recopie les données de la cellule de la section 12) que la prédiction pour (27, 25000, 4) change après normalisation.",
+        code: `def euclidienne(a, b):
+    return sum((a[i] - b[i]) ** 2 for i in range(len(a))) ** 0.5
+
+def knn(exemples, point, k=3):
+    """exemples = [(x1, ..., xn, classe), ...] ; point = (x1, ..., xn)."""
+    voisins = sorted(exemples, key=lambda e: euclidienne(e[:-1], point))[:k]
+    classes = [v[-1] for v in voisins]
+    return max(set(classes), key=classes.count)
+
+def normaliser_tout(exemples, point):
+    n = len(point)
+    mini = [min(e[i] for e in exemples) for i in range(n)]
+    maxi = [max(e[i] for e in exemples) for i in range(n)]
+    norme = lambda v, i: (v - mini[i]) / (maxi[i] - mini[i])
+    exemples_n = []
+    for e in exemples:
+        exemples_n.append(tuple(norme(e[i], i) for i in range(n)) + (e[n],))
+    return exemples_n, tuple(norme(point[i], i) for i in range(n))
+
+clients = [
+    (25, 21000, 0, "oui"), (32, 24000, 1, "oui"),
+    (45, 26000, 0, "oui"), (51, 23000, 1, "oui"),
+    (23, 52000, 3, "non"), (29, 48000, 4, "non"),
+    (38, 55000, 3, "non"), (35, 47000, 4, "non"),
+]
+inconnu = (27, 25000, 4)
+print("brut :", knn(clients, inconnu))                      # oui
+clients_n, inconnu_n = normaliser_tout(clients, inconnu)
+print("normalisé :", knn(clients_n, inconnu_n))             # non`,
+        solution: "Sans normalisation, les écarts de revenu (des milliers d'euros) écrasent les écarts d'âge et de crédits : le client est rangé avec les revenus proches, qui remboursent → « oui ». Après min-max, les trois colonnes pèsent pareil ; ses 4 crédits (le maximum, donc 1.0) le rapprochent des mauvais payeurs → « non ». La normalisation change la décision." },
+      { niveau: "défi", enonce: "Écris taux_erreur(k) qui mesure le taux d'erreur de kNN sur le jeu de test du XV de France (recopie les données, le découpage et les fonctions distance et knn de la cellule de la section 11), puis meilleur_k(candidats) qui renvoie le k de la liste donnant le plus petit taux d'erreur (le premier en cas d'égalité). Que renvoie meilleur_k([3, 5, 7, 15, 21]) ?",
+        code: `joueurs = [
+    ("Atonio", 196, 145, "Avant"), ("Baille", 182, 115, "Avant"),
+    ("Marchand", 181, 108, "Avant"), ("Flament", 203, 116, "Avant"),
+    ("Meafou", 203, 145, "Avant"), ("Alldritt", 191, 114, "Avant"),
+    ("Ollivon", 199, 113, "Avant"), ("Cros", 190, 110, "Avant"),
+    ("Wardi", 185, 110, "Avant"), ("Mauvaka", 183, 105, "Avant"),
+    ("Aldegheri", 181, 115, "Avant"), ("Taofifenua", 200, 135, "Avant"),
+    ("Woki", 196, 109, "Avant"), ("Boudehent", 192, 106, "Avant"),
+    ("Jelonch", 193, 106, "Avant"), ("Bamba", 185, 117, "Avant"),
+    ("Dupont", 174, 85, "Arrière"), ("Ntamack", 186, 86, "Arrière"),
+    ("Penaud", 192, 97, "Arrière"), ("Fickou", 190, 100, "Arrière"),
+    ("Danty", 181, 106, "Arrière"), ("Bielle-Biarrey", 184, 82, "Arrière"),
+    ("Ramos", 178, 81, "Arrière"), ("Lucu", 177, 84, "Arrière"),
+    ("Jalibert", 189, 86, "Arrière"), ("Moefana", 183, 98, "Arrière"),
+    ("Depoortère", 194, 94, "Arrière"), ("Lebel", 185, 93, "Arrière"),
+    ("Gailleton", 185, 89, "Arrière"), ("Barré", 188, 88, "Arrière"),
+]
+
+# Jeu de TEST : 8 joueurs mis de côté (on connaît leur poste, on fera comme si non)
+noms_test = ["Marchand", "Mauvaka", "Boudehent", "Bamba",
+             "Danty", "Moefana", "Fickou", "Barré"]
+test = [j for j in joueurs if j[0] in noms_test]
+entrainement = [j for j in joueurs if j[0] not in noms_test]   # les 22 autres
+
+def distance(a, b):
+    """Distance euclidienne dans le plan (taille, poids)."""
+    return ((a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+
+def knn(entrainement, inconnu, k=3):
+    """Poste majoritaire parmi les k joueurs d'entraînement les plus proches."""
+    voisins = sorted(entrainement, key=lambda j: distance(j, inconnu))[:k]
+    postes = [v[3] for v in voisins]
+    return max(set(postes), key=postes.count)
+
+def taux_erreur(k):
+    erreurs = sum(1 for j in test if knn(entrainement, j, k) != j[3])
+    return erreurs / len(test)
+
+def meilleur_k(candidats):
+    """Le k de la liste candidats qui donne le plus petit taux d'erreur
+    (le premier en cas d'égalité)."""
+    meilleur = candidats[0]
+    for k in candidats:
+        if taux_erreur(k) < taux_erreur(meilleur):
+            meilleur = k
+    return meilleur
+
+for k in [1, 3, 5, 7, 15, 21]:
+    print("k =", k, "-> erreur", round(100 * taux_erreur(k)), "%")
+print("meilleur k parmi [3, 5, 7, 15, 21] :", meilleur_k([3, 5, 7, 15, 21]))   # 3`,
+        solution: "taux_erreur compte les joueurs de test mal classés et divise par 8. meilleur_k parcourt les candidats en gardant le plus petit taux : 3 et 5 font 12 %, 7 et 15 font 25 %, 21 fait 50 % (avec 21 voisins sur 22, c'est presque toujours la classe majoritaire, Avant). Le premier minimum rencontré est 3." },
     ],
     defi: { titre: "Mission : duel d'algorithmes",
       html: "Compte et compare le nombre d'étapes de la recherche séquentielle et de la dichotomie pour n = 10, 1000, 1 000 000. Conclus sur O(n) vs O(log n)." },
