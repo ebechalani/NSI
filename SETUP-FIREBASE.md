@@ -43,7 +43,8 @@ service cloud.firestore {
     //  (a) rattacher sa fiche : écrire UNIQUEMENT linkedUid = son propre uid
     //      (nécessaire à chaque nouveau poste, l'uid anonyme change) ;
     //  (b) sa progression : si sa fiche lui est rattachée, modifier UNIQUEMENT
-    //      qcm / exos / activite. Il ne peut PAS toucher note, capacites, name…
+    //      qcm / exos / activite / lastTheme / live (sa réponse en direct 📡).
+    //      Il ne peut PAS toucher note, capacites, name…
     match /students/{sid} {
       allow read: if signedIn();
       allow create: if isTeacherAuth() && request.resource.data.teacherUid == request.auth.uid;
@@ -55,7 +56,7 @@ service cloud.firestore {
             && request.resource.data.linkedUid == request.auth.uid)
         || (signedIn()
             && resource.data.linkedUid == request.auth.uid
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['qcm', 'exos', 'activite', 'lastTheme']));
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['qcm', 'exos', 'activite', 'lastTheme', 'live']));
     }
 
     // Corrigés d'évaluations : lisibles/écrits uniquement par un compte prof
@@ -105,10 +106,23 @@ publics par un élève déterminé — le gating actuel est pédagogique, pas cr
 ## Modèle de données (Firestore)
 ```
 users/{uid}       { role:"teacher", name }                 (profil prof)
-classes/{id}      { name, code, teacherUid, pushed:bool }
+classes/{id}      { name, code, teacherUid, pushed:bool, pushedCorr:{}, seances:{},
+                    live:{ id, at, q, type, choices[], bonne, revealed, closed } }
 students/{id}     { classId, teacherUid, name, linkedUid,
-                    qcm:{themeId:{score,total}}, exos:{}, capacites:{}, note }
+                    qcm:{themeId:{score,total}}, exos:{}, activite:{}, capacites:{}, note,
+                    live:{ qid, value, at } }
 ```
+
+## Réponse en direct (📡) — l'ardoise levée, sur le site
+Le prof pose une question (depuis une étape du conducteur ou le bouton 📡 de la barre) :
+elle est écrite dans `classes/{id}.live` ; chaque élève connecté la voit en bas de sa
+page et répond depuis son poste : sa réponse est écrite dans `students/{sid}.live`
+(une seule réponse mémorisée, la dernière). Les écoutes temps réel déjà en place
+(la classe côté élève, les élèves côté prof) transportent tout : aucune collection
+nouvelle. **Seule la règle `students` change** : la clé `live` s'ajoute aux champs
+que l'élève rattaché peut modifier (ligne `hasOnly([...])` ci-dessus). Tant que la
+règle n'est pas republiée, la question part bien mais les réponses des élèves sont
+refusées (le bandeau « synchronisation refusée » s'affiche chez eux).
 
 ## Comment « le prof crée les comptes »
 Le prof ajoute des élèves **par leur nom** dans sa classe (docs `students`).

@@ -1306,3 +1306,106 @@ body.projecteur.noir .proj-stage { visibility: hidden; }
 .proj-nav .btn { font-size: .9em; padding: .45em 1.1em; }
 .proj-tools { position: fixed; right: .8rem; bottom: .8rem; display: flex; gap: .35rem; opacity: .3; transition: opacity .2s; z-index: 50; }
 .proj-tools:hover { opacity: 1; }
+
+/* ---------------- Réponse en direct (📡) : remplace les ardoises de la salle ---------------- */
+.live-btn { position: relative; }
+.live-btn.on { border-color: var(--accent); background: var(--accent-soft); }
+.live-badge {
+  position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 99px; background: var(--accent); color: #fff; font-size: .7rem; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.live-panel {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 70; width: min(94vw, 440px); max-height: min(82vh, 720px);
+  overflow: auto; background: var(--bg-elev); border: 1px solid var(--accent); border-radius: 14px;
+  box-shadow: var(--shadow); padding: .8rem .9rem 1rem; font-size: .9rem;
+}
+.live-head { display: flex; align-items: center; gap: .5rem; margin-bottom: .6rem; }
+.live-head strong { flex: 1; }
+.live-class, .live-form select, .live-form input, .live-form textarea, .live-student-form input {
+  font-family: var(--sans); font-size: .9rem; padding: .45rem .6rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--text);
+}
+.live-classname { color: var(--text-soft); font-size: .85rem; }
+.live-close { background: none; border: 0; color: var(--text-soft); font-size: 1rem; cursor: pointer; padding: .2rem .4rem; }
+.live-hint { color: var(--text-soft); font-size: .82rem; margin: .5rem 0 0; line-height: 1.45; }
+.live-form { display: flex; flex-direction: column; gap: .55rem; }
+.live-form label { display: flex; flex-direction: column; gap: .25rem; font-weight: 600; font-size: .82rem; color: var(--text-soft); }
+.live-form textarea { resize: vertical; min-height: 2.6rem; }
+.live-choices { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+.live-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.live-actions .btn { font-size: .82rem; padding: .4rem .75rem; }
+.btn.active-filter { background: var(--accent); color: #fff; }
+.live-q { font-weight: 700; margin: 0 0 .3rem; line-height: 1.4; }
+.live-status { margin: 0 0 .6rem; color: var(--text-soft); font-size: .85rem; }
+.live-bars { display: flex; flex-direction: column; gap: .45rem; }
+.live-bar { border: 1px solid var(--border); border-radius: 10px; padding: .4rem .6rem; }
+.live-bar.ok { border-color: var(--ok); background: var(--ok-soft); }
+.live-bar-line { display: flex; justify-content: space-between; gap: .5rem; font-weight: 600; }
+.live-bar-count { color: var(--accent); }
+.live-bar-track { height: 8px; background: var(--bg-soft); border-radius: 99px; overflow: hidden; margin: .3rem 0; }
+.live-bar-track span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .3s; }
+.live-names { font-size: .8rem; color: var(--text-soft); }
+.live-absents { font-size: .82rem; color: var(--text-soft); margin: .6rem 0 0; }
+
+/* Côté élève : la question du prof, en bas de toutes les pages */
+.live-student {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 1rem; z-index: 65;
+  width: min(94vw, 720px); background: var(--bg-elev); border: 2px solid var(--accent); border-radius: 14px;
+  box-shadow: var(--shadow); padding: .8rem 1rem; font-size: .95rem;
+}
+.live-student-q { font-weight: 700; line-height: 1.45; margin-bottom: .55rem; }
+.live-student-tag { display: inline-block; background: var(--accent); color: #fff; border-radius: 99px; padding: .1rem .6rem; font-size: .78rem; margin-right: .3rem; }
+.live-student-inputs { display: flex; flex-wrap: wrap; gap: .45rem; }
+.live-choice { text-align: left; }
+.live-choice .lettre { display: inline-block; min-width: 1.4rem; text-align: center; font-weight: 800; }
+.live-student-form { display: flex; gap: .45rem; width: 100%; }
+.live-student-form input { flex: 1; min-width: 0; }
+.live-student-mine { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.live-student-mine .btn { font-size: .8rem; padding: .35rem .7rem; }
+.live-student-reveal { margin-top: .5rem; padding: .45rem .7rem; border-radius: 10px; background: var(--bg-soft); }
+.live-student-reveal.ok { background: var(--ok-soft); color: var(--ok-text); }
+.live-student-reveal.ko { background: var(--bad-soft); color: var(--bad-text); }
+@media (max-width: 560px) {
+  .live-panel { right: .5rem; left: .5rem; width: auto; }
+  .live-choices { grid-template-columns: 1fr; }
+}
+
+/* Écran de projection : les réponses de la classe, anonymes */
+.proj-live { display: flex; flex-direction: column; gap: .7rem; margin: 1rem 0; }
+.proj-live-row { display: grid; grid-template-columns: minmax(8rem, 2fr) 5fr auto; align-items: center; gap: 1rem; font-size: 1.25rem; }
+.proj-live-row.ok .proj-live-label { color: var(--ok-text); font-weight: 800; }
+.proj-live-track { height: 1.4rem; background: var(--bg-soft); border-radius: 99px; overflow: hidden; border: 1px solid var(--border); }
+.proj-live-track span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .4s; }
+.proj-live-row.ok .proj-live-track span { background: var(--ok); }
+.proj-live-count { font-weight: 800; min-width: 2.5rem; text-align: right; }
+
+/* Conducteurs : repère « dans la salle » de chaque étape ; bloc salle de « Préparer mes cours » */
+.cd-salle { font-size: .76rem; color: var(--text-soft); flex-basis: 100%; }
+.salle-info { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); margin: 0 0 1rem; padding: .2rem .9rem; }
+.salle-info > summary { cursor: pointer; font-weight: 700; padding: .5rem 0; color: var(--accent); }
+.salle-body ul { margin: .3rem 0 .4rem; padding-left: 1.2rem; }
+.salle-body li { margin: .3rem 0; line-height: 1.5; }
+body.has-live .content { padding-bottom: 11rem; }
+
+/* Frise : mode Chrono (carte par carte) et accès à la correction */
+.frise-ok { color: var(--ok-text); font-weight: 700; }
+.frise-ko { color: var(--bad-text); font-weight: 700; }
+.frise-hint { display: block; margin-top: .3rem; font-weight: 400; color: var(--text-soft); font-size: .85rem; }
+.chrono-hand { border: 2px dashed var(--accent); border-radius: 12px; padding: .7rem .9rem; margin-bottom: 1rem; background: var(--bg-soft); }
+.chrono-label { font-weight: 700; margin-bottom: .5rem; }
+.chrono-current { cursor: default; }
+.chrono-done { font-weight: 700; color: var(--ok-text); font-size: 1.05rem; }
+.chrono-board { display: flex; flex-direction: column; gap: .3rem; }
+.chrono-card { cursor: default; }
+.chrono-slot {
+  font-family: var(--sans); font-size: .85rem; font-weight: 600; cursor: pointer; color: var(--accent);
+  background: transparent; border: 1.5px dashed var(--border); border-radius: 9px; padding: .45rem .8rem; text-align: center;
+  transition: background .15s, border-color .15s;
+}
+.chrono-slot:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+.chrono-slot:disabled { cursor: default; border-color: transparent; color: transparent; padding: .1rem; }
+.chrono-slot.good { border-color: var(--ok); background: var(--ok-soft); color: var(--ok-text); }
+.chrono-slot.bad { border-color: var(--bad); background: var(--bad-soft); color: var(--bad-text); animation: chrono-shake .35s; }
+@keyframes chrono-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.chrono-status { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; margin-top: .9rem; font-weight: 600; }
