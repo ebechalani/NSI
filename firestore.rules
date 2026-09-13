@@ -23,7 +23,8 @@ service cloud.firestore {
 
     // Students : le prof propriétaire gère tout. L'élève anonyme a deux droits :
     //  (a) rattacher SA fiche (écrire uniquement linkedUid = son uid) ;
-    //  (b) sa progression (uniquement qcm / exos / activite) si la fiche lui est rattachée.
+    //  (b) sa progression (uniquement qcm / exos / activite / lastTheme / live,
+    //      live = sa réponse en direct 📡) si la fiche lui est rattachée.
     match /students/{sid} {
       allow read: if signedIn();
       allow create: if isTeacherAuth() && request.resource.data.teacherUid == request.auth.uid;
@@ -35,7 +36,7 @@ service cloud.firestore {
             && request.resource.data.linkedUid == request.auth.uid)
         || (signedIn()
             && resource.data.linkedUid == request.auth.uid
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['qcm', 'exos', 'activite', 'lastTheme']));
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['qcm', 'exos', 'activite', 'lastTheme', 'live']));
     }
 
     // Corrigés d'évaluations : lisibles/écrits uniquement par un compte prof
