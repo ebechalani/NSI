@@ -110,7 +110,7 @@ classes/{id}      { name, code, teacherUid, pushed:bool, pushedCorr:{}, seances:
                     live:{ id, at, q, type, choices[], bonne, revealed, closed } }
 students/{id}     { classId, teacherUid, name, linkedUid,
                     qcm:{themeId:{score,total}}, exos:{}, activite:{}, capacites:{}, note,
-                    live:{ qid, value, at } }
+                    live:{ qid, value, at, groupe:[{uid,name}] } }
 ```
 
 ## Réponse en direct (📡) — l'ardoise levée, sur le site
@@ -123,6 +123,12 @@ nouvelle. **Seule la règle `students` change** : la clé `live` s'ajoute aux ch
 que l'élève rattaché peut modifier (ligne `hasOnly([...])` ci-dessus). Tant que la
 règle n'est pas republiée, la question part bien mais les réponses des élèves sont
 refusées (le bandeau « synchronisation refusée » s'affiche chez eux).
+
+**Îlots (👥 Mon îlot)** : en travail de groupe sur un seul poste, l'élève connecté coche
+ses camarades ; la liste est écrite dans `students/{sid}.live.groupe` (sa propre fiche,
+donc **aucune règle à changer**), et sa réponse vaut pour chaque camarade déclaré qui n'a
+pas répondu lui-même. Le prof voit les îlots dans le suivi 📡 et peut les dissoudre
+(il écrit sur les fiches de ses élèves, ce que la règle lui permet déjà).
 
 ## Comment « le prof crée les comptes »
 Le prof ajoute des élèves **par leur nom** dans sa classe (docs `students`).
