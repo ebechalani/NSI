@@ -924,13 +924,17 @@
       if (live.type === "choix" || live.type === "vraifaux") return String(live.bonne) === String(v);
       return live.type === "nombre" ? normNum(live.bonne) === normNum(v) : normTxtAns(live.bonne) === normTxtAns(v);
     }
+    // Nom affiché dans le suivi : 👥 si la réponse vient d'un îlot (poste partagé)
+    const nameTag = (a) => a.via ? `${escapeHtml(a.name)} <span class="live-via" title="Réponse de l'îlot de ${escapeHtml(a.via)}">👥</span>`
+      : a.ilot && a.ilot.length ? `${escapeHtml(a.name)} <span class="live-via" title="A répondu pour son îlot : ${escapeHtml(a.ilot.join(", "))}">👥+${a.ilot.length}</span>`
+      : escapeHtml(a.name);
     function aggregate(live, answers, students) {
       const groups = [];
       if (live.type === "choix" || live.type === "vraifaux") {
         live.choices.forEach((label, i) => {
           const who = answers.filter((a) => String(a.value) === String(i));
           groups.push({ key: String(i), label: (live.type === "choix" ? letter(i) + ". " : "") + label,
-            count: who.length, names: who.map((a) => a.name), ok: live.revealed && isGood(live, i) === true });
+            count: who.length, names: who.map(nameTag), ok: live.revealed && isGood(live, i) === true });
         });
       } else {
         const map = {};
@@ -938,7 +942,7 @@
           const k = live.type === "nombre" ? normNum(a.value) : normTxtAns(a.value);
           if (!map[k]) map[k] = { key: k, label: String(a.value).trim(), count: 0, names: [] };
           map[k].count++;
-          map[k].names.push(a.name);
+          map[k].names.push(nameTag(a));
         });
         Object.values(map).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label)).forEach((g) => {
           g.ok = live.revealed && isGood(live, g.label) === true;
@@ -1110,12 +1114,25 @@
         row.innerHTML =
           `<div class="live-bar-line"><span class="live-bar-label">${escapeHtml(g.label)}</span><span class="live-bar-count">${g.count}</span></div>` +
           `<div class="live-bar-track"><span style="width:${Math.round((100 * g.count) / max)}%"></span></div>` +
-          (showNames && g.names.length ? `<div class="live-names">${g.names.map(escapeHtml).join(", ")}</div>` : "");
+          (showNames && g.names.length ? `<div class="live-names">${g.names.join(", ")}</div>` : "");
         bars.appendChild(row);
       });
       box.appendChild(bars);
       if (agg.absents.length) {
         box.appendChild(el("p", "live-absents", `⏳ Sans réponse (${agg.absents.length}) : ${showNames ? agg.absents.map(escapeHtml).join(", ") : "…"}`));
+      }
+      // Îlots déclarés sur les postes partagés : une réponse du poste vaut pour tout l'îlot
+      const ilots = P.getGroups(cid);
+      if (ilots.length) {
+        const line = el("p", "live-ilots",
+          `👥 Îlots (${ilots.length}) : ` + (showNames
+            ? ilots.map((g) => `<strong>${escapeHtml(g.name)}</strong> + ${g.members.map(escapeHtml).join(", ")}`).join(" · ")
+            : ilots.map((g) => `${g.members.length + 1} élèves`).join(" · ")));
+        const bd = el("button", "btn secondary live-ilots-clear", "Dissoudre");
+        bd.type = "button"; bd.title = "Fin du travail en îlots : chaque élève répond de nouveau pour lui seul";
+        bd.addEventListener("click", () => { if (confirm("Dissoudre tous les îlots de la classe ?")) P.clearGroups(cid); });
+        line.appendChild(bd);
+        box.appendChild(line);
       }
       if (live.bonne != null && live.bonne !== "") {
         box.appendChild(el("p", "live-hint", (live.revealed ? "✅ Réponse révélée : " : "🙈 Réponse attendue (cachée) : ") + escapeHtml(valueLabel(live, live.bonne))));
@@ -1170,12 +1187,99 @@
     return { open, close, toggle, refresh, setupButton, isOpen };
   })();
 
+  /* ---------------- 👥 Mon îlot (élève, poste partagé) ----------------
+     En travail de groupe, un seul ordinateur par îlot : l'élève connecté au poste
+     coche ses camarades, et sa réponse en direct (📡) compte pour tout l'îlot. La
+     liste vit sur sa propre fiche (live.groupe), le prof la voit et peut la dissoudre. */
+  const ILOT = (() => {
+    let panel = null, classmates = null;
+    const isOpen = () => !!panel && !panel.classList.contains("hidden");
+    function ensurePanel() {
+      if (panel) return panel;
+      panel = el("div", "live-panel ilot-panel hidden");
+      panel.id = "ilotPanel";
+      document.body.appendChild(panel);
+      return panel;
+    }
+    function render() {
+      const p = ensurePanel();
+      p.innerHTML = "";
+      const head = el("div", "live-head");
+      head.innerHTML = `<strong>👥 Mon îlot</strong><span class="live-classname">poste partagé</span>`;
+      const bc = el("button", "live-close", "✕"); bc.type = "button"; bc.setAttribute("aria-label", "Fermer");
+      bc.addEventListener("click", close);
+      head.appendChild(bc);
+      p.appendChild(head);
+      p.appendChild(el("p", "live-hint",
+        "Vous êtes plusieurs sur cet ordinateur ? Coche tes camarades : la réponse en direct envoyée depuis ce poste comptera pour tout l'îlot (chacun garde sa propre réponse s'il répond de son côté)."));
+      const mine = P.myGroup();
+      const chosen = new Set(mine.map((m) => m.uid));
+      if (!classmates) {
+        p.appendChild(el("p", "live-hint", "Chargement de la liste de la classe…"));
+        P.getClassmates().then((list) => { classmates = list; if (isOpen()) render(); });
+        return;
+      }
+      if (!classmates.length) { p.appendChild(el("p", "live-hint", "Aucun camarade dans la classe pour l'instant.")); return; }
+      const f = el("form", "ilot-form");
+      const list = el("div", "ilot-list");
+      classmates.forEach((c) => {
+        const lab = el("label", "ilot-item");
+        const cb = document.createElement("input");
+        cb.type = "checkbox"; cb.name = "m"; cb.value = c.uid; cb.checked = chosen.has(c.uid);
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(" " + c.name));
+        list.appendChild(lab);
+      });
+      f.appendChild(list);
+      const act = el("div", "live-actions");
+      const bs = el("button", "btn", "✅ Enregistrer l'îlot"); bs.type = "submit";
+      act.appendChild(bs);
+      if (mine.length) {
+        const bq = el("button", "btn secondary", "🚪 Quitter l'îlot"); bq.type = "button";
+        bq.addEventListener("click", () => { P.setMyGroup([]); toast("Îlot dissous : tu réponds pour toi seul."); close(); });
+        act.appendChild(bq);
+      }
+      f.appendChild(act);
+      f.addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        const ids = new Set([...f.querySelectorAll("input[name=m]:checked")].map((i) => i.value));
+        const members = classmates.filter((c) => ids.has(c.uid));
+        P.setMyGroup(members);
+        toast(members.length ? `👥 Îlot enregistré : toi + ${members.map((m) => m.name).join(", ")}` : "Îlot dissous : tu réponds pour toi seul.");
+        close();
+      });
+      p.appendChild(f);
+    }
+    function open() { ensurePanel().classList.remove("hidden"); render(); }
+    function close() { if (panel) panel.classList.add("hidden"); }
+    function toggle() { if (isOpen()) close(); else open(); }
+    // Bouton 👥 de la barre (élève) : badge = taille de l'îlot
+    function setupButton() {
+      let b = document.getElementById("ilotToggle");
+      if (!P.isStudent() || IS_PROJ) { if (b) b.remove(); return; }
+      if (!b) {
+        b = el("button", "icon-btn live-btn ilot-btn");
+        b.id = "ilotToggle";
+        b.setAttribute("aria-label", "Mon îlot");
+        b.title = "👥 Mon îlot : vous êtes plusieurs sur ce poste ? Ta réponse en direct comptera pour tout l'îlot";
+        b.addEventListener("click", toggle);
+        const acc = $("#accountBox");
+        if (acc && acc.parentNode) acc.parentNode.insertBefore(b, acc); else document.querySelector(".topbar").appendChild(b);
+      }
+      const n = P.myGroup().length;
+      b.innerHTML = "👥" + (n ? `<span class="live-badge">${n + 1}</span>` : "");
+      b.classList.toggle("on", n > 0);
+    }
+    function refresh() { setupButton(); }
+    return { open, close, toggle, refresh, setupButton, isOpen };
+  })();
+
   // Ce que la salle apporte à chaque type d'étape (salle en U, TV tactile, 4 coins équipés).
   const SALLE_ETAPE = {
     rituel: "📡 réponse en direct depuis les postes, réponses sur la TV tactile",
     qcm: "📡 réponse en direct depuis les postes, résultats sur la TV tactile",
-    debranche: "îlots sur les postes voisins du U ou dans les coins équipés",
-    jeu: "îlots sur les postes voisins du U ou dans les coins équipés",
+    debranche: "îlots sur les postes voisins du U ou dans les coins équipés ; un poste par îlot répond 📡 (👥 Mon îlot)",
+    jeu: "îlots sur les postes voisins du U ou dans les coins équipés ; un poste par îlot répond 📡 (👥 Mon îlot)",
     tp: "chacun à son poste, le prof circule au centre du U",
     exercice: "chacun à son poste, le prof circule au centre du U",
     demo: "TV tactile (écran de projection)",
@@ -4565,6 +4669,7 @@ except Exception:
     if (tt) tt.style.display = "none"; // le rôle pilote la visibilité, plus le bouton
     renderAccountBox();
     LIVE.setupButton(); // 📡 réponse en direct : bouton de la barre pour le prof
+    ILOT.setupButton(); // 👥 mon îlot : bouton de la barre pour l'élève (poste partagé)
   }
 
   function renderAccountBox() {
@@ -4732,6 +4837,7 @@ except Exception:
       `<li><strong>La TV tactile du bureau</strong> est l'écran de la classe : ouvre l'<em>écran de projection</em> (📽️) dessus et projette depuis le conducteur ce que la classe doit voir (étape, section, exercice, QCM) ; tu peux écrire au doigt par-dessus.</li>` +
       `<li><strong>Les quatre coins équipés</strong> (deux fauteuils, une table, une TV HDMI) accueillent les îlots et les groupes de projet : un îlot par coin, un ordinateur branché sur la TV du coin ; les autres îlots travaillent sur les postes voisins du U.</li>` +
       `<li><strong>Plus d'ardoises : la réponse en direct (📡).</strong> Chaque étape du conducteur a un bouton 📡 : la question part sur les postes, les élèves répondent (choix, vrai/faux, texte court, nombre), tu vois qui a répondu quoi, la TV tactile affiche les réponses anonymes, puis tu clos et tu révèles. Le bouton 📡 de la barre du site ouvre le même panneau à tout moment.</li>` +
+      `<li><strong>En îlots, un seul poste répond (👥 Mon îlot).</strong> L'élève connecté au poste de l'îlot coche ses camarades (bouton 👥 de sa barre ou lien du bandeau 📡) : sa réponse compte pour tout l'îlot, marquée 👥 dans ton suivi ; un camarade qui répond de son propre poste garde sa réponse. Le suivi liste les îlots, et « Dissoudre » les efface en fin d'activité.</li>` +
       `</ul><p class="live-hint">Chaque étape porte un repère 🏫 qui rappelle où elle se joue (postes, TV tactile, coins, réponse en direct).</p></div>`;
     viewTheme.appendChild(salle);
 
@@ -6107,12 +6213,21 @@ except Exception:
     if (!live || (live.closed && !live.revealed)) { hide(); return; }
     document.body.classList.add("has-live"); // marge basse : le bandeau ne cache pas la fin de page
     const mine = P.myLiveAnswer(live.id);
-    const sig = [live.id, !!live.closed, !!live.revealed, mine ? String(mine.value) : "", live.q].join("|");
+    const ilot = P.myGroup();
+    const sig = [live.id, !!live.closed, !!live.revealed, mine ? String(mine.value) : "", live.q, ilot.map((m) => m.uid).join(",")].join("|");
     if (box && sig === liveStudentSig) return;
     liveStudentSig = sig;
     if (!box) { box = el("div", "live-student"); box.id = "liveStudent"; box.setAttribute("role", "status"); document.body.appendChild(box); }
     box.innerHTML = "";
     box.appendChild(el("div", "live-student-q", `<span class="live-student-tag">📡 Question du prof</span> ${escapeHtml(live.q)}`));
+    // Poste partagé : la réponse vaut pour tout l'îlot déclaré
+    const il = el("div", "live-student-ilot", ilot.length
+      ? `👥 Réponse pour l'îlot : <strong>toi + ${ilot.map((m) => escapeHtml(m.name)).join(", ")}</strong> · `
+      : `👥 Plusieurs sur ce poste ? `);
+    const bil = el("button", "linklike", ilot.length ? "modifier l'îlot" : "former un îlot");
+    bil.type = "button"; bil.addEventListener("click", ILOT.open);
+    il.appendChild(bil);
+    box.appendChild(il);
     const isChoice = live.type === "choix" || live.type === "vraifaux";
     const letter = (i) => "ABCD"[i] || String(i + 1);
     const labelOf = (v) => {
@@ -6236,6 +6351,7 @@ except Exception:
       const noteCard = document.getElementById("studentNoteCard");
       if (noteCard) fillStudentNote(noteCard); // note mise à jour en direct
       renderLiveStudent(); // 📡 question du prof posée / close / révélée en direct
+      ILOT.refresh(); // 👥 îlot déclaré / dissous (par l'élève ou le prof)
     }
     if (P.isTeacher()) LIVE.refresh(); // 📡 réponses des élèves qui arrivent
     if (P.isTeacher() && location.hash.replace("#", "") === "classe" && !document.querySelector(".cap-theme")) {

@@ -347,9 +347,11 @@
   function answerLive(qid, value) {
     if (!isStudent()) return false;
     var s = studentByUid(cache.session.uid); if (!s) return false;
+    var groupe = s.live && s.live.groupe; // l'îlot déclaré sur ce poste survit à chaque réponse
     s.live = { qid: qid, value: value, at: Date.now() };
+    if (groupe && groupe.length) s.live.groupe = groupe;
     persistLocal(); notify();
-    fbSet("students", s.uid, { live: s.live }); // merge : seul le champ live est touché
+    fbSet("students", s.uid, { live: { qid: qid, value: value, at: s.live.at } }); // merge : seul le champ live est touché, groupe conservé
     return true;
   }
   function myLiveAnswer(qid) {
@@ -357,9 +359,87 @@
     var s = studentByUid(cache.session.uid);
     return s && s.live && s.live.qid === qid ? s.live : null;
   }
+
+  // ---- Îlots (travail de groupe sur un seul poste) ----
+  // L'élève connecté au poste déclare ses camarades d'îlot : la liste vit dans
+  // students/{sid}.live.groupe (aucune règle Firestore nouvelle, c'est sa propre fiche).
+  // Sa réponse en direct vaut alors pour chaque camarade déclaré qui n'a pas répondu lui-même.
+  var classmatesCache = null;
+  function byName(a, b) { return a.name.localeCompare(b.name, "fr"); }
+  function getClassmates() {
+    if (!isStudent()) return Promise.resolve([]);
+    var me = cache.session.uid, cid = cache.session.classId;
+    var pick = function (list) {
+      return list.filter(function (s) { return s.classId === cid && s.uid !== me; })
+        .map(function (s) { return { uid: s.uid, name: s.name }; }).sort(byName);
+    };
+    if (!FB) return Promise.resolve(pick(loadLS(LS.students, [])));
+    if (classmatesCache) return Promise.resolve(classmatesCache);
+    return db.collection("students").where("classId", "==", cid).get().then(function (q) {
+      classmatesCache = pick(q.docs.map(function (d) { return Object.assign({ uid: d.id }, d.data()); }));
+      return classmatesCache;
+    }).catch(function () { return []; });
+  }
+  function myGroup() {
+    var s = isStudent() ? studentByUid(cache.session.uid) : null;
+    return (s && s.live && s.live.groupe) || [];
+  }
+  function setMyGroup(members) { // [{uid, name}] ; liste vide = quitter l'îlot
+    if (!isStudent()) return false;
+    var s = studentByUid(cache.session.uid); if (!s) return false;
+    var live = Object.assign({}, s.live || {});
+    if (members && members.length) live.groupe = members; else delete live.groupe;
+    s.live = live; persistLocal(); notify();
+    if (FB && db) {
+      try {
+        var g = members && members.length ? members : firebase.firestore.FieldValue.delete();
+        db.collection("students").doc(s.uid).set({ live: { groupe: g } }, { merge: true }).catch(fbErr);
+      } catch (e) {}
+    }
+    return true;
+  }
+  // Prof : les îlots déclarés dans la classe, et leur dissolution (fin de l'activité).
+  function getGroups(classId) {
+    var students = getStudents(classId);
+    var nameOf = function (uid, fallback) { var st = studentByUid(uid); return st ? st.name : fallback; };
+    return students.filter(function (s) { return s.live && s.live.groupe && s.live.groupe.length; })
+      .map(function (s) { return { uid: s.uid, name: s.name, members: s.live.groupe.map(function (m) { return nameOf(m.uid, m.name); }) }; })
+      .sort(byName);
+  }
+  function clearGroups(classId) {
+    if (!isTeacher()) return false;
+    getStudents(classId).forEach(function (s) {
+      if (!s.live || !s.live.groupe) return;
+      delete s.live.groupe;
+      if (FB && db) {
+        try { db.collection("students").doc(s.uid).set({ live: { groupe: firebase.firestore.FieldValue.delete() } }, { merge: true }).catch(fbErr); } catch (e) {}
+      }
+    });
+    persistLocal(); notify();
+    return true;
+  }
   function getLiveAnswers(classId, qid) {
-    return getStudents(classId).filter(function (s) { return s.live && s.live.qid === qid; })
-      .map(function (s) { return { uid: s.uid, name: s.name, value: s.live.value, at: s.live.at || 0 }; });
+    var students = getStudents(classId);
+    var byUid = {};
+    students.forEach(function (s) {
+      if (s.live && s.live.qid === qid) {
+        byUid[s.uid] = { uid: s.uid, name: s.name, value: s.live.value, at: s.live.at || 0, via: null,
+          ilot: (s.live.groupe || []).map(function (m) { return m.name; }) };
+      }
+    });
+    var out = Object.keys(byUid).map(function (k) { return byUid[k]; });
+    // Réponses d'îlot : la réponse du poste vaut pour chaque camarade déclaré qui n'a pas
+    // répondu lui-même (la plus ancienne l'emporte si deux postes déclarent le même camarade).
+    out.slice().sort(function (a, b) { return a.at - b.at; }).forEach(function (a) {
+      var s = studentByUid(a.uid);
+      ((s && s.live && s.live.groupe) || []).forEach(function (m) {
+        var st = studentByUid(m.uid);
+        if (byUid[m.uid] || !st || st.classId !== classId) return; // déjà répondu, ou fiche supprimée
+        byUid[m.uid] = { uid: m.uid, name: st.name, value: a.value, at: a.at, via: a.name, ilot: [] };
+        out.push(byUid[m.uid]);
+      });
+    });
+    return out;
   }
 
   // Mode LOCAL (sans Firebase) : deux onglets du même navigateur (prof / élève)
@@ -633,6 +713,7 @@
     getSeanceEtat: getSeanceEtat, setSeanceEtat: setSeanceEtat,
     setLastTheme: setLastTheme, getLastTheme: getLastTheme,
     getLive: getLive, setLive: setLive, answerLive: answerLive, myLiveAnswer: myLiveAnswer, getLiveAnswers: getLiveAnswers,
+    getClassmates: getClassmates, myGroup: myGroup, setMyGroup: setMyGroup, getGroups: getGroups, clearGroups: clearGroups,
     exportData: exportData, importData: importData,
     saveCorriges: saveCorriges, fetchCorrige: fetchCorrige,
   };
