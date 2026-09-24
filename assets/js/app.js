@@ -729,6 +729,270 @@
     correction: ["✅", "Correction"], bilan: ["🎯", "Bilan"],
   };
 
+  /* ---------------- Conducteur de séance — dérivations ----------------
+     Tout ce qu'affichent la page de séance, la bande de régie, le synoptique,
+     la projection et les impressions est DÉRIVÉ des données (THEME_PLANS),
+     jamais réécrit : durée = fin − début du créneau, phase didactique et modalité
+     = table PHASE_TYPES par type (modalité affinée sur ce que font les élèves),
+     extrait de fiche = inclusion textuelle dans s.cours, période = PROGRESSION.
+     Règles de rédaction des libellés générés : phrases autonomes (majuscule,
+     point), « l'enseignant », un seul séparateur « · » entouré d'insécables,
+     « – » pour les intervalles, « — » pour les incises, « min » et « h » sans
+     point, capitales accentuées, aucun emoji dans la chrome (titres, étiquettes,
+     boutons, statuts). */
+  const NBSP = " ", NNBSP = " ", SEP = NBSP + "·" + NBSP;
+  const PHASE_TYPES = {
+    rituel: { label: "Rituel", phase: "Accroche / réactivation", modalite: "Classe entière", lieu: "Postes → TV", place: "postes", direct: true, salle: "Réponse en direct depuis les postes, réponses sur la TV tactile." },
+    debranche: { label: "Débranché", phase: "Recherche / manipulation", modalite: "Îlots", lieu: "4 coins ou postes voisins", place: "ilots", direct: false, salle: "Îlots sur les postes voisins du U ou dans les coins équipés ; un poste par îlot répond en direct." },
+    jeu: { label: "Jeu", phase: "Recherche / manipulation", modalite: "Îlots", lieu: "4 coins ou postes voisins", place: "ilots", direct: false, salle: "Îlots sur les postes voisins du U ou dans les coins équipés ; un poste par îlot répond en direct." },
+    explication: { label: "Cours", phase: "Apport / mise en commun", modalite: "Classe entière", lieu: "TV tactile", direct: false, salle: "TV tactile (écran de projection)." },
+    demo: { label: "Démonstration", phase: "Apport / mise en commun", modalite: "Classe entière", lieu: "TV tactile", direct: false, salle: "TV tactile (écran de projection)." },
+    noter: { label: "Trace écrite", phase: "Institutionnalisation", modalite: "Classe entière", lieu: "TV · cahier", direct: false, salle: "TV tactile ; les élèves notent dans le cahier." },
+    exercice: { label: "Exercice", phase: "Entraînement", modalite: "Individuel", lieu: "Postes", direct: false, salle: "Chacun à son poste, l'enseignant circule au centre du U." },
+    tp: { label: "TP", phase: "Entraînement", modalite: "Individuel", lieu: "Postes", direct: false, salle: "Chacun à son poste, l'enseignant circule au centre du U." },
+    correction: { label: "Correction", phase: "Mise en commun", modalite: "Classe entière", lieu: "TV tactile", direct: false, salle: "TV tactile (écran de projection)." },
+    qcm: { label: "QCM", phase: "Évaluation formative", modalite: "Individuel", lieu: "Postes → TV", direct: true, salle: "Réponse en direct depuis les postes, résultats sur la TV tactile." },
+    bilan: { label: "Bilan", phase: "Bilan / synthèse", modalite: "Classe entière", lieu: "Oral · TV", direct: true, salle: "Réponse en direct ou oral, TV tactile." },
+  };
+  function phaseType(type) {
+    return PHASE_TYPES[type] || { label: type || "Phase", phase: "", modalite: "", lieu: "", place: "postes", direct: false, salle: "" };
+  }
+  function parseCreneau(t) {
+    const m = /(\d+)\s*[–-]\s*(\d+)/.exec(String(t || ""));
+    if (!m) return { a: null, b: null, duree: null };
+    const a = +m[1], b = +m[2];
+    return b >= a ? { a, b, duree: b - a } : { a: null, b: null, duree: null };
+  }
+  function dureeSeanceMin(d) {
+    const s = String(d || "").toLowerCase();
+    const h = /(\d+)\s*h(?:\s*(\d+))?/.exec(s);
+    if (h) return +h[1] * 60 + (h[2] ? +h[2] : 0);
+    const mn = /(\d+)\s*min/.exec(s);
+    return mn ? +mn[1] : null;
+  }
+  // Texte brut d'un fragment HTML (balises retirées, entités décodées, espaces réduits).
+  function textePlain(html) {
+    const s = String(html || "").replace(/<[^>]+>/g, " ");
+    let out = s;
+    try { const ta = document.createElement("textarea"); ta.innerHTML = s; out = ta.value; } catch (e) {}
+    return out.replace(/\s+/g, " ").trim();
+  }
+  // Applique fn aux seuls nœuds texte d'un fragment HTML, hors <a>, <code>, <pre>
+  // (même découpe que linkifyRefs) ; les balises et leurs attributs sont intacts.
+  // fn(texte, balisePrecedente) → texte.
+  function mapHtmlText(html, fn) {
+    if (!html) return html || "";
+    const parts = String(html).split(/(<[^>]+>)/);
+    let skip = 0, prevTag = "";
+    return parts.map((p) => {
+      if (p.startsWith("<")) {
+        if (/^<(a|code|pre)\b/i.test(p)) skip++;
+        else if (/^<\/(a|code|pre)\b/i.test(p)) skip = Math.max(0, skip - 1);
+        prevTag = p;
+        return p;
+      }
+      if (skip || !p) return p;
+      const r = fn(p, prevTag);
+      prevTag = "";
+      return r;
+    }).join("");
+  }
+  // Typographie française au rendu : fine insécable avant ; : ! ? et dans « »,
+  // insécable avant les unités et après n°, apostrophe typographique, points de suspension.
+  function typoFr(html) {
+    return mapHtmlText(html, (t) => t
+      .replace(/(\S)[  ]*([;:!?»])(?=\s|$)/g, (m, a, b) => a + NNBSP + b)
+      .replace(/«[  ]*/g, "«" + NNBSP)
+      .replace(/(\d)[  ]+(min|h|%|ms|s|o|Ko|Mo|Go|octets?|bits?|pts?|points?)\b/g, (m, a, b) => a + NBSP + b)
+      .replace(/n°[  ]*(\d)/g, "n°" + NBSP + "$1")
+      .replace(/(\p{L})'(\p{L})/gu, "$1’$2")
+      .replace(/\.\.\./g, "…"));
+  }
+  // Emoji des CONTENUS (données intactes) : les sous-titres « 🎯 Défi », « 📖 La notion »…
+  // deviennent des étiquettes texte ; les pictos isolés de la réponse en direct disparaissent.
+  const EMOJI_SUBST = { "🎯": "Défi", "📖": "Notion", "📋": "Trace", "✅": "Réponse", "🔍": "Explication", "🐢": "Programme", "🐍": "Programme", "⚡": "Éclair", "⚠️": "Attention", "⚠": "Attention", "📝": "À noter", "❓": "Question", "💡": "Idée", "🧩": "Projet", "🧪": "TP", "💻": "Exercice" };
+  const EMOJI_RE = /((?:(?![▶◀✎·—–])[\p{Extended_Pictographic}\u{FE0F}\u{200D}\u{20E3}\u{1F3FB}-\u{1F3FF}])+)/gu;
+  const EMOJI_HEAD_RE = /^\s*((?:(?![▶◀✎·—–])[\p{Extended_Pictographic}\u{FE0F}\u{200D}\u{20E3}\u{1F3FB}-\u{1F3FF}])+)\s*/u;
+  function stripLiveMarks(t) {
+    return t.replace(/\s*\(\s*📡\s*\)/g, "").replace(/\s*\(\s*👥\s*Mon îlot\s*\)/g, " (un poste par îlot répond)").replace(/\s*📡\s*/g, " ").replace(/\s*👥\s*/g, " ").replace(/ {2,}/g, " ");
+  }
+  function stripEmojiUI(html) {
+    return mapHtmlText(html, (t, prev) => {
+      let s = stripLiveMarks(t);
+      if (/^<(strong|b|li|p|h\d|summary|td|th)\b/i.test(prev)) {
+        s = s.replace(EMOJI_HEAD_RE, (m, e) => {
+          const key = Object.keys(EMOJI_SUBST).find((k) => e.startsWith(k));
+          if (!key) return "";
+          const rest = s.slice(m.length).toLowerCase().replace(/^(?:la|le|les|l’|l'|un|une|des|ta|ton|tes)\s+/, "");
+          return rest.startsWith(EMOJI_SUBST[key].toLowerCase()) ? "" : EMOJI_SUBST[key] + SEP;
+        });
+      }
+      return s;
+    });
+  }
+  function stripEmojiPrint(html) {
+    return mapHtmlText(stripEmojiUI(html), (t) => t.replace(EMOJI_RE, "").replace(/ {2,}/g, " "));
+  }
+  // Signale au professeur un corrigé dans le support (« ✅ Réponse », « Solution », « Corrigé ») :
+  // le bloc et ce qui le suit (jusqu'au prochain sous-titre) sont étiquetés « ne pas projeter ».
+  function marquerCorrige(html) {
+    const s = String(html || "");
+    const re = /<p>\s*<strong>\s*(?:✅|Réponse|Solution|Corrigé)/g;
+    let out = "", last = 0, m;
+    while ((m = re.exec(s))) {
+      const start = m.index;
+      if (start < last) continue;
+      const rest = s.slice(start + 3);
+      let end = rest.search(/<p>\s*<strong>|<h\d\b/);
+      end = end < 0 ? s.length : start + 3 + end;
+      const seg = s.slice(start, end);
+      const pre = seg.indexOf("</pre>");
+      const lst = pre >= 0 ? seg.slice(pre).search(/<(ul|ol)\b/) : -1;
+      const cut = lst >= 0 ? start + pre + lst : end;
+      out += s.slice(last, start) + `<div class="cd-corrige"><span class="cd-etat cd-etat-corrige">Corrigé — ne pas projeter</span>` + s.slice(start, cut) + `</div>`;
+      last = cut;
+      re.lastIndex = cut;
+    }
+    return out + s.slice(last);
+  }
+  function detecteDiff(e) {
+    return /différenci|rapides|fragiles|en avance|\bbloqués?\b|tuteur|tutorat/i.test([e.titre, e.prof, e.eleves].join(" "));
+  }
+  const VERBES_IMPERATIF = { prédisent: "Prédisez", saisissent: "Saisissez", répondent: "Répondez", donnent: "Donnez", écrivent: "Écrivez", calculent: "Calculez", choisissent: "Choisissez", notent: "Notez", proposent: "Proposez", indiquent: "Indiquez", votent: "Votez", estiment: "Estimez", cherchent: "Cherchez", trouvent: "Trouvez", complètent: "Complétez", déroulent: "Déroulez", parient: "Pariez", devinent: "Devinez", expliquent: "Expliquez", comparent: "Comparez", exécutent: "Exécutez", relisent: "Relisez", reformulent: "Reformulez", présentent: "Présentez", justifient: "Justifiez", classent: "Classez", convertissent: "Convertissez", décomposent: "Décomposez", repèrent: "Repérez", envoient: "Envoyez", tapent: "Tapez", lèvent: "Levez", annoncent: "Annoncez", codent: "Codez", nomment: "Nommez", citent: "Citez", décrivent: "Décrivez", traduisent: "Traduisez", corrigent: "Corrigez", vérifient: "Vérifiez", testent: "Testez", prévoient: "Prévoyez", déterminent: "Déterminez", évaluent: "Évaluez", identifient: "Identifiez", listent: "Listez", ordonnent: "Ordonnez", rangent: "Rangez", tracent: "Tracez", dessinent: "Dessinez" };
+  // La question de l'étape à poser en direct : la phrase des élèves qui parle de
+  // réponse en direct, mise à l'impératif ; la réponse attendue lue dans le support.
+  function questionDirecte(e) {
+    const plain = textePlain(e.eleves || "");
+    if (!/📡|réponse en direct/i.test(plain)) return null;
+    const phrase = plain.split(/(?<=[.;])\s+/).find((p) => /📡|réponse en direct/i.test(p));
+    if (!phrase) return null;
+    // La proposition qui porte le marqueur : bornée par « , <verbe> », « puis », « ; ».
+    const verbe = (w) => !!VERBES_IMPERATIF[String(w || "").toLowerCase()];
+    const parts = phrase.split(/(\s*,\s*puis\s+|\s+puis\s+|\s*;\s*|,\s*)/);
+    const clauses = [];
+    let cur = "";
+    for (let k = 0; k < parts.length; k++) {
+      const p = parts[k];
+      if (k % 2 === 1) { // séparateur
+        const nextWord = (parts[k + 1] || "").trim().split(/\s+/)[0];
+        if (/puis|;/.test(p) || verbe(nextWord)) { clauses.push(cur); cur = ""; } else cur += p;
+      } else cur += p;
+    }
+    clauses.push(cur);
+    let q = clauses.find((c) => /📡|réponse en direct/i.test(c)) || phrase;
+    q = stripLiveMarks(q).replace(/\s*(?:en|par|via)?\s*réponse en direct\s*/gi, " ").replace(/depuis (?:leur|son|le) poste/gi, "").replace(/\s+,/g, ",").replace(/\s+/g, " ").trim().replace(/[,;:\s]+$/, "");
+    const first = q.split(/\s+/)[0].toLowerCase();
+    const imp = VERBES_IMPERATIF[first];
+    if (!imp) return null;
+    q = imp + q.slice(first.length);
+    if (!/[.!?]$/.test(q)) q += ".";
+    return textePlain(typoFr(q));
+  }
+  function reponseAttendue(contenu) {
+    const s = String(contenu || "");
+    // Une seule ligne « # affiche N » dans le dernier bloc de code qui en contient : c'est la réponse.
+    const pres = [...s.matchAll(/<pre\b[\s\S]*?<\/pre>/g)].map((m) => m[0]).filter((p) => /#\s*(?:doit\s+)?affiche/.test(p));
+    if (pres.length) {
+      const hits = [...pres[pres.length - 1].matchAll(/#\s*(?:doit\s+)?affiche[r]?\s*:?\s*([^<\n]+)/g)].map((m) => m[1].trim());
+      if (hits.length === 1) return hits[0];
+      return "";
+    }
+    const th = /<th>([^<]*vaut[^<]*)<\/th>/i.exec(s);
+    if (th) {
+      const cells = [...s.matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map((r) => [...r[1].matchAll(/<td>([\s\S]*?)<\/td>/g)].map((c) => textePlain(c[1])));
+      const heads = [...(/<tr>([\s\S]*?)<\/tr>/.exec(s) || ["", ""])[1].matchAll(/<th>([\s\S]*?)<\/th>/g)].map((c) => textePlain(c[1]));
+      const col = heads.findIndex((h) => /vaut/i.test(h));
+      const vals = cells.map((r) => r[col]).filter((v) => v);
+      if (vals.length) return vals[vals.length - 1];
+    }
+    return "";
+  }
+  // Une étape, dérivée : numéro, créneau, durée, phase, modalité, question en direct, support.
+  function deriveEtape(e, i, s, themeId) {
+    const { a, b, duree } = parseCreneau(e.t);
+    const pt = phaseType(e.type);
+    const el = textePlain(e.eleves || "");
+    const modalite = /(^|[^\p{L}])îlots?(?![\p{L}])/iu.test(el) ? "Îlots" : /binôme/i.test(el) ? "Binômes" : pt.modalite;
+    const refs = [];
+    if (themeId) linkifyRefs([e.titre, e.prof, e.eleves, e.contenu].join(" "), themeId, refs);
+    const contenu = String(e.contenu || "");
+    const contenuPlain = textePlain(contenu);
+    const counts = { p: (contenu.match(/<p\b/g) || []).length, table: (contenu.match(/<table\b/g) || []).length, pre: (contenu.match(/<pre\b/g) || []).length, list: (contenu.match(/<(ul|ol)\b/g) || []).length };
+    const strong = /<strong>\s*([^<]{0,40})/.exec(contenu);
+    const head = strong ? strong[1] : "";
+    const kinds = [["🎯", "défi"], ["📖", "notion"], ["✅", "corrigé"], ["🐢", "programme"], ["🐍", "programme"], ["📋", "trace"], ["🔍", "explication"]];
+    const found = kinds.find(([k]) => head.startsWith(k));
+    const supportKind = e.type === "noter" ? "trace écrite" : found ? found[1] : /^(exercice|tp)$/.test(e.type) ? "énoncé" : "contenu";
+    const norm = (x) => textePlain(x).toLowerCase();
+    const extrait = !!(s && s.cours && contenuPlain.length > 40 && norm(s.cours).includes(norm(contenu)));
+    return {
+      n: i + 1, t: e.t || "", a, b, duree, type: e.type, label: pt.label, phase: pt.phase, modalite, lieu: pt.lieu, salleTitle: pt.salle,
+      place: modalite === "Îlots" ? "ilots" : (pt.place || "postes"),
+      direct: /📡|réponse en direct/i.test([e.prof, e.eleves, e.contenu].join(" ")),
+      question: questionDirecte(e), bonne: reponseAttendue(contenu), refs,
+      titrePlain: textePlain(e.titre || ""), profPlain: textePlain(e.prof || ""), elevesPlain: el, contenuPlain,
+      contenuCourt: !!contenu && contenuPlain.length < 120 && !/<(pre|table|ul|ol)\b/i.test(contenu),
+      contenuLong: contenuPlain.length > 500 || /<(pre|table)\b/i.test(contenu),
+      counts, supportKind, extrait, corrige: /<strong>\s*(✅|Réponse|Solution|Corrigé)/i.test(contenu),
+      diff: detecteDiff(e), tampon: duree != null && duree <= 5, souple: /^(exercice|tp|jeu)$/.test(e.type) && duree != null && duree >= 10,
+      etape: e,
+    };
+  }
+  function deriveSynoptique(s, themeId) {
+    const rows = (s && s.etapes ? s.etapes : []).map((e, i) => deriveEtape(e, i, s, themeId));
+    const total = rows.reduce((n, r) => n + (r.duree || 0), 0);
+    const attendu = dureeSeanceMin(s && s.duree);
+    return { rows, total, attendu, ok: attendu != null && total === attendu, coupureHeure: rows.findIndex((r) => r.a != null && r.a >= 60) };
+  }
+  // Résumé d'un support : « trace écrite · 3 §, 1 tableau, 1 code · extrait de la fiche de cours ».
+  function supportResume(r) {
+    const parts = [];
+    if (r.counts.p) parts.push(r.counts.p + NBSP + "§");
+    if (r.counts.table) parts.push(r.counts.table + NBSP + (r.counts.table > 1 ? "tableaux" : "tableau"));
+    if (r.counts.pre) parts.push(r.counts.pre + NBSP + "code");
+    if (r.counts.list) parts.push(r.counts.list + NBSP + (r.counts.list > 1 ? "listes" : "liste"));
+    return r.supportKind + (parts.length ? SEP + parts.join(", ") : "") + (r.extrait ? SEP + "extrait de la fiche de cours" : "");
+  }
+  // « Séance 1 — Séquence 0 (1/2) : « titre » » → { num, titre, soustitre }.
+  function splitTitre(titre, i) {
+    const t = String(titre || "").trim();
+    const m = /^Séance\s+(\d+)\s*[—–-]\s*(.+)$/s.exec(t);
+    let reste = m ? m[2].trim() : t, num = m ? m[1] : String((i || 0) + 1), sous = "";
+    const q = /^(Séquence[^:]*?)\s*:\s*(.+)$/s.exec(reste);
+    if (q) { sous = q[1].trim(); reste = q[2].trim(); }
+    reste = reste.replace(/^«\s*/, "").replace(/\s*»$/, "");
+    reste = reste.charAt(0).toUpperCase() + reste.slice(1);
+    return { num, titre: textePlain(typoFr(stripEmojiUI(reste))), soustitre: textePlain(typoFr(sous)) };
+  }
+  function periodeDuTheme(themeId) {
+    const rows = (typeof PROGRESSION !== "undefined" ? PROGRESSION : []).filter((p) => p && p.themeId === themeId);
+    if (!rows.length) return null;
+    const first = rows[0], last = rows[rows.length - 1];
+    const per = (/Période\s*\d+/.exec(first.periode || "") || [first.periode || ""])[0];
+    const s1 = String(first.semaines || "").split(/[–-]/)[0], s2 = String(last.semaines || "").split(/[–-]/).pop();
+    return {
+      periode: per, semaines: s1 && s2 ? s1 + "–" + s2 : first.semaines || "",
+      evaluation: (i, N) => (rows[Math.min(rows.length - 1, Math.floor(i * rows.length / Math.max(1, N)))] || {}).evaluation || "",
+    };
+  }
+  // Repères de la séance : trace écrite, évaluation, différenciation (numéros de phases).
+  function reperes(rows) {
+    const nums = (f) => rows.filter(f).map((r) => r.n);
+    return { trace: nums((r) => r.type === "noter"), evalF: rows.filter((r) => /^(qcm|bilan|correction)$/.test(r.type)).map((r) => ({ n: r.n, label: r.label.toLowerCase() })), diff: nums((r) => r.diff), souples: nums((r) => r.souple), dernierBilan: rows.filter((r) => /^(bilan|qcm)$/.test(r.type)).pop() || null };
+  }
+  const listeNums = (arr, mot) => (arr.length === 1 ? mot + " " + arr[0] : mot + "s " + arr.slice(0, -1).join(", ") + " et " + arr[arr.length - 1]);
+  // Impression : la première ligne de <th> d'un tableau devient un <thead> (répété à chaque page).
+  function theadify(doc) {
+    doc.querySelectorAll("table").forEach((t) => {
+      if (t.tHead) return;
+      const tr = t.querySelector("tr");
+      if (!tr || !tr.querySelector("th") || tr.querySelector("td")) return;
+      const th = doc.createElement("thead");
+      th.appendChild(tr);
+      t.insertBefore(th, t.firstChild);
+    });
+  }
+
   /* ---------------- Liens et projection depuis les conducteurs ----------------
      Les étapes citent « Exercice 3 », « exercices 2 et 3 », « QCM », « partie 4 »,
      « section « … » », « TP « … » », « projet « … » ». Deux services :
@@ -829,7 +1093,7 @@
       return p
         .replace(/\b(exercices?)(\s+)(\d+(?:\s*(?:,|et|à|–|-)\s*\d+)*)/gi, (m, w, sp, nums) =>
           w + sp + nums.replace(/\d+/g, (n) => linkHtml(add(refTarget("exercice", n, themeId)), n)))
-        .replace(/\b(parties?)(\s+)(\d+)\b/gi, (m, w, sp, n) => w + sp + linkHtml(add(refTarget("partie", n, themeId)), n))
+        .replace(/\b(parties?|sections?)(\s+)(\d+)\b/gi, (m, w, sp, n) => w + sp + linkHtml(add(refTarget("partie", n, themeId)), n))
         .replace(/\b(sections?|jeu|défi|defi|TP|projet)\s+«\s*([^»]+?)\s*»/gi, (m, w, title) => {
           const k = /^s/i.test(w) ? "section" : /^j/i.test(w) ? "jeu" : /^d/i.test(w) ? "defi" : /^t/i.test(w) ? "tp" : "projet";
           const t = add(refTarget(k, title, themeId));
@@ -999,9 +1263,10 @@
       prefill = pre || null;
       mode = pre && (pre.q != null || pre.qcm || pre.compose) ? "compose" : "auto";
       ensurePanel().classList.remove("hidden");
+      document.body.classList.add("live-open");
       render();
     }
-    function close() { if (panel) panel.classList.add("hidden"); }
+    function close() { if (panel) panel.classList.add("hidden"); document.body.classList.remove("live-open"); }
     function isOpen() { return !!panel && !panel.classList.contains("hidden"); }
     function toggle() { if (isOpen()) close(); else open(null); }
 
@@ -1274,153 +1539,512 @@
     return { open, close, toggle, refresh, setupButton, isOpen };
   })();
 
-  // Ce que la salle apporte à chaque type d'étape (salle en U, TV tactile, 4 coins équipés).
-  const SALLE_ETAPE = {
-    rituel: "📡 réponse en direct depuis les postes, réponses sur la TV tactile",
-    qcm: "📡 réponse en direct depuis les postes, résultats sur la TV tactile",
-    debranche: "îlots sur les postes voisins du U ou dans les coins équipés ; un poste par îlot répond 📡 (👥 Mon îlot)",
-    jeu: "îlots sur les postes voisins du U ou dans les coins équipés ; un poste par îlot répond 📡 (👥 Mon îlot)",
-    tp: "chacun à son poste, le prof circule au centre du U",
-    exercice: "chacun à son poste, le prof circule au centre du U",
-    demo: "TV tactile (écran de projection)",
-    explication: "TV tactile (écran de projection)",
-    noter: "TV tactile ; les élèves notent",
-    correction: "TV tactile (écran de projection)",
-    bilan: "📡 réponse en direct ou oral, TV tactile",
-  };
 
-  function makeConduite(s, themeId, sIdx) {
+  /* ---------------- Régie de séance (prof) ----------------
+     Chrono de la séance (compteur, sans alarme), phase courante choisie par
+     l'enseignant, mode Préparation (tout ouvert) / Animation (cartes réduites).
+     Persistance localStorage : nsi-regie:<classe|_>:<theme>:<i> = { start, offsetMs,
+     paused, day, courante } (effacé s'il date d'un autre jour) ; nsi-regie-mode. */
+  const REGIE = (() => {
+    let rec = null, key = null, timer = null, listeners = [], nb = 0, modeVal = null;
+    const today = () => new Date().toISOString().slice(0, 10);
+    const load = (k) => {
+      try {
+        const j = JSON.parse(localStorage.getItem("nsi-regie:" + k) || "null");
+        if (!j || j.day !== today()) { localStorage.removeItem("nsi-regie:" + k); return null; }
+        return j;
+      } catch (e) { return null; }
+    };
+    const save = () => { try { if (rec) localStorage.setItem("nsi-regie:" + key, JSON.stringify(rec)); else localStorage.removeItem("nsi-regie:" + key); } catch (e) {} };
+    const emit = () => listeners.forEach((f) => { try { f(); } catch (e) {} });
+    const tick = () => { clearInterval(timer); timer = setInterval(emit, 15000); };
+    function attach(k, n) { dispose(); key = k; nb = n; rec = load(k); if (rec && rec.start) tick(); }
+    function running() { return !!(rec && rec.start); }
+    function paused() { return !!(rec && rec.paused != null); }
+    function minute() {
+      if (!running()) return null;
+      const now = rec.paused != null ? rec.paused : Date.now();
+      return Math.max(0, Math.floor((now - rec.start - (rec.offsetMs || 0)) / 60000));
+    }
+    function startAt() { return running() ? rec.start + (rec.offsetMs || 0) : null; }
+    function start() { rec = Object.assign(rec || {}, { start: Date.now(), offsetMs: 0, paused: null, day: today() }); save(); tick(); emit(); }
+    function pause() { if (running() && rec.paused == null) { rec.paused = Date.now(); save(); emit(); } }
+    function resume() { if (running() && rec.paused != null) { rec.offsetMs = (rec.offsetMs || 0) + (Date.now() - rec.paused); rec.paused = null; save(); emit(); } }
+    function stop() { clearInterval(timer); timer = null; rec = null; save(); emit(); }
+    function courante() { return rec && rec.courante != null ? rec.courante : null; }
+    function setCourante(i) {
+      if (i == null || i < 0 || i >= nb) i = null;
+      rec = Object.assign(rec || { day: today() }, { courante: i });
+      if (!rec.day) rec.day = today();
+      save(); emit();
+    }
+    function mode() {
+      if (!modeVal) { try { modeVal = localStorage.getItem("nsi-regie-mode") || null; } catch (e) {} }
+      return modeVal || (running() ? "animation" : "preparation");
+    }
+    function setMode(m) { modeVal = m === "animation" ? "animation" : "preparation"; try { localStorage.setItem("nsi-regie-mode", modeVal); } catch (e) {} emit(); }
+    function onChange(f) { listeners.push(f); }
+    function dispose() { clearInterval(timer); timer = null; listeners = []; }
+    return { attach, start, pause, resume, stop, minute, startAt, running, paused, courante, setCourante, mode, setMode, onChange, dispose, nb: () => nb };
+  })();
+
+  // Le conducteur : une carte par phase (rail numéro · horaire · durée, en-tête titre +
+  // phase + modalité + actions, colonnes ENSEIGNANT | ÉLÈVES, support à projeter replié).
+  // opts : { regie: "inline" (bande compacte dans le thème) | false (page de séance : bande
+  // séparée), mode, syn, onProjete(i), onSetCourante(i) }.
+  function makeConduite(s, themeId, sIdx, opts = {}) {
     const wrap = el("div", "conduite");
     const canProj = themeId != null && sIdx != null && !IS_PROJ;
+    const syn = opts.syn || deriveSynoptique(s, themeId);
+    const rows = syn.rows, nb = rows.length, cards = [];
+    let courante = null, mode = opts.mode || "preparation";
+    const short = (t) => (t.length > 40 ? t.slice(0, 38) + "…" : t);
 
+    function setProjete(i) {
+      cards.forEach((c, k) => c.classList.toggle("cd-projete", k === i));
+      if (opts.onProjete) opts.onProjete(i);
+    }
     function projShow(m) {
       const msg = m.type ? m : Object.assign({ type: "show" }, m);
       PROJ.send(msg);
       if (!PROJ.isReady()) PROJ.open(); // l'écran rejoue le dernier message à son ouverture
-      wrap.querySelectorAll(".cd-projete").forEach((x) => x.classList.remove("cd-projete"));
-      if (msg.kind === "etape") {
-        const card = wrap.querySelector(`[data-etape="${msg.etape}"]`);
-        if (card) card.classList.add("cd-projete");
-      }
+      setProjete(msg.kind === "etape" ? msg.etape : null);
+    }
+    function applyReduite() {
+      cards.forEach((c, k) => {
+        const red = mode === "animation" && courante != null && k !== courante && k !== courante + 1 && !c.classList.contains("cd-ouverte");
+        c.classList.toggle("cd-reduite", red);
+      });
+    }
+    function setCourante(i) {
+      courante = i == null ? null : i;
+      cards.forEach((c, k) => {
+        c.classList.toggle("cd-courante", k === courante);
+        c.classList.toggle("cd-faite", courante != null && k < courante);
+        if (k === courante) c.setAttribute("aria-current", "step"); else c.removeAttribute("aria-current");
+        const det = c.querySelector("details.cd-support");
+        if (det && mode === "animation") det.open = k === courante && !rows[k].contenuLong;
+      });
+      applyReduite();
+    }
+    function applyMode(m) {
+      mode = m === "animation" ? "animation" : "preparation";
+      cards.forEach((c, k) => {
+        c.classList.remove("cd-ouverte");
+        const det = c.querySelector("details.cd-support");
+        if (det) det.open = mode === "preparation" ? !rows[k].contenuLong : k === courante && !rows[k].contenuLong;
+      });
+      applyReduite();
     }
 
-    if (canProj) {
-      const bar = el("div", "proj-bar");
-      const bOpen = el("button", "btn primary", "📽️ Ouvrir l'écran de projection");
-      bOpen.title = "Ouvre une fenêtre à glisser sur le TBI / vidéoprojecteur : elle n'affiche que ce que tu décides de projeter.";
-      bOpen.addEventListener("click", () => PROJ.open());
-      const dot = el("span", "proj-dot");
-      const status = el("span", "proj-status", "écran non ouvert");
-      const bTitre = el("button", "btn secondary", "🎬 Titre de la séance");
-      bTitre.addEventListener("click", () => projShow({ kind: "titre", theme: themeId, seance: sIdx }));
-      const bPlan = el("button", "btn secondary", "🧑‍🎓 Plan de travail");
-      bPlan.addEventListener("click", () => projShow({ kind: "plan", theme: themeId, seance: sIdx }));
-      const bNoir = el("button", "btn secondary", "⬛ Écran noir");
-      bNoir.addEventListener("click", () => projShow({ type: "noir" }));
-      const bLive = el("button", "btn secondary", "📡 Réponse en direct");
-      bLive.title = "Poser une question à la classe : chaque élève répond depuis son poste, les réponses s'affichent en direct (remplace les ardoises)";
-      bLive.addEventListener("click", () => LIVE.open({ theme: themeId, compose: true }));
-      bar.append(bOpen, dot, status, bTitre, bPlan, bNoir, bLive);
-      const setState = (on) => {
-        dot.classList.toggle("on", on);
-        status.textContent = on ? "écran de projection connecté" : "écran non ouvert";
-      };
-      PROJ.onState(setState);
-      setState(PROJ.isReady());
-      PROJ.ping();
-      wrap.appendChild(bar);
+    if (canProj && opts.regie !== false) {
+      wrap.appendChild(makeRegieBar(s, themeId, sIdx, syn, { compact: true, projShow }));
     }
 
-    (s.etapes || []).forEach((e, eIdx) => {
-      const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
-      const card = el("div", "cd-etape cd-" + (CONDUITE_TYPES[e.type] ? e.type : "autre"));
+    rows.forEach((r, eIdx) => {
+      const e = r.etape;
+      const refs = []; // cibles citées dans la phase → liens + boutons « projeter »
+      const card = el("article", "cd-etape cd-" + (PHASE_TYPES[e.type] ? e.type : "autre"));
       card.dataset.etape = eIdx;
-      const refs = []; // cibles citées dans l'étape → liens + boutons « projeter »
-      const head = el("div", "cd-head");
+      card.setAttribute("lang", "fr");
+      const rail = el("div", "cd-rail");
+      rail.innerHTML =
+        `<span class="cd-num" aria-label="Phase ${r.n} sur ${nb}">${r.n}</span>` +
+        `<span class="cd-time">${r.a != null ? r.a + "–" + r.b : escapeHtml(r.t)}</span>` +
+        (r.duree != null ? `<span class="cd-duree">${r.duree}${NBSP}min</span>` : "");
+      if (opts.regie === false) {
+        const bc = el("button", "cd-encours", "En cours");
+        bc.type = "button"; bc.title = "Marquer cette phase comme la phase en cours";
+        bc.addEventListener("click", () => { if (opts.onSetCourante) opts.onSetCourante(eIdx); else setCourante(eIdx); });
+        rail.appendChild(bc);
+      }
+      card.appendChild(rail);
+      const body = el("div", "cd-body");
+      const head = el("header", "cd-head");
       head.innerHTML =
-        `<span class="cd-time">${e.t}</span>` +
-        `<span class="cd-chip">${emo} ${label}</span>` +
-        `<strong class="cd-titre">${linkifyRefs(e.titre, themeId, refs)}</strong>` +
-        (SALLE_ETAPE[e.type] ? `<span class="cd-salle" title="Dans la salle">🏫 ${SALLE_ETAPE[e.type]}</span>` : "");
-      card.appendChild(head);
-      if (e.prof) card.appendChild(el("p", "cd-prof", "👩‍🏫 " + linkifyRefs(e.prof, themeId, refs)));
-      // Le pendant côté classe : ce que FONT les élèves pendant cette étape
-      // (jamais spectateurs — c'est la moitié du contrat pédagogique).
-      if (e.eleves) card.appendChild(el("p", "cd-eleves", "🧑‍🎓 Les élèves " + linkifyRefs(e.eleves, themeId, refs)));
+        `<h4 class="cd-titre" tabindex="-1">${stripEmojiUI(typoFr(linkifyRefs(e.titre, themeId, refs)))}</h4>` +
+        `<span class="cd-phase" title="${escapeHtml(r.phase)}">${escapeHtml(r.label)}</span>` +
+        (r.modalite ? `<span class="cd-modalite" title="${escapeHtml(r.salleTitle)}">${escapeHtml(r.modalite)}${r.lieu ? SEP + escapeHtml(r.lieu) : ""}</span>` : "") +
+        `<span class="cd-etat cd-etat-ecran">À l’écran</span><span class="cd-etat cd-etat-cours">En cours</span>`;
+      head.addEventListener("click", (ev) => {
+        if (ev.target.closest("button, a, details, summary")) return;
+        if (card.classList.contains("cd-reduite") || card.classList.contains("cd-ouverte")) { card.classList.toggle("cd-ouverte"); applyReduite(); }
+      });
+      body.appendChild(head);
+      // ENSEIGNANT (ce que fait le prof) | ÉLÈVES (ce que font les élèves) — même poids.
+      const duo = el("div", "cd-duo");
+      const cap = (h) => h.replace(/^(\s*)(\p{Ll})/u, (m, sp, c) => sp + c.toUpperCase());
+      if (e.prof) duo.appendChild(el("div", "cd-prof" + (e.eleves ? "" : " cd-seul"), `<span class="cd-lbl">Enseignant</span>` + stripEmojiUI(typoFr(linkifyRefs(e.prof, themeId, refs)))));
+      if (e.eleves) duo.appendChild(el("div", "cd-eleves" + (e.prof ? "" : " cd-seul"), `<span class="cd-lbl">Élèves</span>` + cap(stripEmojiUI(typoFr(linkifyRefs(e.eleves, themeId, refs))))));
+      if (duo.childNodes.length) body.appendChild(duo);
+      // Le support à projeter (fragment de cours, énoncé, code, tableau).
       if (e.contenu) {
-        const body = el("div", "cd-contenu plan-cours-body");
-        body.innerHTML = linkifyRefs(e.contenu, themeId, refs);
-        body.querySelectorAll("table").forEach((tbl) => {
-          const box = el("div", "plan-cours-scroll");
-          tbl.parentNode.insertBefore(box, tbl);
-          box.appendChild(tbl);
-        });
-        card.appendChild(body);
+        const html = marquerCorrige(stripEmojiUI(typoFr(linkifyRefs(e.contenu, themeId, refs))));
+        if (r.contenuCourt) {
+          body.appendChild(el("p", "cd-contenu-inline", `<span class="cd-lbl">Support</span> ` + html));
+        } else {
+          const det = el("details", "cd-support");
+          det.open = mode !== "animation" && !r.contenuLong;
+          det.appendChild(el("summary", "cd-support-sum", `Support à projeter${NBSP}— ${escapeHtml(supportResume(r))}`));
+          const c = el("div", "cd-contenu plan-cours-body");
+          c.innerHTML = html;
+          c.querySelectorAll("table").forEach((tbl) => {
+            const box = el("div", "plan-cours-scroll");
+            tbl.parentNode.insertBefore(box, tbl);
+            box.appendChild(tbl);
+          });
+          det.appendChild(c);
+          body.appendChild(det);
+        }
       }
       if (canProj) {
-        const act = el("div", "cd-actions");
-        const b = el("button", "btn secondary", "📽️ Projeter cette étape");
-        b.title = "Affiche à l'écran de projection le contenu de l'étape et ce que font les élèves — sans tes consignes";
-        b.addEventListener("click", () => projShow({ kind: "etape", theme: themeId, seance: sIdx, etape: eIdx }));
-        act.appendChild(b);
-        refs.filter((t) => t.kind && t.theme).forEach((t) => {
-          const lab = t.label.length > 42 ? t.label.slice(0, 40) + "…" : t.label;
-          const bb = el("button", "btn secondary cd-proj-ref", "📽️ " + lab);
-          bb.title = "Projeter : " + t.label;
-          bb.addEventListener("click", () => projShow({ kind: t.kind, theme: t.theme, index: t.index }));
-          act.appendChild(bb);
-        });
-        // 📡 La question de l'étape posée en direct (remplace l'ardoise) ; une question
-        // du QCM du thème si l'étape le cite.
-        const bq = el("button", "btn secondary cd-live", "📡 Question en direct");
-        bq.title = "Poser cette étape en question à la classe : chaque élève répond depuis son poste";
-        bq.addEventListener("click", () => LIVE.open({
-          q: String(e.titre || "").replace(/<[^>]+>/g, ""), theme: themeId,
-          source: { theme: themeId, seance: sIdx, etape: eIdx },
-        }));
-        act.appendChild(bq);
-        if (refs.some((t) => t.kind === "qcm")) {
-          const bqc = el("button", "btn secondary cd-live", "📡 QCM en direct");
-          bqc.title = "Poser une question du QCM du thème en direct (les élèves répondent depuis leur poste)";
-          bqc.addEventListener("click", () => LIVE.open({ theme: themeId, qcm: true, qcmIndex: 0, source: { theme: themeId, seance: sIdx, etape: eIdx } }));
-          act.appendChild(bqc);
+        const act = el("nav", "cd-actions");
+        act.setAttribute("aria-label", "Actions de la phase " + r.n);
+        const mk = (txt, title, fn, cls) => {
+          const b = el("button", "btn secondary sm" + (cls ? " " + cls : ""), txt);
+          b.type = "button"; b.title = title; b.addEventListener("click", fn); return b;
+        };
+        act.appendChild(mk("▶ Projeter", "Projeter la phase : contenu et activité des élèves, sans tes consignes", () => projShow({ kind: "etape", theme: themeId, seance: sIdx, etape: eIdx }), "cd-proj"));
+        const projRefs = refs.filter((t) => t.kind && t.theme);
+        if (projRefs.length <= 2) {
+          projRefs.forEach((t) => act.appendChild(mk("▶ " + short(t.label), "Projeter : " + t.label, () => projShow({ kind: t.kind, theme: t.theme, index: t.index }), "cd-proj-ref")));
+        } else {
+          const det = el("details", "cd-refs");
+          det.innerHTML = `<summary class="btn secondary sm" title="Projeter un contenu cité dans cette phase">Projeter… ▾</summary>`;
+          const menu = el("div", "cd-refs-menu");
+          projRefs.forEach((t) => menu.appendChild(mk("▶ " + short(t.label), "Projeter : " + t.label, () => { det.open = false; projShow({ kind: t.kind, theme: t.theme, index: t.index }); }, "cd-proj-ref")));
+          det.appendChild(menu);
+          act.appendChild(det);
         }
-        card.appendChild(act);
+        const source = { theme: themeId, seance: sIdx, etape: eIdx };
+        const pre = r.question
+          ? { q: r.question, type: /^-?\d+([.,]\d+)?$/.test(r.bonne) ? "nombre" : "texte", bonne: r.bonne, theme: themeId, source }
+          : { q: r.titrePlain, theme: themeId, source };
+        act.appendChild(mk("Poser en direct", r.question ? "Envoie cette question à la classe : « " + r.question + " » ; chaque élève répond depuis son poste" : "Envoie le titre de la phase comme question à la classe ; chaque élève répond depuis son poste", () => LIVE.open(pre), "cd-live"));
+        if (refs.some((t) => t.kind === "qcm")) {
+          act.appendChild(mk("Lancer le QCM", "Poser une question du QCM du thème en direct : les élèves répondent depuis leur poste", () => LIVE.open({ theme: themeId, qcm: true, qcmIndex: 0, source }), "cd-live cd-live-qcm"));
+        }
+        head.appendChild(act);
       }
+      card.appendChild(body);
+      cards.push(card);
       wrap.appendChild(card);
     });
     bindRefLinks(wrap);
+    Object.assign(wrap, { rows, cards, projShow, setProjete, setCourante, applyMode, getCourante: () => courante });
     return wrap;
   }
 
-  function printConduite(s, themeTitle) {
-    const blocs = (s.etapes || []).map((e) => {
-      const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
-      return `<h2>${e.t} — ${emo} ${label} · ${e.titre}</h2>` +
-        (SALLE_ETAPE[e.type] ? `<p class="intro">🏫 ${SALLE_ETAPE[e.type]}</p>` : "") +
-        (e.prof ? `<p class="intro">👩‍🏫 ${e.prof}</p>` : "") +
-        (e.eleves ? `<p class="intro">🧑‍🎓 Les élèves ${e.eleves}</p>` : "") +
-        (e.contenu || "");
-    }).join("");
-    openPrint("Conducteur — " + s.titre,
-      `<h1>🎬 Conducteur — ${s.titre}</h1>` +
-      `<p class="intro">${themeTitle || ""} · ${s.duree}${s.objectif ? " · 🎯 " + s.objectif : ""}</p>` + blocs);
+  // La bande de régie : état de l'écran, chrono, phase courante et suivante, projection,
+  // mode. Collante sur la page de séance ; compacte (écran + projection) dans le thème.
+  // ctx : { compact, projShow, getCourante, setCourante, onTerminer }.
+  function makeRegieBar(s, themeId, sIdx, syn, ctx) {
+    const bar = el("div", "regie-bar" + (ctx.compact ? " regie-compact" : ""));
+    bar.setAttribute("role", "toolbar");
+    bar.setAttribute("aria-label", "Régie de la séance");
+    const rows = syn.rows, nb = rows.length;
+    const mk = (txt, title, fn, cls) => {
+      const b = el("button", cls || "btn secondary sm", txt);
+      b.type = "button"; b.title = title; b.addEventListener("click", fn); return b;
+    };
+    // 1. Écran de projection
+    const ecran = el("div", "rg-ecran");
+    const dot = el("span", "proj-dot");
+    const etat = el("span", "rg-etat");
+    etat.setAttribute("aria-live", "polite");
+    const bOpen = mk("Ouvrir l’écran", "Ouvre la fenêtre de projection à glisser sur l’écran de la classe", () => PROJ.open(), "btn sm");
+    ecran.append(dot, etat, bOpen);
+    const setState = (on) => {
+      dot.classList.toggle("on", on);
+      etat.textContent = on ? "Écran" + NNBSP + ": connecté" : "Écran" + NNBSP + ": fermé";
+      bOpen.classList.toggle("hidden", on);
+    };
+    PROJ.onState(setState);
+    setState(PROJ.isReady());
+    PROJ.ping();
+    bar.appendChild(ecran);
+    // 2. Chrono et 3. position (page de séance seulement)
+    let chrono = null, pos = null;
+    if (!ctx.compact) {
+      chrono = el("div", "rg-chrono");
+      pos = el("div", "rg-pos");
+      bar.append(chrono, pos);
+    }
+    // 4. Projection
+    const proj = el("div", "rg-proj");
+    const showFn = ctx.projShow || ((m) => PROJ.send(m.type ? m : Object.assign({ type: "show" }, m)));
+    const lbl = (long, court) => `<span class="rg-lg">${long}</span><span class="rg-ct">${court}</span>`;
+    proj.appendChild(mk(lbl("Projeter le titre", "Titre"), "Projeter le titre et l’objectif de la séance sur l’écran", () => showFn({ kind: "titre", theme: themeId, seance: sIdx })));
+    proj.appendChild(mk(lbl("Projeter le plan", "Plan"), "Projeter le plan de travail élève (horaire, phase, activité) sur l’écran", () => showFn({ kind: "plan", theme: themeId, seance: sIdx })));
+    proj.appendChild(mk(lbl("Écran noir", "Noir"), "Éteindre l’écran de projection", () => showFn({ type: "noir" })));
+    proj.appendChild(mk(lbl("Nouvelle question", "Question"), "Poser une question à la classe : chaque élève répond depuis son poste, les réponses arrivent en direct", () => LIVE.open({ theme: themeId, compose: true })));
+    bar.appendChild(proj);
+    // 5. Mode
+    let modeBox = null;
+    if (!ctx.compact) {
+      modeBox = el("div", "rg-mode");
+      modeBox.setAttribute("role", "group");
+      modeBox.setAttribute("aria-label", "Mode d’affichage");
+      ["preparation", "animation"].forEach((m) => {
+        const b = el("button", "rg-mode-btn", m === "preparation" ? "Préparation" : "Animation");
+        b.type = "button"; b.dataset.mode = m;
+        b.title = m === "preparation" ? "Tout est ouvert : supports, synoptique, cartouche complet" : "En classe : phases réduites sauf la courante et la suivante, supports repliés";
+        b.addEventListener("click", () => REGIE.setMode(m));
+        modeBox.appendChild(b);
+      });
+      bar.appendChild(modeBox);
+    }
+    const live = el("span", "rg-live");
+    live.setAttribute("aria-live", "polite");
+    live.className = "sr-only rg-live";
+    bar.appendChild(live);
+
+    function update() {
+      if (ctx.compact) return;
+      const i = ctx.getCourante ? ctx.getCourante() : null;
+      const r = i != null ? rows[i] : null;
+      // chrono
+      chrono.innerHTML = "";
+      if (!REGIE.running()) {
+        chrono.appendChild(mk("Démarrer la séance", "Lance le compteur de la séance (minute courante sur la durée prévue)", () => REGIE.start()));
+      } else {
+        const m = REGIE.minute(), tot = syn.attendu;
+        const over = tot != null && m > tot;
+        const min = el("span", "rg-min" + (over ? " rg-warn" : ""), "min" + NBSP + m + (tot != null ? NBSP + "/" + NBSP + tot : "") + (over ? SEP + "dépassement" + NBSP + "+" + (m - tot) + NBSP + "min" : ""));
+        chrono.appendChild(min);
+        if (r && r.a != null) {
+          const d = m - r.a;
+          const txt = d > 0 ? "retard" + NBSP + d + NBSP + "min" : d < 0 ? "avance" + NBSP + (-d) + NBSP + "min" : "à l’heure";
+          chrono.appendChild(el("span", "rg-ecart" + (d > 5 ? " rg-warn" : ""), "prévu" + NBSP + r.a + "–" + r.b + SEP + txt));
+        }
+        chrono.appendChild(mk(REGIE.paused() ? "Reprendre" : "Pause", REGIE.paused() ? "Reprend le compteur" : "Suspend le compteur (récréation, incident)", () => (REGIE.paused() ? REGIE.resume() : REGIE.pause())));
+        chrono.appendChild(mk("Terminer", "Arrête le compteur, marque la séance faite et note la phase d’arrêt dans le cahier de textes", () => { if (ctx.onTerminer) ctx.onTerminer(); else REGIE.stop(); }));
+      }
+      // position
+      pos.innerHTML = "";
+      const nav = el("span", "rg-nav");
+      nav.appendChild(mk("‹", "Phase précédente", () => ctx.setCourante && ctx.setCourante(i == null ? 0 : Math.max(0, i - 1))));
+      nav.appendChild(mk("›", "Phase suivante", () => ctx.setCourante && ctx.setCourante(i == null ? 0 : Math.min(nb - 1, i + 1))));
+      const cur = el("span", "rg-cur");
+      if (r) cur.innerHTML = `Phase${NBSP}${r.n}/${nb}${SEP}${escapeHtml(r.label)}${r.lieu ? SEP + escapeHtml(r.lieu) : ""}`;
+      else cur.innerHTML = `Phase${NBSP}—${SEP}${nb}${NBSP}phases`;
+      const nx = rows[i == null ? 0 : i + 1];
+      const next = el("span", "rg-next");
+      if (nx) {
+        const move = r && nx.place !== r.place ? `${SEP}<strong>${nx.place === "ilots" ? "passage en îlots" : "retour aux postes"}</strong>` : "";
+        next.innerHTML = `Ensuite${NNBSP}: <a href="#" class="rg-next-link">${nx.n}${SEP}${nx.a != null ? nx.a + "–" + nx.b : escapeHtml(nx.t)}${SEP}${escapeHtml(nx.label)}${SEP}${escapeHtml(nx.titrePlain)}</a>${move}`;
+        next.querySelector("a").addEventListener("click", (ev) => { ev.preventDefault(); if (ctx.scrollTo) ctx.scrollTo(nx.n - 1); });
+      } else if (r) next.textContent = "Fin de séance";
+      pos.append(nav, cur, next);
+      // mode
+      const m = REGIE.mode();
+      modeBox.querySelectorAll(".rg-mode-btn").forEach((b) => b.setAttribute("aria-pressed", b.dataset.mode === m ? "true" : "false"));
+      if (r) live.textContent = `Phase ${r.n} sur ${nb} : ${r.titrePlain}`;
+    }
+    bar.update = update;
+    update();
+    return bar;
   }
 
-  // Le « plan de travail élève » : la même timeline vue par la classe — le
-  // créneau et ce qu'ILS font, sans les consignes du prof ni les réponses.
-  // À projeter en début d'heure : chacun sait quoi faire, le prof circule.
-  function printPlanEleve(s, themeTitle) {
-    const lignes = (s.etapes || []).map((e) => {
-      const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
-      return `<tr><td><strong>${e.t}</strong></td><td>${emo} ${label}</td>` +
-        `<td>${e.eleves ? "Les élèves " + e.eleves : e.titre}</td></tr>`;
-    }).join("");
-    openPrint("Plan de travail — " + s.titre,
-      `<h1>🧑‍🎓 Plan de travail — ${s.titre}</h1>` +
-      `<p class="intro">${themeTitle || ""} · ${s.duree}${s.objectif ? " · 🎯 Objectif : " + s.objectif : ""}</p>` +
-      `<table><tr><th>Quand</th><th>Quoi</th><th>Ce qu'on fait</th></tr>${lignes}</table>` +
-      `<p class="intro">Avance à ton rythme dans le créneau : si tu es en avance, aide ton voisin ou tente le défi ; si tu bloques, lève la main — le professeur circule.</p>`);
+  /* ---------------- Impressions du conducteur ---------------- */
+  const PRINT_CONDUITE_CSS = `/*conducteur*/
+@page { size: A4 portrait; margin: 14mm 15mm 16mm;
+  @top-left { content: "THEME_SEANCE"; font: 8pt system-ui, sans-serif; color: #555; }
+  @top-right { content: "Conducteur de séance"; font: 8pt system-ui, sans-serif; color: #555; }
+  @bottom-left { content: "CLASSE_DATE"; font: 8pt system-ui, sans-serif; color: #555; }
+  @bottom-right { content: "Page " counter(page); font: 8pt system-ui, sans-serif; color: #555; } }
+html { font-size: 10.5pt; }
+body { margin: 0; color: #111; line-height: 1.4; }
+h1 { font-size: 16pt; margin: 0 0 1mm; break-after: avoid; }
+h2 { font-size: 11pt; text-transform: uppercase; letter-spacing: .06em; border-bottom: .75pt solid #000; margin: 6mm 0 2mm; break-after: avoid; }
+h3 { font-size: 11pt; margin: 4mm 0 1mm; break-after: avoid; }
+.lbl, .pr-kicker, .pr-type, .pr-notes b, .pr-lbl { font-size: 7.5pt; text-transform: uppercase; letter-spacing: .05em; color: #444; font-weight: 600; }
+.pr-kicker { font-size: 8.5pt; letter-spacing: .08em; margin: 0 0 1mm; }
+.pr-sous { font-size: 9.5pt; color: #444; margin: 0 0 3mm; }
+table { border-collapse: collapse; width: 100%; font-size: 9pt; margin: 2mm 0; }
+td, th { border: .5pt solid #888; padding: 1mm 2.5mm; text-align: left; vertical-align: top; }
+th { font-weight: 700; background: none; border-bottom: 1pt solid #000; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.pr-cartouche { font-size: 9.5pt; table-layout: fixed; }
+.pr-cartouche td { width: 50%; }
+.pr-cartouche .lbl { display: block; }
+.pr-listes { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; font-size: 9.5pt; margin: 3mm 0; }
+.pr-listes ul { margin: 1mm 0; padding-left: 4mm; }
+ul.check { list-style: none; padding-left: 0; }
+ul.check li::before { content: "\\2610  "; font-size: 11pt; }
+.pr-synoptique { table-layout: fixed; }
+.mono { font-family: ui-monospace, "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace; white-space: nowrap; }
+.pr-synoptique .sep td { font-size: 7.5pt; text-transform: uppercase; letter-spacing: .05em; color: #444; background: none; }
+.pr-synoptique .sub { display: block; font-size: 8pt; color: #444; }
+.pr-synoptique .te { font-size: 7.5pt; letter-spacing: .05em; }
+.pr-reperes { font-size: 9pt; margin: 2mm 0; }
+.pr-caps { font-size: 7.5pt; color: #444; margin: 1mm 0; }
+.page-break { break-after: page; }
+.pr-etape { display: grid; grid-template-columns: 16mm 1fr 26mm; column-gap: 3mm; margin: 0 0 4mm; }
+.pr-etape.courte { break-inside: avoid; }
+.pr-rail { text-align: center; }
+.pr-rail .n { display: block; font-size: 14pt; font-weight: 700; line-height: 1.1; }
+.pr-rail .h { display: block; font-size: 9pt; }
+.pr-rail .d { display: block; font-size: 8.5pt; color: #444; }
+.pr-rail .live { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .05em; }
+.pr-head { border-bottom: .75pt solid #000; padding-bottom: 1mm; margin-bottom: 1.5mm; break-after: avoid; break-inside: avoid; }
+.pr-type { border: .5pt solid #000; padding: 0 1.5mm; margin-right: 2mm; }
+.pr-moda { font-size: 8.5pt; color: #444; margin-right: 2mm; }
+.pr-titre { font-size: 11.5pt; font-weight: 700; }
+.pr-duo { display: grid; grid-template-columns: 1fr 1fr; column-gap: 4mm; font-size: 10.5pt; break-inside: avoid; margin-bottom: 1.5mm; }
+.pr-duo .eleves { border-left: 1pt solid #000; padding-left: 2mm; }
+.pr-duo p { margin: 0; orphans: 3; widows: 3; }
+.pr-support { border: .5pt solid #888; padding: 2mm 3mm; font-size: 10pt; margin-top: 1.5mm; }
+.pr-support p, .pr-support li { margin: 1mm 0; orphans: 3; widows: 3; }
+.pr-support .extrait { font-size: 8.5pt; color: #444; }
+.pr-support .renvoi { font-weight: 700; }
+.cd-corrige { border-left: 1pt double #000; padding-left: 2mm; margin: 1.5mm 0; }
+.cd-etat-corrige { display: block; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .05em; color: #444; font-weight: 600; }
+.pr-notes { border-left: .5pt dotted #888; padding-left: 2mm; }
+.pr-notes b { display: block; }
+.pr-bilan { border: .5pt solid #888; min-height: 40mm; padding: 2mm 3mm; margin: 2mm 0;
+  background: repeating-linear-gradient(to bottom, transparent 0 9mm, #bbb 9mm 9.3mm); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.pr-bilan p { margin: 0; font-size: 10.5pt; background: #fff; }
+.pr-annexes { break-before: page; }
+.pr-annexe + .pr-annexe { margin-top: 6mm; }
+.pr-annexe table, .pr-support table { width: auto; max-width: 100%; margin: 2mm auto; }
+pre { font-size: 9pt; line-height: 1.35; white-space: pre-wrap; border: .5pt solid #999; padding: 2mm 3mm; margin: 2mm 0; background: none; break-inside: avoid; }
+pre code, .pr-support code, .pr-annexe code { background: none; padding: 0; font-size: 9.5pt; }
+p, li { orphans: 3; widows: 3; }
+.pr-aide { font-size: 9pt; color: #444; border: .5pt solid #bbb; padding: 2mm 3mm; margin-bottom: 4mm; }
+@media print { .pr-aide { display: none; } }
+`;
+  function cssStr(s) { return String(s || "").replace(/\\/g, "\\\\").replace(/"/g, "\\\""); }
+
+  // Le conducteur imprimé : page 1 = cartouche, listes à cocher, synoptique ;
+  // pages suivantes = déroulé par phase (rail, en-tête, ENSEIGNANT | ÉLÈVES, support,
+  // marge de notes) ; annexes = supports longs. opts : { themeId, sIdx, classe, date,
+  // note, annexes (true), corriges (true) }.
+  function printConduite(s, themeTitle, opts = {}) {
+    const themeId = opts.themeId != null ? opts.themeId : null;
+    const c = themeId ? COURSES.find((x) => x.id === themeId) : null;
+    const plan = themeId && typeof THEME_PLANS !== "undefined" ? THEME_PLANS[themeId] : null;
+    const i = opts.sIdx != null ? opts.sIdx : (plan ? plan.seances.indexOf(s) : 0);
+    const N = plan ? plan.seances.length : 0;
+    const syn = deriveSynoptique(s, themeId);
+    const rows = syn.rows;
+    const tt = splitTitre(s.titre, i);
+    const rp = reperes(rows);
+    const per = themeId ? periodeDuTheme(themeId) : null;
+    const annexes = opts.annexes !== false, corriges = opts.corriges !== false;
+    const P1 = (h) => stripEmojiPrint(typoFr(h)); // texte des données, prêt pour le papier
+    const X = (t) => escapeHtml(textePlain(typoFr(t)));
+    const titreTheme = c ? c.title : (themeTitle || "");
+    const kick = ["Conducteur de séance", c ? "Thème" + NBSP + c.num : "", titreTheme].filter(Boolean).join(SEP);
+    const docTitle = "Conducteur de séance" + SEP + "Séance" + NBSP + tt.num + (titreTheme ? SEP + titreTheme : "");
+    const dureeTxt = typoFr(s.duree || "");
+    const prev = plan && i > 0 ? plan.seances[i - 1] : null;
+    const clean = (h) => (corriges ? h : h.replace(/<div class="cd-corrige">[\s\S]*?<\/div>/g, ""));
+
+    // Page 1
+    let html = `<p class="pr-kicker">${escapeHtml(kick)}</p>` +
+      `<h1>Séance${NBSP}${escapeHtml(tt.num)}${SEP}${escapeHtml(tt.titre)}</h1>` +
+      (tt.soustitre ? `<p class="pr-sous">${escapeHtml(tt.soustitre)}</p>` : "") +
+      `<table class="pr-cartouche"><tr>` +
+      `<td><span class="lbl">Thème</span>${c ? c.num + SEP : ""}${escapeHtml(titreTheme)}</td>` +
+      `<td><span class="lbl">Séance</span>${N ? tt.num + "/" + N + SEP : ""}${escapeHtml(dureeTxt)}${rows.length ? SEP + rows.length + NBSP + "phases" : ""}</td></tr>` +
+      `<tr><td><span class="lbl">Période</span>${per ? escapeHtml(per.periode + (per.semaines ? SEP + per.semaines : "")) : "—"}</td>` +
+      `<td><span class="lbl">Classe et date</span>${escapeHtml(opts.classe || "__________")}${SEP}${escapeHtml(opts.date || "____/____/______")}</td></tr>` +
+      `<tr><td><span class="lbl">Salle</span>Salle NSI en U${SEP}TV tactile${SEP}4 coins équipés</td>` +
+      `<td><span class="lbl">Enseignant</span>______________________</td></tr>` +
+      (s.objectif ? `<tr><td colspan="2"><span class="lbl">Objectif</span>${P1(s.objectif)}</td></tr>` : "") +
+      (prev && prev.objectif ? `<tr><td colspan="2"><span class="lbl">Séance précédente</span>Séance${NBSP}${i}${SEP}${P1(prev.objectif)}</td></tr>` : "") +
+      `</table>`;
+    const lst = (items, cls) => `<ul class="${cls}">${(items || []).map((x) => `<li>${P1(x)}</li>`).join("")}</ul>`;
+    if ((s.aPreparer || []).length || (s.surLeSite || []).length) {
+      html += `<div class="pr-listes"><div><span class="lbl">À préparer</span>${lst(s.aPreparer, "check")}</div><div><span class="lbl">Supports du site</span>${lst(s.surLeSite, "")}</div></div>`;
+    }
+    if (rows.length) {
+      const tr = rows.map((r, k) => {
+        const sep = syn.coupureHeure === k && k > 0 ? `<tr class="sep"><td colspan="8">2e heure</td></tr>` : "";
+        const sub = [supportResume(r), r.refs.filter((t) => t.kind).length ? "Projeter" + NNBSP + ": " + r.refs.filter((t) => t.kind).map((t) => t.label).join(", ") : "", r.diff ? "Différenciation" : ""].filter(Boolean).join(SEP);
+        return sep + `<tr><td class="num">${r.n}</td><td class="mono">${r.a != null ? r.a + "–" + r.b : X(r.t)}</td><td class="num">${r.duree != null ? r.duree + NBSP + "min" : "—"}</td>` +
+          `<td>${escapeHtml(r.label)}${r.type === "noter" ? ` <span class="te">TE</span>` : ""}<span class="sub">${escapeHtml(r.phase)}</span></td>` +
+          `<td>${escapeHtml(r.modalite)}<span class="sub">${escapeHtml(r.lieu)}</span></td>` +
+          `<td>${X(r.titrePlain)}${sub ? `<span class="sub">${escapeHtml(sub)}</span>` : ""}</td><td>${r.direct ? "oui" : ""}</td><td>☐</td></tr>`;
+      }).join("");
+      const tot = `Total${NBSP}${syn.total}${NBSP}min` + (syn.attendu != null ? SEP + "durée annoncée" + NBSP + escapeHtml(dureeTxt) + SEP + (syn.ok ? "conforme" : "écart de" + NBSP + Math.abs(syn.total - syn.attendu) + NBSP + "min") : "");
+      html += `<h2>Synoptique</h2><table class="pr-synoptique"><colgroup><col style="width:6mm"><col style="width:16mm"><col style="width:12mm"><col style="width:24mm"><col style="width:26mm"><col><col style="width:12mm"><col style="width:8mm"></colgroup>` +
+        `<thead><tr><th class="num">N°</th><th>Horaire</th><th class="num">Durée</th><th>Phase</th><th>Modalité</th><th>Titre${SEP}support</th><th>Direct</th><th>Fait</th></tr></thead><tbody>` +
+        `<tr class="sep"><td colspan="8">1re heure</td></tr>` + tr + `<tr><td colspan="8">${tot}</td></tr></tbody></table>`;
+      const rep = [];
+      if (rp.trace.length) rep.push("Trace écrite" + NNBSP + ": " + listeNums(rp.trace, "phase"));
+      if (rp.evalF.length) rep.push("Évaluation formative" + NNBSP + ": " + rp.evalF.map((x) => "phase " + x.n + " (" + x.label + ")").join(", "));
+      if (per && per.evaluation(i, N)) rep.push("Évaluation de la période" + NNBSP + ": " + textePlain(typoFr(per.evaluation(i, N))));
+      if (rp.diff.length) rep.push("Différenciation" + NNBSP + ": " + listeNums(rp.diff, "phase"));
+      if (rep.length) html += `<p class="pr-reperes">${rep.map(escapeHtml).join(SEP)}</p>`;
+      if (c && c.capacites && c.capacites.length) html += `<p class="pr-caps">Capacités du programme (thème)${NNBSP}: ${c.capacites.map((x) => escapeHtml(textePlain(typoFr(x)))).join(SEP)}</p>`;
+      html += `<div class="page-break"></div><h2>Déroulé de la séance</h2>`;
+      const annexeList = [];
+      rows.forEach((r) => {
+        const e = r.etape;
+        let support = "";
+        if (e.contenu) {
+          const full = clean(marquerCorrige(P1(e.contenu)));
+          const court = r.contenuPlain.length <= 700 && r.counts.pre + r.counts.table <= 1;
+          if (court || !annexes) support = full;
+          else {
+            annexeList.push({ r, html: full });
+            const phrases = r.contenuPlain.split(/(?<=[.!?])\s+/).slice(0, 2).join(" ");
+            support = `<p>${escapeHtml(stripEmojiPrint(phrases))} <span class="renvoi">→ Annexe S${r.n}</span></p>`;
+          }
+          support = `<div class="pr-support"><span class="pr-lbl">Support</span>${r.extrait ? ` <span class="extrait">(extrait de la fiche de cours)</span>` : ""}${support}</div>`;
+        }
+        const len = r.profPlain.length + r.elevesPlain.length + (support ? textePlain(support).length : 0);
+        html += `<section class="pr-etape${len <= 900 ? " courte" : ""}">` +
+          `<div class="pr-rail"><span class="n">${r.n}</span><span class="h mono">${r.a != null ? r.a + "–" + r.b : X(r.t)}</span>${r.duree != null ? `<span class="d">${r.duree}${NBSP}min</span>` : ""}${r.direct ? `<span class="live">direct</span>` : ""}</div>` +
+          `<div><div class="pr-head"><span class="pr-type">${escapeHtml(r.label)}</span><span class="pr-moda">${escapeHtml([r.phase, r.modalite, r.lieu].filter(Boolean).join(SEP))}</span><strong class="pr-titre">${X(r.titrePlain)}</strong></div>` +
+          `<div class="pr-duo"><div><span class="pr-lbl">Enseignant</span><p>${P1(e.prof || "—")}</p></div><div class="eleves"><span class="pr-lbl">Élèves</span><p>${P1(e.eleves || "—")}</p></div></div>` +
+          support + `</div><div class="pr-notes"><b>Notes</b></div></section>`;
+      });
+      const marge = [];
+      if (rp.souples.length) marge.push(listeNums(rp.souples, "phase") + " raccourcissable" + (rp.souples.length > 1 ? "s" : ""));
+      if (rp.dernierBilan) marge.push("phase " + rp.dernierBilan.n + " (" + rp.dernierBilan.label.toLowerCase() + (rp.dernierBilan.duree != null ? ", " + rp.dernierBilan.duree + NBSP + "min" : "") + ") prioritaire");
+      html += `<span class="pr-lbl">Bilan de la séance</span><div class="pr-bilan">${opts.note ? `<p>${escapeHtml(opts.note)}</p>` : ""}</div>` +
+        (marge.length ? `<p class="pr-reperes">Marge de manœuvre${NNBSP}: ${escapeHtml(marge.join(SEP))}.</p>` : "");
+      if (annexeList.length) {
+        html += `<div class="pr-annexes"><h2>Annexe — Supports à projeter</h2>` +
+          annexeList.map(({ r, html: h }) => `<section class="pr-annexe"><h3>S${r.n}${SEP}Phase${NBSP}${r.n}${SEP}${r.a != null ? r.a + "–" + r.b : X(r.t)}${SEP}${escapeHtml(r.label)}${NNBSP}: ${X(r.titrePlain)}</h3>${h}</section>`).join("") + `</div>`;
+      }
+    } else if (s.cours) {
+      html += `<h2>Fiche de cours</h2>` + P1(s.cours);
+    }
+    html = `<div class="pr-aide no-print">Format A4, marges 15${NBSP}mm. Dans la boîte de dialogue d’impression, désactivez «${NNBSP}En-têtes et pieds de page${NNBSP}» si l’en-tête apparaît en double.</div>` + html;
+    const css = PRINT_CONDUITE_CSS
+      .replace("THEME_SEANCE", cssStr(titreTheme + (N ? SEP + "Séance" + NBSP + tt.num + "/" + N : "")))
+      .replace("CLASSE_DATE", cssStr([opts.classe, opts.date].filter(Boolean).join(SEP)));
+    openPrint(docTitle, html, css);
+  }
+
+  // Le plan de travail élève : la même timeline vue par la classe — horaire, phase et
+  // ce qu'ILS font, sans les consignes de l'enseignant ni les corrigés.
+  function printPlanEleve(s, themeTitle, themeId) {
+    const syn = deriveSynoptique(s, themeId);
+    const plan = themeId && typeof THEME_PLANS !== "undefined" ? THEME_PLANS[themeId] : null;
+    const tt = splitTitre(s.titre, plan ? plan.seances.indexOf(s) : 0);
+    const lignes = syn.rows.map((r) =>
+      `<tr><td class="mono">${r.a != null ? r.a + "–" + r.b : escapeHtml(r.t)}</td><td>${escapeHtml(r.label)}</td>` +
+      `<td>${r.etape.eleves ? "Les élèves " + stripEmojiPrint(typoFr(r.etape.eleves)) : stripEmojiPrint(typoFr(r.etape.titre))}</td></tr>`).join("");
+    openPrint("Plan de travail élève" + SEP + "Séance" + NBSP + tt.num,
+      `<p class="pr-kicker">Plan de travail élève${themeTitle ? SEP + escapeHtml(themeTitle) : ""}</p>` +
+      `<h1>Séance${NBSP}${escapeHtml(tt.num)}${SEP}${escapeHtml(tt.titre)}</h1>` +
+      `<p class="intro">${escapeHtml(typoFr(s.duree || ""))}${s.objectif ? SEP + "Objectif" + NNBSP + ": " + stripEmojiPrint(typoFr(s.objectif)) : ""}</p>` +
+      `<table><thead><tr><th>Horaire</th><th>Phase</th><th>Activité</th></tr></thead><tbody>${lignes}</tbody></table>` +
+      `<p class="intro">Avancez à votre rythme dans le créneau${NNBSP}: en avance, aidez votre voisin ou tentez le défi${NNBSP}; bloqués, levez la main — l’enseignant circule.</p>`,
+      `@page { size: A4; margin: 15mm } .pr-kicker { font-size: 8.5pt; text-transform: uppercase; letter-spacing: .08em; color: #444; margin: 0 0 1mm } th, td { font-size: 10pt } .mono { font-family: ui-monospace, Consolas, monospace; white-space: nowrap }`);
+  }
+  function printFicheCours(s, themeId) {
+    const plan = themeId && typeof THEME_PLANS !== "undefined" ? THEME_PLANS[themeId] : null;
+    const tt = splitTitre(s.titre, plan ? plan.seances.indexOf(s) : 0);
+    openPrint("Fiche de cours" + SEP + "Séance" + NBSP + tt.num + SEP + tt.titre,
+      `<h1>Séance${NBSP}${escapeHtml(tt.num)}${SEP}${escapeHtml(tt.titre)}</h1>` + stripEmojiPrint(typoFr(s.cours || "")));
   }
 
   function makeThemePlan(themeId) {
@@ -1519,18 +2143,18 @@
       // moment) — ou, à défaut, la fiche de cours seule.
       if (s.etapes && s.etapes.length) {
         const cdet = el("details", "plan-cours");
-        cdet.appendChild(el("summary", null, "🎬 Conducteur pas à pas — cours, exercices, jeux au bon moment <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
+        cdet.appendChild(el("summary", null, "Conducteur de séance ▾"));
         const cbody = el("div", "conduite-wrap");
         const tools = el("div", "tp-print-group");
-        const bC = el("button", "btn secondary", "🖨️ Imprimer le conducteur");
-        bC.addEventListener("click", () => printConduite(s, themeTitle(themeId)));
+        const bC = el("button", "btn secondary sm", "Imprimer le conducteur");
+        bC.addEventListener("click", () => printConduite(s, themeTitle(themeId), { themeId, sIdx }));
         tools.appendChild(bC);
-        const bPE = el("button", "btn secondary", "🧑‍🎓 Plan de travail élève (à projeter)");
-        bPE.addEventListener("click", () => printPlanEleve(s, themeTitle(themeId)));
+        const bPE = el("button", "btn secondary sm", "Imprimer le plan élève");
+        bPE.addEventListener("click", () => printPlanEleve(s, themeTitle(themeId), themeId));
         tools.appendChild(bPE);
         if (s.cours) {
-          const bF = el("button", "btn secondary", "🖨️ La fiche de cours seule (élèves)");
-          bF.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));
+          const bF = el("button", "btn secondary sm", "Imprimer la fiche de cours");
+          bF.addEventListener("click", () => printFicheCours(s, themeId));
           tools.appendChild(bF);
         }
         cbody.appendChild(tools);
@@ -1539,7 +2163,7 @@
         card.appendChild(cdet);
       } else if (s.cours) {
         const cdet = el("details", "plan-cours");
-        cdet.appendChild(el("summary", null, "📝 Le cours de la séance — notion, exemples, défi <span class=\"plan-ouvrir\">clique pour ouvrir ▾</span>"));
+        cdet.appendChild(el("summary", null, "Fiche de cours ▾"));
         const cbody = el("div", "plan-cours-body");
         cbody.innerHTML = s.cours;
         // Les tableaux (traces d'exécution) défilent dans leur propre cadre :
@@ -4817,6 +5441,7 @@ except Exception:
   }
 
   function renderPreparer() {
+    runViewCleanup();
     viewTheme.innerHTML = "";
     const classId = prepClasseId();
     const header = el("div", "theme-header");
@@ -4824,12 +5449,15 @@ except Exception:
     crumb.addEventListener("click", () => navigate("home"));
     header.appendChild(crumb);
     header.appendChild(el("h1", null, "🗓️ Préparer mes cours"));
-    header.appendChild(el("p", "theme-intro",
+    if (prepSeanceIdx == null) header.appendChild(el("p", "theme-intro",
       "Chaque séance réunit ici <strong>tout ce qu'il te faut</strong> : la fiche de cours à projeter, le déroulé minuté, le matériel à imprimer, les fichiers à déposer et l'évaluation du thème."));
+    const seanceOuverte = prepSeanceIdx != null && prepThemeId && THEME_PLANS[prepThemeId];
+    if (seanceOuverte) header.classList.add("theme-header-compact");
     viewTheme.appendChild(header);
 
     // La salle NSI telle qu'elle est, et ce que chaque outil du site y remplace.
     const salle = el("details", "salle-info");
+
     salle.innerHTML =
       `<summary>🏫 La salle NSI et les conducteurs</summary>` +
       `<div class="salle-body"><ul>` +
@@ -4839,11 +5467,11 @@ except Exception:
       `<li><strong>Plus d'ardoises : la réponse en direct (📡).</strong> Chaque étape du conducteur a un bouton 📡 : la question part sur les postes, les élèves répondent (choix, vrai/faux, texte court, nombre), tu vois qui a répondu quoi, la TV tactile affiche les réponses anonymes, puis tu clos et tu révèles. Le bouton 📡 de la barre du site ouvre le même panneau à tout moment.</li>` +
       `<li><strong>En îlots, un seul poste répond (👥 Mon îlot).</strong> L'élève connecté au poste de l'îlot coche ses camarades (bouton 👥 de sa barre ou lien du bandeau 📡) : sa réponse compte pour tout l'îlot, marquée 👥 dans ton suivi ; un camarade qui répond de son propre poste garde sa réponse. Le suivi liste les îlots, et « Dissoudre » les efface en fin d'activité.</li>` +
       `</ul><p class="live-hint">Chaque étape porte un repère 🏫 qui rappelle où elle se joue (postes, TV tactile, coins, réponse en direct).</p></div>`;
-    viewTheme.appendChild(salle);
+    if (!seanceOuverte) viewTheme.appendChild(salle);
 
     // Choix de la classe (le cahier de textes et « ma prochaine séance » en dépendent)
     const mes = prepClasses();
-    if (mes.length > 1) {
+    if (mes.length > 1 && !seanceOuverte) {
       const row = el("div", "cahier-picker");
       row.appendChild(el("span", null, "Classe :"));
       const sel = el("select", "corr-target");
@@ -4859,7 +5487,7 @@ except Exception:
 
     // ▶ Ma prochaine séance : reprendre là où la classe en est.
     const next = prochaineSeance(classId);
-    if (next && !(prepThemeId === next.themeId && prepSeanceIdx === next.i)) {
+    if (next && !seanceOuverte && !(prepThemeId === next.themeId && prepSeanceIdx === next.i)) {
       const c = COURSES.find((x) => x.id === next.themeId);
       const s = THEME_PLANS[next.themeId].seances[next.i];
       const hero = el("button", "resume-hero");
@@ -4935,171 +5563,451 @@ except Exception:
     viewTheme.appendChild(list);
   }
 
-  // Étape 3 : LA page d'une séance — tout au même endroit, rien de plié.
+  // Étape 3 : LA page d'une séance — fil d'Ariane, cartouche, bande de régie,
+  // synoptique, déroulé (conducteur), bilan (cahier de textes), annexes.
   function renderPrepSeance(classId) {
     const c = COURSES.find((x) => x.id === prepThemeId);
     const plan = THEME_PLANS[prepThemeId];
-    const s = plan.seances[prepSeanceIdx];
-    const back = el("button", "crumb", `← ${c.emoji} ${c.title} (toutes les séances)`);
-    back.addEventListener("click", () => { prepSeanceIdx = null; renderPreparer(); });
-    viewTheme.appendChild(back);
+    const i = prepSeanceIdx, N = plan.seances.length, s = plan.seances[i];
+    const key = prepThemeId + ":" + i;
+    const syn = deriveSynoptique(s, prepThemeId);
+    const rows = syn.rows, nb = rows.length, hasEtapes = nb > 0;
+    const tt = splitTitre(s.titre, i);
+    const per = periodeDuTheme(prepThemeId);
+    const rp = reperes(rows);
+    const etatOf = () => (classId && P.getSeanceEtat ? P.getSeanceEtat(classId, key) : null);
+    const T = (h) => stripEmojiUI(typoFr(h)); // texte des données, prêt pour l'écran
+    const mes = prepClasses();
+    const classeNom = (mes.find((x) => x.id === classId) || {}).name || "";
 
-    viewTheme.appendChild(el("h2", "prep-titre", `${s.titre} <span class="plan-duree">· ${s.duree}</span>`));
-    if (s.objectif) viewTheme.appendChild(el("p", "plan-objectif", "🎯 " + s.objectif));
-
-    // Cahier de textes de la séance (classe choisie en haut de page)
-    if (classId && P.getSeanceEtat) {
-      const key = prepThemeId + ":" + prepSeanceIdx;
-      const bar = el("div", "cahier-seance");
-      const lab = el("label", "cahier-faite");
-      const cb = el("input"); cb.type = "checkbox";
-      lab.appendChild(cb); lab.appendChild(el("span", null, " Séance faite"));
-      const dateEl = el("span", "cahier-date");
-      const noteIn = el("input", "cahier-note"); noteIn.type = "text";
-      noteIn.placeholder = "note rapide (où on s'est arrêté, à reprendre…)";
-      bar.appendChild(lab); bar.appendChild(dateEl); bar.appendChild(noteIn);
-      const sync = () => {
-        const etat = P.getSeanceEtat(classId, key);
-        cb.checked = !!(etat && etat.faite);
-        dateEl.textContent = etat && etat.date ? "le " + etat.date : "";
-        if (document.activeElement !== noteIn) noteIn.value = (etat && etat.note) || "";
-        bar.classList.toggle("done", !!(etat && etat.faite));
-      };
-      const save = () => {
-        const prev = P.getSeanceEtat(classId, key) || {};
-        if (!cb.checked && !noteIn.value.trim()) P.setSeanceEtat(classId, key, null);
-        else P.setSeanceEtat(classId, key, {
-          faite: cb.checked,
-          date: cb.checked ? (prev.faite && prev.date ? prev.date : new Date().toLocaleDateString("fr-FR")) : "",
-          note: noteIn.value.trim(),
-        });
-        sync();
-      };
-      cb.addEventListener("change", save);
-      noteIn.addEventListener("change", save);
-      sync();
-      viewTheme.appendChild(bar);
+    /* ---- Bloc 1 : fil d'Ariane + navigation ---- */
+    const crumbs = el("nav", "prep-crumbs");
+    crumbs.setAttribute("aria-label", "Fil d’Ariane");
+    const b1 = el("button", "crumb", "Préparer mes cours");
+    b1.addEventListener("click", () => { prepThemeId = null; prepSeanceIdx = null; renderPreparer(); });
+    const b2 = el("button", "crumb", `Thème${NBSP}${c.num}${SEP}${escapeHtml(c.title)}`);
+    b2.addEventListener("click", () => { prepSeanceIdx = null; renderPreparer(); });
+    const cur = el("span", "crumb-cur", `Séance${NBSP}${i + 1}/${N}`);
+    cur.setAttribute("aria-current", "page");
+    crumbs.append(b1, el("span", "crumb-sep", "›"), b2, el("span", "crumb-sep", "›"), cur);
+    const navr = el("div", "prep-crumbs-nav");
+    if (mes.length > 1) {
+      const lab = el("label", "crumb-classe", "Classe" + NNBSP + ": ");
+      const sel = el("select", "corr-target");
+      sel.innerHTML = mes.map((x) => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join("");
+      if (classId) sel.value = classId;
+      sel.addEventListener("change", () => { try { localStorage.setItem("nsi-prep-classe", sel.value); } catch (e) {} renderPreparer(); });
+      lab.appendChild(sel);
+      navr.appendChild(lab);
     }
+    const bPrev = el("button", "crumb", "‹ Séance précédente");
+    bPrev.disabled = i <= 0;
+    bPrev.addEventListener("click", () => { prepSeanceIdx--; renderPreparer(); });
+    const bNext = el("button", "crumb", "Séance suivante ›");
+    bNext.disabled = i >= N - 1;
+    bNext.addEventListener("click", () => { prepSeanceIdx++; renderPreparer(); });
+    navr.append(bPrev, bNext);
+    const next = prochaineSeance(classId);
+    if (next && !(next.themeId === prepThemeId && next.i === i)) {
+      const ns = THEME_PLANS[next.themeId].seances[next.i];
+      const bn = el("button", "crumb crumb-next", "Ma prochaine séance →");
+      bn.title = themeTitle(next.themeId) + SEP + textePlain(ns.titre);
+      bn.addEventListener("click", () => { prepThemeId = next.themeId; prepSeanceIdx = next.i; renderPreparer(); });
+      navr.appendChild(bn);
+    }
+    crumbs.appendChild(navr);
+    viewTheme.appendChild(crumbs);
 
-    if (s.etapes && s.etapes.length) {
-      // 🎬 Le conducteur pas à pas : LA séance dans l'ordre, cours, exercices
-      // et jeux intercalés au bon moment. La fiche est répartie dedans.
-      const sec = el("div", "prep-bloc prep-cours");
-      sec.appendChild(el("h3", null, "🎬 La séance pas à pas"));
-      const tools = el("div", "tp-print-group");
-      const bC = el("button", "btn secondary", "🖨️ Imprimer le conducteur");
-      bC.addEventListener("click", () => printConduite(s, c.title));
-      tools.appendChild(bC);
-      const bPE = el("button", "btn secondary", "🧑‍🎓 Plan de travail élève (à projeter)");
-      bPE.addEventListener("click", () => printPlanEleve(s, c.title));
-      tools.appendChild(bPE);
-      if (s.cours) {
-        const bF = el("button", "btn secondary", "🖨️ La fiche de cours seule (élèves)");
-        bF.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));
-        tools.appendChild(bF);
+    /* ---- Bloc 2 : cartouche ---- */
+    const cart = el("section", "seance-cartouche");
+    cart.setAttribute("aria-label", "Cartouche de la séance");
+    cart.appendChild(el("p", "sc-kicker", `Conducteur de séance${SEP}Thème${NBSP}${c.num}${SEP}${escapeHtml(c.title)}`));
+    const headRow = el("div", "sc-headrow");
+    const titles = el("div", "sc-titles");
+    titles.appendChild(el("h2", "sc-titre", escapeHtml(tt.titre)));
+    if (tt.soustitre) titles.appendChild(el("p", "sc-soustitre", escapeHtml(tt.soustitre)));
+    const meta = el("div", "sc-meta");
+    const tag = (txt, cls) => el("span", "sc-tag" + (cls ? " " + cls : ""), txt);
+    meta.appendChild(tag(`Séance${NBSP}${i + 1}/${N}`));
+    if (s.duree) meta.appendChild(tag(escapeHtml(typoFr(s.duree))));
+    if (hasEtapes) meta.appendChild(tag(`${nb}${NBSP}phases`));
+    if (per) meta.appendChild(tag(escapeHtml(per.periode + (per.semaines ? SEP + per.semaines : ""))));
+    let etatTag = null;
+    if (classId && P.getSeanceEtat) { etatTag = tag("", "sc-etat"); meta.appendChild(etatTag); }
+    titles.appendChild(meta);
+    headRow.appendChild(titles);
+    // Menu Imprimer
+    const tools = el("div", "sc-tools");
+    const menu = el("details", "menu-imprimer");
+    menu.innerHTML = `<summary class="btn secondary sm">Imprimer ▾</summary>`;
+    const mbox = el("div", "menu-imprimer-box");
+    const optA = el("label", "menu-opt", `<input type="checkbox" name="annexes" checked> Supports en annexe`);
+    const optC = el("label", "menu-opt", `<input type="checkbox" name="corriges" checked> Corrigés inclus`);
+    const mkP = (txt, fn) => { const b = el("button", "menu-item", txt); b.type = "button"; b.addEventListener("click", () => { menu.open = false; fn(); }); return b; };
+    mbox.appendChild(mkP("Imprimer le conducteur", () => {
+      const et = etatOf() || {};
+      printConduite(s, c.title, { themeId: prepThemeId, sIdx: i, classe: classeNom, date: et.date || "", note: et.note || "", annexes: optA.querySelector("input").checked, corriges: optC.querySelector("input").checked });
+    }));
+    if (hasEtapes) mbox.appendChild(mkP("Imprimer le plan élève", () => printPlanEleve(s, c.title, prepThemeId)));
+    if (s.cours) mbox.appendChild(mkP("Imprimer la fiche de cours", () => printFicheCours(s, prepThemeId)));
+    if (hasEtapes) mbox.append(optA, optC);
+    menu.appendChild(mbox);
+    tools.appendChild(menu);
+    const closeMenu = (ev) => { if (menu.open && !menu.contains(ev.target)) menu.open = false; };
+    document.addEventListener("click", closeMenu);
+    viewCleanup.push(() => document.removeEventListener("click", closeMenu));
+    headRow.appendChild(tools);
+    cart.appendChild(headRow);
+    // Rubriques de préparation
+    const plus = el("details", "sc-plus");
+    plus.open = true;
+    plus.appendChild(el("summary", "sc-plus-sum", "Préparation de la séance"));
+    const grid = el("div", "sc-grid");
+    const rub = (lbl, bodyEl, cls) => { const r = el("div", "sc-rub" + (cls ? " " + cls : "")); r.appendChild(el("div", "sc-lbl", lbl)); r.appendChild(bodyEl); return r; };
+    const colG = el("div", "sc-col"), colM = el("div", "sc-col"), colD = el("div", "sc-col");
+    if (s.objectif) colG.appendChild(rub("Objectif", el("p", "sc-txt", T(s.objectif))));
+    if (i > 0 && plan.seances[i - 1].objectif) {
+      const p = el("p", "sc-txt sc-prev", `Séance${NBSP}${i}${SEP}${T(plan.seances[i - 1].objectif)} `);
+      const a = el("button", "linklike", "Ouvrir ›"); a.type = "button";
+      a.addEventListener("click", () => { prepSeanceIdx = i - 1; renderPreparer(); });
+      p.appendChild(a);
+      colG.appendChild(rub("Séance précédente", p));
+    }
+    if (hasEtapes) {
+      const lines = [];
+      const lien = (n) => `<a href="#" class="sc-phase-link" data-etape="${n - 1}">${n}</a>`;
+      const liste = (arr) => (arr.length === 1 ? "phase " + lien(arr[0]) : "phases " + arr.slice(0, -1).map(lien).join(", ") + " et " + lien(arr[arr.length - 1]));
+      if (rp.trace.length) lines.push(`Trace écrite${NNBSP}: ${liste(rp.trace)}`);
+      if (rp.evalF.length) lines.push(`Évaluation formative${NNBSP}: ${rp.evalF.map((x) => "phase " + lien(x.n) + " (" + escapeHtml(x.label) + ")").join(", ")}`);
+      if (per && per.evaluation(i, N)) lines.push(`Évaluation de la période${NNBSP}: ${escapeHtml(textePlain(typoFr(per.evaluation(i, N))))}`);
+      if (rp.diff.length) lines.push(`Différenciation${NNBSP}: ${liste(rp.diff)}`);
+      if (lines.length) {
+        const ul = el("ul", "sc-reperes", lines.map((l) => `<li>${l}</li>`).join(""));
+        ul.querySelectorAll(".sc-phase-link").forEach((a) => a.addEventListener("click", (ev) => { ev.preventDefault(); scrollToCard(+a.dataset.etape); }));
+        colG.appendChild(rub("Repères", ul));
       }
-      sec.appendChild(tools);
-      sec.appendChild(makeConduite(s, prepThemeId, prepSeanceIdx));
-      viewTheme.appendChild(sec);
-    } else if (s.cours) {
-      // 📝 Repli (pas encore de conducteur) : la fiche de cours ouverte
-      const sec = el("div", "prep-bloc prep-cours");
-      sec.appendChild(el("h3", null, "📝 Le cours de la séance — à projeter / faire noter"));
-      const body = el("div", "plan-cours-body");
-      body.innerHTML = s.cours;
-      body.querySelectorAll("table").forEach((tbl) => {
-        const box = el("div", "plan-cours-scroll");
-        tbl.parentNode.insertBefore(box, tbl);
-        box.appendChild(tbl);
+    } else if (s.enClasse && s.enClasse.length) {
+      colG.appendChild(rub("En classe", el("ul", "sc-list", s.enClasse.map((x) => `<li>${T(x)}</li>`).join(""))));
+    }
+    if (c.capacites && c.capacites.length) {
+      const d = el("details", "sc-caps");
+      d.innerHTML = `<summary>Capacités du programme travaillées dans ce thème (${c.capacites.length})</summary>` +
+        `<ul class="sc-list">${c.capacites.map((x) => `<li>${T(x)}</li>`).join("")}</ul>`;
+      colG.appendChild(rub("Capacités du programme", d));
+    }
+    if (s.aPreparer && s.aPreparer.length) {
+      const ckKey = "nsi-prep-check:" + key;
+      let state = [];
+      try { state = JSON.parse(localStorage.getItem(ckKey) || "[]"); } catch (e) { state = []; }
+      const ul = el("ul", "sc-check");
+      s.aPreparer.forEach((it, k) => {
+        const li = el("li");
+        const lab = el("label");
+        const cb = el("input"); cb.type = "checkbox"; cb.checked = !!state[k];
+        cb.addEventListener("change", () => { state[k] = cb.checked; li.classList.toggle("done", cb.checked); try { localStorage.setItem(ckKey, JSON.stringify(state)); } catch (e) {} });
+        lab.appendChild(cb);
+        lab.appendChild(el("span", null, " " + linkifyRefs(T(it), prepThemeId)));
+        li.classList.toggle("done", cb.checked);
+        li.appendChild(lab);
+        ul.appendChild(li);
       });
-      const b = el("button", "btn secondary", "🖨️ Projeter / imprimer cette fiche");
-      b.addEventListener("click", () => openPrint("Cours — " + s.titre, `<h1>📝 ${s.titre}</h1>` + s.cours));
+      const r = rub("À préparer", ul);
+      const reset = el("button", "linklike sc-reset", "Réinitialiser"); reset.type = "button";
+      reset.addEventListener("click", () => { state = []; try { localStorage.removeItem(ckKey); } catch (e) {} ul.querySelectorAll("input").forEach((x) => { x.checked = false; }); ul.querySelectorAll("li").forEach((x) => x.classList.remove("done")); });
+      r.querySelector(".sc-lbl").appendChild(reset);
+      colM.appendChild(r);
+    }
+    if (s.surLeSite && s.surLeSite.length) {
+      const ul = el("ul", "sc-list", s.surLeSite.map((x) => `<li>${linkifyRefs(T(x), prepThemeId)}</li>`).join(""));
+      const kit = (typeof THEME_KITS !== "undefined" ? THEME_KITS : {})[prepThemeId];
+      const cited = [];
+      if (kit && kit.imprimables) {
+        const pool = normTxt((s.aPreparer || []).concat(s.surLeSite || []).join(" "));
+        kit.imprimables.forEach((im) => {
+          const mots = normTxt(im.titre).split(" ").filter((w) => w.length >= 5);
+          if (mots.filter((w) => pool.includes(w)).length >= 2) cited.push(im);
+        });
+      }
+      const box = el("div");
+      box.appendChild(ul);
+      if (cited.length) {
+        const row = el("div", "sc-imprimables", `<span class="sc-txt-soft">Imprimables cités${NNBSP}:</span> `);
+        cited.forEach((im) => { const b = el("button", "linklike", "Imprimer" + NNBSP + ": " + textePlain(stripEmojiPrint(im.titre))); b.type = "button"; b.addEventListener("click", () => openPrint(im.titre, im.html)); row.appendChild(b); row.appendChild(document.createTextNode(" ")); });
+        box.appendChild(row);
+      }
+      colD.appendChild(rub("Supports du site", box));
+    }
+    if (hasEtapes) {
+      const p = el("p", "sc-txt sc-salle", `Salle NSI en U${SEP}un poste par élève${SEP}TV tactile au bureau${SEP}quatre coins équipés pour les îlots${SEP}réponse en direct depuis les postes. `);
+      const a = el("button", "linklike", "Organisation de la salle ▾"); a.type = "button";
+      a.addEventListener("click", () => { const d = viewTheme.querySelector("details.annexe-salle"); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "start" }); } });
+      p.appendChild(a);
+      colD.appendChild(rub("Salle", p));
+    }
+    grid.append(colG, colM, colD);
+    plus.appendChild(grid);
+    cart.appendChild(plus);
+    bindRefLinks(cart);
+    viewTheme.appendChild(cart);
+
+    /* ---- Blocs 3 à 5 : régie, synoptique, déroulé ---- */
+    let cd = null, bar = null, syDetails = null, syRows = [], curMode = null;
+    function scrollToCard(k, focus) {
+      const card = cd && cd.cards[k];
+      if (!card) return;
+      card.classList.add("cd-ouverte");
+      cd.setCourante(cd.getCourante());
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (focus) { const h = card.querySelector(".cd-titre"); if (h) h.focus({ preventScroll: true }); }
+    }
+    function setCourante(k, scroll) {
+      const changed = k !== REGIE.courante();
+      REGIE.setCourante(k);
+      if (changed && scroll !== false) scrollToCard(k, true);
+    }
+    function onTerminer() {
+      const k = REGIE.courante();
+      const r = k != null ? rows[k] : null;
+      const msg = classId ? `Terminer la séance${NNBSP}: marquer «${NNBSP}Séance faite${NNBSP}»${r ? " et noter l’arrêt après la phase " + r.n : ""}${NNBSP}?` : "Arrêter le compteur de la séance" + NNBSP + "?";
+      if (!confirm(msg)) return;
+      REGIE.stop();
+      if (!classId || !P.setSeanceEtat) return;
+      const prev = etatOf() || {};
+      const now = new Date();
+      const hhmm = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+      let note = (prev.note || "").trim();
+      if (!note && r && r.n < nb) note = `Arrêt après la phase ${r.n} — ${r.titrePlain} (${hhmm})`;
+      P.setSeanceEtat(classId, key, { faite: true, date: prev.faite && prev.date ? prev.date : now.toLocaleDateString("fr-FR"), note });
+      if (fin.sync) fin.sync();
+      fin.scrollIntoView({ behavior: "smooth", block: "start" });
+      const ta = fin.querySelector("textarea"); if (ta) ta.focus({ preventScroll: true });
+    }
+    if (hasEtapes) {
+      REGIE.attach((classId || "_") + ":" + key, nb);
+      viewCleanup.push(REGIE.dispose);
+      cd = makeConduite(s, prepThemeId, i, {
+        regie: false, mode: REGIE.mode(), syn,
+        onSetCourante: (k) => setCourante(k, false),
+        onProjete: (k) => { syRows.forEach((tr, j) => tr.classList.toggle("sy-projetee", j === k)); if (k != null && REGIE.courante() == null) REGIE.setCourante(k); },
+      });
+      bar = makeRegieBar(s, prepThemeId, i, syn, { compact: false, projShow: cd.projShow, getCourante: () => REGIE.courante(), setCourante: (k) => setCourante(k, true), scrollTo: (k) => scrollToCard(k, true), onTerminer });
+      viewTheme.appendChild(bar);
+
+      // Synoptique
+      const sy = el("section", "regie-synoptique");
+      syDetails = el("details", "sy-wrap");
+      syDetails.open = true;
+      syDetails.appendChild(el("summary", "sec-titre", "Synoptique"));
+      const scroll = el("div", "plan-cours-scroll");
+      const table = el("table", "sy");
+      const heure = REGIE.running() && REGIE.startAt() != null;
+      table.setAttribute("aria-label", "Synoptique de la séance");
+      table.innerHTML = `<thead><tr><th class="sy-n">N°</th><th>Horaire</th>${heure ? "<th>Heure</th>" : ""}<th class="sy-d">Durée</th><th>Phase</th><th class="sy-moda">Modalité</th><th>Titre</th><th class="sy-direct">Direct</th><th class="sy-act" aria-label="Projeter"></th></tr></thead>`;
+      const tbody = el("tbody");
+      const ncol = heure ? 9 : 8;
+      const hh = (min) => new Date(REGIE.startAt() + min * 60000).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+      tbody.appendChild(el("tr", "sy-sep", `<td colspan="${ncol}">1re heure${NBSP}—${NBSP}60${NBSP}min</td>`));
+      rows.forEach((r, k) => {
+        if (syn.coupureHeure === k && k > 0) tbody.appendChild(el("tr", "sy-sep", `<td colspan="${ncol}">2e heure${NBSP}—${NBSP}60${NBSP}min</td>`));
+        const tr = el("tr");
+        tr.dataset.etape = k; tr.tabIndex = 0; tr.setAttribute("role", "button");
+        const subs = [supportResume(r), r.refs.filter((t) => t.kind).length ? "Projeter" + NNBSP + ": " + r.refs.filter((t) => t.kind).map((t) => t.label).join(", ") : "", r.diff ? "Différenciation" : ""].filter(Boolean);
+        tr.innerHTML = `<td class="sy-n">${r.n}</td><td class="sy-h">${r.a != null ? r.a + "–" + r.b : escapeHtml(r.t)}</td>` +
+          (heure ? `<td class="sy-h">${r.a != null ? hh(r.a) : ""}</td>` : "") +
+          `<td class="sy-d">${r.duree != null ? r.duree + NBSP + "min" + (r.tampon ? `<span class="sy-sub">tampon</span>` : "") : "—"}</td>` +
+          `<td>${escapeHtml(r.label)}<span class="sy-sub">${escapeHtml(r.phase)}</span></td>` +
+          `<td class="sy-moda" title="${escapeHtml(r.salleTitle)}">${escapeHtml(r.modalite)}${r.lieu ? `<span class="sy-sub">${escapeHtml(r.lieu)}</span>` : ""}</td>` +
+          `<td class="sy-t"><span class="sy-titre">${escapeHtml(r.titrePlain)}</span><span class="sy-etat">À l’écran</span>${subs.length ? `<span class="sy-sub">${escapeHtml(subs.join(SEP))}</span>` : ""}</td>` +
+          `<td class="sy-direct">${r.direct ? "en direct" : ""}</td><td class="sy-act"></td>`;
+        const bp = el("button", "btn secondary sm", "▶"); bp.type = "button"; bp.title = "Projeter la phase " + r.n;
+        bp.addEventListener("click", (ev) => { ev.stopPropagation(); cd.projShow({ kind: "etape", theme: prepThemeId, seance: i, etape: k }); });
+        tr.querySelector(".sy-act").appendChild(bp);
+        tr.addEventListener("click", (ev) => { if (!ev.target.closest("button")) scrollToCard(k, true); });
+        tr.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); scrollToCard(k, true); } });
+        tbody.appendChild(tr);
+        syRows.push(tr);
+      });
+      const tot = `Total${NBSP}${syn.total}${NBSP}min` + (syn.attendu != null ? SEP + "durée annoncée" + NBSP + escapeHtml(typoFr(s.duree)) + SEP + (syn.ok ? "conforme" : `<span class="sy-warn">écart de${NBSP}${Math.abs(syn.total - syn.attendu)}${NBSP}min</span>`) : "");
+      tbody.appendChild(el("tr", "sy-total", `<td colspan="${ncol}">${tot}</td>`));
+      table.appendChild(tbody);
+      scroll.appendChild(table);
+      syDetails.appendChild(scroll);
+      sy.appendChild(syDetails);
+      viewTheme.appendChild(sy);
+
+      // Déroulé
+      const sec = el("section", "prep-bloc prep-cours");
+      sec.appendChild(el("h3", "sec-titre", "Déroulé de la séance"));
+      sec.appendChild(cd);
+      viewTheme.appendChild(sec);
+
+      // Régie : rafraîchissement sur chaque changement (chrono, courante, mode)
+      const refresh = () => {
+        const m = REGIE.mode();
+        document.body.classList.toggle("regie-animation", m === "animation");
+        if (m !== curMode) { curMode = m; cd.applyMode(m); syDetails.open = m === "preparation"; plus.open = m === "preparation"; }
+        const k = REGIE.courante();
+        cd.setCourante(k);
+        syRows.forEach((tr, j) => { tr.classList.toggle("sy-courante", j === k); tr.classList.toggle("sy-faite", k != null && j < k); if (j === k) tr.setAttribute("aria-current", "step"); else tr.removeAttribute("aria-current"); });
+        bar.update();
+        setTopbarVar();
+      };
+      REGIE.onChange(refresh);
+      refresh();
+      // Clavier : ← → phase précédente / suivante, Entrée projette la carte focalisée.
+      const onKey = (ev) => {
+        if (IS_PROJ || ev.ctrlKey || ev.altKey || ev.metaKey) return;
+        const a = document.activeElement;
+        if (a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return;
+        if (LIVE.isOpen && LIVE.isOpen()) return;
+        if (ev.key === "Escape") { if (menu.open) { menu.open = false; ev.preventDefault(); } return; }
+        if (ev.key === "ArrowLeft" || ev.key === "ArrowRight") {
+          const k = REGIE.courante();
+          const n = ev.key === "ArrowRight" ? (k == null ? 0 : Math.min(nb - 1, k + 1)) : (k == null ? 0 : Math.max(0, k - 1));
+          ev.preventDefault(); setCourante(n, true);
+        } else if (ev.key === "Enter") {
+          const card = a && a.closest && a.closest(".cd-etape");
+          if (card && !a.closest("button, a, summary")) { ev.preventDefault(); cd.projShow({ kind: "etape", theme: prepThemeId, seance: i, etape: +card.dataset.etape }); }
+        }
+      };
+      document.addEventListener("keydown", onKey);
+      viewCleanup.push(() => document.removeEventListener("keydown", onKey));
+    } else if (s.cours) {
+      // Repli (Terminale : pas de conducteur) : la fiche de cours ouverte
+      const sec = el("section", "prep-bloc prep-cours");
+      sec.appendChild(el("h3", "sec-titre", "Fiche de cours"));
+      const body = el("div", "plan-cours-body");
+      body.innerHTML = T(s.cours);
+      body.querySelectorAll("table").forEach((tbl) => { const box = el("div", "plan-cours-scroll"); tbl.parentNode.insertBefore(box, tbl); box.appendChild(tbl); });
+      const b = el("button", "btn secondary sm", "Imprimer la fiche de cours");
+      b.addEventListener("click", () => printFicheCours(s, prepThemeId));
       body.appendChild(b);
       sec.appendChild(body);
       viewTheme.appendChild(sec);
     }
 
-    // Ce qu'il faut avoir sous la main (le « quand » vit dans le conducteur)
-    const grid = el("div", "plan-grid prep-grid");
-    const cols = s.etapes && s.etapes.length
-      ? [["📖 Sur le site (à projeter/faire faire)", s.surLeSite], ["🧰 À préparer avant la séance", s.aPreparer]]
-      : [["⏱️ En classe, minute par minute", s.enClasse], ["📖 Sur le site (à projeter/faire faire)", s.surLeSite], ["🧰 À préparer avant la séance", s.aPreparer]];
-    cols.forEach(([t, items]) => {
-      const col = el("div", "plan-col");
-      col.appendChild(el("div", "plan-col-head", t));
-      const ul = el("ul");
-      (items && items.length ? items : ["—"]).forEach((it) => {
-        const li = el("li"); li.innerHTML = it; ul.appendChild(li);
-      });
-      col.appendChild(ul);
-      grid.appendChild(col);
-    });
-    viewTheme.appendChild(grid);
-
-    // 🧰 Le matériel du thème (imprimables + fichiers), directement accessible
-    const kit = (typeof THEME_KITS !== "undefined" ? THEME_KITS : {})[prepThemeId];
-    if (kit && ((kit.imprimables || []).length || (kit.fichiers || []).length)) {
-      const sec = el("div", "prep-bloc");
-      sec.appendChild(el("h3", null, "🧰 Matériel du thème"));
-      if (kit.imprimables && kit.imprimables.length) {
-        const row = el("div", "tp-print-group");
-        kit.imprimables.forEach((im) => {
-          const b = el("button", "btn secondary", "🖨️ " + im.titre);
-          b.addEventListener("click", () => openPrint(im.titre, im.html));
-          row.appendChild(b);
-        });
-        sec.appendChild(row);
-      }
-      if (kit.fichiers && kit.fichiers.length) {
-        const ul = el("ul", "kit-files");
-        kit.fichiers.forEach((f) => {
-          const li = el("li");
-          li.innerHTML = `<a href="${f.chemin}" download>📄 ${f.nom}</a> — ${f.desc}`;
-          ul.appendChild(li);
-        });
-        sec.appendChild(ul);
-      }
-      viewTheme.appendChild(sec);
-    }
-
-    // 📝 Les évaluations du thème (sujet + corrigé imprimables)
-    const evals = (typeof EVALUATIONS !== "undefined" ? EVALUATIONS : []).filter((e) => e.themeId === prepThemeId);
-    if (evals.length) {
-      const sec = el("div", "prep-bloc");
-      sec.appendChild(el("h3", null, "📝 Évaluations du thème"));
-      evals.forEach((ev) => {
-        const row = el("div", "prep-eval-row");
-        row.appendChild(el("span", null, `<strong>${ev.titre}</strong> · ${ev.duree} · / ${ev.total} pts`));
-        const bS = el("button", "btn secondary", "🖨️ Sujet");
-        bS.addEventListener("click", () => openPrint(ev.titre,
-          `<h1>${ev.titre}</h1><p class="intro">Durée : ${ev.duree} · Barème : / ${ev.total} points</p>${ev.enonce}`));
-        row.appendChild(bS);
-        if (ev.corrige) {
-          const bC = el("button", "btn secondary", "🔑 Corrigé");
-          bC.addEventListener("click", () => openPrint("Corrigé — " + ev.titre, `<h1>Corrigé — ${ev.titre}</h1>${ev.corrige}`));
-          row.appendChild(bC);
+    /* ---- Bloc 6 : bilan de la séance (cahier de textes) ---- */
+    const fin = el("section", "prep-bloc seance-fin");
+    fin.appendChild(el("h3", "sec-titre", "Bilan de la séance (cahier de textes)"));
+    if (classId && P.getSeanceEtat) {
+      const l1 = el("div", "fin-row");
+      const lab = el("label", "cahier-faite");
+      const cb = el("input"); cb.type = "checkbox";
+      lab.appendChild(cb); lab.appendChild(el("span", null, " Séance faite"));
+      const dateEl = el("span", "cahier-date");
+      l1.append(lab, dateEl);
+      const ta = el("textarea", "cahier-note fin-note");
+      ta.rows = 3; ta.placeholder = "Où on s’est arrêté, ce que je reprends la prochaine fois…";
+      const reprise = el("p", "fin-reprise");
+      const sync = () => {
+        const et = etatOf();
+        cb.checked = !!(et && et.faite);
+        dateEl.textContent = et && et.date ? "le" + NBSP + et.date : "";
+        if (document.activeElement !== ta) ta.value = (et && et.note) || "";
+        fin.classList.toggle("done", !!(et && et.faite));
+        if (etatTag) { etatTag.textContent = et && et.faite ? "Faite" + (et.date ? NBSP + "le" + NBSP + et.date : "") : "À faire"; etatTag.classList.toggle("ok", !!(et && et.faite)); }
+        reprise.innerHTML = "";
+        const m = /^Arrêt après la phase (\d+)/.exec((et && et.note) || "");
+        if (m && hasEtapes && +m[1] < nb) {
+          const a = el("button", "linklike", `Reprendre à la phase${NBSP}${+m[1] + 1}${NBSP}›`); a.type = "button";
+          a.addEventListener("click", () => setCourante(+m[1], true));
+          reprise.appendChild(a);
         }
-        sec.appendChild(row);
-      });
-      viewTheme.appendChild(sec);
+      };
+      const save = () => {
+        const prev = etatOf() || {};
+        if (!cb.checked && !ta.value.trim()) P.setSeanceEtat(classId, key, null);
+        else P.setSeanceEtat(classId, key, { faite: cb.checked, date: cb.checked ? (prev.faite && prev.date ? prev.date : new Date().toLocaleDateString("fr-FR")) : "", note: ta.value.trim() });
+        sync();
+      };
+      cb.addEventListener("change", save);
+      ta.addEventListener("change", save);
+      fin.append(l1, ta, reprise);
+      fin.sync = sync;
+      sync();
+    } else if (!classId) {
+      fin.appendChild(el("p", "sc-txt-soft", "Crée une classe pour tenir le cahier de textes de cette séance (séance faite, date, note)."));
     }
-
-    // Navigation séance précédente / suivante + passerelle vers la page élève
-    const nav = el("div", "tp-print-group prep-nav");
-    if (prepSeanceIdx > 0) {
-      const b = el("button", "btn secondary", "← Séance précédente");
-      b.addEventListener("click", () => { prepSeanceIdx--; renderPreparer(); });
-      nav.appendChild(b);
+    if (hasEtapes) {
+      const marge = [];
+      if (rp.souples.length) marge.push(listeNums(rp.souples, "phase") + " raccourcissable" + (rp.souples.length > 1 ? "s" : ""));
+      if (rp.dernierBilan) marge.push("phase " + rp.dernierBilan.n + " (" + rp.dernierBilan.label.toLowerCase() + (rp.dernierBilan.duree != null ? ", " + rp.dernierBilan.duree + NBSP + "min" : "") + ") prioritaire");
+      if (marge.length) fin.appendChild(el("p", "sc-txt-soft fin-marge", `Marge de manœuvre${NNBSP}: ${escapeHtml(marge.join(SEP))}.`));
     }
-    if (prepSeanceIdx < plan.seances.length - 1) {
-      const b = el("button", "btn", "Séance suivante →");
-      b.addEventListener("click", () => { prepSeanceIdx++; renderPreparer(); });
-      nav.appendChild(b);
-    }
-    const bTheme = el("button", "btn secondary", "👀 Voir le thème côté élève");
+    const finNav = el("div", "fin-nav");
+    if (i < N - 1) { const b = el("button", "btn", "Séance suivante ›"); b.addEventListener("click", () => { prepSeanceIdx++; renderPreparer(); }); finNav.appendChild(b); }
+    const bTheme = el("button", "btn secondary", "Voir le thème côté élève");
     bTheme.addEventListener("click", () => navigate(prepThemeId));
-    nav.appendChild(bTheme);
-    viewTheme.appendChild(nav);
+    finNav.appendChild(bTheme);
+    fin.appendChild(finNav);
+    viewTheme.appendChild(fin);
+
+    /* ---- Bloc 7 : annexes ---- */
+    const ann = el("div", "seance-annexes");
+    if (s.cours && hasEtapes) {
+      const d = el("details", "annexe");
+      d.appendChild(el("summary", null, "Fiche de cours complète (élèves)"));
+      const body = el("div", "plan-cours-body");
+      body.innerHTML = T(s.cours);
+      body.querySelectorAll("table").forEach((tbl) => { const box = el("div", "plan-cours-scroll"); tbl.parentNode.insertBefore(box, tbl); box.appendChild(tbl); });
+      const b = el("button", "btn secondary sm", "Imprimer la fiche de cours");
+      b.addEventListener("click", () => printFicheCours(s, prepThemeId));
+      body.appendChild(b);
+      d.appendChild(body);
+      ann.appendChild(d);
+    }
+    const kit = (typeof THEME_KITS !== "undefined" ? THEME_KITS : {})[prepThemeId];
+    const evals = (typeof EVALUATIONS !== "undefined" ? EVALUATIONS : []).filter((e) => e.themeId === prepThemeId);
+    if ((kit && ((kit.imprimables || []).length || (kit.fichiers || []).length)) || evals.length) {
+      const d = el("details", "annexe");
+      d.appendChild(el("summary", null, "Ressources du thème"));
+      const body = el("div", "annexe-body");
+      if (kit && kit.imprimables && kit.imprimables.length) {
+        body.appendChild(el("h4", null, "Imprimables"));
+        const row = el("div", "tp-print-group");
+        kit.imprimables.forEach((im) => { const b = el("button", "btn secondary sm", "Imprimer" + NNBSP + ": " + textePlain(stripEmojiPrint(im.titre))); b.addEventListener("click", () => openPrint(im.titre, im.html)); row.appendChild(b); });
+        body.appendChild(row);
+      }
+      if (kit && kit.fichiers && kit.fichiers.length) {
+        body.appendChild(el("h4", null, "Fichiers"));
+        const ul = el("ul", "kit-files");
+        kit.fichiers.forEach((f) => { const li = el("li"); li.innerHTML = `<a href="${f.chemin}" download>${escapeHtml(f.nom)}</a> — ${f.desc}`; ul.appendChild(li); });
+        body.appendChild(ul);
+      }
+      if (evals.length) {
+        body.appendChild(el("h4", null, "Évaluations"));
+        evals.forEach((ev) => {
+          const row = el("div", "prep-eval-row");
+          row.appendChild(el("span", null, `<strong>${ev.titre}</strong>${SEP}${escapeHtml(typoFr(ev.duree))}${SEP}/${NBSP}${ev.total}${NBSP}pts`));
+          const bS = el("button", "btn secondary sm", "Sujet");
+          bS.addEventListener("click", () => openPrint(ev.titre, `<h1>${ev.titre}</h1><p class="intro">Durée${NNBSP}: ${ev.duree}${SEP}Barème${NNBSP}: /${NBSP}${ev.total} points</p>${ev.enonce}`));
+          row.appendChild(bS);
+          if (ev.corrige) { const bC = el("button", "btn secondary sm", "Corrigé"); bC.addEventListener("click", () => openPrint("Corrigé — " + ev.titre, `<h1>Corrigé — ${ev.titre}</h1>${ev.corrige}`)); row.appendChild(bC); }
+          body.appendChild(row);
+        });
+      }
+      d.appendChild(body);
+      ann.appendChild(d);
+    }
+    if (hasEtapes) {
+      const d = el("details", "annexe annexe-salle");
+      d.appendChild(el("summary", null, "Organisation de la salle"));
+      const body = el("div", "annexe-body");
+      body.innerHTML =
+        `<div class="plan-cours-scroll"><table class="sy sy-salle"><thead><tr><th>Phase</th><th>Modalité</th><th>Lieu</th><th>Détail</th></tr></thead><tbody>` +
+        Object.keys(PHASE_TYPES).map((k) => { const p = PHASE_TYPES[k]; return `<tr><td>${escapeHtml(p.label)}<span class="sy-sub">${escapeHtml(p.phase)}</span></td><td>${escapeHtml(p.modalite)}</td><td>${escapeHtml(p.lieu)}</td><td>${escapeHtml(typoFr(p.salle))}</td></tr>`; }).join("") +
+        `</tbody></table></div><ul class="sc-list">` +
+        `<li><strong>Salle en U, un poste par élève.</strong> Les phases machine (exercices, TP) se font à son poste${NNBSP}; l’enseignant circule au centre du U et voit tous les écrans.</li>` +
+        `<li><strong>La TV tactile du bureau</strong> est l’écran de la classe${NNBSP}: ouvrir l’écran de projection dessus et projeter depuis le conducteur ce que la classe doit voir (phase, section, exercice, QCM)${NNBSP}; on peut écrire au doigt par-dessus.</li>` +
+        `<li><strong>Les quatre coins équipés</strong> (deux fauteuils, une table, une TV HDMI) accueillent les îlots et les groupes de projet${NNBSP}: un îlot par coin, un ordinateur branché sur la TV du coin${NNBSP}; les autres îlots travaillent sur les postes voisins du U.</li>` +
+        `<li><strong>Plus d’ardoises${NNBSP}: la réponse en direct.</strong> Chaque phase a un bouton «${NNBSP}Poser en direct${NNBSP}»${NNBSP}: la question part sur les postes, les élèves répondent (choix, vrai ou faux, texte court, nombre), l’enseignant voit qui a répondu quoi, la TV tactile affiche les réponses anonymes, puis il clôt et révèle.</li>` +
+        `<li><strong>En îlots, un seul poste répond.</strong> L’élève connecté au poste de l’îlot coche ses camarades (bouton «${NNBSP}Mon îlot${NNBSP}» de sa barre)${NNBSP}: sa réponse compte pour tout l’îlot${NNBSP}; un camarade qui répond de son propre poste garde sa réponse.</li>` +
+        `</ul><p class="sc-txt-soft">Chaque phase porte une modalité qui rappelle où elle se joue.</p>`;
+      d.appendChild(body);
+      ann.appendChild(d);
+    }
+    if (ann.childNodes.length) viewTheme.appendChild(ann);
+    setTopbarVar();
   }
 
   // 🖨️ Bilan individuel imprimable : à remettre à l'élève ou aux parents.
@@ -5704,7 +6612,7 @@ except Exception:
   }
 
   /* ---------------- Impressions communes ---------------- */
-  function openPrint(title, bodyHtml) {
+  function openPrint(title, bodyHtml, extraCss) {
     const w = window.open("", "_blank");
     if (!w) {
       alert("🖨️ Le navigateur a bloqué la fenêtre d'impression. Autorise les pop-ups pour ce site.");
@@ -5712,7 +6620,8 @@ except Exception:
     }
     w.document.write(
       `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>${title}</title><style>` +
-        `*{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif}` +
+        `*{box-sizing:border-box}html,body,button{font-family:system-ui,"Segoe UI",Roboto,sans-serif}` +
+        `pre,code,kbd,samp{font-family:ui-monospace,"Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace}pre{white-space:pre-wrap}` +
         `body{margin:1.5cm;color:#1f2733;line-height:1.5}` +
         `h1{font-size:18pt;margin:0 0 .2cm}h2{font-size:13pt;margin:.7cm 0 .2cm;border-bottom:1px solid #ccc}` +
         `h3{font-size:11pt;margin:.5cm 0 .1cm}.intro{color:#444;font-size:10.5pt}` +
@@ -5722,12 +6631,14 @@ except Exception:
         `.field{border:1px solid #999;border-radius:6px;min-height:1.1cm;margin:.15cm 0 .4cm;padding:.15cm .3cm}` +
         `.lbl{font-weight:700;font-size:10.5pt}code{background:#eee;padding:0 .15cm;border-radius:3px}` +
         `.no-print{margin-bottom:.5cm}@media print{.no-print{display:none}}` +
+        (extraCss || "") +
         `</style></head><body>` +
-        `<button class="no-print" onclick="window.print()" style="padding:.3cm .7cm;font-size:11pt;cursor:pointer">🖨️ Imprimer</button>` +
+        `<button class="no-print" onclick="window.print()" style="padding:.3cm .7cm;font-size:11pt;cursor:pointer">Imprimer</button>` +
         bodyHtml +
         `</body></html>`
     );
     w.document.close();
+    if (extraCss && extraCss.indexOf("/*conducteur*/") >= 0) { try { theadify(w.document); } catch (e) {} }
     w.focus();
   }
 
@@ -5869,7 +6780,22 @@ except Exception:
 
   /* ---------------- Routeur ---------------- */
   let currentTarget = "home";
+  // Nettoyage des vues (chrono, écouteurs clavier/clic posés par une page) à chaque navigation.
+  const viewCleanup = [];
+  function runViewCleanup() {
+    while (viewCleanup.length) { try { viewCleanup.pop()(); } catch (e) {} }
+    document.body.classList.remove("regie-animation");
+  }
+  // Hauteurs de la barre du site et de la bande de régie (pour le sticky et les ancres).
+  function setTopbarVar() {
+    const tb = document.querySelector(".topbar");
+    const rb = document.querySelector(".regie-bar:not(.regie-compact)");
+    document.documentElement.style.setProperty("--topbar-h", (tb ? tb.offsetHeight : 57) + "px");
+    document.documentElement.style.setProperty("--regie-h", (rb ? rb.offsetHeight : 0) + "px");
+  }
+  window.addEventListener("resize", setTopbarVar);
   function navigate(target) {
+    if (!(target && target.includes("@"))) runViewCleanup();
     if (target && target.includes("@")) {
       // lien profond « theme@ancre » (ex. #donnees-base@e3) : la page, puis l'endroit
       const [th, anc] = target.split("@");
@@ -6068,32 +6994,35 @@ except Exception:
       switch (m.kind) {
         case "titre": {
           if (!s) return wait();
+          const tt = splitTitre(s.titre, m.seance);
           stage.appendChild(el("div", "proj-splash",
-            `<div class="proj-kicker">${tTitle}</div><h1>${s.titre}</h1>` +
-            `<p class="proj-duree">⏱️ ${s.duree || ""}</p>` +
-            (s.objectif ? `<p class="proj-objectif">🎯 ${s.objectif}</p>` : "")));
+            `<div class="proj-kicker">${c ? "Thème" + NBSP + c.num + SEP + escapeHtml(c.title) : ""}</div>` +
+            `<h1>Séance${NBSP}${escapeHtml(tt.num)}${SEP}${escapeHtml(tt.titre)}</h1>` +
+            (tt.soustitre ? `<p class="proj-duree">${escapeHtml(tt.soustitre)}</p>` : "") +
+            `<p class="proj-duree">${escapeHtml(typoFr(s.duree || ""))}</p>` +
+            (s.objectif ? `<p class="proj-objectif">Objectif${NNBSP}: ${stripEmojiUI(typoFr(s.objectif))}</p>` : "")));
           return;
         }
         case "plan": {
           if (!s) return wait();
-          const lignes = (s.etapes || []).map((e) => {
-            const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
-            return `<tr><td><strong>${e.t}</strong></td><td>${emo} ${label}</td><td>${e.eleves ? "Les élèves " + e.eleves : e.titre}</td></tr>`;
-          }).join("");
-          stage.appendChild(kicker(`${tTitle} · ${s.titre}`));
-          stage.appendChild(el("h1", null, "🧑‍🎓 Plan de travail"));
+          const syn = deriveSynoptique(s, m.theme);
+          const lignes = syn.rows.map((r) =>
+            `<tr><td><strong>${r.a != null ? r.a + "–" + r.b : escapeHtml(r.t)}</strong></td><td>${escapeHtml(r.label)}</td>` +
+            `<td>${r.etape.eleves ? "Les élèves " + stripEmojiUI(typoFr(r.etape.eleves)) : stripEmojiUI(typoFr(r.etape.titre))}</td></tr>`).join("");
+          stage.appendChild(kicker(`${c ? "Thème" + NBSP + c.num + SEP + escapeHtml(c.title) : ""}${SEP}${escapeHtml(textePlain(s.titre))}`));
+          stage.appendChild(el("h1", null, "Plan de travail élève"));
           stage.appendChild(el("div", "plan-cours-scroll",
-            `<table class="proj-plan"><tr><th>Quand</th><th>Quoi</th><th>Ce qu'on fait</th></tr>${lignes}</table>`));
+            `<table class="proj-plan"><thead><tr><th>Horaire</th><th>Phase</th><th>Activité</th></tr></thead><tbody>${lignes}</tbody></table>`));
           return;
         }
         case "etape": {
           const e = s && s.etapes ? s.etapes[m.etape] : null;
           if (!e) return wait();
-          const [emo, label] = CONDUITE_TYPES[e.type] || ["▫️", e.type];
-          stage.appendChild(kicker(`${emo} ${label} · ${e.t} · ${s.titre}`));
-          stage.appendChild(el("h1", null, e.titre));
-          if (e.contenu) { const body = el("div", "plan-cours-body", e.contenu); wrapTables(body); stage.appendChild(body); }
-          if (e.eleves) stage.appendChild(el("div", "proj-eleves", "🧑‍🎓 Ce que vous faites — les élèves " + e.eleves));
+          const r = deriveEtape(e, m.etape, s, m.theme);
+          stage.appendChild(kicker(`Phase${NBSP}${r.n}/${s.etapes.length}${SEP}${r.a != null ? r.a + "–" + r.b + NBSP + "min" : escapeHtml(r.t)}${SEP}${escapeHtml(r.label)}${SEP}${escapeHtml(textePlain(s.titre))}`));
+          stage.appendChild(el("h1", null, stripEmojiUI(typoFr(e.titre))));
+          if (e.contenu) { const body = el("div", "plan-cours-body", stripEmojiUI(typoFr(e.contenu))); wrapTables(body); stage.appendChild(body); }
+          if (e.eleves) stage.appendChild(el("div", "proj-eleves", `<span class="proj-lbl">Consigne</span> Les élèves ${stripEmojiUI(typoFr(e.eleves))}`));
           return;
         }
         case "section": {
