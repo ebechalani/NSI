@@ -1464,6 +1464,444 @@ for version, donnees in [("brut", joueurs), ("normalisé", normaliser_colonnes(j
       },
     ],
   },
+  {
+    id: "tp-gloutons",
+    theme: "algorithmique",
+    lang: "python",
+    titre: "TP — Algorithmes gloutons : monnaie, sac à dos, planning",
+    intro:
+      "Objectif : mettre en œuvre un algorithme glouton (capacité du BO) sur quatre problèmes classiques, et surtout comprendre quand il donne la meilleure solution et quand il se trompe. Un algorithme glouton applique toujours la même règle locale (« le meilleur choix sur le moment ») et ne revient jamais en arrière : il est rapide et simple, mais pas toujours optimal. On finit par une recherche exhaustive (qui trouve toujours l'optimum, mais lentement) et par un bonus sur la récursivité de Fibonacci. D'après le notebook Capytale « Algorithmes gloutons » (disponible dans le kit du thème avec le fichier gloutons.py pour Thonny).",
+    prof:
+      "<p><strong>Place dans la progression.</strong> Séance 6 du thème (les gloutons), après le tri et la dichotomie, avant kNN. Les élèves ont déjà écrit des boucles <code>while</code>, des fonctions avec <code>return</code> et manipulé des listes de tuples : tout le TP tient avec ces outils. La partie 5 (Fibonacci) mobilise la récursivité, hors programme de Première : c'est un bonus pour les élèves rapides ou une ouverture vers la Terminale.</p>" +
+      "<ul>" +
+      "<li><strong>Objectifs (BO « Algorithmes gloutons »).</strong> Mettre en œuvre un algorithme glouton ; comprendre que le glouton fait un choix local irrévocable ; savoir qu'il donne l'optimum dans certains cas (monnaie en euros, choix par heure de fin pour les conférences) et pas dans d'autres (monnaie non canonique, sac à dos) ; comparer avec une recherche exhaustive et son coût.</li>" +
+      "<li><strong>Déroulé conseillé (2 séances de 2 h ou 1 séance + maison).</strong> Séance A : étapes 1 à 3 (échauffement binaire 15 min, monnaie 35 min, sac à dos 40 min, bilan 10 min). Séance B : étape 4 (planning glouton, 45 min, avec un travail sur frise au tableau avant de coder), étape 5 (recherche exhaustive, 30 min, lecture guidée du code récursif plutôt qu'écriture), étape 6 en bonus. Sur le site chaque cellule s'exécute dans le navigateur ; sur Capytale, déposer <code>gloutons_capytale.ipynb</code> ; sur Thonny, <code>gloutons.py</code> (squelette à compléter, asserts à décommenter). Le corrigé complet vérifié est <code>gloutons_corrige.py</code>.</li>" +
+      "<li><strong>Différenciation.</strong> Étapes 1 et 2 pour tous ; étape 3 en autonomie pour la majorité ; l'étape 5 se fait en lecture de code pour les groupes fragiles (on exécute, on compare aux résultats du glouton, on explique <em>avec / sans</em> à l'oral) et en écriture pour les avancés. Le bonus 6 n'est pas exigible.</li>" +
+      "<li><strong>Le fil conducteur à faire dire aux élèves.</strong> À chaque partie, la même phrase : « quelle est la règle locale ? » (la plus grande pièce ; l'objet le plus cher, puis le meilleur rapport ; la conférence qui finit le plus tôt) puis « cette règle donne-t-elle toujours l'optimum ? ». Faire écrire cette phrase dans le cahier après chaque partie : c'est la trace du cours.</li>" +
+      "<li><strong>Pièges observés.</strong> (1) Confondre <code>i = i + 1</code> (passer à la pièce suivante) et retirer la pièce : les élèves incrémentent <code>i</code> dans les deux branches et perdent des pièces. (2) Oublier la condition <code>i &lt; len(lst_piece)</code> : sans pièce de 1 la boucle ne s'arrête plus (IndexError ou boucle infinie). (3) Trier avec <code>sorted(liste, reverse=True)</code> pour le sac à dos : ça marche par hasard car le tri se fait sur le premier élément du tuple (la valeur) ; faire expliciter <code>key=</code>. (4) Dans <code>planning1</code>, tester <code>debut &gt; fin_precedente</code> au lieu de <code>&gt;=</code> : une conférence qui commence pile à la fin de la précédente est compatible. (5) Croire qu'un résultat différent du corrigé est faux dans <code>planning3</code> : plusieurs plannings peuvent être optimaux à égalité (voir la note de l'étape 5).</li>" +
+      "<li><strong>Évaluation.</strong> Sur le site : la réponse en direct (📡) avec la question « Combien de pièces pour 48 avec les pièces 30, 24, 12, 6, 3, 1 ? » (attendu : le glouton en donne 3, l'optimum est 2). Écrit : donner un nouveau système de pièces et demander si le glouton est optimal, en justifiant par un contre-exemple ; donner 5 conférences et demander le planning glouton. L'exercice 8 du thème (coder le rendu) reste l'entraînement de référence.</li>" +
+      "<li><strong>Ce qui a changé par rapport au notebook Capytale.</strong> Le module <code>rcviz</code> (arbre d'appels de Fibonacci) n'existe pas dans le navigateur : il est remplacé par un compteur global d'appels, qui rend le même phénomène visible (25 appels pour n = 6, 242 785 pour n = 25). Les images du notebook (frises des conférences) sont remplacées par des frises en mode texte dans les cellules.</li>" +
+      "</ul>",
+    steps: [
+      {
+        num: "1", titre: "Échauffement : du décimal au binaire, en glouton", run: true,
+        code: `# ÉTAPE 1 — Écrire n en binaire sur 16 bits, du poids fort au poids faible
+# Règle gloutonne : pour i = 15, 14, ..., 0, si n >= 2**i on écrit "1" et on retire 2**i, sinon "0".
+
+def dec_vers_bin_16b(n):
+    resultat = ""
+    for i in range(15, -1, -1):
+        if n >= 2 ** i:
+            resultat = resultat + "1"
+            n = n - 2 ** i
+        else:
+            resultat = resultat + "0"
+    return resultat
+
+print(dec_vers_bin_16b(5))       # attendu : 0000000000000101
+print(dec_vers_bin_16b(1000))
+print(dec_vers_bin_16b(65535))   # attendu : 16 fois "1"
+
+# À toi : la même chose SANS limite de taille. Il faut d'abord trouver le plus grand
+# rang i tel que 2**i <= n, puis appliquer la même règle avec un while.
+def dec_vers_bin(n):
+    if n == 0:
+        return "0"
+    i = 0
+    # À COMPLÉTER : augmenter i tant que 2 ** (i + 1) <= n
+    resultat = ""
+    # À COMPLÉTER : while i >= 0 : même règle qu'au-dessus, puis i = i - 1
+    return resultat
+
+print(dec_vers_bin(5), dec_vers_bin(1000), dec_vers_bin(70000))
+# Vérification automatique (Python sait déjà le faire : bin(n)[2:])
+# assert dec_vers_bin(1000) == "1111101000" and dec_vers_bin(70000) == bin(70000)[2:]`,
+        note: "On a déjà vu cette méthode dans le thème « Représentation des données ». Ici on la relit avec des lunettes d'algorithmicien : à chaque étape on prend la plus grande puissance de 2 possible et on ne revient jamais dessus. C'est déjà un algorithme glouton.",
+        questions: [
+          "Pourquoi peut-on dire que cette méthode est « gloutonne » ? Quelle est la règle appliquée à chaque étape ?",
+          "Que se passe-t-il avec dec_vers_bin_16b(70000) ? Pourquoi ?",
+          "Pourquoi n'y a-t-il aucun risque que cette méthode se trompe (donne une écriture fausse) ?",
+        ],
+        correction: [
+          "À chaque rang i on fait le choix local « je prends 2**i si je peux » et on ne le remet jamais en question. C'est la définition d'un algorithme glouton : une règle simple, appliquée dans l'ordre, sans retour en arrière.",
+          "70000 dépasse 65535 = 2**16 - 1 : il reste 4464 après la boucle qui n'est jamais écrit, le résultat (1111111111111111 tronqué) est faux. D'où la version dec_vers_bin qui commence par chercher le bon rang de départ.",
+          "Parce que la décomposition en puissances de 2 distinctes est unique et que, si n < 2**(i+1), on a forcément n - 2**i < 2**i : prendre la plus grande puissance possible ne bloque jamais la suite. Ce n'est pas le cas de tous les problèmes du TP !",
+          { code: `def dec_vers_bin(n):
+    if n == 0:
+        return "0"
+    i = 0
+    while 2 ** (i + 1) <= n:
+        i = i + 1
+    resultat = ""
+    while i >= 0:
+        if n >= 2 ** i:
+            resultat = resultat + "1"
+            n = n - 2 ** i
+        else:
+            resultat = resultat + "0"
+        i = i - 1
+    return resultat
+
+assert dec_vers_bin(5) == "101"
+assert dec_vers_bin(1000) == "1111101000"
+assert dec_vers_bin(70000) == bin(70000)[2:]` },
+        ],
+        prof: "<p>Étape courte (15 min) qui rassure : le code est donné, on le relit. Faire verbaliser la règle au tableau avant de lancer la cellule. La question 3 est le point clé de tout le TP : le glouton binaire est <em>toujours</em> optimal parce que la structure du problème le garantit ; on passera ensuite à des problèmes où ce n'est plus vrai. Ne pas s'attarder sur la preuve, une phrase suffit.</p>",
+      },
+      {
+        num: "2", titre: "Le rendu de monnaie : la plus grande pièce d'abord", run: true,
+        code: `# ÉTAPE 2 — Rendre 5,48 € (548 centimes) avec le moins de pièces possible
+# Règle gloutonne : tant qu'il reste quelque chose à rendre, on donne la plus grande pièce possible.
+rst = 548
+lst_piece = [200, 100, 50, 20, 10, 5, 2, 1]      # triée de la plus grande à la plus petite
+lst_rendu = []
+i = 0
+while rst > 0 and i < len(lst_piece):
+    if lst_piece[i] <= rst:      # la pièce i tient dans ce qui reste : on la rend
+        lst_rendu.append(lst_piece[i])
+        rst = rst - lst_piece[i]
+    else:                        # trop grande : on passe à la pièce suivante
+        i = i + 1
+print(lst_rendu)                 # attendu : [200, 200, 100, 20, 20, 5, 2, 1]
+
+# À toi : la même chose dans une fonction, réutilisable avec n'importe quel système de pièces
+def rendu_glouton(rst, lst_piece):
+    lst_rendu = []
+    # À COMPLÉTER : reprendre la boucle ci-dessus
+    return lst_rendu
+
+print(rendu_glouton(548, [200, 100, 50, 20, 10, 5, 2, 1]))
+print(rendu_glouton(11, [200, 100, 50, 20, 10, 5, 2, 1]))    # attendu : [10, 1]
+
+# Décommente quand la fonction est prête :
+# Royaume-Uni avant 1971 : pièces de 30, 24, 12, 6, 3 et 1 (en pence)
+# print("48 :", rendu_glouton(48, [30, 24, 12, 6, 3, 1]))
+# print("52 :", rendu_glouton(52, [30, 24, 12, 6, 3, 1]))
+# Et si la pièce de 1 centime disparaît ?
+# print("11 sans pièce de 1 :", rendu_glouton(11, [200, 100, 50, 20, 10, 5, 2]))`,
+        note: "Dans la boucle, deux cas et deux actions différentes : quand la pièce tient, on la rend (et on garde le même i, la même pièce peut servir plusieurs fois) ; quand elle ne tient pas, on avance d'une pièce (i + 1). La condition i < len(lst_piece) évite de sortir de la liste.",
+        questions: [
+          "Avec les pièces en euros, le glouton rend-il toujours le nombre MINIMUM de pièces ? Essaie 48, 52, 99.",
+          "Avec les pièces britanniques d'avant 1971 (30, 24, 12, 6, 3, 1), combien de pièces le glouton rend-il pour 48 ? Peut-on faire mieux ? Et pour 52 ?",
+          "Sans pièce de 1 centime, que rend le glouton pour 11 ? Pourquoi est-ce un problème, alors qu'il existe une solution (laquelle) ?",
+          "Pourquoi la liste de pièces doit-elle être triée par valeur décroissante ? Que se passerait-il sinon ?",
+        ],
+        correction: [
+          "Oui : en euros (comme en dollars), le système de pièces est dit « canonique » et le glouton est optimal. 48 = 20 + 20 + 5 + 2 + 1 (5 pièces), 52 = 50 + 2 (2 pièces), 99 = 50 + 20 + 20 + 5 + 2 + 2 (6 pièces) : impossible de faire moins.",
+          "48 → glouton [30, 12, 6] soit 3 pièces, alors que 24 + 24 en fait 2. 52 → glouton [30, 12, 6, 3, 1] soit 5 pièces, alors que 24 + 24 + 3 + 1 en fait 4. Le glouton n'est plus optimal : prendre la pièce de 30 « parce que c'est la plus grande » était un mauvais choix local, et il ne revient jamais dessus.",
+          "Le glouton rend [10] et s'arrête avec 1 centime impossible à rendre (la boucle se termine parce que i atteint la fin de la liste). Pourtant 5 + 2 + 2 + 2 rend exactement 11. Le glouton peut donc non seulement être non optimal, mais carrément échouer.",
+          "La règle « la plus grande pièce possible » suppose qu'on examine les pièces de la plus grande à la plus petite. Avec une liste croissante [1, 2, 5, ...], le glouton rendrait tout en pièces de 1 (548 pièces !) : la règle ne serait plus appliquée. Dans une version robuste on écrirait d'abord lst_piece = sorted(lst_piece, reverse=True).",
+          { code: `def rendu_glouton(rst, lst_piece):
+    """Pièces rendues pour la somme rst, toujours la plus grande possible."""
+    lst_rendu = []
+    i = 0
+    while rst > 0 and i < len(lst_piece):
+        if lst_piece[i] <= rst:
+            lst_rendu.append(lst_piece[i])
+            rst = rst - lst_piece[i]
+        else:
+            i = i + 1
+    return lst_rendu
+
+assert rendu_glouton(548, [200, 100, 50, 20, 10, 5, 2, 1]) == [200, 200, 100, 20, 20, 5, 2, 1]
+assert rendu_glouton(11, [200, 100, 50, 20, 10, 5, 2, 1]) == [10, 1]
+print(rendu_glouton(48, [30, 24, 12, 6, 3, 1]))          # [30, 12, 6]        (24 + 24 : mieux)
+print(rendu_glouton(52, [30, 24, 12, 6, 3, 1]))          # [30, 12, 6, 3, 1]  (24 + 24 + 3 + 1 : mieux)
+print(rendu_glouton(11, [200, 100, 50, 20, 10, 5, 2]))   # [10] : il reste 1, impasse` },
+        ],
+        prof: "<p>Cœur de la séance A (35 min). Commencer débranché : chacun rend 5,48 € avec de vraies pièces (ou des jetons) et explique sa méthode ; tout le monde fait du glouton sans le savoir. Puis on code. Le contre-exemple britannique est le moment fort : le faire trouver en <strong>réponse en direct</strong> (📡, question numérique « combien de pièces pour 48 ? ») avant d'exécuter, pour que la surprise soit collective. Terminer par la phrase à noter : « le glouton est optimal pour les euros, pas pour tout système de pièces ». Exercice 8 du thème pour l'entraînement.</p>",
+      },
+      {
+        num: "3", titre: "Le sac à dos : quel critère glouton ?", run: true,
+        code: `# ÉTAPE 3 — Remplir un sac de masse maximale sans dépasser, en emportant le plus de valeur possible
+valeur_masse_objets = [(5, 13), (4, 8), (3, 10), (7, 12)]   # (valeur en €, masse en kg)
+
+def masse(liste_objet):
+    total = 0
+    for v, m in liste_objet:
+        total = total + m
+    return total
+
+def valeur(liste_objet):
+    total = 0
+    # À COMPLÉTER : additionner les valeurs
+    return total
+
+print("masse totale :", masse(valeur_masse_objets), "kg ; valeur totale :", valeur(valeur_masse_objets), "€")   # 43 kg, 19 €
+
+# Critère 1 : on prend les objets du plus cher au moins cher, tant qu'ils rentrent
+def sac_a_dos_1(masse_max, liste_objet):
+    tries = sorted(liste_objet, key=lambda obj: obj[0], reverse=True)   # par valeur décroissante
+    sac = []
+    for obj in tries:
+        if masse(sac) + obj[1] <= masse_max:   # il rentre encore ?
+            sac.append(obj)
+    return sac
+
+for masse_max in (15, 21, 30):
+    sac = sac_a_dos_1(masse_max, valeur_masse_objets)
+    print("critère valeur, sac de", masse_max, "kg :", sac, "->", valeur(sac), "€ pour", masse(sac), "kg")
+
+# Critère 2 : le meilleur rapport valeur / masse d'abord
+def sac_a_dos_2(masse_max, liste_objet):
+    tries = liste_objet   # À COMPLÉTER : trier par obj[0] / obj[1] décroissant
+    sac = []
+    # À COMPLÉTER : même boucle que sac_a_dos_1
+    return sac
+
+sac = sac_a_dos_2(30, valeur_masse_objets)
+print("critère valeur/masse, sac de 30 kg :", sac, "->", valeur(sac), "€ pour", masse(sac), "kg")
+
+# Décommente pour comparer les deux critères sur une vraie liste :
+# valeur_masse = [(35, 120), (30, 30), (26, 50), (21, 20), (18, 40), (17, 60), (15, 30),
+#                 (14, 10), (13, 14), (11, 36), (10, 72), (9, 86), (8, 5), (7, 3), (6, 7),
+#                 (5, 23), (4, 49), (3, 57), (2, 69), (1, 12)]
+# for max_sac in (205, 420):
+#     s1 = sac_a_dos_1(max_sac, valeur_masse)
+#     s2 = sac_a_dos_2(max_sac, valeur_masse)
+#     print(max_sac, "kg : valeur ->", valeur(s1), "€", masse(s1), "kg ; valeur/masse ->", valeur(s2), "€", masse(s2), "kg")`,
+        note: "Un tuple (valeur, masse) : obj[0] est la valeur, obj[1] la masse. sorted(..., key=lambda obj: ..., reverse=True) trie du plus grand au plus petit selon le critère donné par la lambda.",
+        questions: [
+          "Avec le critère 1 (valeur) et un sac de 30 kg, quel sac obtient-on ? Trouve à la main un sac qui vaut plus.",
+          "Avec le critère 2 (valeur / masse) et un sac de 30 kg, quel sac obtient-on ? Est-il optimal ?",
+          "Sur la grande liste : pour 205 kg, quel critère gagne ? Et pour 420 kg ? Que conclure ?",
+          "Dans la boucle for, on n'utilise pas break quand un objet ne rentre pas. Pourquoi ?",
+        ],
+        correction: [
+          "Critère 1, 30 kg : [(7, 12), (5, 13)] soit 12 € pour 25 kg. Il reste 5 kg inutilisés. Or (7, 12) + (4, 8) + (3, 10) pèse exactement 30 kg et vaut 14 € : le glouton « le plus cher d'abord » n'est pas optimal.",
+          "Critère 2 : les rapports sont 7/12 ≈ 0,58 ; 4/8 = 0,5 ; 5/13 ≈ 0,38 ; 3/10 = 0,3. Le glouton prend (7, 12) puis (4, 8) puis saute (5, 13) (33 kg > 30) puis prend (3, 10) : [(7, 12), (4, 8), (3, 10)], 14 € pour 30 kg. Ici c'est l'optimum, mais c'est un coup de chance : aucun critère glouton n'est optimal dans tous les cas pour le sac à dos.",
+          "205 kg : critère valeur → 99 € (205 kg) ; critère valeur/masse → 151 € (205 kg) : le rapport gagne largement. 420 kg : critère valeur → 215 € (418 kg) ; critère valeur/masse → 210 € (400 kg) : cette fois c'est le critère valeur qui gagne ! Conclusion : le meilleur critère dépend des données, aucun glouton ne garantit l'optimum pour le sac à dos. Seule une recherche exhaustive (essayer tous les sous-ensembles, 2**20 ≈ 1 million ici) le garantit.",
+          "Parce qu'un objet trop lourd ne veut pas dire que les suivants le sont : après avoir sauté (5, 13), on peut encore prendre (3, 10). On continue à parcourir la liste et on saute simplement ceux qui ne rentrent pas.",
+          { code: `def valeur(liste_objet):
+    total = 0
+    for v, m in liste_objet:
+        total = total + v
+    return total
+
+def sac_a_dos_2(masse_max, liste_objet):
+    tries = sorted(liste_objet, key=lambda obj: obj[0] / obj[1], reverse=True)
+    sac = []
+    for obj in tries:
+        if masse(sac) + obj[1] <= masse_max:
+            sac.append(obj)
+    return sac
+
+assert sac_a_dos_1(30, valeur_masse_objets) == [(7, 12), (5, 13)]            # 12 € : pas optimal
+assert sac_a_dos_2(30, valeur_masse_objets) == [(7, 12), (4, 8), (3, 10)]    # 14 € : optimal ici
+# Grande liste : 205 kg -> 99 € (valeur) contre 151 € (valeur/masse)
+#                420 kg -> 215 € (valeur) contre 210 € (valeur/masse)` },
+        ],
+        prof: "<p>40 min. Commencer par 5 min de sac à dos « à la main » avec les 4 objets et 30 kg : les élèves trouvent 14 € et sont vexés que le programme « le plus cher d'abord » n'y arrive pas. Le résultat sur la grande liste (le critère valeur gagne à 420 kg) contredit l'intuition « le rapport est toujours meilleur » : c'est voulu, c'est l'argument pour dire qu'<em>aucun</em> glouton n'est optimal ici. Notion à évoquer sans développer : le sac à dos est un problème difficile (NP-complet), les gloutons donnent de bonnes solutions rapidement, pas la meilleure. Si le temps manque, donner <code>sac_a_dos_2</code> et ne faire coder que <code>valeur</code>.</p>",
+      },
+      {
+        num: "4", titre: "Planning de conférences : quelle règle gloutonne ?", run: true,
+        code: `# ÉTAPE 4 — Une seule salle, des conférences (début, fin, nom) : en accueillir le plus possible
+# Deux conférences sont compatibles si l'une finit avant (ou pile quand) l'autre commence.
+tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
+tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
+              (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
+              (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
+
+def frise(tab_inter):
+    """Affiche chaque conférence sur une ligne, une colonne par heure."""
+    for debut, fin, nom in sorted(tab_inter):
+        print(nom.ljust(4), "." * debut + "#" * (fin - debut) + "." * (8 - fin))
+    print("     01234567")
+
+print("cas 2 :"); frise(tab_conf_2)
+print("cas 3 :"); frise(tab_conf_3)
+
+# Règle gloutonne : on prend toujours la conférence compatible qui FINIT le plus tôt
+def planning1(tab_inter):
+    tries = sorted(tab_inter, key=lambda c: c[1])   # par heure de fin croissante
+    planning = []
+    fin_precedente = 0
+    for debut, fin, nom in tries:
+        pass   # À COMPLÉTER : si debut >= fin_precedente, on garde nom et on met à jour fin_precedente
+    return planning
+
+for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4], start=1):
+    print("cas", k, ":", planning1(tab))
+# attendus : ['C2', 'C4', 'C3', 'C1']  ['C2', 'C3', 'C4']  ['C1', 'C3', 'C4']  ['C8', 'C4', 'C2', 'C5', 'C3']`,
+        note: "Trois règles gloutonnes sont possibles : la conférence qui commence le plus tôt, la plus courte, ou celle qui finit le plus tôt. Avant de coder, teste-les à la main sur les frises des cas 2 et 3 : une seule est toujours optimale.",
+        questions: [
+          "Cas 2 : quel planning donne la règle « celle qui COMMENCE le plus tôt » ? Est-il optimal ?",
+          "Cas 3 : quel planning donne la règle « la plus COURTE d'abord » ? Est-il optimal ?",
+          "La règle « celle qui FINIT le plus tôt » donne-t-elle un planning optimal dans les cas 1 à 3 ? Pourquoi est-elle la bonne intuition ?",
+          "Pourquoi teste-t-on debut >= fin_precedente et non debut > fin_precedente ?",
+        ],
+        correction: [
+          "Cas 2 : C1 (0→4) commence la première ; une fois prise, plus rien n'est compatible : planning ['C1'], 1 seule conférence. Or C2 (1→2), C3 (2→3) et C4 (3→4) sont compatibles entre elles : 3 conférences. La règle « commence le plus tôt » n'est pas optimale : une conférence qui commence tôt et dure longtemps bloque tout (même chose dans le cas 4 avec C1, 0→7).",
+          "Cas 3 : les plus courtes sont C2 (2→4) et C4 (6→8), 2 h chacune ; C1 (0→3) et C3 (3→6) durent 3 h. Le glouton prend C2, puis C4 : 2 conférences. Or C1, C3 et C4 sont compatibles : 3 conférences. « La plus courte d'abord » n'est pas optimale : C2, courte mais mal placée, chevauche à la fois C1 et C3.",
+          "Oui : cas 1 → ['C2', 'C4', 'C3', 'C1'] (4 sur 4), cas 2 → ['C2', 'C3', 'C4'] (3), cas 3 → ['C1', 'C3', 'C4'] (3). Prendre celle qui finit le plus tôt libère la salle au plus vite : ce qui reste de temps pour les suivantes est maximal. On peut prouver que cette règle est TOUJOURS optimale pour ce problème (c'est un des rares cas où le glouton est parfait).",
+          "Une conférence qui commence exactement à l'heure où la précédente finit est compatible (la salle se libère à 2 h, la suivante commence à 2 h). Avec >, on perdrait C4 dans le cas 1 (1→2 après C2 0→1) et le planning serait ['C2', 'C3'] au lieu de 4 conférences.",
+          { code: `def planning1(tab_inter):
+    """Glouton : la conférence compatible qui finit le plus tôt."""
+    tries = sorted(tab_inter, key=lambda c: c[1])
+    planning = []
+    fin_precedente = 0
+    for debut, fin, nom in tries:
+        if debut >= fin_precedente:
+            planning.append(nom)
+            fin_precedente = fin
+    return planning
+
+assert planning1(tab_conf_1) == ['C2', 'C4', 'C3', 'C1']
+assert planning1(tab_conf_2) == ['C2', 'C3', 'C4']
+assert planning1(tab_conf_3) == ['C1', 'C3', 'C4']
+assert planning1(tab_conf_4) == ['C8', 'C4', 'C2', 'C5', 'C3']` },
+        ],
+        prof: "<p>45 min, début de la séance B. Projeter la frise du cas 3 et faire jouer les trois règles au tableau par trois élèves (feutres de couleurs) : c'est le débranché de la séance. La conclusion attendue est que « finit le plus tôt » est la seule règle sûre ; on affirme qu'elle est toujours optimale sans démontrer (l'argument « libérer la salle le plus tôt possible laisse le maximum de place » suffit en Première). Erreur classique : oublier de mettre à jour <code>fin_precedente</code>, ce qui garde toutes les conférences ; l'assert du cas 1 la détecte. Pour le cas 4, faire remarquer que le planning contient 5 conférences : on vérifiera à l'étape 5 qu'on ne peut pas faire mieux.</p>",
+      },
+      {
+        num: "5", titre: "Vérifier l'optimum : la recherche exhaustive", run: true,
+        code: `# ÉTAPE 5 — Essayer TOUTES les possibilités pour être sûr de l'optimum
+tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
+tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
+              (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
+              (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
+tab_conf_5 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]   # deux plannings à égalité
+
+appels = 0
+
+def planning2(tab_inter, debut=0, i=0):
+    """Meilleur planning avec les conférences d'indice >= i qui commencent après debut.
+    tab_inter doit être trié par heure de début. Pour chaque conférence : AVEC ou SANS."""
+    global appels
+    appels = appels + 1
+    if i >= len(tab_inter):            # plus de conférence à examiner
+        return []
+    d, f, nom = tab_inter[i]
+    if d < debut:                      # incompatible : on passe à la suivante
+        return planning2(tab_inter, debut, i + 1)
+    avec = [nom] + planning2(tab_inter, f, i + 1)     # on la prend : la salle est occupée jusqu'à f
+    sans = planning2(tab_inter, debut, i + 1)         # on ne la prend pas
+    if len(avec) >= len(sans):
+        return avec
+    return sans
+
+for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4, tab_conf_5], start=1):
+    appels = 0
+    print("cas", k, ":", planning2(sorted(tab)), "en", appels, "appels")
+
+# À toi : à nombre égal de conférences, préférer le planning qui occupe le plus la salle (moins de trous)
+def duree_occupee(noms, tab_inter):
+    total = 0
+    # À COMPLÉTER : additionner fin - debut pour les conférences dont le nom est dans noms
+    return total
+
+def planning3(tab_inter, debut=0, i=0):
+    if i >= len(tab_inter):
+        return []
+    d, f, nom = tab_inter[i]
+    if d < debut:
+        return planning3(tab_inter, debut, i + 1)
+    avec = [nom] + planning3(tab_inter, f, i + 1)
+    sans = planning3(tab_inter, debut, i + 1)
+    # À COMPLÉTER : plus long gagne ; à égalité, celui qui a la plus grande duree_occupee
+    return avec
+
+print("cas 5, sans trou :", planning3(sorted(tab_conf_5)))   # attendu : ['C4', 'C1'] (4 h occupées, au lieu de C2 puis C3)
+print("cas 4, sans trou :", planning3(sorted(tab_conf_4)))`,
+        note: "planning2 est récursif : pour chaque conférence, il calcule le meilleur planning AVEC elle et le meilleur SANS elle, puis garde le plus long. Il explore donc toutes les combinaisons possibles : c'est une recherche exhaustive (« force brute »).",
+        questions: [
+          "Compare les résultats de planning2 à ceux de planning1 (étape 4) sur les cas 1 à 4. Le glouton « finit le plus tôt » était-il optimal à chaque fois ?",
+          "Combien d'appels planning2 fait-il pour le cas 4 (15 conférences) ? Que se passerait-il avec 30 ou 60 conférences ? Et pourquoi planning1 n'a pas ce problème ?",
+          "Cas 5 : le glouton donne ['C2', 'C3'] et planning3 donne ['C4', 'C1']. Les deux ont 2 conférences ; lequel est « meilleur » et selon quel critère ?",
+          "Peut-on avoir plusieurs plannings optimaux ? Que fait le programme dans ce cas ?",
+        ],
+        correction: [
+          "Cas 1 à 3 : mêmes plannings (4, 3 et 3 conférences). Cas 4 : planning2 donne ['C8', 'C4', 'C2', 'C5', 'C12'], soit 5 conférences comme le glouton (['C8', 'C4', 'C2', 'C5', 'C3']) : seule la dernière diffère, C3 et C12 occupant le même créneau 6→8. Le glouton « finit le plus tôt » était bien optimal dans les 4 cas, ce qui confirme (sans le prouver) qu'il l'est toujours.",
+          "Quelques centaines d'appels pour 15 conférences ; mais chaque conférence double au pire le nombre de chemins (avec / sans) : c'est en 2**n. À 30 conférences on approche du milliard, à 60 c'est hors de portée de tout ordinateur. planning1, lui, fait un tri puis un seul parcours : quelques dizaines d'opérations pour 15 conférences, quelques centaines pour 60. C'est tout l'intérêt d'un glouton quand il est optimal : rapide ET juste.",
+          "Cas 5 : C2 = 0→1, C4 = 0→2, C3 = 2→3, C1 = 2→4. Les deux plannings sont optimaux en nombre de conférences (2). ['C4', 'C1'] occupe la salle de 0 à 4 sans trou (4 h) ; ['C2', 'C3'] laisse la salle vide de 1 à 2 et après 3 (2 h occupées). Avec le critère supplémentaire « le moins de trous », planning3 préfère ['C4', 'C1']. Le « meilleur » dépend toujours du critère qu'on choisit !",
+          "Oui, souvent : dans le cas 4, ['C8', 'C4', 'C2', 'C5', 'C3'] et ['C8', 'C4', 'C2', 'C5', 'C12'] sont deux optimums (5 conférences, 8 h occupées). Le programme renvoie le premier qu'il rencontre selon son ordre d'exploration (ici « avec » gagne à égalité, d'où C12 plutôt que C3 dans planning2). Un résultat différent du corrigé peut donc être juste : il faut vérifier le nombre de conférences et la compatibilité, pas les noms.",
+          { code: `def duree_occupee(noms, tab_inter):
+    total = 0
+    for d, f, nom in tab_inter:
+        if nom in noms:
+            total = total + (f - d)
+    return total
+
+def planning3(tab_inter, debut=0, i=0):
+    if i >= len(tab_inter):
+        return []
+    d, f, nom = tab_inter[i]
+    if d < debut:
+        return planning3(tab_inter, debut, i + 1)
+    avec = [nom] + planning3(tab_inter, f, i + 1)
+    sans = planning3(tab_inter, debut, i + 1)
+    if len(avec) > len(sans):
+        return avec
+    if len(avec) < len(sans):
+        return sans
+    if duree_occupee(avec, tab_inter) >= duree_occupee(sans, tab_inter):
+        return avec
+    return sans
+
+assert planning3(sorted(tab_conf_5)) == ['C4', 'C1']                      # 4 h occupées sur 4
+assert planning3(sorted(tab_conf_4)) == ['C8', 'C4', 'C2', 'C5', 'C12']   # 8 h occupées sur 8` },
+        ],
+        prof: "<p>30 min, en lecture de code guidée : la récursivité n'est pas au programme de Première, on ne demande pas de l'écrire mais de la comprendre comme « pour chaque conférence, on essaie avec et sans ». Dérouler à la main le cas 2 (4 conférences, 16 combinaisons au plus) au tableau sous forme d'arbre. Les élèves avancés complètent <code>planning3</code> ; les autres se contentent de <code>duree_occupee</code>. Le compteur d'appels sert à faire sentir l'explosion combinatoire (question 2) : le point à retenir est la <em>complexité</em>, glouton linéaire (après tri) contre exhaustif exponentiel. Attention à la question 4 : plusieurs optimums existent, ne pas compter faux un élève qui obtient ['C8', 'C4', 'C2', 'C5', 'C3'] avec sa propre version.</p>",
+      },
+      {
+        num: "6", titre: "Bonus — Fibonacci : quand la récursivité explose, et comment la sauver", run: true, bonus: true,
+        code: `# ÉTAPE 6 (bonus) — F(0) = 0, F(1) = 1, F(n) = F(n-1) + F(n-2)
+appels = 0
+
+def fiboR(n):
+    global appels
+    appels = appels + 1
+    if n < 2:
+        return n
+    return fiboR(n - 1) + fiboR(n - 2)
+
+for n in (6, 10, 20, 25):
+    appels = 0
+    r = fiboR(n)
+    print("fiboR(", n, ") =", r, "en", appels, "appels")
+
+# Programmation dynamique : on mémorise chaque résultat déjà calculé dans un dictionnaire
+dicFibo = {0: 0, 1: 1}
+
+def fiboD(n):
+    if n in dicFibo:
+        return dicFibo[n]
+    # À COMPLÉTER : calculer fiboD(n - 1) + fiboD(n - 2), le ranger dans dicFibo[n], le renvoyer
+    return 0
+
+print("fiboD(25) =", fiboD(25))          # attendu : 75025
+print("fiboD(60) =", fiboD(60))          # attendu : 1548008755920 (essaie fiboR(60)... non, ne le fais pas !)
+print(len(dicFibo), "valeurs mémorisées")`,
+        note: "Bonus au-delà de la Première (récursivité, programmation dynamique : programme de Terminale). Le compteur d'appels remplace l'arbre d'appels du notebook : chaque appel de fiboR(n) en déclenche deux autres, l'arbre double à chaque niveau.",
+        questions: [
+          "Combien d'appels pour fiboR(6) ? pour fiboR(25) ? Pourquoi fiboR(20) est-il calculé plusieurs milliers de fois quand on demande fiboR(25) ?",
+          "Combien d'appels fait fiboD(60) environ ? Pourquoi si peu ?",
+          "En quoi la recherche exhaustive de l'étape 5 ressemble-t-elle à fiboR ? Quelle idée de fiboD pourrait la sauver ?",
+        ],
+        correction: [
+          "fiboR(6) : 25 appels ; fiboR(10) : 177 ; fiboR(20) : 21 891 ; fiboR(25) : 242 785. Chaque appel refait tout le travail des appels précédents : fiboR(25) appelle fiboR(24) et fiboR(23), qui appellent chacun fiboR(22)… le même sous-problème est recalculé un nombre exponentiel de fois.",
+          "fiboD(60) remplit le dictionnaire de 61 valeurs (0 à 60) : chaque F(k) n'est calculé qu'une fois puis relu. Une centaine d'appels au total au lieu de 10**12 pour fiboR(60). C'est la programmation dynamique : mémoriser pour ne jamais recalculer.",
+          "planning2 aussi recalcule les mêmes sous-problèmes (« meilleur planning à partir de l'indice i après l'heure debut ») dans plusieurs branches avec / sans. Un dictionnaire indexé par (debut, i) éviterait ces recalculs et rendrait la recherche exhaustive raisonnable même pour beaucoup de conférences.",
+          { code: `dicFibo = {0: 0, 1: 1}
+
+def fiboD(n):
+    if n in dicFibo:
+        return dicFibo[n]
+    dicFibo[n] = fiboD(n - 1) + fiboD(n - 2)
+    return dicFibo[n]
+
+assert fiboD(25) == 75025
+assert fiboD(60) == 1548008755920
+print(len(dicFibo), "valeurs mémorisées")   # 61` },
+        ],
+        prof: "<p>Réservé aux élèves qui ont terminé, ou à donner en ouverture des 10 dernières minutes. Ne pas lancer <code>fiboR(35)</code> et au-delà dans le navigateur (plusieurs secondes, la page semble figée). L'intérêt pédagogique est de boucler le TP : glouton (rapide, parfois faux), exhaustif (juste, exponentiel), programmation dynamique (juste et rapide, en mémorisant). C'est exactement le trio qui structure le thème « Algorithmique » de Terminale.</p>",
+      },
+    ],
+  },
 ];
 
 /* ---------------- Fiches « pour aller plus loin » ---------------- */

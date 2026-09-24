@@ -4870,6 +4870,7 @@ except Exception:
       step.questions.forEach((q) => ul.appendChild(el("li", null, q)));
       box.appendChild(ul);
     }
+    if (step.prof) box.appendChild(makeProfNote(step.prof)); // démarche explicative (prof)
     if (step.correction && step.correction.length) {
       const det = el("details", "corrige");
       det.appendChild(el("summary", null, "✅ Voir la correction"));
@@ -4901,6 +4902,7 @@ except Exception:
     if (tp.intro) html += `<p class="intro">${esc(tp.intro)}</p>`;
     if (!withCorrige)
       html += `<p style="font-size:9.5pt;color:#555">Nom : __________________________   Classe : ____________   Date : ____________</p>`;
+    if (withCorrige && tp.prof) html += `<div style="border:1px solid #b45309;border-radius:6px;padding:.2cm .35cm;margin:.3cm 0;font-size:10pt"><strong>Démarche pour le prof</strong>${tp.prof}</div>`;
     (tp.steps || []).forEach((s, i) => {
       html += `<h2>Étape ${esc(String(s.num || i + 1))} — ${esc(s.titre)}</h2>`;
       if (s.code) html += codeBlock(s.code);
@@ -4909,6 +4911,7 @@ except Exception:
           s.questions.map((q) => `<li>${esc(q)}${withCorrige ? "" : `<div class="field"></div>`}</li>`).join("") +
           `</ol>`;
       }
+      if (withCorrige && s.prof) html += `<div style="border-left:3px solid #b45309;padding-left:.3cm;margin:.2cm 0;font-size:10pt"><strong style="color:#b45309">Pour le prof</strong>${s.prof}</div>`;
       if (withCorrige && s.correction && s.correction.length) {
         html += `<div style="border-left:3px solid #16a34a;padding-left:.3cm;margin:.2cm 0"><strong style="color:#15803d">Correction</strong>`;
         s.correction.forEach((c) => {
@@ -4924,6 +4927,14 @@ except Exception:
     return html;
   }
 
+  // Démarche explicative pour le prof (tp.prof) : dépliable réservé au professeur
+  function makeTPProf(tp) {
+    const det = el("details", "teacher-block tp-prof");
+    det.appendChild(el("summary", null, "👩‍🏫 Démarche pour le prof — objectifs, déroulé, pièges, réponses"));
+    det.appendChild(el("div", "tp-prof-body", tp.prof));
+    return det;
+  }
+
   function makeTPCard(tp) {
     const card = el("div", "tp-card");
     const head = el("div", "exo-head");
@@ -4935,6 +4946,7 @@ except Exception:
     link.addEventListener("click", () => navigate(tp.theme));
     card.appendChild(link);
     if (tp.intro) card.appendChild(el("p", "tp-intro", tp.intro));
+    if (tp.prof) card.appendChild(makeTPProf(tp));
 
     // Impression (feuille à distribuer)
     if (tp.steps && tp.steps.length) {
@@ -5149,6 +5161,7 @@ except Exception:
       det.appendChild(el("summary", null, (t.lang === "python" ? "🐍 " : "🖥️ ") + t.titre));
       const body = el("div", "tp-inline-body");
       if (t.intro) body.appendChild(el("p", "tp-intro", t.intro));
+      if (t.prof) body.appendChild(makeTPProf(t));
       const tools = el("div", "tp-print-group");
       const bE = el("button", "btn secondary", "🖨️ Énoncé (élève)");
       bE.addEventListener("click", () => openPrint(t.titre + " — énoncé", buildTPPrintHtml(t, false)));

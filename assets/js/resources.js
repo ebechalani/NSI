@@ -5335,10 +5335,11 @@ const THEME_PLANS = {
    {
     "titre": "Séance 6 — Les algorithmes gloutons",
     "duree": "2 h",
-    "objectif": "Mettre en œuvre un algorithme glouton (rendu de monnaie) et découvrir qu'il n'est pas toujours optimal (système [1, 3, 4]).",
+    "objectif": "Mettre en œuvre un algorithme glouton (rendu de monnaie, puis sac à dos et planning dans le TP guidé) et découvrir qu'il n'est pas toujours optimal (système [1, 3, 4], sac à dos).",
     "surLeSite": [
      "Section 6 « Les algorithmes gloutons » : rendu de 67 centimes, warnbox système truqué [1, 3, 4], cellule ▶ rendu_monnaie() à faire manipuler",
      "Exercice 8 (défi) — coder rendu(somme, pieces) et exhiber un cas non optimal",
+     "TP « Algorithmes gloutons » (6 étapes : binaire, monnaie, sac à dos, planning de conférences, recherche exhaustive, bonus Fibonacci) — chaque étape a sa correction et sa note « pour le prof » ; la démarche complète (objectifs, déroulé sur 2 séances, pièges, évaluation) est en tête du TP",
      "QCM question « un algorithme glouton… » ; erreur fréquente du site « croire que le glouton donne toujours l'optimum »",
      "Mini-projets du thème en prolongement pour les rapides : « Crible d'Ératosthène », « Mastermind », « Approximation de π (Monte-Carlo) »"
     ],
@@ -5347,12 +5348,12 @@ const THEME_PLANS = {
      "10–30 min : formalisation Section 6 : « à chaque étape le meilleur choix local, sans retour arrière » ; dérouler 67 = 50 + 10 + 5 + 2 au tableau.",
      "30–50 min : débranché contre-exemple : les îlots doivent rendre 6 avec des pièces [1, 3, 4] ; laisser le glouton échouer (4+1+1) puis trouver 3+3 ; discussion : quand le glouton se trompe-t-il ?",
      "50–80 min : sur postes : cellule ▶ rendu_monnaie() exécutée, puis Exercice 8 (défi) en cellule vide avec les deux systèmes de pièces ; verbaliser la boucle « while somme >= p ».",
-     "80–110 min : différenciation : les rapides démarrent un mini-projet du thème (« Crible d'Ératosthène » ou « Mastermind ») ; les autres refont le glouton sur un problème d'emploi du temps simple donné par le prof.",
+     "80–110 min : TP « Algorithmes gloutons » étapes 2 à 4 en binôme : rendu de monnaie en fonction (système britannique, sans pièce de 1), sac à dos (critère valeur contre valeur/masse), planning de conférences ; les rapides poursuivent avec l'étape 5 (recherche exhaustive) ou un mini-projet du thème.",
      "110–120 min : bilan : rapide + intuitif MAIS pas toujours optimal ; question QCM ; corrigés poussés ; annonce du kNN."
     ],
     "aPreparer": [
      "Monnaie factice (pièces 1, 2, 5, 10, 20, 50 + jetons marqués 1, 3, 4) — non fournie par le site",
-     "Un petit problème glouton supplémentaire rédigé par le prof pour la remédiation (ex. remplir un sac de poids maximal)",
+     "Lire la démarche « pour le prof » en tête du TP « Algorithmes gloutons » (déroulé, pièges, réponses) ; déposer le notebook gloutons_capytale.ipynb sur Capytale ou gloutons.py sur Thonny si les élèves ne travaillent pas sur le site (kit du thème, corrigé gloutons_corrige.py)",
      "Repérer à l'avance les mini-projets du site à proposer aux rapides"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Un algorithme <strong>glouton</strong> (<em>greedy</em>) construit une solution pas à pas en faisant, à chaque étape, le choix qui semble le meilleur <strong>sur le moment</strong>, sans jamais revenir en arrière. C'est rapide et intuitif.</p><p>Exemple à la main — le <strong>rendu de monnaie</strong> : rendre 67 centimes avec le moins de pièces possible (système : 1, 2, 5, 10, 20, 50, 100, 200). On donne la plus grosse pièce possible, 50 → il reste 17 ; puis 10 → il reste 7 ; puis 5 → il reste 2 ; puis 2 → il reste 0. Rendu : 50 + 10 + 5 + 2, soit 4 pièces.</p><p><strong>🐢 Première méthode — simple à comprendre :</strong></p><pre><code>def rendu_monnaie(somme, pieces):\n    pieces = sorted(pieces, reverse=True)   # de la plus grosse à la plus petite\n    rendu = []\n    for p in pieces:\n        while somme &gt;= p:        # on prend cette pièce tant qu'on peut\n            somme -= p\n            rendu.append(p)\n    return rendu\n\nsysteme = [1, 2, 5, 10, 20, 50, 100, 200]   # centimes d'euro\nprint(rendu_monnaie(67, systeme))   # affiche [50, 10, 5, 2]</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li><code>sorted(pieces, reverse=True)</code> trie les pièces de la plus grosse à la plus petite : le glouton essaie toujours la plus grosse d'abord.</li><li><code>while somme &gt;= p</code> : on prend la même pièce tant qu'elle « rentre » dans ce qui reste à rendre ; <code>somme -= p</code> retire sa valeur.</li><li>Aucun retour en arrière : une pièce prise n'est jamais remise en question.</li></ul><p><strong>📋 Trace d'exécution :</strong> rendu de 67 :</p><table><tr><th>pièce p</th><th>somme avant</th><th>somme après</th><th>rendu</th></tr><tr><td>50</td><td>67</td><td>17</td><td>[50]</td></tr><tr><td>10</td><td>17</td><td>7</td><td>[50, 10]</td></tr><tr><td>5</td><td>7</td><td>2</td><td>[50, 10, 5]</td></tr><tr><td>2</td><td>2</td><td>0</td><td>[50, 10, 5, 2]</td></tr></table><p><strong>⚠️ Pas toujours optimal !</strong> Avec un système « truqué » comme [1, 3, 4], rendre 6 donne en glouton 4 + 1 + 1 (3 pièces)… alors que 3 + 3 suffit (2 pièces). Le glouton est rapide, mais la qualité de sa réponse dépend du système de pièces.</p><pre><code>print(rendu_monnaie(6, [1, 3, 4]))   # affiche [4, 1, 1] : 3 pièces au lieu de 2 !</code></pre><p><strong>🎯 Défi élève :</strong> compléter <code>rendu(somme, pieces)</code>.</p><pre><code>def rendu(somme, pieces):\n    pieces = sorted(pieces, ______)\n    rendu = []\n    for p in pieces:\n        while somme ______ p:\n            somme = somme - ______\n            rendu.append(______)\n    return rendu\n\nprint(rendu(67, [1, 2, 5, 10, 20, 50, 100, 200]))   # affiche [50, 10, 5, 2]\nprint(rendu(6, [1, 3, 4]))                          # affiche [4, 1, 1]</code></pre><p>✅ Réponse :</p><pre><code>def rendu(somme, pieces):\n    pieces = sorted(pieces, reverse=True)\n    rendu = []\n    for p in pieces:\n        while somme &gt;= p:\n            somme = somme - p\n            rendu.append(p)\n    return rendu\n\nprint(rendu(67, [1, 2, 5, 10, 20, 50, 100, 200]))   # affiche [50, 10, 5, 2]\nprint(rendu(6, [1, 3, 4]))                          # affiche [4, 1, 1]</code></pre><ul><li>Glouton = le meilleur choix <em>local</em> à chaque étape, jamais de retour en arrière.</li><li>Erreur fréquente : croire que le glouton donne toujours l'optimum — contre-exemple : rendre 6 avec [1, 3, 4].</li><li>Avec le système de pièces de l'euro, le glouton est bien optimal.</li></ul>",
@@ -5416,18 +5417,18 @@ const THEME_PLANS = {
      {
       "t": "85–110 min",
       "type": "tp",
-      "titre": "Différenciation : mini-projets ou entraînement",
-      "prof": "Lance les rapides sur un mini-projet du thème (« Crible d'Ératosthène » ou « Mastermind ») ; fais refaire aux autres le glouton sur un problème d'emploi du temps simple que tu donnes. Circule entre les îlots.",
-      "contenu": "<p>Les rapides démarrent un mini-projet du thème (« Crible d'Ératosthène » ou « Mastermind ») ; les autres refont le glouton sur un problème d'emploi du temps simple donné par le professeur.</p>",
-      "eleves": "démarrent le mini-projet Crible ou Mastermind, ou refont le glouton sur le problème d'emploi du temps."
+      "titre": "TP « Algorithmes gloutons » : monnaie, sac à dos, planning",
+      "prof": "Lance le TP « Algorithmes gloutons » à l'étape 2 (le rendu en fonction, puis le système britannique 30, 24, 12, 6, 3, 1 : pose « combien de pièces pour 48 ? » en réponse en direct avant d'exécuter). Étape 3 : le sac à dos, 5 min à la main avant de coder. Étape 4 pour ceux qui avancent : les trois règles du planning au tableau, puis le code. Les rapides poursuivent avec l'étape 5 (recherche exhaustive) ou un mini-projet du thème. Chaque étape a sa note « pour le prof » ; ne pas ouvrir les corrections avant la fin.",
+      "contenu": "<p>TP « Algorithmes gloutons » en binôme, étapes 2 à 4 :</p><ul><li><strong>Étape 2</strong> : rendu_glouton(rst, lst_piece) puis le système de pièces britannique (30, 24, 12, 6, 3, 1) : le glouton rend 3 pièces pour 48, alors que 24 + 24 en fait 2 ; sans pièce de 1, il échoue.</li><li><strong>Étape 3</strong> : le sac à dos avec deux critères gloutons (le plus cher d'abord, puis le meilleur rapport valeur/masse) : aucun n'est toujours optimal.</li><li><strong>Étape 4</strong> : le planning de conférences : la règle « celle qui finit le plus tôt » est la bonne.</li></ul><p>Rapides : étape 5 (recherche exhaustive, lecture de code) ou mini-projet « Crible d'Ératosthène » / « Mastermind ».</p>",
+      "eleves": "font en binôme les étapes 2 à 4 du TP « Algorithmes gloutons », répondent en direct (📡) au « combien de pièces pour 48 ? », écrivent dans le cahier la règle locale de chaque problème et si elle est optimale."
      },
      {
       "t": "110–120 min",
       "type": "bilan",
       "titre": "Bilan : rapide mais pas optimal",
       "prof": "Fais noter les trois points à retenir, projette la question QCM « un algorithme glouton… », pousse les corrigés et annonce le kNN de la prochaine séance.",
-      "contenu": "<ul><li>Glouton = le meilleur choix <em>local</em> à chaque étape, jamais de retour en arrière.</li><li>Erreur fréquente : croire que le glouton donne toujours l'optimum — contre-exemple : rendre 6 avec [1, 3, 4].</li><li>Avec le système de pièces de l'euro, le glouton est bien optimal.</li></ul>",
-      "eleves": "notent les trois points à retenir, répondent à la question QCM en réponse en direct (📡) et notent l'annonce du kNN."
+      "contenu": "<ul><li>Glouton = le meilleur choix <em>local</em> à chaque étape, jamais de retour en arrière.</li><li>Erreur fréquente : croire que le glouton donne toujours l'optimum — contre-exemples : rendre 6 avec [1, 3, 4], le sac à dos du TP.</li><li>Avec le système de pièces de l'euro, le glouton est bien optimal ; pour le planning de conférences, la règle « finit le plus tôt » aussi.</li></ul>",
+      "eleves": "notent les trois points à retenir, répondent à la question QCM en réponse en direct (📡) et notent l'annonce du kNN ; le TP « Algorithmes gloutons » se termine à la maison ou en début de séance suivante (étapes 5 et 6 en bonus)."
      }
     ]
    },
@@ -6253,6 +6254,21 @@ const THEME_KITS = {
         "nom": "knn_rugby_prof.py",
         "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby_prof.py",
         "desc": "ma version complète du TP (à projeter depuis Thonny, matplotlib requis) : mélange aléatoire avec random.shuffle, vote par dictionnaire, evaluer_modele, courbe du taux d'erreur pour k impair de 1 à 15 avec annotations sur-apprentissage / sous-apprentissage"
+      },
+      {
+        "nom": "gloutons.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/gloutons.py",
+        "desc": "squelette élève du TP « Algorithmes gloutons » pour Thonny : décimal → binaire, rendu de monnaie (systèmes canoniques ou non), sac à dos (critère valeur puis valeur/masse), planning de conférences (glouton puis recherche exhaustive récursive), Fibonacci récursif et dynamique (asserts fournis)"
+      },
+      {
+        "nom": "gloutons_corrige.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/gloutons_corrige.py",
+        "desc": "corrigé prof (vérifié) du TP « Algorithmes gloutons » : toutes les fonctions, les cas de test des quatre plannings et les comptes d'appels de Fibonacci"
+      },
+      {
+        "nom": "gloutons_capytale.ipynb",
+        "chemin": "assets/fichiers/premiere/algorithmique/gloutons_capytale.ipynb",
+        "desc": "le notebook Capytale d'origine du TP (à importer tel quel dans Capytale : images incluses ; la cellule rcviz de Fibonacci est remplacée sur le site par un compteur d'appels)"
       }
     ],
     "evals": [
