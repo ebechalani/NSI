@@ -31,10 +31,19 @@ Contact : ebechalani@gmail.com
   en direct et se projettent, anonymes, sur l'écran de la classe ; en îlots
   (un poste par groupe), l'élève connecté déclare ses camarades (**👥 Mon îlot**)
   et sa réponse compte pour tout l'îlot ;
-- **Déroulés heure par heure** de chaque thème (109 séances de 2 h) avec, pour
-  chaque séance : quoi utiliser sur le site, le déroulé minuté en classe, et
-  le kit de préparation (27 imprimables « mission », 39 fichiers réels
-  `.py`/`.sql`/`.csv` à déposer sur Capytale/Thonny/DB Browser) ;
+- **Conducteur de séance** pour les 56 séances de Première (2 h chacune ; en
+  Terminale, fiche de cours et déroulé en classe) : cartouche
+  (objectif, période, repères, à préparer, supports du site), synoptique minuté
+  dérivé des phases, déroulé par phase (enseignant | élèves, support à projeter),
+  bande de régie en classe (écran de projection, chrono, phase courante, modes
+  préparation / animation), bilan (cahier de textes), impression A4 structurée
+  (cartouche, synoptique, déroulé, annexes) et plan de travail élève ; kit de
+  préparation (27 imprimables « mission », 50 fichiers réels `.py`/`.sql`/`.csv`/`.ipynb`
+  à déposer sur Capytale/Thonny/DB Browser) ;
+- TP guidés avec, côté professeur, une **démarche explicative** (objectifs du BO,
+  déroulé minuté, pièges observés, évaluation) et une note « pour le prof » par
+  étape, imprimées avec le corrigé (ex. TP « Algorithmes gloutons », d'après un
+  notebook Capytale fourni dans le kit) ;
 - 21 sujets d'évaluation avec corrigés et barèmes.
 
 ## Structure du projet
