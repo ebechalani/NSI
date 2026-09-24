@@ -20,6 +20,7 @@
   --code-bg: #0f172a;
   --code-text: #e2e8f0;
   --shadow: 0 6px 24px rgba(20, 30, 60, .08);
+  --on-accent: #ffffff;
   --radius: 14px;
   --mono: "SFMono-Regular", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -42,6 +43,7 @@ html[data-theme="dark"] {
   --shadow: 0 6px 24px rgba(0, 0, 0, .4);
   --code-bg: #0b1020;
   --code-text: #e6ebf5;
+  --on-accent: #0b1020;
 }
 
 * { box-sizing: border-box; }
@@ -421,7 +423,7 @@ html[data-theme="dark"] .exo-snippet-bar { background: #0c1424; }
 .quiz-actions { display: flex; gap: .7rem; align-items: center; margin-top: 1rem; flex-wrap: wrap; }
 .btn {
   font-family: var(--sans); font-weight: 600; font-size: .9rem; cursor: pointer;
-  border-radius: 9px; padding: .55rem 1.1rem; border: 1px solid var(--accent); background: var(--accent); color: #fff;
+  border-radius: 9px; padding: .55rem 1.1rem; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
 }
 .btn:hover { filter: brightness(1.08); }
 .btn.secondary { background: transparent; color: var(--accent); }
@@ -1070,9 +1072,11 @@ td.cell-none { text-align: center; color: var(--text-soft); }
 .cd-encours { background: none; border: 0; padding: .1rem 0; margin-top: .25rem; font-family: var(--sans); font-size: .72rem; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .cd-courante .cd-encours { display: none; }
 .cd-body { display: flex; flex-direction: column; gap: .55rem; min-width: 0; }
-.cd-head { display: flex; align-items: baseline; gap: .55rem; flex-wrap: wrap; }
+.cd-head { display: flex; align-items: flex-start; gap: .55rem; flex-wrap: wrap; }
+.cd-headline { flex: 1 1 22rem; min-width: 0; display: flex; align-items: baseline; gap: .55rem; flex-wrap: wrap; }
 .cd-titre { font-size: 1.05rem; font-weight: 600; color: var(--text); margin: 0; line-height: 1.3; }
 .cd-titre:focus { outline: none; }
+.cd-titre:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 .cd-phase { font-size: .78rem; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; color: var(--text-soft); border: 1px solid var(--border); border-radius: 4px; padding: 0 .4rem; white-space: nowrap; }
 .cd-modalite { font-size: .8rem; color: var(--text-soft); }
 .cd-etat { display: none; font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 .4rem; white-space: nowrap; }
@@ -1090,6 +1094,7 @@ td.cell-none { text-align: center; color: var(--text-soft); }
 .cd-eleves { font-weight: 400; border-left: 2px solid var(--border); padding-left: .6rem; }
 .cd-seul { grid-column: 1 / -1; }
 .cd-contenu-inline { margin: 0; font-size: .92rem; color: var(--text-soft); }
+.cd-contenu-inline p { display: inline; margin: 0; }
 .cd-contenu-inline .cd-lbl { display: inline; margin: 0 .3rem 0 0; }
 details.cd-support { margin: 0; }
 details.cd-support > summary.cd-support-sum {
@@ -1113,7 +1118,7 @@ body.projecteur .cd-corrige { border: 0; padding: 0; }
 .cd-projete { outline: 2px solid var(--accent); outline-offset: 2px; }
 .cd-courante { box-shadow: inset 3px 0 0 var(--accent); }
 .cd-courante .cd-num { color: var(--accent); }
-.cd-faite .cd-body { opacity: .72; }
+.cd-faite .cd-titre, .cd-faite .cd-prof, .cd-faite .cd-eleves, .cd-faite .cd-contenu-inline { color: var(--text-soft); }
 .cd-reduite .cd-duo, .cd-reduite .cd-support, .cd-reduite .cd-contenu-inline { display: none; }
 .cd-reduite .cd-head { cursor: pointer; }
 .cd-reduite { padding-top: .55rem; padding-bottom: .55rem; }
@@ -1124,7 +1129,6 @@ body.projecteur .cd-corrige { border: 0; padding: 0; }
 
 /* ---------- Page de séance : fil d'Ariane, cartouche, synoptique, bilan, annexes ---------- */
 .theme-header-compact { border-bottom: 0; padding-bottom: 0; margin-bottom: .4rem; }
-.theme-header-compact h1 { font-size: 1.1rem; margin: .3rem 0 0; color: var(--text-soft); }
 .prep-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .5rem; font-size: .85rem; color: var(--text-soft); margin: .2rem 0 .8rem; }
 .prep-crumbs .crumb { font-size: .85rem; }
 .prep-crumbs .crumb:disabled { opacity: .45; cursor: default; }
@@ -1157,7 +1161,7 @@ details.sc-plus > summary { list-style: none; cursor: pointer; font-size: .75rem
 details.sc-plus > summary::-webkit-details-marker { display: none; }
 details.sc-plus > summary::before { content: "▸ "; }
 details.sc-plus[open] > summary::before { content: "▾ "; }
-.sc-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: .8rem 1.3rem; margin-top: .6rem; }
+.sc-grid { display: grid; grid-template-columns: 1.1fr .9fr 1.4fr; gap: .8rem 1.3rem; margin-top: .6rem; }
 .sc-col { display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
 .sc-rub { min-width: 0; }
 .sc-lbl { display: flex; align-items: baseline; gap: .6rem; }
@@ -1188,6 +1192,15 @@ details.sc-caps .sc-list { margin-top: .3rem; }
   background: var(--bg-elev); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow);
 }
 .regie-bar.regie-compact { position: static; box-shadow: none; background: var(--bg-soft); margin: .3rem 0 .8rem; }
+.regie-bar [hidden] { display: none !important; }
+@media (min-width: 701px) {
+  .regie-bar:not(.regie-compact) { display: grid; grid-template-columns: auto auto 1fr auto; grid-template-areas: "ecran chrono . mode" "pos pos pos proj"; align-items: center; column-gap: .9rem; row-gap: .35rem; }
+  .regie-bar:not(.regie-compact) .rg-ecran { grid-area: ecran; }
+  .regie-bar:not(.regie-compact) .rg-chrono { grid-area: chrono; }
+  .regie-bar:not(.regie-compact) .rg-mode { grid-area: mode; margin-left: 0; }
+  .regie-bar:not(.regie-compact) .rg-pos { grid-area: pos; min-width: 0; }
+  .regie-bar:not(.regie-compact) .rg-proj { grid-area: proj; justify-self: end; }
+}
 .rg-ecran, .rg-chrono, .rg-pos, .rg-proj, .rg-mode { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
 .rg-etat { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-soft); white-space: nowrap; }
 .proj-dot { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; background: var(--text-soft); opacity: .5; }
@@ -1204,9 +1217,8 @@ details.sc-caps .sc-list { margin-top: .3rem; }
 .rg-ct { display: none; }
 @media (max-width: 1400px) { .regie-bar:not(.regie-compact) .rg-lg { display: none; } .regie-bar:not(.regie-compact) .rg-ct { display: inline; } }
 .rg-mode { margin-left: auto; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; gap: 0; }
-@media (max-width: 1400px) { .rg-mode { margin-left: 0; } }
 .rg-mode-btn { background: none; border: 0; padding: .25rem .6rem; font-family: var(--sans); font-size: .8rem; font-weight: 600; color: var(--text-soft); cursor: pointer; }
-.rg-mode-btn[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.rg-mode-btn[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 /* Synoptique */
 .regie-synoptique { margin: 0 0 .4rem; }
@@ -1226,10 +1238,15 @@ table.sy .sy-titre { font-weight: 600; }
 table.sy .sy-direct { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-soft); white-space: nowrap; }
 table.sy .sy-act { width: 2.6rem; text-align: right; }
 table.sy .sy-act .btn { padding: .15rem .5rem; }
+table.sy .sy-heure { display: none; }
+table.sy.has-heure .sy-heure { display: table-cell; }
+table.sy .sy-open { font-weight: 600; text-decoration: none; color: var(--text); text-align: left; }
+table.sy .sy-open:hover { text-decoration: underline; }
+table.sy tr.sy-courante .sy-open { color: var(--accent); }
 table.sy tr[data-etape] { cursor: pointer; }
 table.sy tr[data-etape]:hover td { background: var(--bg-soft); }
 table.sy tr[data-etape]:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-table.sy .sy-etat { display: none; margin-left: .4rem; font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 .35rem; }
+table.sy .sy-etat { display: none; margin-left: .4rem; font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 .35rem; }
 table.sy tr.sy-projetee td { background: var(--accent-soft); }
 table.sy tr.sy-projetee .sy-etat { display: inline-block; }
 table.sy tr.sy-courante td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
@@ -1273,8 +1290,15 @@ body.regie-animation .seance-cartouche details.sc-plus:not([open]) { margin-top:
   .cd-actions { margin-left: 0; width: 100%; }
   .prep-crumbs-nav { margin-left: 0; width: 100%; }
   .sc-titre { font-size: 1.25rem; }
-  table.sy .sy-moda, table.sy .sy-direct { display: none; }
+  table.sy .sy-moda, table.sy .sy-direct, table.sy .sy-d, table.sy .sy-t .sy-sub { display: none; }
+  table.sy { font-size: .82rem; }
   .rg-mode { margin-left: 0; }
+  body:not(.regie-animation) .regie-bar { position: static; box-shadow: none; }
+  .regie-bar { gap: .25rem .5rem; padding: .3rem .5rem; }
+  .rg-ecran, .rg-chrono, .rg-pos, .rg-proj, .rg-mode { gap: .3rem; }
+  .rg-proj .btn, .rg-mode-btn, .rg-nav .btn, .rg-chrono .btn, .rg-ecran .btn { padding: .2rem .45rem; }
+  .regie-bar .rg-pos { flex: 1 1 100%; min-width: 0; }
+  .regie-bar .rg-next { flex: 1 0 100%; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .plan-cours-body th { white-space: nowrap; text-align: left; }
 }
 
@@ -1302,7 +1326,7 @@ body.regie-animation .seance-cartouche details.sc-plus:not([open]) { margin-top:
   background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius);
 }
 .prep-bloc > h3 { margin: 0 0 .6rem; font-size: 1.02rem; }
-.prep-cours { border-color: var(--accent-2); }
+.prep-cours { border-color: var(--border); }
 .prep-eval-row { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; padding: .35rem 0; }
 .prep-nav { margin-top: 1rem; }
 .prep-grid { margin-top: .3rem; }
@@ -1447,6 +1471,8 @@ details.plan-cours > summary::-webkit-details-marker { display: none; }
 /* ===== Conducteurs : liens vers le contenu cité + projection sur le TBI ===== */
 .cd-link { color: var(--accent); font-weight: 600; text-decoration: underline dotted; text-underline-offset: 2px; }
 .cd-link:hover { text-decoration-style: solid; }
+.sc-phase-link { color: var(--accent); font-weight: 600; text-decoration: underline dotted; text-underline-offset: 2px; }
+.sc-phase-link:hover { text-decoration-style: solid; }
 .cible-flash { animation: cibleFlash 2.4s ease-out; border-radius: 12px; }
 @keyframes cibleFlash { 0% { box-shadow: 0 0 0 5px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
 
