@@ -2299,6 +2299,7 @@ p, li { orphans: 3; widows: 3; }
       kit.fichiers.forEach((f) => {
         const li = el("li");
         li.innerHTML = `<a href="${f.chemin}" download>📄 ${f.nom}</a> — ${f.desc}`;
+        if (/\.ipynb$/i.test(f.chemin)) li.appendChild(makeBasthonLink(f.chemin, "kit-basthon"));
         ul.appendChild(li);
       });
       body.appendChild(ul);
@@ -2427,6 +2428,29 @@ p, li { orphans: 3; widows: 3; }
      et retombe sinon sur decodeURIComponent du paramètre.
      ⚠️ Un simple base64 du JSON ne marche PLUS : Basthon le passe à JSON.parse
      tel quel et affiche « l'ipynb est corrompu ». */
+
+  // Adresse publique du site : sert quand on n'est pas servi par GitHub Pages
+  // (aperçu local, fichier ouvert directement) pour que Basthon puisse
+  // télécharger un notebook hébergé ici.
+  const SITE_URL = "https://ebechalani.github.io/NSI/";
+  function urlPublique(chemin) {
+    if (/^https?:/.test(chemin)) return chemin;
+    const local = location.protocol === "file:" || /^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname);
+    return local ? SITE_URL + chemin.replace(/^\.?\//, "") : new URL(chemin, document.baseURI).href;
+  }
+  // Lien « Ouvrir dans Basthon » pour un notebook .ipynb du site (paramètre
+  // ?from= : Basthon télécharge le fichier, GitHub Pages autorise le CORS).
+  // Même forme que les liens de partage habituels (from=https://…, non encodé) :
+  // encodeURI ne touche ni « : » ni « / » et protège seulement espaces et accents.
+  const basthonFromUrl = (chemin) => "https://notebook.basthon.fr/?from=" + encodeURI(urlPublique(chemin));
+  function makeBasthonLink(chemin, cls) {
+    const a = el("a", cls || "btn secondary btn-basthon", "⚡ Ouvrir dans Basthon");
+    a.href = basthonFromUrl(chemin);
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.title = "Ouvrir le notebook dans Basthon (Python en ligne, rien à installer)";
+    return a;
+  }
 
   // Notebook .ipynb minimal : une seule cellule de code.
   function makeNotebook(code) {
@@ -4957,6 +4981,7 @@ except Exception:
       const bCorr = el("button", "btn secondary teacher-block", "🖨️ Corrigé (prof)");
       bCorr.addEventListener("click", () => openPrint(tp.titre + " — corrigé", buildTPPrintHtml(tp, true)));
       tools.appendChild(bCorr);
+      if (tp.notebook) tools.appendChild(makeBasthonLink(tp.notebook));
       card.appendChild(tools);
     }
 
@@ -5169,6 +5194,7 @@ except Exception:
       const bC = el("button", "btn secondary teacher-block", "🖨️ Corrigé (prof)");
       bC.addEventListener("click", () => openPrint(t.titre + " — corrigé", buildTPPrintHtml(t, true)));
       tools.appendChild(bC);
+      if (t.notebook) tools.appendChild(makeBasthonLink(t.notebook));
       body.appendChild(tools);
       t.steps.forEach((s) => body.appendChild(makeTPStep(s, t.lang)));
       det.appendChild(body);
@@ -6022,7 +6048,12 @@ except Exception:
       if (kit && kit.fichiers && kit.fichiers.length) {
         body.appendChild(el("h4", null, "Fichiers"));
         const ul = el("ul", "kit-files");
-        kit.fichiers.forEach((f) => { const li = el("li"); li.innerHTML = `<a href="${f.chemin}" download>${escapeHtml(f.nom)}</a> — ${f.desc}`; ul.appendChild(li); });
+        kit.fichiers.forEach((f) => {
+          const li = el("li");
+          li.innerHTML = `<a href="${f.chemin}" download>${escapeHtml(f.nom)}</a> — ${f.desc}`;
+          if (/\.ipynb$/i.test(f.chemin)) li.appendChild(makeBasthonLink(f.chemin, "kit-basthon"));
+          ul.appendChild(li);
+        });
         body.appendChild(ul);
       }
       if (evals.length) {

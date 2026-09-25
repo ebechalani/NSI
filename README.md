@@ -43,7 +43,7 @@ Contact : ebechalani@gmail.com
 - TP guidés avec, côté professeur, une **démarche explicative** (objectifs du BO,
   déroulé minuté, pièges observés, évaluation) et une note « pour le prof » par
   étape, imprimées avec le corrigé (ex. TP « Algorithmes gloutons », d'après un
-  notebook Capytale fourni dans le kit) ;
+  notebook Capytale fourni dans le kit et ouvrable en un clic dans Basthon) ;
 - 21 sujets d'évaluation avec corrigés et barèmes.
 
 ## Structure du projet

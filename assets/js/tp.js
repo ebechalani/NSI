@@ -1469,8 +1469,9 @@ for version, donnees in [("brut", joueurs), ("normalisé", normaliser_colonnes(j
     theme: "algorithmique",
     lang: "python",
     titre: "TP — Algorithmes gloutons : monnaie, sac à dos, planning",
+    notebook: "assets/fichiers/premiere/algorithmique/gloutons_capytale.ipynb",
     intro:
-      "Objectif : mettre en œuvre un algorithme glouton (capacité du BO) sur quatre problèmes classiques, et surtout comprendre quand il donne la meilleure solution et quand il se trompe. Un algorithme glouton applique toujours la même règle locale (« le meilleur choix sur le moment ») et ne revient jamais en arrière : il est rapide et simple, mais pas toujours optimal. On finit par une recherche exhaustive (qui trouve toujours l'optimum, mais lentement) et par un bonus sur la récursivité de Fibonacci. D'après le notebook Capytale « Algorithmes gloutons » (disponible dans le kit du thème avec le fichier gloutons.py pour Thonny).",
+      "Objectif : mettre en œuvre un algorithme glouton (capacité du BO) sur quatre problèmes classiques, et surtout comprendre quand il donne la meilleure solution et quand il se trompe. Un algorithme glouton applique toujours la même règle locale (« le meilleur choix sur le moment ») et ne revient jamais en arrière : il est rapide et simple, mais pas toujours optimal. On finit par une recherche exhaustive (qui trouve toujours l'optimum, mais lentement) et par un bonus sur la récursivité de Fibonacci. D'après le notebook Capytale « Algorithmes gloutons » : le bouton ⚡ Ouvrir dans Basthon l'ouvre tel quel dans ton navigateur (il est aussi dans le kit du thème, avec le fichier gloutons.py pour Thonny).",
     prof:
       "<p><strong>Place dans la progression.</strong> Séance 6 du thème (les gloutons), après le tri et la dichotomie, avant kNN. Les élèves ont déjà écrit des boucles <code>while</code>, des fonctions avec <code>return</code> et manipulé des listes de tuples : tout le TP tient avec ces outils. La partie 5 (Fibonacci) mobilise la récursivité, hors programme de Première : c'est un bonus pour les élèves rapides ou une ouverture vers la Terminale.</p>" +
       "<ul>" +
@@ -1480,7 +1481,7 @@ for version, donnees in [("brut", joueurs), ("normalisé", normaliser_colonnes(j
       "<li><strong>Le fil conducteur à faire dire aux élèves.</strong> À chaque partie, la même phrase : « quelle est la règle locale ? » (la plus grande pièce ; l'objet le plus cher, puis le meilleur rapport ; la conférence qui finit le plus tôt) puis « cette règle donne-t-elle toujours l'optimum ? ». Faire écrire cette phrase dans le cahier après chaque partie : c'est la trace du cours.</li>" +
       "<li><strong>Pièges observés.</strong> (1) Confondre <code>i = i + 1</code> (passer à la pièce suivante) et retirer la pièce : les élèves incrémentent <code>i</code> dans les deux branches et perdent des pièces. (2) Oublier la condition <code>i &lt; len(lst_piece)</code> : sans pièce de 1 la boucle ne s'arrête plus (IndexError ou boucle infinie). (3) Trier avec <code>sorted(liste, reverse=True)</code> pour le sac à dos : ça marche par hasard car le tri se fait sur le premier élément du tuple (la valeur) ; faire expliciter <code>key=</code>. (4) Dans <code>planning1</code>, tester <code>debut &gt; fin_precedente</code> au lieu de <code>&gt;=</code> : une conférence qui commence pile à la fin de la précédente est compatible. (5) Croire qu'un résultat différent du corrigé est faux dans <code>planning3</code> : plusieurs plannings peuvent être optimaux à égalité (voir la note de l'étape 5).</li>" +
       "<li><strong>Évaluation.</strong> Sur le site : la réponse en direct (📡) avec la question « Combien de pièces pour 48 avec les pièces 30, 24, 12, 6, 3, 1 ? » (attendu : le glouton en donne 3, l'optimum est 2). Écrit : donner un nouveau système de pièces et demander si le glouton est optimal, en justifiant par un contre-exemple ; donner 5 conférences et demander le planning glouton. L'exercice 8 du thème (coder le rendu) reste l'entraînement de référence.</li>" +
-      "<li><strong>Ce qui a changé par rapport au notebook Capytale.</strong> Le module <code>rcviz</code> (arbre d'appels de Fibonacci) n'existe pas dans le navigateur : il est remplacé par un compteur global d'appels, qui rend le même phénomène visible (25 appels pour n = 6, 242 785 pour n = 25). Les images du notebook (frises des conférences) sont remplacées par des frises en mode texte dans les cellules.</li>" +
+      "<li><strong>Ce qui a changé par rapport au notebook Capytale.</strong> Le module <code>rcviz</code> (arbre d'appels de Fibonacci) n'existe pas dans le navigateur : il est remplacé par un compteur global d'appels, qui rend le même phénomène visible (25 appels pour n = 6, 242 785 pour n = 25). Les frises des conférences (images du notebook, que les élèves doivent traduire en tuples : cas 2 et 3) sont données ici en tuples et redessinées en mode texte ; un cas 5 est ajouté pour prendre en défaut la règle « la plus courte d'abord ».</li>" +
       "</ul>",
     steps: [
       {
@@ -1698,11 +1699,13 @@ assert sac_a_dos_2(30, valeur_masse_objets) == [(7, 12), (4, 8), (3, 10)]    # 1
         code: `# ÉTAPE 4 — Une seule salle, des conférences (début, fin, nom) : en accueillir le plus possible
 # Deux conférences sont compatibles si l'une finit avant (ou pile quand) l'autre commence.
 tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
-tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
-tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_2 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (1, 2, 'C2'), (2, 3, 'C3')]
 tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
               (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
               (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
+# Cas 5 (ajouté) : un cas de plus pour tester la règle « la plus courte d'abord »
+tab_conf_5 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
 
 def frise(tab_inter):
     """Affiche chaque conférence sur une ligne, une colonne par heure."""
@@ -1712,6 +1715,7 @@ def frise(tab_inter):
 
 print("cas 2 :"); frise(tab_conf_2)
 print("cas 3 :"); frise(tab_conf_3)
+print("cas 5 :"); frise(tab_conf_5)
 
 # Règle gloutonne : on prend toujours la conférence compatible qui FINIT le plus tôt
 def planning1(tab_inter):
@@ -1722,20 +1726,20 @@ def planning1(tab_inter):
         pass   # À COMPLÉTER : si debut >= fin_precedente, on garde nom et on met à jour fin_precedente
     return planning
 
-for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4], start=1):
+for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4, tab_conf_5], start=1):
     print("cas", k, ":", planning1(tab))
-# attendus : ['C2', 'C4', 'C3', 'C1']  ['C2', 'C3', 'C4']  ['C1', 'C3', 'C4']  ['C8', 'C4', 'C2', 'C5', 'C3']`,
-        note: "Trois règles gloutonnes sont possibles : la conférence qui commence le plus tôt, la plus courte, ou celle qui finit le plus tôt. Avant de coder, teste-les à la main sur les frises des cas 2 et 3 : une seule est toujours optimale.",
+# attendus : ['C2', 'C4', 'C3', 'C1']  ['C2', 'C3']  ['C2', 'C3']  ['C8', 'C4', 'C2', 'C5', 'C3']  ['C1', 'C3', 'C4']`,
+        note: "Les cas 1 à 4 sont ceux du notebook Capytale (les frises des cas 2 et 3 y sont des images : ici elles sont traduites en tuples). Trois règles gloutonnes sont possibles : la conférence qui commence le plus tôt, la plus courte, ou celle qui finit le plus tôt. Avant de coder, teste-les à la main sur les frises des cas 3 et 5 : une seule est toujours optimale.",
         questions: [
-          "Cas 2 : quel planning donne la règle « celle qui COMMENCE le plus tôt » ? Est-il optimal ?",
-          "Cas 3 : quel planning donne la règle « la plus COURTE d'abord » ? Est-il optimal ?",
+          "Cas 3 : quel planning donne la règle « celle qui COMMENCE le plus tôt » ? Est-il optimal ?",
+          "Cas 5 : quel planning donne la règle « la plus COURTE d'abord » ? Est-il optimal ?",
           "La règle « celle qui FINIT le plus tôt » donne-t-elle un planning optimal dans les cas 1 à 3 ? Pourquoi est-elle la bonne intuition ?",
           "Pourquoi teste-t-on debut >= fin_precedente et non debut > fin_precedente ?",
         ],
         correction: [
-          "Cas 2 : C1 (0→4) commence la première ; une fois prise, plus rien n'est compatible : planning ['C1'], 1 seule conférence. Or C2 (1→2), C3 (2→3) et C4 (3→4) sont compatibles entre elles : 3 conférences. La règle « commence le plus tôt » n'est pas optimale : une conférence qui commence tôt et dure longtemps bloque tout (même chose dans le cas 4 avec C1, 0→7).",
-          "Cas 3 : les plus courtes sont C2 (2→4) et C4 (6→8), 2 h chacune ; C1 (0→3) et C3 (3→6) durent 3 h. Le glouton prend C2, puis C4 : 2 conférences. Or C1, C3 et C4 sont compatibles : 3 conférences. « La plus courte d'abord » n'est pas optimale : C2, courte mais mal placée, chevauche à la fois C1 et C3.",
-          "Oui : cas 1 → ['C2', 'C4', 'C3', 'C1'] (4 sur 4), cas 2 → ['C2', 'C3', 'C4'] (3), cas 3 → ['C1', 'C3', 'C4'] (3). Prendre celle qui finit le plus tôt libère la salle au plus vite : ce qui reste de temps pour les suivantes est maximal. On peut prouver que cette règle est TOUJOURS optimale pour ce problème (c'est un des rares cas où le glouton est parfait).",
+          "Cas 3 : C1 (0→3) commence la première ; une fois prise, plus rien n'est compatible : planning ['C1'], 1 seule conférence. Or C2 (1→2) et C3 (2→3) sont compatibles entre elles : 2 conférences. La règle « commence le plus tôt » n'est pas optimale : une conférence qui commence tôt et dure longtemps bloque tout (même chose dans le cas 4 avec C1, 0→7).",
+          "Cas 5 : les plus courtes sont C2 (2→4) et C4 (6→8), 2 h chacune ; C1 (0→3) et C3 (3→6) durent 3 h. Le glouton prend C2, puis C4 : 2 conférences. Or C1, C3 et C4 sont compatibles : 3 conférences. « La plus courte d'abord » n'est pas optimale : C2, courte mais mal placée, chevauche à la fois C1 et C3.",
+          "Oui : cas 1 → ['C2', 'C4', 'C3', 'C1'] (4 sur 4), cas 2 → ['C2', 'C3'] (2, on ne peut pas faire mieux : C1 et C4 chevauchent tout le reste), cas 3 → ['C2', 'C3'] (2), cas 5 → ['C1', 'C3', 'C4'] (3). Prendre celle qui finit le plus tôt libère la salle au plus vite : ce qui reste de temps pour les suivantes est maximal. On peut prouver que cette règle est TOUJOURS optimale pour ce problème (c'est un des rares cas où le glouton est parfait).",
           "Une conférence qui commence exactement à l'heure où la précédente finit est compatible (la salle se libère à 2 h, la suivante commence à 2 h). Avec >, on perdrait C4 dans le cas 1 (1→2 après C2 0→1) et le planning serait ['C2', 'C3'] au lieu de 4 conférences.",
           { code: `def planning1(tab_inter):
     """Glouton : la conférence compatible qui finit le plus tôt."""
@@ -1749,22 +1753,23 @@ for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4], start=
     return planning
 
 assert planning1(tab_conf_1) == ['C2', 'C4', 'C3', 'C1']
-assert planning1(tab_conf_2) == ['C2', 'C3', 'C4']
-assert planning1(tab_conf_3) == ['C1', 'C3', 'C4']
-assert planning1(tab_conf_4) == ['C8', 'C4', 'C2', 'C5', 'C3']` },
+assert planning1(tab_conf_2) == ['C2', 'C3']
+assert planning1(tab_conf_3) == ['C2', 'C3']
+assert planning1(tab_conf_4) == ['C8', 'C4', 'C2', 'C5', 'C3']
+assert planning1(tab_conf_5) == ['C1', 'C3', 'C4']` },
         ],
-        prof: "<p>45 min, début de la séance B. Projeter la frise du cas 3 et faire jouer les trois règles au tableau par trois élèves (feutres de couleurs) : c'est le débranché de la séance. La conclusion attendue est que « finit le plus tôt » est la seule règle sûre ; on affirme qu'elle est toujours optimale sans démontrer (l'argument « libérer la salle le plus tôt possible laisse le maximum de place » suffit en Première). Erreur classique : oublier de mettre à jour <code>fin_precedente</code>, ce qui garde toutes les conférences ; l'assert du cas 1 la détecte. Pour le cas 4, faire remarquer que le planning contient 5 conférences : on vérifiera à l'étape 5 qu'on ne peut pas faire mieux.</p>",
+        prof: "<p>45 min, début de la séance B. Projeter les frises des cas 3 et 5 (ou les images du notebook) et faire jouer les trois règles au tableau par trois élèves (feutres de couleurs) : c'est le débranché de la séance. La conclusion attendue est que « finit le plus tôt » est la seule règle sûre ; on affirme qu'elle est toujours optimale sans démontrer (l'argument « libérer la salle le plus tôt possible laisse le maximum de place » suffit en Première). Erreur classique : oublier de mettre à jour <code>fin_precedente</code>, ce qui garde toutes les conférences ; l'assert du cas 1 la détecte. Pour le cas 4, faire remarquer que le planning contient 5 conférences : on vérifiera à l'étape 5 qu'on ne peut pas faire mieux.</p>",
       },
       {
         num: "5", titre: "Vérifier l'optimum : la recherche exhaustive", run: true,
         code: `# ÉTAPE 5 — Essayer TOUTES les possibilités pour être sûr de l'optimum
 tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
-tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
-tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_2 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (1, 2, 'C2'), (2, 3, 'C3')]
 tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
               (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
               (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
-tab_conf_5 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]   # deux plannings à égalité
+tab_conf_5 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]   # (ajouté) contre-exemple de la règle « la plus courte »
 
 appels = 0
 
@@ -1805,19 +1810,19 @@ def planning3(tab_inter, debut=0, i=0):
     # À COMPLÉTER : plus long gagne ; à égalité, celui qui a la plus grande duree_occupee
     return avec
 
-print("cas 5, sans trou :", planning3(sorted(tab_conf_5)))   # attendu : ['C4', 'C1'] (4 h occupées, au lieu de C2 puis C3)
+print("cas 2, sans trou :", planning3(sorted(tab_conf_2)))   # attendu : ['C4', 'C1'] (4 h occupées, au lieu de C2 puis C3)
 print("cas 4, sans trou :", planning3(sorted(tab_conf_4)))`,
         note: "planning2 est récursif : pour chaque conférence, il calcule le meilleur planning AVEC elle et le meilleur SANS elle, puis garde le plus long. Il explore donc toutes les combinaisons possibles : c'est une recherche exhaustive (« force brute »).",
         questions: [
-          "Compare les résultats de planning2 à ceux de planning1 (étape 4) sur les cas 1 à 4. Le glouton « finit le plus tôt » était-il optimal à chaque fois ?",
+          "Compare les résultats de planning2 à ceux de planning1 (étape 4) sur les cas 1 à 5. Le glouton « finit le plus tôt » était-il optimal à chaque fois ?",
           "Combien d'appels planning2 fait-il pour le cas 4 (15 conférences) ? Que se passerait-il avec 30 ou 60 conférences ? Et pourquoi planning1 n'a pas ce problème ?",
-          "Cas 5 : le glouton donne ['C2', 'C3'] et planning3 donne ['C4', 'C1']. Les deux ont 2 conférences ; lequel est « meilleur » et selon quel critère ?",
+          "Cas 2 : le glouton donne ['C2', 'C3'] et planning3 donne ['C4', 'C1']. Les deux ont 2 conférences ; lequel est « meilleur » et selon quel critère ?",
           "Peut-on avoir plusieurs plannings optimaux ? Que fait le programme dans ce cas ?",
         ],
         correction: [
-          "Cas 1 à 3 : mêmes plannings (4, 3 et 3 conférences). Cas 4 : planning2 donne ['C8', 'C4', 'C2', 'C5', 'C12'], soit 5 conférences comme le glouton (['C8', 'C4', 'C2', 'C5', 'C3']) : seule la dernière diffère, C3 et C12 occupant le même créneau 6→8. Le glouton « finit le plus tôt » était bien optimal dans les 4 cas, ce qui confirme (sans le prouver) qu'il l'est toujours.",
+          "Cas 1, 2, 3 et 5 : mêmes plannings (4, 2, 2 et 3 conférences). Cas 4 : planning2 donne ['C8', 'C4', 'C2', 'C5', 'C12'], soit 5 conférences comme le glouton (['C8', 'C4', 'C2', 'C5', 'C3']) : seule la dernière diffère, C3 et C12 occupant le même créneau 6→8. Le glouton « finit le plus tôt » était bien optimal dans les 4 cas, ce qui confirme (sans le prouver) qu'il l'est toujours.",
           "Quelques centaines d'appels pour 15 conférences ; mais chaque conférence double au pire le nombre de chemins (avec / sans) : c'est en 2**n. À 30 conférences on approche du milliard, à 60 c'est hors de portée de tout ordinateur. planning1, lui, fait un tri puis un seul parcours : quelques dizaines d'opérations pour 15 conférences, quelques centaines pour 60. C'est tout l'intérêt d'un glouton quand il est optimal : rapide ET juste.",
-          "Cas 5 : C2 = 0→1, C4 = 0→2, C3 = 2→3, C1 = 2→4. Les deux plannings sont optimaux en nombre de conférences (2). ['C4', 'C1'] occupe la salle de 0 à 4 sans trou (4 h) ; ['C2', 'C3'] laisse la salle vide de 1 à 2 et après 3 (2 h occupées). Avec le critère supplémentaire « le moins de trous », planning3 préfère ['C4', 'C1']. Le « meilleur » dépend toujours du critère qu'on choisit !",
+          "Cas 2 : C2 = 0→1, C4 = 0→2, C3 = 2→3, C1 = 2→4. Les deux plannings sont optimaux en nombre de conférences (2). ['C4', 'C1'] occupe la salle de 0 à 4 sans trou (4 h) ; ['C2', 'C3'] laisse la salle vide de 1 à 2 et après 3 (2 h occupées). Avec le critère supplémentaire « le moins de trous », planning3 préfère ['C4', 'C1']. Le « meilleur » dépend toujours du critère qu'on choisit !",
           "Oui, souvent : dans le cas 4, ['C8', 'C4', 'C2', 'C5', 'C3'] et ['C8', 'C4', 'C2', 'C5', 'C12'] sont deux optimums (5 conférences, 8 h occupées). Le programme renvoie le premier qu'il rencontre selon son ordre d'exploration (ici « avec » gagne à égalité, d'où C12 plutôt que C3 dans planning2). Un résultat différent du corrigé peut donc être juste : il faut vérifier le nombre de conférences et la compatibilité, pas les noms.",
           { code: `def duree_occupee(noms, tab_inter):
     total = 0
@@ -1842,7 +1847,7 @@ def planning3(tab_inter, debut=0, i=0):
         return avec
     return sans
 
-assert planning3(sorted(tab_conf_5)) == ['C4', 'C1']                      # 4 h occupées sur 4
+assert planning3(sorted(tab_conf_2)) == ['C4', 'C1']                      # 4 h occupées sur 4
 assert planning3(sorted(tab_conf_4)) == ['C8', 'C4', 'C2', 'C5', 'C12']   # 8 h occupées sur 8` },
         ],
         prof: "<p>30 min, en lecture de code guidée : la récursivité n'est pas au programme de Première, on ne demande pas de l'écrire mais de la comprendre comme « pour chaque conférence, on essaie avec et sans ». Dérouler à la main le cas 2 (4 conférences, 16 combinaisons au plus) au tableau sous forme d'arbre. Les élèves avancés complètent <code>planning3</code> ; les autres se contentent de <code>duree_occupee</code>. Le compteur d'appels sert à faire sentir l'explosion combinatoire (question 2) : le point à retenir est la <em>complexité</em>, glouton linéaire (après tri) contre exhaustif exponentiel. Attention à la question 4 : plusieurs optimums existent, ne pas compter faux un élève qui obtient ['C8', 'C4', 'C2', 'C5', 'C3'] avec sa propre version.</p>",
