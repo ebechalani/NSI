@@ -6263,7 +6263,7 @@ const THEME_KITS = {
       {
         "nom": "gloutons_corrige.py",
         "chemin": "assets/fichiers/premiere/algorithmique/gloutons_corrige.py",
-        "desc": "corrigé prof (vérifié) du TP « Algorithmes gloutons » : toutes les fonctions, les cas de test des quatre plannings et les comptes d'appels de Fibonacci"
+        "desc": "corrigé prof (vérifié) du TP « Algorithmes gloutons » : toutes les fonctions, les cas de test des cinq plannings (cas 1 à 4 du notebook, cas 5 ajouté) et les comptes d'appels de Fibonacci"
       },
       {
         "nom": "gloutons_capytale.ipynb",

@@ -2436,13 +2436,14 @@ p, li { orphans: 3; widows: 3; }
   function urlPublique(chemin) {
     if (/^https?:/.test(chemin)) return chemin;
     const local = location.protocol === "file:" || /^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname);
-    return local ? SITE_URL + chemin.replace(/^\.?\//, "") : new URL(chemin, document.baseURI).href;
+    // Le constructeur URL encode une seule fois espaces et accents du chemin.
+    return new URL(chemin.replace(/^\.?\//, ""), local ? SITE_URL : document.baseURI).href;
   }
   // Lien « Ouvrir dans Basthon » pour un notebook .ipynb du site (paramètre
   // ?from= : Basthon télécharge le fichier, GitHub Pages autorise le CORS).
-  // Même forme que les liens de partage habituels (from=https://…, non encodé) :
-  // encodeURI ne touche ni « : » ni « / » et protège seulement espaces et accents.
-  const basthonFromUrl = (chemin) => "https://notebook.basthon.fr/?from=" + encodeURI(urlPublique(chemin));
+  // Même forme que les liens de partage habituels : from=https://… tel quel,
+  // « : » et « / » intacts, sans second encodage.
+  const basthonFromUrl = (chemin) => "https://notebook.basthon.fr/?from=" + urlPublique(chemin);
   function makeBasthonLink(chemin, cls) {
     const a = el("a", cls || "btn secondary btn-basthon", "⚡ Ouvrir dans Basthon");
     a.href = basthonFromUrl(chemin);
@@ -4924,6 +4925,7 @@ except Exception:
       `<pre style="background:#f4f4f4;border:1px solid #ccc;border-radius:4px;padding:.2cm .3cm;font-size:9.5pt;white-space:pre-wrap;font-family:Consolas,monospace">${esc(c)}</pre>`;
     let html = `<h1>${esc(tp.titre)}${withCorrige ? " — corrigé" : ""}</h1>`;
     if (tp.intro) html += `<p class="intro">${esc(tp.intro)}</p>`;
+    if (tp.notebook) html += `<p style="font-size:9.5pt">Notebook d'origine, à ouvrir dans Basthon (Python en ligne) : <span style="font-family:Consolas,monospace;word-break:break-all">${esc(basthonFromUrl(tp.notebook))}</span></p>`;
     if (!withCorrige)
       html += `<p style="font-size:9.5pt;color:#555">Nom : __________________________   Classe : ____________   Date : ____________</p>`;
     if (withCorrige && tp.prof) html += `<div style="border:1px solid #b45309;border-radius:6px;padding:.2cm .35cm;margin:.3cm 0;font-size:10pt"><strong>Démarche pour le prof</strong>${tp.prof}</div>`;
