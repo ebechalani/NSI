@@ -957,7 +957,7 @@
   // « Séance 1 — Séquence 0 (1/2) : « titre » » → { num, titre, soustitre }.
   function splitTitre(titre, i) {
     const t = String(titre || "").trim();
-    const m = /^Séance\s+(\d+)\s*[—–-]\s*(.+)$/s.exec(t);
+    const m = /^Séance\s+(\d+(?:\s*bis)?)\s*[—–-]\s*(.+)$/s.exec(t);
     let reste = m ? m[2].trim() : t, num = m ? m[1] : String((i || 0) + 1), sous = "";
     const q = /^(Séquence[^:]*?)\s*:\s*(.+)$/s.exec(reste);
     if (q) { sous = q[1].trim(); reste = q[2].trim(); }
@@ -5662,7 +5662,7 @@ except Exception:
     b1.addEventListener("click", () => { prepThemeId = null; prepSeanceIdx = null; renderPreparer(); });
     const b2 = el("button", "crumb", `Thème${NBSP}${c.num}${SEP}${escapeHtml(c.title)}`);
     b2.addEventListener("click", () => { prepSeanceIdx = null; renderPreparer(); });
-    const cur = el("span", "crumb-cur", `Séance${NBSP}${i + 1}/${N}`);
+    const cur = el("span", "crumb-cur", `Séance${NBSP}${tt.num}/${N}`);
     cur.setAttribute("aria-current", "page");
     crumbs.append(b1, el("span", "crumb-sep", "›"), b2, el("span", "crumb-sep", "›"), cur);
     const navr = el("div", "prep-crumbs-nav");
@@ -5703,7 +5703,7 @@ except Exception:
     if (tt.soustitre) titles.appendChild(el("p", "sc-soustitre", escapeHtml(tt.soustitre)));
     const meta = el("div", "sc-meta");
     const tag = (txt, cls) => el("span", "sc-tag" + (cls ? " " + cls : ""), txt);
-    meta.appendChild(tag(`Séance${NBSP}${i + 1}/${N}`));
+    meta.appendChild(tag(`Séance${NBSP}${tt.num}/${N}`));
     if (s.duree) meta.appendChild(tag(escapeHtml(typoFr(s.duree))));
     if (hasEtapes) meta.appendChild(tag(`${nb}${NBSP}phases`));
     if (per) meta.appendChild(tag(escapeHtml(per.periode + (per.semaines ? SEP + per.semaines : ""))));

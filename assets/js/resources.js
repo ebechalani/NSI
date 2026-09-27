@@ -619,7 +619,7 @@ const PROGRESSION = [
    Rendu par makeThemePlan (app.js), bloc prof dépliable + impression. */
 const THEME_PLANS = {
  "langages-prog": {
-  "heures": "≈ 24 h (12 séances de 2 h, semaines S1–S6 sanctuarisées de la PROGRESSION)",
+  "heures": "≈ 26 h (12 séances de 2 h + la séance 2 bis de TP sur machine, semaines S1–S6 sanctuarisées de la PROGRESSION)",
   "resume": "Démarrage grands débutants : les séances 1–2 suivent la « Séquence 0 » clé en main du site, puis chaque notion (conditions, for, while, fonctions, spécification, bibliothèques) est vue en 3 temps — débranché, texte à trous, écriture libre en cellule vide. Deux évaluations existent sur le site : TP noté « Programmation » (mi-parcours) et DS n°1 (fin de thème).",
   "seances": [
    {
@@ -816,9 +816,116 @@ const THEME_PLANS = {
       "t": "115–120 min",
       "type": "bilan",
       "titre": "Bilan et annonce des boucles",
-      "prof": "Fais reformuler les trois points clés par la classe, puis lance l'accroche de la séance suivante : « et si on veut répéter 100 fois ? »",
+      "prof": "Fais reformuler les trois points clés par la classe, puis annonce la séance 2 bis : deux heures de TP sur machine pour devenir solide sur les variables, les saisies et les booléens (fiche à imprimer). L'accroche « et si on veut répéter 100 fois ? » attend la séance 3.",
       "contenu": "<ul><li><code>\"3\" + \"4\"</code> donne <code>34</code> : sur du texte, <code>+</code> colle (concaténation), il n'additionne pas.</li><li>La division <code>/</code> renvoie toujours un <code>float</code> — d'où <code>15.0</code> et non <code>15</code>.</li><li><code>True</code> et <code>False</code> s'écrivent avec une majuscule et sans guillemets : ce sont des booléens, pas du texte.</li></ul>",
       "eleves": "reformulent les trois points clés, puis proposent des idées pour répéter cent fois."
+     }
+    ]
+   },
+   {
+    "titre": "Séance 2 bis — TP Python : variables, saisies, calculs et expressions booléennes",
+    "duree": "2 h",
+    "objectif": "Consolider, sur machine et sans if ni boucle, tout ce qui a été vu en séquence 0 : affectation et évolution d'une variable, types et conversions, saisies input(), calculs (dont // et %), chaînes, f-strings et expressions booléennes (comparaisons, and, or, not).",
+    "surLeSite": [
+     "TP guidé « TP Python — Variables, saisies, calculs et expressions booléennes » : 8 exercices + bilan, chacun avec cellule exécutable, questions de la fiche, correction et note « pour le prof » ; démarche complète en tête du TP",
+     "Section 2 « Variables, affectation et types » en rappel pour les élèves qui bloquent sur les conversions",
+     "Kit du thème : fiche élève PDF (à imprimer, une par élève, à rendre), notebook Capytale tp_variables_capytale.ipynb (bouton ⚡ Ouvrir dans Basthon), corrigé tp_variables_corrige.py (vérifié)",
+     "Réponse en direct (📡) pour les paris (« 8 » * 2, « a » in « ADAM ») et pour les trois questions du bilan"
+    ],
+    "enClasse": [
+     "0–5 min : rituel : « 3 + 4 » puis « \"3\" + \"4\" » en réponse en direct, rappel des types de S2.",
+     "5–25 min : étapes 1 et 2 du TP : PRÉVOIR sur la fiche (tableau des variables, tableau valeur/type) puis vérifier sur machine.",
+     "25–45 min : étape 3 (réparer la calculatrice) puis mise en commun de 5 min : input() renvoie du texte, conversion float(), format :.2f.",
+     "45–90 min : étapes 4, 5 et 6 en binôme (// et %, chaînes et in, booléens avec and/or/not sans if) ; le prof circule et pose les questions de la fiche.",
+     "90–110 min : étape 7 (moyenne pondérée) ; les rapides enchaînent sur l'étape 8 (ticket de commande), sinon à la maison sur Basthon/Capytale.",
+     "110–120 min : trace écrite (conversion, // et %, = et ==) et bilan individuel : les trois questions en réponse en direct ; ramassage des fiches."
+    ],
+    "aPreparer": [
+     "Imprimer la fiche élève (PDF du kit, 5 pages, une par élève) : c'est le support de réponses à rendre",
+     "Choisir le support machine : cellules du site (rien à préparer), notebook tp_variables_capytale.ipynb déposé sur Capytale, ou bouton ⚡ Ouvrir dans Basthon ; constituer les binômes",
+     "Lire la démarche « pour le prof » en tête du TP (erreurs fréquentes, différenciation) et préparer les deux paris en réponse en direct"
+    ],
+    "cours": "<p><strong>📖 Ce que le TP consolide :</strong></p><ul><li><code>input()</code> renvoie <strong>toujours</strong> une chaîne de caractères : pour calculer, il faut convertir avec <code>int()</code> ou <code>float()</code> ; <code>\"12\" + \"3\"</code> donne <code>\"123\"</code>.</li><li><code>//</code> est le quotient entier, <code>%</code> le reste : <code>53 // 8</code> vaut 6 et <code>53 % 8</code> vaut 5, et <code>53 == 6 * 8 + 5</code>.</li><li><code>int(8.9)</code> tronque (8), <code>round(8.9)</code> arrondit (9) ; <code>8 / 2</code> vaut <code>4.0</code> (un float).</li><li>Une f-string affiche une valeur avec deux décimales : <code>f\"{somme:.2f}\"</code>.</li><li>Une <strong>expression booléenne</strong> vaut <code>True</code> ou <code>False</code> et se range dans une variable : <code>age_valide = age &gt;= 14 and age &lt;= 17</code> ; <code>not</code> inverse, <code>or</code> est vrai dès qu'une condition l'est.</li><li><code>=</code> affecte, <code>==</code> compare.</li></ul>",
+    "etapes": [
+     {
+      "t": "0–5 min",
+      "type": "rituel",
+      "titre": "Rituel : 3 + 4 et « 3 » + « 4 »",
+      "prof": "Lance en réponse en direct (📡) : que vaut 3 + 4 ? puis \"3\" + \"4\" ? Affiche l'histogramme, fais redire par un élève « sur du texte, + colle ». Annonce le TP : deux heures pour devenir solide sur les variables, sans if ni boucle.",
+      "contenu": "<p>Réponse en direct (📡) : <code>3 + 4</code> puis <code>\"3\" + \"4\"</code>. Rappel des quatre types de la séance 2 : int, float, str, bool.</p>",
+      "eleves": "répondent en direct aux deux questions, puis reformulent : sur du texte, + colle."
+     },
+     {
+      "t": "5–25 min",
+      "type": "tp",
+      "titre": "Étapes 1 et 2 du TP « Variables, saisies, calculs et expressions booléennes » : prévoir, puis vérifier",
+      "prof": "Étape 1 : tableau des variables rempli sur la fiche AVANT d'exécuter (passe vérifier). Étape 2 : tableau valeur/type ; fais parier en direct sur \"8\" * 2 (choix 16 / 88 / erreur) avant l'exécution. Fais lire le nom de l'erreur de int(\"bonjour\").",
+      "contenu": "<p>Étape 1 : suivre le score d'un joueur (tableau des valeurs après chaque instruction, ND si non définie).</p><pre><code>score = 12\nbonus = 5\nscore = score + bonus\nancien_score = score\nscore = score * 2\nbonus = 0</code></pre><p>Étape 2 : prévoir valeur et type de <code>8 + 2</code>, <code>\"8\" + \"2\"</code>, <code>\"8\" * 2</code>, <code>8 / 2</code>, <code>8 // 2</code>, <code>8 &gt; 2</code>, <code>float(\"8.5\")</code>, <code>int(8.9)</code>, puis vérifier avec <code>print(type(...))</code>.</p>",
+      "eleves": "remplissent les deux tableaux de la fiche sans exécuter, parient en direct sur \"8\" * 2, puis vérifient dans les cellules et notent le nom de l'erreur de int(\"bonjour\")."
+     },
+     {
+      "t": "25–45 min",
+      "type": "tp",
+      "titre": "Étape 3 du TP « Variables, saisies, calculs et expressions booléennes » : réparer la calculatrice",
+      "prof": "Fais exécuter le programme bugué avec 12 puis 3 (« 123 ! »), puis laisse réparer en binôme. Objectif : float() sur chaque saisie, différence et produit, affichage :.2f. Test imposé : 12.5 et 3 donnent 15.50, 9.50, 37.50. Garde 5 minutes pour la mise en commun.",
+      "contenu": "<pre><code>nombre1 = input(\"Premier nombre : \")\nnombre2 = input(\"Deuxième nombre : \")\nsomme = nombre1 + nombre2\nprint(f\"La somme est {somme}\")</code></pre><p>Saisir 12 puis 3 : pourquoi 123 ? Corriger pour des décimaux, ajouter différence et produit, afficher avec deux décimales (test : 12.5 et 3 → 15.50 ; 9.50 ; 37.50).</p>",
+      "eleves": "exécutent, expliquent le 123 (input renvoie du texte), réparent avec float(), ajoutent différence et produit, vérifient le test 12.5 et 3."
+     },
+     {
+      "t": "45–50 min",
+      "type": "correction",
+      "titre": "Mise en commun : input() renvoie du texte",
+      "prof": "Projette la version corrigée, fais formuler la règle : input() renvoie toujours une chaîne, on convertit AVANT de calculer ; :.2f est un format d'affichage, pas un arrondi de la valeur. Fais lire l'erreur ValueError obtenue avec int() sur 12.5.",
+      "contenu": "<pre><code>nombre1 = float(input(\"Premier nombre : \"))\nnombre2 = float(input(\"Deuxième nombre : \"))\nsomme = nombre1 + nombre2\ndifference = nombre1 - nombre2\nproduit = nombre1 * nombre2\nprint(f\"La somme est {somme:.2f}\")\nprint(f\"La différence est {difference:.2f}\")\nprint(f\"Le produit est {produit:.2f}\")</code></pre><p>Règle : <strong>input() renvoie toujours du texte</strong> → convertir avec int() ou float() avant de calculer.</p>",
+      "eleves": "comparent avec leur version, notent la règle dans le cahier et corrigent en vert."
+     },
+     {
+      "t": "50–65 min",
+      "type": "tp",
+      "titre": "Étape 4 du TP « Variables, saisies, calculs et expressions booléennes » : les boîtes de matériel (// et %)",
+      "prof": "Programme à écrire en binôme : boîtes pleines avec //, reste avec %, trois lignes de tests à vérifier (53 et 8 → 6 et 5 ; 48 et 8 → 6 et 0 ; 5 et 8 → 0 et 5). Question à poser à chaque binôme : pourquoi / ne convient pas ? Trace : total == boites * capacite + reste.",
+      "contenu": "<p>Demander le nombre total de composants et la capacité d'une boîte ; calculer le nombre de boîtes complètement remplies (<code>//</code>) et les composants restants (<code>%</code>) ; afficher une phrase pour chacun.</p><p>Tests : 53 et 8 → 6 boîtes, reste 5 ; 48 et 8 → 6, reste 0 ; 5 et 8 → 0, reste 5.</p>",
+      "eleves": "écrivent le programme avec // et %, vérifient les trois tests et expliquent pourquoi / (6.625) ne convient pas."
+     },
+     {
+      "t": "65–80 min",
+      "type": "tp",
+      "titre": "Étape 5 du TP « Variables, saisies, calculs et expressions booléennes » : le badge (chaînes, len, in)",
+      "prof": "Badge à construire : nom_complet = prenom + \" \" + nom, lignes \"=\" * 24, f-strings, len(nom_complet), test \"a\" in prenom. Avant l'exécution, pari en direct : \"a\" in \"ADAM\" ? (attendu False : majuscules et minuscules sont des caractères différents).",
+      "contenu": "<pre><code>========================\nBADGE ÉLÈVE\nNom : Lina Haddad\nClasse : Première NSI\n========================\nNombre de caractères : 11\nPrésence de la lettre a : True</code></pre><p>Contraintes : <code>+</code>, <code>len()</code>, <code>in</code>, une f-string, lignes de séparation avec <code>\"=\" * 24</code>. Le test <code>\"a\" in prenom</code> donne-t-il le même résultat pour « Adam » et « ADAM » ?</p>",
+      "eleves": "construisent le badge, affichent len(nom_complet) et \"a\" in prenom, parient en direct sur \"ADAM\" puis vérifient."
+     },
+     {
+      "t": "80–95 min",
+      "type": "tp",
+      "titre": "Étape 6 du TP « Variables, saisies, calculs et expressions booléennes » : vérifier une inscription (and, or, not)",
+      "prof": "Booléens SANS if : age_valide (entre 14 et 17 inclus), equipe_valide (2 à 4), inscription_valide, puis correction_necessaire avec not et age_hors_limites avec or. Quatre tests de la fiche. Erreurs à guetter : or à la place de and (toujours vrai), bornes exclues, 14 <= age and <= 17.",
+      "contenu": "<pre><code>age_valide = ...\nequipe_valide = ...\ninscription_valide = ...</code></pre><p>Tests : (14, 2) → True ; (17, 4) → True ; (13, 3) → False ; (16, 5) → False. Puis <code>correction_necessaire</code> (avec <code>not</code>) et <code>age_hors_limites</code> (avec <code>or</code>).</p>",
+      "eleves": "complètent les trois expressions booléennes, vérifient les quatre tests, ajoutent les deux expressions avec not et or et les notent sur la fiche."
+     },
+     {
+      "t": "95–110 min",
+      "type": "tp",
+      "titre": "Étapes 7 et 8 du TP « Variables, saisies, calculs et expressions booléennes » : moyenne pondérée, puis ticket de commande",
+      "prof": "Étape 7 pour tous : moyenne = (quiz + 2 * tp + 3 * projet) / 6, max(), :.2f, deux booléens ; test 12, 15, 18 → 16.00 et 18.0. Étape 8 (mini-projet ticket) pour les rapides, sinon à finir à la maison (notebook Capytale ou bouton Basthon) ; test : 3 kits à 40 €, remise 10 %, livraison 5 €, budget 100 € → 120.00 ; 12.00 ; 113.00 ; False ; 13.00.",
+      "contenu": "<p>Étape 7 : moyenne pondérée (coefficients 1, 2, 3), meilleure note avec <code>max()</code>, moyenne avec deux décimales, booléens « moyenne ≥ 10 » et « trois notes entre 0 et 20 ».</p><p>Étape 8 (rapides ou maison) : ticket de commande d'un club (montant avant remise, remise, total livraison comprise, budget suffisant, somme manquante avec <code>max()</code>).</p>",
+      "eleves": "codent la moyenne pondérée et vérifient 16.00 / 18.0 ; les rapides font le ticket de commande et notent les résultats avec un budget de 150."
+     },
+     {
+      "t": "110–115 min",
+      "type": "noter",
+      "titre": "Trace : conversion, // et %, = et ==",
+      "prof": "Fais noter les trois règles : input() renvoie du texte → convertir ; // quotient entier et % reste ; = affecte et == compare. Une ligne chacune, avec un exemple.",
+      "contenu": "<ul><li><code>input()</code> renvoie du texte : convertir avec <code>int()</code> ou <code>float()</code> avant de calculer.</li><li><code>//</code> = quotient entier, <code>%</code> = reste : <code>53 // 8</code> vaut 6, <code>53 % 8</code> vaut 5.</li><li><code>=</code> affecte une valeur, <code>==</code> compare et vaut <code>True</code> ou <code>False</code>.</li></ul>",
+      "eleves": "notent les trois règles avec un exemple chacune dans le cahier."
+     },
+     {
+      "t": "115–120 min",
+      "type": "bilan",
+      "titre": "Bilan individuel : trois questions",
+      "prof": "Pose les trois questions du bilan en réponse en direct (texte court) : pourquoi convertir une saisie ? différence entre // et % ? entre = et == ? Ramasse les fiches complétées (et les fichiers ou notebooks) ; annonce la séance 3 : les conditions, où ces booléens vont servir.",
+      "contenu": "<ol><li>Pourquoi faut-il convertir une saisie pour effectuer un calcul ?</li><li>Quelle différence y a-t-il entre // et % ?</li><li>Quelle différence y a-t-il entre = et == ?</li></ol><p>À rendre : les fichiers Python (ou le notebook) et la fiche complétée.</p>",
+      "eleves": "répondent aux trois questions en réponse en direct, rendent la fiche complétée et leurs fichiers."
      }
     ]
    },
@@ -6004,7 +6111,7 @@ const THEME_PLANS = {
    à déposer sur Capytale, et pointeurs évaluations. Rendu : makeThemeKit. */
 const THEME_KITS = {
   "langages-prog": {
-    "intro": "Tout le matériel des séances 1 à 12 : jeux débranchés, fiche métacognition, et le défi Pendu en fichier réel.",
+    "intro": "Tout le matériel des séances 1 à 12 : jeux débranchés, fiche métacognition, le TP Python de la séance 2 bis (fiche élève, notebook Capytale, corrigé) et le défi Pendu en fichier réel.",
     "imprimables": [
       {
         "titre": "🃏 Le grand tri des notes — if/elif grandeur nature",
@@ -6020,6 +6127,21 @@ const THEME_KITS = {
       }
     ],
     "fichiers": [
+      {
+        "nom": "tp_variables_fiche_eleve.pdf",
+        "chemin": "assets/fichiers/premiere/langages-prog/tp_variables_fiche_eleve.pdf",
+        "desc": "fiche élève du TP « Variables, saisies, calculs et expressions booléennes » (séance 2 bis) : 5 pages à imprimer, une par élève, à rendre complétée ; les mêmes 8 exercices sont interactifs sur le site (TP guidé du thème)"
+      },
+      {
+        "nom": "tp_variables_capytale.ipynb",
+        "chemin": "assets/fichiers/premiere/langages-prog/tp_variables_capytale.ipynb",
+        "desc": "le même TP en notebook (énoncés + cellules à compléter) pour Capytale, ou à ouvrir en un clic dans Basthon avec le bouton ⚡ ; utile pour finir à la maison"
+      },
+      {
+        "nom": "tp_variables_corrige.py",
+        "chemin": "assets/fichiers/premiere/langages-prog/tp_variables_corrige.py",
+        "desc": "corrigé prof (vérifié) des 8 exercices : une fonction par exercice, et l'exécution du fichier rejoue tous les tests de la fiche"
+      },
       {
         "nom": "pendu_squelette.py",
         "chemin": "assets/fichiers/premiere/langages-prog/pendu_squelette.py",

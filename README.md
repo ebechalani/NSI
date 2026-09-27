@@ -31,7 +31,7 @@ Contact : ebechalani@gmail.com
   en direct et se projettent, anonymes, sur l'écran de la classe ; en îlots
   (un poste par groupe), l'élève connecté déclare ses camarades (**👥 Mon îlot**)
   et sa réponse compte pour tout l'îlot ;
-- **Conducteur de séance** pour les 56 séances de Première (2 h chacune ; en
+- **Conducteur de séance** pour les 57 séances de Première (2 h chacune ; en
   Terminale, fiche de cours et déroulé en classe) : cartouche
   (objectif, période, repères, à préparer, supports du site), synoptique minuté
   dérivé des phases, déroulé par phase (enseignant | élèves, support à projeter),

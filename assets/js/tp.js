@@ -244,6 +244,334 @@ print(f'Meilleure : {___(note1, note2, note3)}')`,
     ],
   },
   {
+    id: "py-variables-tp",
+    theme: "langages-prog",
+    lang: "python",
+    titre: "TP Python — Variables, saisies, calculs et expressions booléennes",
+    notebook: "assets/fichiers/premiere/langages-prog/tp_variables_capytale.ipynb",
+    intro:
+      "Objectif : consolider tout ce que tu sais faire avec des variables avant d'aborder les conditions : affectation, types et conversions, saisies avec input(), calculs (dont // et %), chaînes de caractères, f-strings et expressions booléennes. Huit exercices de difficulté croissante, sans if ni boucle, puis un bilan. Prévois toujours le résultat AVANT d'exécuter ; teste plusieurs valeurs. Les saisies input() s'affichent ici dans une petite fenêtre. La fiche élève (PDF) est à compléter et à rendre ; le notebook Capytale s'ouvre tel quel avec le bouton ⚡ Ouvrir dans Basthon.",
+    prof:
+      "<p><strong>Place dans la progression.</strong> Juste après la séance 2 (séquence 0 : variables, affectation, types, conversions, découverte de if/else) et avant la séance 3 (conditions). Le TP ne demande ni <code>if</code> ni boucle : il consolide exactement ce qui vient d'être vu et fait manipuler les booléens comme des valeurs, ce qui rend la séance 3 beaucoup plus fluide. D'après la fiche élève « TP Python — Variables, saisies, calculs et expressions booléennes » (PDF dans le kit du thème).</p><ul><li><strong>Objectifs (BO « Langages et programmation », constructions élémentaires).</strong> Affectation et évolution d'une variable ; types int, float, str, bool et conversions ; opérateurs arithmétiques dont // et % ; chaînes (concaténation, répétition, len, in) ; f-strings ; expressions booléennes avec comparaisons, and, or, not ; lecture d'un message d'erreur (ValueError).</li><li><strong>Déroulé (2 h, minutage de la fiche).</strong> Étapes 1 et 2 (10 min chacune) : prévoir sur la fiche PUIS vérifier ; étape 3 (15 min) puis mise en commun de 5 min sur « input() renvoie du texte » ; étapes 4 à 7 (15 min chacune) en binôme ; étape 8 (mini-projet) pour les rapides ou à la maison ; bilan individuel 5 min. Un fichier par exercice sur Thonny ou Capytale, ou les cellules du site (les saisies input() s'affichent dans une petite fenêtre).</li><li><strong>Supports.</strong> Sur le site : cette page (cellules exécutables, corrections poussées quand tu le décides). Notebook Capytale prêt à importer, ou bouton ⚡ Ouvrir dans Basthon (rien à installer). Fiche élève PDF à imprimer (une par élève, à rendre complétée : c'est la trace). Corrigé complet vérifié : tp_variables_corrige.py (kit du thème).</li><li><strong>Différenciation.</strong> Étapes 1 à 5 pour tous ; 6 et 7 pour la majorité ; 8 pour les rapides, sinon à la maison. Pour les élèves fragiles, l'étape 6 peut se limiter aux trois premiers booléens.</li><li><strong>Erreurs fréquentes.</strong> Oublier la conversion de input() (ou convertir après avoir collé) ; int() sur une saisie décimale ; croire que int() arrondit ; confondre // et % ; écrire 14 &lt;= age and &lt;= 17 ; or à la place de and (toujours vrai) ; :.2f pris pour un arrondi de la valeur ; majuscules et minuscules dans le test in.</li><li><strong>Évaluation.</strong> Fiche complétée + fichiers rendus (ou notebook). Les trois questions du bilan en réponse en direct (📡) donnent un diagnostic immédiat ; les reposer au rituel de la séance 3. Le TP noté n°1 (séance 6) reprend ces notions avec les conditions.</li></ul>",
+    steps: [
+      {
+        num: "1", titre: "Suivre le score d'un joueur · 10 min", run: true,
+        code: `# EXERCICE 1 — Suivre le score d'un joueur
+# Avant d'exécuter : complète le tableau (score, bonus, ancien_score après chaque ligne ; ND = pas encore définie)
+score = 12
+bonus = 5
+score = score + bonus
+ancien_score = score
+score = score * 2
+bonus = 0
+print(score)
+print(ancien_score)
+print(bonus)
+# 4. À toi : ajoute une instruction qui retire 4 points au score final, puis affiche-le`,
+        questions: [
+          "Sans exécuter, complète le tableau : valeur de score, bonus et ancien_score après chaque instruction (« ND » si la variable n'existe pas encore).",
+          "Prévois les trois valeurs affichées, puis vérifie en exécutant.",
+          "Pourquoi ancien_score ne change-t-il pas quand score est multiplié par 2 ?",
+          "Ajoute une instruction qui retire 4 points au score final, puis affiche-le.",
+        ],
+        correction: [
+          "Après score = 12 : score 12, bonus ND, ancien_score ND. Après bonus = 5 : 12, 5, ND. Après score = score + bonus : 17, 5, ND. Après ancien_score = score : 17, 5, 17. Après score = score * 2 : 34, 5, 17. Après bonus = 0 : 34, 0, 17.",
+          "Affichage : 34, puis 17, puis 0.",
+          "Au moment de ancien_score = score, la variable ancien_score reçoit une COPIE de la valeur 17. Modifier score ensuite ne touche pas cette copie : une variable n'est pas un lien vers une autre variable, elle contient une valeur.",
+          { code: `score = 12
+bonus = 5
+score = score + bonus
+ancien_score = score
+score = score * 2
+bonus = 0
+score = score - 4      # on retire 4 points au score final
+print(score)           # 30
+print(ancien_score)    # 17
+print(bonus)           # 0` },
+        ],
+        prof: "<p>10 min, en autonomie mais tableau rempli AVANT toute exécution (passer vérifier les fiches). L'erreur typique : écrire 34 pour ancien_score en croyant qu'elle « suit » score. C'est l'occasion de redire que <code>=</code> copie une valeur à un instant donné. Si un élève écrit <code>score - 4</code> sans réaffecter, faire afficher score juste après : rien n'a changé.</p>",
+      },
+      {
+        num: "2", titre: "Nombres ou textes ? · 10 min", run: true,
+        code: `# EXERCICE 2 — Nombres ou textes ?
+# Prévois la valeur ET le type de chaque expression sur ta fiche, puis vérifie ici.
+resultat = 8 + 2
+print(resultat)
+print(type(resultat))
+# À toi : vérifie de la même façon "8" + "2", "8" * 2, 8 / 2, 8 // 2, 8 > 2, float("8.5"), int(8.9)
+# Puis, en dernier et séparément : int("bonjour") — quel nom d'erreur apparaît ?`,
+        questions: [
+          "Prévois la valeur et le type de chaque expression, puis vérifie dans Python.",
+          "Quelle différence y a-t-il entre 8 et \"8\" ?",
+          "Est-ce que int(8.9) arrondit à l'entier le plus proche ?",
+          "Exécute séparément int(\"bonjour\"). Quel nom d'erreur apparaît ?",
+        ],
+        correction: [
+          "8 + 2 → 10 (int) ; \"8\" + \"2\" → \"82\" (str, les textes se collent) ; \"8\" * 2 → \"88\" (str, le texte est répété) ; 8 / 2 → 4.0 (float, la division / donne toujours un flottant) ; 8 // 2 → 4 (int, quotient entier) ; 8 > 2 → True (bool) ; float(\"8.5\") → 8.5 (float) ; int(8.9) → 8 (int).",
+          "8 est un nombre entier : on peut calculer avec. \"8\" est un texte d'un caractère : + le colle à un autre texte et on ne peut pas l'additionner à un nombre (8 + \"8\" provoque une erreur TypeError).",
+          "Non : int() tronque, il garde la partie entière. int(8.9) vaut 8 et int(-8.9) vaut -8. Pour arrondir au plus proche, c'est round(8.9), qui donne 9.",
+          "ValueError : int() ne sait pas transformer le texte \"bonjour\" en entier. Le message complet est « invalid literal for int() with base 10: 'bonjour' ».",
+          { code: `print(8 + 2, type(8 + 2))
+print("8" + "2", type("8" + "2"))
+print("8" * 2, type("8" * 2))
+print(8 / 2, type(8 / 2))
+print(8 // 2, type(8 // 2))
+print(8 > 2, type(8 > 2))
+print(float("8.5"), type(float("8.5")))
+print(int(8.9), type(int(8.9)))
+# int("bonjour") -> ValueError: invalid literal for int() with base 10: 'bonjour'` },
+        ],
+        prof: "<p>10 min. Faire parier à voix haute avant d'exécuter (réponse en direct possible sur <code>\"8\" * 2</code>, choix « 16 / 88 / erreur »). Points à faire dire : <code>/</code> donne toujours un float, <code>int()</code> tronque, une erreur a un NOM qu'on lit. Le tableau rempli sert de trace écrite.</p>",
+      },
+      {
+        num: "3", titre: "Réparer une calculatrice · 15 min", run: true,
+        code: `# EXERCICE 3 — Réparer une calculatrice (saisis 12 puis 3 : pourquoi 123 ?)
+nombre1 = input("Premier nombre : ")
+nombre2 = input("Deuxième nombre : ")
+somme = nombre1 + nombre2
+print(f"La somme est {somme}")
+# À toi : corrige pour additionner deux nombres décimaux, ajoute la différence et le produit,
+# et affiche les trois résultats avec deux décimales.
+# Test : 12.5 et 3 -> 15.50 ; 9.50 ; 37.50`,
+        questions: [
+          "Saisis 12 puis 3. Pourquoi le programme affiche-t-il 123 ?",
+          "Corrige le programme pour additionner deux nombres décimaux.",
+          "Ajoute l'affichage de leur différence et de leur produit.",
+          "Affiche les trois résultats avec deux décimales (test : 12.5 et 3 → 15.50 ; 9.50 ; 37.50).",
+        ],
+        correction: [
+          "input() renvoie TOUJOURS une chaîne de caractères : nombre1 vaut \"12\" et nombre2 vaut \"3\". Le + entre deux textes les colle : \"12\" + \"3\" donne \"123\".",
+          "Il faut convertir les saisies avec float() (décimaux) avant de calculer.",
+          "difference = nombre1 - nombre2 et produit = nombre1 * nombre2, puis deux print.",
+          "Dans une f-string, {somme:.2f} affiche la valeur avec exactement deux décimales.",
+          { code: `nombre1 = float(input("Premier nombre : "))
+nombre2 = float(input("Deuxième nombre : "))
+somme = nombre1 + nombre2
+difference = nombre1 - nombre2
+produit = nombre1 * nombre2
+print(f"La somme est {somme:.2f}")
+print(f"La différence est {difference:.2f}")
+print(f"Le produit est {produit:.2f}")
+# Test : 12.5 et 3 -> La somme est 15.50 / La différence est 9.50 / Le produit est 37.50` },
+        ],
+        prof: "<p>15 min, l'exercice clé du TP : « input() renvoie du texte » doit être écrit au tableau à la mise en commun. Erreurs vues : <code>int()</code> au lieu de <code>float()</code> (plante sur 12.5 avec ValueError, bon prétexte pour lire l'erreur), <code>float(somme)</code> après l'addition (trop tard, on a déjà collé), <code>round(somme, 2)</code> qui affiche 15.5 et non 15.50 (le format <code>:.2f</code> est un affichage, pas un arrondi de la valeur).</p>",
+      },
+      {
+        num: "4", titre: "Préparer des boîtes de matériel · 15 min", run: true,
+        code: `# EXERCICE 4 — Préparer des boîtes de matériel (utilise // et %)
+total = int(input("Nombre total de composants : "))
+capacite = int(input("Capacité d'une boîte : "))
+boites_pleines = ...   # À COMPLÉTER
+reste = ...            # À COMPLÉTER
+print(f"Boîtes complètement remplies : {boites_pleines}")
+print(f"Composants restants : {reste}")
+# Tests : 53 et 8 -> 6 boîtes, reste 5 ; 48 et 8 -> 6, reste 0 ; 5 et 8 -> 0, reste 5`,
+        questions: [
+          "Écris le programme : nombre de boîtes complètement remplies, puis composants restants, avec // et %.",
+          "Vérifie les trois lignes du tableau de tests.",
+          "Pourquoi / ne convient-il pas pour calculer le nombre de boîtes pleines ?",
+        ],
+        correction: [
+          "boites_pleines = total // capacite (quotient entier) et reste = total % capacite (reste de la division entière).",
+          "53 // 8 = 6 et 53 % 8 = 5 ; 48 // 8 = 6 et 48 % 8 = 0 ; 5 // 8 = 0 et 5 % 8 = 5.",
+          "53 / 8 = 6.625 : un flottant, alors qu'on ne remplit pas 0,625 boîte. Il faudrait tronquer, et on n'aurait toujours pas le reste. // donne directement le quotient entier et % le reste : les deux vont ensemble (6 × 8 + 5 = 53).",
+          { code: `total = int(input("Nombre total de composants : "))
+capacite = int(input("Capacité d'une boîte : "))
+boites_pleines = total // capacite
+reste = total % capacite
+print(f"Boîtes complètement remplies : {boites_pleines}")
+print(f"Composants restants : {reste}")
+# 53 et 8 -> 6 et 5 ; 48 et 8 -> 6 et 0 ; 5 et 8 -> 0 et 5` },
+        ],
+        prof: "<p>15 min. Faire manipuler avec de vrais objets (ou dessiner) pour 5 composants dans des boîtes de 8 : 0 boîte pleine, il reste 5. La relation <code>total == boites * capacite + reste</code> est une bonne trace. Erreur classique : <code>int(total / capacite)</code> marche ici mais ne donne pas le reste ; accepter, puis faire écrire la version // et %.</p>",
+      },
+      {
+        num: "5", titre: "Créer un badge personnalisé · 15 min", run: true,
+        code: `# EXERCICE 5 — Créer un badge personnalisé (+, len(), in, f-string, "=" * 24)
+prenom = input("Prénom : ")
+nom = input("Nom : ")
+classe = input("Classe : ")
+nom_complet = ...   # À COMPLÉTER : le prénom, un espace, le nom
+ligne = "=" * 24
+print(ligne)
+print("BADGE ÉLÈVE")
+# À COMPLÉTER : la ligne « Nom : ... » et la ligne « Classe : ... » avec une f-string, puis la ligne de séparation
+# À COMPLÉTER : « Nombre de caractères : ... » avec len(nom_complet)
+# À COMPLÉTER : « Présence de la lettre a : ... » avec le test "a" in prenom
+# Test : Lina, Haddad, Première NSI -> 11 caractères, True`,
+        questions: [
+          "Construis nom_complet avec le prénom, un espace et le nom.",
+          "Affiche le badge comme dans l'exemple (lignes de séparation avec \"=\" * 24).",
+          "Affiche le nombre de caractères de nom_complet, espace compris, puis le résultat du test « la lettre minuscule a est dans le prénom ».",
+          "Le test \"a\" in prenom donne-t-il le même résultat pour \"Adam\" et \"ADAM\" ? Vérifie et explique.",
+        ],
+        correction: [
+          "nom_complet = prenom + \" \" + nom : le + colle les trois textes.",
+          "print(f\"Nom : {nom_complet}\") et print(f\"Classe : {classe}\"), entre deux print(\"=\" * 24).",
+          "len(nom_complet) compte tous les caractères, espace compris : \"Lina Haddad\" en a 11. \"a\" in prenom vaut True pour Lina.",
+          "Non : \"a\" in \"Adam\" vaut True (il y a un a minuscule en 3e position) mais \"a\" in \"ADAM\" vaut False : Python distingue majuscules et minuscules, \"a\" et \"A\" sont deux caractères différents. Pour ignorer la casse, on testerait \"a\" in prenom.lower().",
+          { code: `prenom = input("Prénom : ")
+nom = input("Nom : ")
+classe = input("Classe : ")
+nom_complet = prenom + " " + nom
+ligne = "=" * 24
+print(ligne)
+print("BADGE ÉLÈVE")
+print(f"Nom : {nom_complet}")
+print(f"Classe : {classe}")
+print(ligne)
+print(f"Nombre de caractères : {len(nom_complet)}")
+print(f"Présence de la lettre a : {'a' in prenom}")
+# Lina, Haddad, Première NSI -> 11 ; True` },
+        ],
+        prof: "<p>15 min. Premier contact avec <code>in</code> sur une chaîne et <code>len()</code>. Le piège majuscule / minuscule (« Adam » / « ADAM ») est à faire découvrir par les élèves eux-mêmes : demander le résultat en réponse en direct avant d'exécuter. Rappeler que <code>\"=\" * 24</code> répète un texte (vu à l'exercice 2 avec <code>\"8\" * 2</code>). Dans la f-string de la dernière ligne, les guillemets simples autour de <code>'a'</code> évitent de fermer la chaîne.</p>",
+      },
+      {
+        num: "6", titre: "Vérifier une inscription · 15 min", run: true,
+        code: `# EXERCICE 6 — Vérifier une inscription (comparaisons, and, or, not ; SANS if)
+age = int(input("Âge : "))
+taille = int(input("Nombre d'élèves de l'équipe : "))
+age_valide = ...          # À COMPLÉTER : entre 14 et 17 inclus (deux comparaisons et and)
+equipe_valide = ...       # À COMPLÉTER : entre 2 et 4 inclus
+inscription_valide = ...  # À COMPLÉTER : les deux conditions à la fois
+print(f"Âge valide : {age_valide}")
+print(f"Équipe valide : {equipe_valide}")
+print(f"Inscription valide : {inscription_valide}")
+# 3. et 4. À COMPLÉTER : correction_necessaire (avec not) et age_hors_limites (avec or), puis les afficher
+# Tests : (14, 2) -> True ; (17, 4) -> True ; (13, 3) -> False ; (16, 5) -> False`,
+        questions: [
+          "Demande l'âge et le nombre d'élèves de l'équipe, puis complète age_valide, equipe_valide et inscription_valide (comparaisons et and, sans if).",
+          "Vérifie les quatre lignes du tableau de tests.",
+          "Ajoute correction_necessaire, calculée avec not, qui indique que l'inscription n'est pas valide.",
+          "Ajoute age_hors_limites, calculée avec or, qui indique que l'âge est inférieur à 14 ou supérieur à 17. Note les deux expressions.",
+        ],
+        correction: [
+          "age_valide = age >= 14 and age <= 17 (on peut aussi écrire 14 <= age <= 17) ; equipe_valide = taille >= 2 and taille <= 4 ; inscription_valide = age_valide and equipe_valide.",
+          "(14, 2) → True, True, True ; (17, 4) → True, True, True ; (13, 3) → False, True, False ; (16, 5) → True, False, False.",
+          "correction_necessaire = not inscription_valide : c'est le contraire exact de l'inscription valide.",
+          "age_hors_limites = age < 14 or age > 17 : vrai dès qu'UNE des deux comparaisons est vraie. Remarque : age_hors_limites est exactement not age_valide.",
+          { code: `age = int(input("Âge : "))
+taille = int(input("Nombre d'élèves de l'équipe : "))
+age_valide = age >= 14 and age <= 17
+equipe_valide = taille >= 2 and taille <= 4
+inscription_valide = age_valide and equipe_valide
+print(f"Âge valide : {age_valide}")
+print(f"Équipe valide : {equipe_valide}")
+print(f"Inscription valide : {inscription_valide}")
+correction_necessaire = not inscription_valide
+age_hors_limites = age < 14 or age > 17
+print(f"Correction nécessaire : {correction_necessaire}")
+print(f"Âge hors limites : {age_hors_limites}")
+# (14, 2) -> True ; (17, 4) -> True ; (13, 3) -> False ; (16, 5) -> False` },
+        ],
+        prof: "<p>15 min. C'est la préparation directe de la séance 3 (conditions) : un booléen est une VALEUR qu'on peut ranger dans une variable et afficher, avant même de savoir écrire un <code>if</code>. Erreurs vues : <code>14 &lt;= age and &lt;= 17</code> (syntaxe), <code>age &gt;= 14 or age &lt;= 17</code> (toujours vrai : faire tester 13), oubli des bornes incluses. Faire remarquer que <code>age_hors_limites</code> et <code>not age_valide</code> donnent toujours le même résultat.</p>",
+      },
+      {
+        num: "7", titre: "Calculer une moyenne pondérée · 15 min", run: true,
+        code: `# EXERCICE 7 — Calculer une moyenne pondérée (max(), :.2f, booléens)
+prenom = input("Prénom : ")
+quiz = float(input("Note du quiz (coefficient 1) : "))
+tp = float(input("Note du TP (coefficient 2) : "))
+projet = float(input("Note du projet (coefficient 3) : "))
+moyenne = ...          # À COMPLÉTER : (quiz + 2 * tp + 3 * projet) / 6
+meilleure = ...        # À COMPLÉTER : max(...)
+# À COMPLÉTER : afficher le prénom, la meilleure note, la moyenne avec deux décimales,
+# le booléen « moyenne >= 10 » et le booléen « les trois notes sont entre 0 et 20 »
+# Test : 12, 15 et 18 -> moyenne 16.00, meilleure note 18.0`,
+        questions: [
+          "Demande le prénom et les trois notes décimales, puis calcule la moyenne pondérée.",
+          "Affiche la meilleure note avec max() et la moyenne avec deux décimales.",
+          "Affiche un booléen indiquant si la moyenne est supérieure ou égale à 10, puis un booléen indiquant si les trois notes sont comprises entre 0 et 20.",
+          "Note un autre jeu de notes et les résultats obtenus (par exemple une note hors de [0 ; 20]).",
+        ],
+        correction: [
+          "moyenne = (quiz + 2 * tp + 3 * projet) / 6 : la somme des coefficients est 1 + 2 + 3 = 6.",
+          "meilleure = max(quiz, tp, projet) ; print(f\"Moyenne : {moyenne:.2f}\") affiche 16.00 pour 12, 15 et 18.",
+          "moyenne >= 10 est déjà un booléen ; notes_valides = quiz >= 0 and quiz <= 20 and tp >= 0 and tp <= 20 and projet >= 0 and projet <= 20 (ou 0 <= quiz <= 20 and ...).",
+          "Par exemple 8, 9 et 25 : moyenne (8 + 18 + 75) / 6 = 16.83, meilleure note 25.0, moyenne >= 10 True, notes valides False (25 est hors de [0 ; 20]).",
+          { code: `prenom = input("Prénom : ")
+quiz = float(input("Note du quiz (coefficient 1) : "))
+tp = float(input("Note du TP (coefficient 2) : "))
+projet = float(input("Note du projet (coefficient 3) : "))
+moyenne = (quiz + 2 * tp + 3 * projet) / 6
+meilleure = max(quiz, tp, projet)
+notes_valides = quiz >= 0 and quiz <= 20 and tp >= 0 and tp <= 20 and projet >= 0 and projet <= 20
+print(f"Élève : {prenom}")
+print(f"Meilleure note : {meilleure}")
+print(f"Moyenne pondérée : {moyenne:.2f}")
+print(f"Moyenne >= 10 : {moyenne >= 10}")
+print(f"Trois notes entre 0 et 20 : {notes_valides}")
+# 12, 15 et 18 -> meilleure note 18.0, moyenne 16.00, True, True` },
+        ],
+        prof: "<p>15 min, à donner aussi aux rapides pendant que les autres terminent l'exercice 6. La moyenne pondérée est un calcul déjà connu des élèves : l'intérêt est la traduction fidèle d'une formule, puis <code>max()</code> à trois arguments. Erreur fréquente : diviser par 3 au lieu de 6. Le booléen « trois notes entre 0 et 20 » est long à écrire : c'est voulu, on verra plus tard qu'une fonction évite de se répéter.</p>",
+      },
+      {
+        num: "8", titre: "Mini-projet : le ticket de commande · 15 min", run: true,
+        code: `# EXERCICE 8 — Mini-projet : le ticket de commande (montants avec deux décimales, max())
+club = input("Nom du club : ")
+nb_kits = int(input("Nombre de kits : "))
+prix_unitaire = float(input("Prix unitaire (en euros) : "))
+remise_pct = float(input("Remise (en %) : "))
+livraison = float(input("Frais de livraison (en euros) : "))
+budget = float(input("Budget disponible (en euros) : "))
+montant_initial = ...   # À COMPLÉTER : avant remise
+montant_remise = ...    # À COMPLÉTER : montant_initial * remise_pct / 100
+total = ...             # À COMPLÉTER : après remise, livraison comprise
+budget_suffisant = ...  # À COMPLÉTER : un booléen
+somme_manquante = ...   # À COMPLÉTER : avec max(), 0 si le budget suffit
+print(f"===== Ticket : {club} =====")
+# À COMPLÉTER : les cinq lignes du ticket, montants avec deux décimales
+# Test : 3 kits à 40 €, remise 10 %, livraison 5 €, budget 100 € -> 120.00 ; 12.00 ; 113.00 ; False ; 13.00`,
+        questions: [
+          "Écris le programme complet (six saisies, cinq résultats affichés sur le ticket avec le nom du club).",
+          "Vérifie avec les données de test : montant initial 120.00, remise 12.00, total 113.00, budget suffisant False, somme manquante 13.00.",
+          "Reprends les mêmes données avec un budget de 150. Note les résultats concernant le budget et la somme manquante.",
+          "Pourquoi max() convient-il pour calculer la somme manquante ?",
+        ],
+        correction: [
+          "montant_initial = nb_kits * prix_unitaire ; montant_remise = montant_initial * remise_pct / 100 ; total = montant_initial - montant_remise + livraison ; budget_suffisant = budget >= total ; somme_manquante = max(0, total - budget).",
+          "3 × 40 = 120.00 ; 10 % de 120 = 12.00 ; 120 - 12 + 5 = 113.00 ; 100 >= 113 est False ; max(0, 13) = 13.00.",
+          "Avec un budget de 150 : budget suffisant True et somme manquante 0.00 (max(0, -37) vaut 0).",
+          "total - budget est négatif quand le budget suffit ; max(0, total - budget) remplace ce négatif par 0 sans avoir besoin d'un if : c'est exactement « la somme manquante, zéro si le budget suffit ».",
+          { code: `club = input("Nom du club : ")
+nb_kits = int(input("Nombre de kits : "))
+prix_unitaire = float(input("Prix unitaire (en euros) : "))
+remise_pct = float(input("Remise (en %) : "))
+livraison = float(input("Frais de livraison (en euros) : "))
+budget = float(input("Budget disponible (en euros) : "))
+montant_initial = nb_kits * prix_unitaire
+montant_remise = montant_initial * remise_pct / 100
+total = montant_initial - montant_remise + livraison
+budget_suffisant = budget >= total
+somme_manquante = max(0, total - budget)
+print(f"===== Ticket : {club} =====")
+print(f"Montant avant remise : {montant_initial:.2f} euros")
+print(f"Remise ({remise_pct} %) : {montant_remise:.2f} euros")
+print(f"Total à payer, livraison comprise : {total:.2f} euros")
+print(f"Budget suffisant : {budget_suffisant}")
+print(f"Somme manquante : {somme_manquante:.2f} euros")
+# 3 kits, 40, 10, 5, 100 -> 120.00 ; 12.00 ; 113.00 ; False ; 13.00   (budget 150 -> True ; 0.00)` },
+        ],
+        prof: "<p>15 min, mini-projet pour les rapides ou à finir à la maison (notebook Capytale ou Basthon). Tout le TP s'y retrouve : conversions, calcul, f-string à deux décimales, booléen, <code>max()</code> comme substitut au <code>if</code>. Ne pas exiger l'ordre exact des lignes du ticket ; exiger les valeurs de test. Erreur vue : remise calculée sur le total livraison comprise.</p>",
+      },
+      {
+        num: "9", titre: "Bilan individuel · 5 min",
+        note: "Réponds sur ta fiche (ou en réponse en direct si le professeur la lance). À rendre : les fichiers Python des exercices réalisés et la fiche complétée.",
+        questions: [
+          "Pourquoi faut-il convertir une saisie pour effectuer un calcul ?",
+          "Quelle différence y a-t-il entre // et % ?",
+          "Quelle différence y a-t-il entre = et == ?",
+        ],
+        correction: [
+          "input() renvoie toujours une chaîne de caractères, même si l'utilisateur tape des chiffres. Sans int() ou float(), + colle les textes (\"12\" + \"3\" donne \"123\") et - ou * provoquent une erreur.",
+          "// est le quotient entier de la division (53 // 8 = 6 : combien de fois 8 tient dans 53) ; % est le reste (53 % 8 = 5 : ce qui reste après avoir retiré 6 × 8). On a toujours 53 == 6 * 8 + 5.",
+          "= est l'affectation : score = 12 range la valeur 12 dans la variable score. == est la comparaison : score == 12 est une expression qui vaut True ou False sans rien modifier.",
+        ],
+        prof: "<p>5 min, en réponse en direct (texte court) ou sur la fiche. Ces trois réponses sont la trace écrite minimale du TP ; les relire au rituel de la séance 3. À rendre : les fichiers Python (ou le notebook) et la fiche complétée.</p>",
+      },
+    ],
+  },
+  {
     id: "py-conditions",
     theme: "langages-prog",
     lang: "python",
