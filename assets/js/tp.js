@@ -244,6 +244,334 @@ print(f'Meilleure : {___(note1, note2, note3)}')`,
     ],
   },
   {
+    id: "py-variables-tp",
+    theme: "langages-prog",
+    lang: "python",
+    titre: "TP Python — Variables, saisies, calculs et expressions booléennes",
+    notebook: "assets/fichiers/premiere/langages-prog/tp_variables_capytale.ipynb",
+    intro:
+      "Objectif : consolider tout ce que tu sais faire avec des variables avant d'aborder les conditions : affectation, types et conversions, saisies avec input(), calculs (dont // et %), chaînes de caractères, f-strings et expressions booléennes. Huit exercices de difficulté croissante, sans if ni boucle, puis un bilan. Prévois toujours le résultat AVANT d'exécuter ; teste plusieurs valeurs. Les saisies input() s'affichent ici dans une petite fenêtre. La fiche élève (PDF) est à compléter et à rendre ; le notebook Capytale s'ouvre tel quel avec le bouton ⚡ Ouvrir dans Basthon.",
+    prof:
+      "<p><strong>Place dans la progression.</strong> Juste après la séance 2 (séquence 0 : variables, affectation, types, conversions, découverte de if/else) et avant la séance 3 (conditions). Le TP ne demande ni <code>if</code> ni boucle : il consolide exactement ce qui vient d'être vu et fait manipuler les booléens comme des valeurs, ce qui rend la séance 3 beaucoup plus fluide. D'après la fiche élève « TP Python — Variables, saisies, calculs et expressions booléennes » (PDF dans le kit du thème).</p><ul><li><strong>Objectifs (BO « Langages et programmation », constructions élémentaires).</strong> Affectation et évolution d'une variable ; types int, float, str, bool et conversions ; opérateurs arithmétiques dont // et % ; chaînes (concaténation, répétition, len, in) ; f-strings ; expressions booléennes avec comparaisons, and, or, not ; lecture d'un message d'erreur (ValueError).</li><li><strong>Déroulé (2 h, minutage de la fiche).</strong> Étapes 1 et 2 (10 min chacune) : prévoir sur la fiche PUIS vérifier ; étape 3 (15 min) puis mise en commun de 5 min sur « input() renvoie du texte » ; étapes 4 à 7 (15 min chacune) en binôme ; étape 8 (mini-projet) pour les rapides ou à la maison ; bilan individuel 5 min. Un fichier par exercice sur Thonny ou Capytale, ou les cellules du site (les saisies input() s'affichent dans une petite fenêtre).</li><li><strong>Supports.</strong> Sur le site : cette page (cellules exécutables, corrections poussées quand tu le décides). Notebook Capytale prêt à importer, ou bouton ⚡ Ouvrir dans Basthon (rien à installer). Fiche élève PDF à imprimer (une par élève, à rendre complétée : c'est la trace). Corrigé complet vérifié : tp_variables_corrige.py (kit du thème).</li><li><strong>Différenciation.</strong> Étapes 1 à 5 pour tous ; 6 et 7 pour la majorité ; 8 pour les rapides, sinon à la maison. Pour les élèves fragiles, l'étape 6 peut se limiter aux trois premiers booléens.</li><li><strong>Erreurs fréquentes.</strong> Oublier la conversion de input() (ou convertir après avoir collé) ; int() sur une saisie décimale ; croire que int() arrondit ; confondre // et % ; écrire 14 &lt;= age and &lt;= 17 ; or à la place de and (toujours vrai) ; :.2f pris pour un arrondi de la valeur ; majuscules et minuscules dans le test in.</li><li><strong>Évaluation.</strong> Fiche complétée + fichiers rendus (ou notebook). Les trois questions du bilan en réponse en direct (📡) donnent un diagnostic immédiat ; les reposer au rituel de la séance 3. Le TP noté n°1 (séance 6) reprend ces notions avec les conditions.</li></ul>",
+    steps: [
+      {
+        num: "1", titre: "Suivre le score d'un joueur · 10 min", run: true,
+        code: `# EXERCICE 1 — Suivre le score d'un joueur
+# Avant d'exécuter : complète le tableau (score, bonus, ancien_score après chaque ligne ; ND = pas encore définie)
+score = 12
+bonus = 5
+score = score + bonus
+ancien_score = score
+score = score * 2
+bonus = 0
+print(score)
+print(ancien_score)
+print(bonus)
+# 4. À toi : ajoute une instruction qui retire 4 points au score final, puis affiche-le`,
+        questions: [
+          "Sans exécuter, complète le tableau : valeur de score, bonus et ancien_score après chaque instruction (« ND » si la variable n'existe pas encore).",
+          "Prévois les trois valeurs affichées, puis vérifie en exécutant.",
+          "Pourquoi ancien_score ne change-t-il pas quand score est multiplié par 2 ?",
+          "Ajoute une instruction qui retire 4 points au score final, puis affiche-le.",
+        ],
+        correction: [
+          "Après score = 12 : score 12, bonus ND, ancien_score ND. Après bonus = 5 : 12, 5, ND. Après score = score + bonus : 17, 5, ND. Après ancien_score = score : 17, 5, 17. Après score = score * 2 : 34, 5, 17. Après bonus = 0 : 34, 0, 17.",
+          "Affichage : 34, puis 17, puis 0.",
+          "Au moment de ancien_score = score, la variable ancien_score reçoit une COPIE de la valeur 17. Modifier score ensuite ne touche pas cette copie : une variable n'est pas un lien vers une autre variable, elle contient une valeur.",
+          { code: `score = 12
+bonus = 5
+score = score + bonus
+ancien_score = score
+score = score * 2
+bonus = 0
+score = score - 4      # on retire 4 points au score final
+print(score)           # 30
+print(ancien_score)    # 17
+print(bonus)           # 0` },
+        ],
+        prof: "<p>10 min, en autonomie mais tableau rempli AVANT toute exécution (passer vérifier les fiches). L'erreur typique : écrire 34 pour ancien_score en croyant qu'elle « suit » score. C'est l'occasion de redire que <code>=</code> copie une valeur à un instant donné. Si un élève écrit <code>score - 4</code> sans réaffecter, faire afficher score juste après : rien n'a changé.</p>",
+      },
+      {
+        num: "2", titre: "Nombres ou textes ? · 10 min", run: true,
+        code: `# EXERCICE 2 — Nombres ou textes ?
+# Prévois la valeur ET le type de chaque expression sur ta fiche, puis vérifie ici.
+resultat = 8 + 2
+print(resultat)
+print(type(resultat))
+# À toi : vérifie de la même façon "8" + "2", "8" * 2, 8 / 2, 8 // 2, 8 > 2, float("8.5"), int(8.9)
+# Puis, en dernier et séparément : int("bonjour") — quel nom d'erreur apparaît ?`,
+        questions: [
+          "Prévois la valeur et le type de chaque expression, puis vérifie dans Python.",
+          "Quelle différence y a-t-il entre 8 et \"8\" ?",
+          "Est-ce que int(8.9) arrondit à l'entier le plus proche ?",
+          "Exécute séparément int(\"bonjour\"). Quel nom d'erreur apparaît ?",
+        ],
+        correction: [
+          "8 + 2 → 10 (int) ; \"8\" + \"2\" → \"82\" (str, les textes se collent) ; \"8\" * 2 → \"88\" (str, le texte est répété) ; 8 / 2 → 4.0 (float, la division / donne toujours un flottant) ; 8 // 2 → 4 (int, quotient entier) ; 8 > 2 → True (bool) ; float(\"8.5\") → 8.5 (float) ; int(8.9) → 8 (int).",
+          "8 est un nombre entier : on peut calculer avec. \"8\" est un texte d'un caractère : + le colle à un autre texte et on ne peut pas l'additionner à un nombre (8 + \"8\" provoque une erreur TypeError).",
+          "Non : int() tronque, il garde la partie entière. int(8.9) vaut 8 et int(-8.9) vaut -8. Pour arrondir au plus proche, c'est round(8.9), qui donne 9.",
+          "ValueError : int() ne sait pas transformer le texte \"bonjour\" en entier. Le message complet est « invalid literal for int() with base 10: 'bonjour' ».",
+          { code: `print(8 + 2, type(8 + 2))
+print("8" + "2", type("8" + "2"))
+print("8" * 2, type("8" * 2))
+print(8 / 2, type(8 / 2))
+print(8 // 2, type(8 // 2))
+print(8 > 2, type(8 > 2))
+print(float("8.5"), type(float("8.5")))
+print(int(8.9), type(int(8.9)))
+# int("bonjour") -> ValueError: invalid literal for int() with base 10: 'bonjour'` },
+        ],
+        prof: "<p>10 min. Faire parier à voix haute avant d'exécuter (réponse en direct possible sur <code>\"8\" * 2</code>, choix « 16 / 88 / erreur »). Points à faire dire : <code>/</code> donne toujours un float, <code>int()</code> tronque, une erreur a un NOM qu'on lit. Le tableau rempli sert de trace écrite.</p>",
+      },
+      {
+        num: "3", titre: "Réparer une calculatrice · 15 min", run: true,
+        code: `# EXERCICE 3 — Réparer une calculatrice (saisis 12 puis 3 : pourquoi 123 ?)
+nombre1 = input("Premier nombre : ")
+nombre2 = input("Deuxième nombre : ")
+somme = nombre1 + nombre2
+print(f"La somme est {somme}")
+# À toi : corrige pour additionner deux nombres décimaux, ajoute la différence et le produit,
+# et affiche les trois résultats avec deux décimales.
+# Test : 12.5 et 3 -> 15.50 ; 9.50 ; 37.50`,
+        questions: [
+          "Saisis 12 puis 3. Pourquoi le programme affiche-t-il 123 ?",
+          "Corrige le programme pour additionner deux nombres décimaux.",
+          "Ajoute l'affichage de leur différence et de leur produit.",
+          "Affiche les trois résultats avec deux décimales (test : 12.5 et 3 → 15.50 ; 9.50 ; 37.50).",
+        ],
+        correction: [
+          "input() renvoie TOUJOURS une chaîne de caractères : nombre1 vaut \"12\" et nombre2 vaut \"3\". Le + entre deux textes les colle : \"12\" + \"3\" donne \"123\".",
+          "Il faut convertir les saisies avec float() (décimaux) avant de calculer.",
+          "difference = nombre1 - nombre2 et produit = nombre1 * nombre2, puis deux print.",
+          "Dans une f-string, {somme:.2f} affiche la valeur avec exactement deux décimales.",
+          { code: `nombre1 = float(input("Premier nombre : "))
+nombre2 = float(input("Deuxième nombre : "))
+somme = nombre1 + nombre2
+difference = nombre1 - nombre2
+produit = nombre1 * nombre2
+print(f"La somme est {somme:.2f}")
+print(f"La différence est {difference:.2f}")
+print(f"Le produit est {produit:.2f}")
+# Test : 12.5 et 3 -> La somme est 15.50 / La différence est 9.50 / Le produit est 37.50` },
+        ],
+        prof: "<p>15 min, l'exercice clé du TP : « input() renvoie du texte » doit être écrit au tableau à la mise en commun. Erreurs vues : <code>int()</code> au lieu de <code>float()</code> (plante sur 12.5 avec ValueError, bon prétexte pour lire l'erreur), <code>float(somme)</code> après l'addition (trop tard, on a déjà collé), <code>round(somme, 2)</code> qui affiche 15.5 et non 15.50 (le format <code>:.2f</code> est un affichage, pas un arrondi de la valeur).</p>",
+      },
+      {
+        num: "4", titre: "Préparer des boîtes de matériel · 15 min", run: true,
+        code: `# EXERCICE 4 — Préparer des boîtes de matériel (utilise // et %)
+total = int(input("Nombre total de composants : "))
+capacite = int(input("Capacité d'une boîte : "))
+boites_pleines = ...   # À COMPLÉTER
+reste = ...            # À COMPLÉTER
+print(f"Boîtes complètement remplies : {boites_pleines}")
+print(f"Composants restants : {reste}")
+# Tests : 53 et 8 -> 6 boîtes, reste 5 ; 48 et 8 -> 6, reste 0 ; 5 et 8 -> 0, reste 5`,
+        questions: [
+          "Écris le programme : nombre de boîtes complètement remplies, puis composants restants, avec // et %.",
+          "Vérifie les trois lignes du tableau de tests.",
+          "Pourquoi / ne convient-il pas pour calculer le nombre de boîtes pleines ?",
+        ],
+        correction: [
+          "boites_pleines = total // capacite (quotient entier) et reste = total % capacite (reste de la division entière).",
+          "53 // 8 = 6 et 53 % 8 = 5 ; 48 // 8 = 6 et 48 % 8 = 0 ; 5 // 8 = 0 et 5 % 8 = 5.",
+          "53 / 8 = 6.625 : un flottant, alors qu'on ne remplit pas 0,625 boîte. Il faudrait tronquer, et on n'aurait toujours pas le reste. // donne directement le quotient entier et % le reste : les deux vont ensemble (6 × 8 + 5 = 53).",
+          { code: `total = int(input("Nombre total de composants : "))
+capacite = int(input("Capacité d'une boîte : "))
+boites_pleines = total // capacite
+reste = total % capacite
+print(f"Boîtes complètement remplies : {boites_pleines}")
+print(f"Composants restants : {reste}")
+# 53 et 8 -> 6 et 5 ; 48 et 8 -> 6 et 0 ; 5 et 8 -> 0 et 5` },
+        ],
+        prof: "<p>15 min. Faire manipuler avec de vrais objets (ou dessiner) pour 5 composants dans des boîtes de 8 : 0 boîte pleine, il reste 5. La relation <code>total == boites * capacite + reste</code> est une bonne trace. Erreur classique : <code>int(total / capacite)</code> marche ici mais ne donne pas le reste ; accepter, puis faire écrire la version // et %.</p>",
+      },
+      {
+        num: "5", titre: "Créer un badge personnalisé · 15 min", run: true,
+        code: `# EXERCICE 5 — Créer un badge personnalisé (+, len(), in, f-string, "=" * 24)
+prenom = input("Prénom : ")
+nom = input("Nom : ")
+classe = input("Classe : ")
+nom_complet = ...   # À COMPLÉTER : le prénom, un espace, le nom
+ligne = "=" * 24
+print(ligne)
+print("BADGE ÉLÈVE")
+# À COMPLÉTER : la ligne « Nom : ... » et la ligne « Classe : ... » avec une f-string, puis la ligne de séparation
+# À COMPLÉTER : « Nombre de caractères : ... » avec len(nom_complet)
+# À COMPLÉTER : « Présence de la lettre a : ... » avec le test "a" in prenom
+# Test : Lina, Haddad, Première NSI -> 11 caractères, True`,
+        questions: [
+          "Construis nom_complet avec le prénom, un espace et le nom.",
+          "Affiche le badge comme dans l'exemple (lignes de séparation avec \"=\" * 24).",
+          "Affiche le nombre de caractères de nom_complet, espace compris, puis le résultat du test « la lettre minuscule a est dans le prénom ».",
+          "Le test \"a\" in prenom donne-t-il le même résultat pour \"Adam\" et \"ADAM\" ? Vérifie et explique.",
+        ],
+        correction: [
+          "nom_complet = prenom + \" \" + nom : le + colle les trois textes.",
+          "print(f\"Nom : {nom_complet}\") et print(f\"Classe : {classe}\"), entre deux print(\"=\" * 24).",
+          "len(nom_complet) compte tous les caractères, espace compris : \"Lina Haddad\" en a 11. \"a\" in prenom vaut True pour Lina.",
+          "Non : \"a\" in \"Adam\" vaut True (il y a un a minuscule en 3e position) mais \"a\" in \"ADAM\" vaut False : Python distingue majuscules et minuscules, \"a\" et \"A\" sont deux caractères différents. Pour ignorer la casse, on testerait \"a\" in prenom.lower().",
+          { code: `prenom = input("Prénom : ")
+nom = input("Nom : ")
+classe = input("Classe : ")
+nom_complet = prenom + " " + nom
+ligne = "=" * 24
+print(ligne)
+print("BADGE ÉLÈVE")
+print(f"Nom : {nom_complet}")
+print(f"Classe : {classe}")
+print(ligne)
+print(f"Nombre de caractères : {len(nom_complet)}")
+print(f"Présence de la lettre a : {'a' in prenom}")
+# Lina, Haddad, Première NSI -> 11 ; True` },
+        ],
+        prof: "<p>15 min. Premier contact avec <code>in</code> sur une chaîne et <code>len()</code>. Le piège majuscule / minuscule (« Adam » / « ADAM ») est à faire découvrir par les élèves eux-mêmes : demander le résultat en réponse en direct avant d'exécuter. Rappeler que <code>\"=\" * 24</code> répète un texte (vu à l'exercice 2 avec <code>\"8\" * 2</code>). Dans la f-string de la dernière ligne, les guillemets simples autour de <code>'a'</code> évitent de fermer la chaîne.</p>",
+      },
+      {
+        num: "6", titre: "Vérifier une inscription · 15 min", run: true,
+        code: `# EXERCICE 6 — Vérifier une inscription (comparaisons, and, or, not ; SANS if)
+age = int(input("Âge : "))
+taille = int(input("Nombre d'élèves de l'équipe : "))
+age_valide = ...          # À COMPLÉTER : entre 14 et 17 inclus (deux comparaisons et and)
+equipe_valide = ...       # À COMPLÉTER : entre 2 et 4 inclus
+inscription_valide = ...  # À COMPLÉTER : les deux conditions à la fois
+print(f"Âge valide : {age_valide}")
+print(f"Équipe valide : {equipe_valide}")
+print(f"Inscription valide : {inscription_valide}")
+# 3. et 4. À COMPLÉTER : correction_necessaire (avec not) et age_hors_limites (avec or), puis les afficher
+# Tests : (14, 2) -> True ; (17, 4) -> True ; (13, 3) -> False ; (16, 5) -> False`,
+        questions: [
+          "Demande l'âge et le nombre d'élèves de l'équipe, puis complète age_valide, equipe_valide et inscription_valide (comparaisons et and, sans if).",
+          "Vérifie les quatre lignes du tableau de tests.",
+          "Ajoute correction_necessaire, calculée avec not, qui indique que l'inscription n'est pas valide.",
+          "Ajoute age_hors_limites, calculée avec or, qui indique que l'âge est inférieur à 14 ou supérieur à 17. Note les deux expressions.",
+        ],
+        correction: [
+          "age_valide = age >= 14 and age <= 17 (on peut aussi écrire 14 <= age <= 17) ; equipe_valide = taille >= 2 and taille <= 4 ; inscription_valide = age_valide and equipe_valide.",
+          "(14, 2) → True, True, True ; (17, 4) → True, True, True ; (13, 3) → False, True, False ; (16, 5) → True, False, False.",
+          "correction_necessaire = not inscription_valide : c'est le contraire exact de l'inscription valide.",
+          "age_hors_limites = age < 14 or age > 17 : vrai dès qu'UNE des deux comparaisons est vraie. Remarque : age_hors_limites est exactement not age_valide.",
+          { code: `age = int(input("Âge : "))
+taille = int(input("Nombre d'élèves de l'équipe : "))
+age_valide = age >= 14 and age <= 17
+equipe_valide = taille >= 2 and taille <= 4
+inscription_valide = age_valide and equipe_valide
+print(f"Âge valide : {age_valide}")
+print(f"Équipe valide : {equipe_valide}")
+print(f"Inscription valide : {inscription_valide}")
+correction_necessaire = not inscription_valide
+age_hors_limites = age < 14 or age > 17
+print(f"Correction nécessaire : {correction_necessaire}")
+print(f"Âge hors limites : {age_hors_limites}")
+# (14, 2) -> True ; (17, 4) -> True ; (13, 3) -> False ; (16, 5) -> False` },
+        ],
+        prof: "<p>15 min. C'est la préparation directe de la séance 3 (conditions) : un booléen est une VALEUR qu'on peut ranger dans une variable et afficher, avant même de savoir écrire un <code>if</code>. Erreurs vues : <code>14 &lt;= age and &lt;= 17</code> (syntaxe), <code>age &gt;= 14 or age &lt;= 17</code> (toujours vrai : faire tester 13), oubli des bornes incluses. Faire remarquer que <code>age_hors_limites</code> et <code>not age_valide</code> donnent toujours le même résultat.</p>",
+      },
+      {
+        num: "7", titre: "Calculer une moyenne pondérée · 15 min", run: true,
+        code: `# EXERCICE 7 — Calculer une moyenne pondérée (max(), :.2f, booléens)
+prenom = input("Prénom : ")
+quiz = float(input("Note du quiz (coefficient 1) : "))
+tp = float(input("Note du TP (coefficient 2) : "))
+projet = float(input("Note du projet (coefficient 3) : "))
+moyenne = ...          # À COMPLÉTER : (quiz + 2 * tp + 3 * projet) / 6
+meilleure = ...        # À COMPLÉTER : max(...)
+# À COMPLÉTER : afficher le prénom, la meilleure note, la moyenne avec deux décimales,
+# le booléen « moyenne >= 10 » et le booléen « les trois notes sont entre 0 et 20 »
+# Test : 12, 15 et 18 -> moyenne 16.00, meilleure note 18.0`,
+        questions: [
+          "Demande le prénom et les trois notes décimales, puis calcule la moyenne pondérée.",
+          "Affiche la meilleure note avec max() et la moyenne avec deux décimales.",
+          "Affiche un booléen indiquant si la moyenne est supérieure ou égale à 10, puis un booléen indiquant si les trois notes sont comprises entre 0 et 20.",
+          "Note un autre jeu de notes et les résultats obtenus (par exemple une note hors de [0 ; 20]).",
+        ],
+        correction: [
+          "moyenne = (quiz + 2 * tp + 3 * projet) / 6 : la somme des coefficients est 1 + 2 + 3 = 6.",
+          "meilleure = max(quiz, tp, projet) ; print(f\"Moyenne : {moyenne:.2f}\") affiche 16.00 pour 12, 15 et 18.",
+          "moyenne >= 10 est déjà un booléen ; notes_valides = quiz >= 0 and quiz <= 20 and tp >= 0 and tp <= 20 and projet >= 0 and projet <= 20 (ou 0 <= quiz <= 20 and ...).",
+          "Par exemple 8, 9 et 25 : moyenne (8 + 18 + 75) / 6 = 16.83, meilleure note 25.0, moyenne >= 10 True, notes valides False (25 est hors de [0 ; 20]).",
+          { code: `prenom = input("Prénom : ")
+quiz = float(input("Note du quiz (coefficient 1) : "))
+tp = float(input("Note du TP (coefficient 2) : "))
+projet = float(input("Note du projet (coefficient 3) : "))
+moyenne = (quiz + 2 * tp + 3 * projet) / 6
+meilleure = max(quiz, tp, projet)
+notes_valides = quiz >= 0 and quiz <= 20 and tp >= 0 and tp <= 20 and projet >= 0 and projet <= 20
+print(f"Élève : {prenom}")
+print(f"Meilleure note : {meilleure}")
+print(f"Moyenne pondérée : {moyenne:.2f}")
+print(f"Moyenne >= 10 : {moyenne >= 10}")
+print(f"Trois notes entre 0 et 20 : {notes_valides}")
+# 12, 15 et 18 -> meilleure note 18.0, moyenne 16.00, True, True` },
+        ],
+        prof: "<p>15 min, à donner aussi aux rapides pendant que les autres terminent l'exercice 6. La moyenne pondérée est un calcul déjà connu des élèves : l'intérêt est la traduction fidèle d'une formule, puis <code>max()</code> à trois arguments. Erreur fréquente : diviser par 3 au lieu de 6. Le booléen « trois notes entre 0 et 20 » est long à écrire : c'est voulu, on verra plus tard qu'une fonction évite de se répéter.</p>",
+      },
+      {
+        num: "8", titre: "Mini-projet : le ticket de commande · 15 min", run: true,
+        code: `# EXERCICE 8 — Mini-projet : le ticket de commande (montants avec deux décimales, max())
+club = input("Nom du club : ")
+nb_kits = int(input("Nombre de kits : "))
+prix_unitaire = float(input("Prix unitaire (en euros) : "))
+remise_pct = float(input("Remise (en %) : "))
+livraison = float(input("Frais de livraison (en euros) : "))
+budget = float(input("Budget disponible (en euros) : "))
+montant_initial = ...   # À COMPLÉTER : avant remise
+montant_remise = ...    # À COMPLÉTER : montant_initial * remise_pct / 100
+total = ...             # À COMPLÉTER : après remise, livraison comprise
+budget_suffisant = ...  # À COMPLÉTER : un booléen
+somme_manquante = ...   # À COMPLÉTER : avec max(), 0 si le budget suffit
+print(f"===== Ticket : {club} =====")
+# À COMPLÉTER : les cinq lignes du ticket, montants avec deux décimales
+# Test : 3 kits à 40 €, remise 10 %, livraison 5 €, budget 100 € -> 120.00 ; 12.00 ; 113.00 ; False ; 13.00`,
+        questions: [
+          "Écris le programme complet (six saisies, cinq résultats affichés sur le ticket avec le nom du club).",
+          "Vérifie avec les données de test : montant initial 120.00, remise 12.00, total 113.00, budget suffisant False, somme manquante 13.00.",
+          "Reprends les mêmes données avec un budget de 150. Note les résultats concernant le budget et la somme manquante.",
+          "Pourquoi max() convient-il pour calculer la somme manquante ?",
+        ],
+        correction: [
+          "montant_initial = nb_kits * prix_unitaire ; montant_remise = montant_initial * remise_pct / 100 ; total = montant_initial - montant_remise + livraison ; budget_suffisant = budget >= total ; somme_manquante = max(0, total - budget).",
+          "3 × 40 = 120.00 ; 10 % de 120 = 12.00 ; 120 - 12 + 5 = 113.00 ; 100 >= 113 est False ; max(0, 13) = 13.00.",
+          "Avec un budget de 150 : budget suffisant True et somme manquante 0.00 (max(0, -37) vaut 0).",
+          "total - budget est négatif quand le budget suffit ; max(0, total - budget) remplace ce négatif par 0 sans avoir besoin d'un if : c'est exactement « la somme manquante, zéro si le budget suffit ».",
+          { code: `club = input("Nom du club : ")
+nb_kits = int(input("Nombre de kits : "))
+prix_unitaire = float(input("Prix unitaire (en euros) : "))
+remise_pct = float(input("Remise (en %) : "))
+livraison = float(input("Frais de livraison (en euros) : "))
+budget = float(input("Budget disponible (en euros) : "))
+montant_initial = nb_kits * prix_unitaire
+montant_remise = montant_initial * remise_pct / 100
+total = montant_initial - montant_remise + livraison
+budget_suffisant = budget >= total
+somme_manquante = max(0, total - budget)
+print(f"===== Ticket : {club} =====")
+print(f"Montant avant remise : {montant_initial:.2f} euros")
+print(f"Remise ({remise_pct} %) : {montant_remise:.2f} euros")
+print(f"Total à payer, livraison comprise : {total:.2f} euros")
+print(f"Budget suffisant : {budget_suffisant}")
+print(f"Somme manquante : {somme_manquante:.2f} euros")
+# 3 kits, 40, 10, 5, 100 -> 120.00 ; 12.00 ; 113.00 ; False ; 13.00   (budget 150 -> True ; 0.00)` },
+        ],
+        prof: "<p>15 min, mini-projet pour les rapides ou à finir à la maison (notebook Capytale ou Basthon). Tout le TP s'y retrouve : conversions, calcul, f-string à deux décimales, booléen, <code>max()</code> comme substitut au <code>if</code>. Ne pas exiger l'ordre exact des lignes du ticket ; exiger les valeurs de test. Erreur vue : remise calculée sur le total livraison comprise.</p>",
+      },
+      {
+        num: "9", titre: "Bilan individuel · 5 min",
+        note: "Réponds sur ta fiche (ou en réponse en direct si le professeur la lance). À rendre : les fichiers Python des exercices réalisés et la fiche complétée.",
+        questions: [
+          "Pourquoi faut-il convertir une saisie pour effectuer un calcul ?",
+          "Quelle différence y a-t-il entre // et % ?",
+          "Quelle différence y a-t-il entre = et == ?",
+        ],
+        correction: [
+          "input() renvoie toujours une chaîne de caractères, même si l'utilisateur tape des chiffres. Sans int() ou float(), + colle les textes (\"12\" + \"3\" donne \"123\") et - ou * provoquent une erreur.",
+          "// est le quotient entier de la division (53 // 8 = 6 : combien de fois 8 tient dans 53) ; % est le reste (53 % 8 = 5 : ce qui reste après avoir retiré 6 × 8). On a toujours 53 == 6 * 8 + 5.",
+          "= est l'affectation : score = 12 range la valeur 12 dans la variable score. == est la comparaison : score == 12 est une expression qui vaut True ou False sans rien modifier.",
+        ],
+        prof: "<p>5 min, en réponse en direct (texte court) ou sur la fiche. Ces trois réponses sont la trace écrite minimale du TP ; les relire au rituel de la séance 3. À rendre : les fichiers Python (ou le notebook) et la fiche complétée.</p>",
+      },
+    ],
+  },
+  {
     id: "py-conditions",
     theme: "langages-prog",
     lang: "python",
@@ -1469,8 +1797,9 @@ for version, donnees in [("brut", joueurs), ("normalisé", normaliser_colonnes(j
     theme: "algorithmique",
     lang: "python",
     titre: "TP — Algorithmes gloutons : monnaie, sac à dos, planning",
+    notebook: "assets/fichiers/premiere/algorithmique/gloutons_capytale.ipynb",
     intro:
-      "Objectif : mettre en œuvre un algorithme glouton (capacité du BO) sur quatre problèmes classiques, et surtout comprendre quand il donne la meilleure solution et quand il se trompe. Un algorithme glouton applique toujours la même règle locale (« le meilleur choix sur le moment ») et ne revient jamais en arrière : il est rapide et simple, mais pas toujours optimal. On finit par une recherche exhaustive (qui trouve toujours l'optimum, mais lentement) et par un bonus sur la récursivité de Fibonacci. D'après le notebook Capytale « Algorithmes gloutons » (disponible dans le kit du thème avec le fichier gloutons.py pour Thonny).",
+      "Objectif : mettre en œuvre un algorithme glouton (capacité du BO) sur quatre problèmes classiques, et surtout comprendre quand il donne la meilleure solution et quand il se trompe. Un algorithme glouton applique toujours la même règle locale (« le meilleur choix sur le moment ») et ne revient jamais en arrière : il est rapide et simple, mais pas toujours optimal. On finit par une recherche exhaustive (qui trouve toujours l'optimum, mais lentement) et par un bonus sur la récursivité de Fibonacci. D'après le notebook Capytale « Algorithmes gloutons » : le bouton ⚡ Ouvrir dans Basthon l'ouvre tel quel dans ton navigateur (il est aussi dans le kit du thème, avec le fichier gloutons.py pour Thonny).",
     prof:
       "<p><strong>Place dans la progression.</strong> Séance 6 du thème (les gloutons), après le tri et la dichotomie, avant kNN. Les élèves ont déjà écrit des boucles <code>while</code>, des fonctions avec <code>return</code> et manipulé des listes de tuples : tout le TP tient avec ces outils. La partie 5 (Fibonacci) mobilise la récursivité, hors programme de Première : c'est un bonus pour les élèves rapides ou une ouverture vers la Terminale.</p>" +
       "<ul>" +
@@ -1480,7 +1809,7 @@ for version, donnees in [("brut", joueurs), ("normalisé", normaliser_colonnes(j
       "<li><strong>Le fil conducteur à faire dire aux élèves.</strong> À chaque partie, la même phrase : « quelle est la règle locale ? » (la plus grande pièce ; l'objet le plus cher, puis le meilleur rapport ; la conférence qui finit le plus tôt) puis « cette règle donne-t-elle toujours l'optimum ? ». Faire écrire cette phrase dans le cahier après chaque partie : c'est la trace du cours.</li>" +
       "<li><strong>Pièges observés.</strong> (1) Confondre <code>i = i + 1</code> (passer à la pièce suivante) et retirer la pièce : les élèves incrémentent <code>i</code> dans les deux branches et perdent des pièces. (2) Oublier la condition <code>i &lt; len(lst_piece)</code> : sans pièce de 1 la boucle ne s'arrête plus (IndexError ou boucle infinie). (3) Trier avec <code>sorted(liste, reverse=True)</code> pour le sac à dos : ça marche par hasard car le tri se fait sur le premier élément du tuple (la valeur) ; faire expliciter <code>key=</code>. (4) Dans <code>planning1</code>, tester <code>debut &gt; fin_precedente</code> au lieu de <code>&gt;=</code> : une conférence qui commence pile à la fin de la précédente est compatible. (5) Croire qu'un résultat différent du corrigé est faux dans <code>planning3</code> : plusieurs plannings peuvent être optimaux à égalité (voir la note de l'étape 5).</li>" +
       "<li><strong>Évaluation.</strong> Sur le site : la réponse en direct (📡) avec la question « Combien de pièces pour 48 avec les pièces 30, 24, 12, 6, 3, 1 ? » (attendu : le glouton en donne 3, l'optimum est 2). Écrit : donner un nouveau système de pièces et demander si le glouton est optimal, en justifiant par un contre-exemple ; donner 5 conférences et demander le planning glouton. L'exercice 8 du thème (coder le rendu) reste l'entraînement de référence.</li>" +
-      "<li><strong>Ce qui a changé par rapport au notebook Capytale.</strong> Le module <code>rcviz</code> (arbre d'appels de Fibonacci) n'existe pas dans le navigateur : il est remplacé par un compteur global d'appels, qui rend le même phénomène visible (25 appels pour n = 6, 242 785 pour n = 25). Les images du notebook (frises des conférences) sont remplacées par des frises en mode texte dans les cellules.</li>" +
+      "<li><strong>Ce qui a changé par rapport au notebook Capytale.</strong> Le module <code>rcviz</code> (arbre d'appels de Fibonacci) n'existe pas dans le navigateur : il est remplacé par un compteur global d'appels, qui rend le même phénomène visible (25 appels pour n = 6, 242 785 pour n = 25). Les frises des conférences (images du notebook, que les élèves doivent traduire en tuples : cas 2 et 3) sont données ici en tuples et redessinées en mode texte ; un cas 5 est ajouté pour prendre en défaut la règle « la plus courte d'abord ».</li>" +
       "</ul>",
     steps: [
       {
@@ -1698,11 +2027,13 @@ assert sac_a_dos_2(30, valeur_masse_objets) == [(7, 12), (4, 8), (3, 10)]    # 1
         code: `# ÉTAPE 4 — Une seule salle, des conférences (début, fin, nom) : en accueillir le plus possible
 # Deux conférences sont compatibles si l'une finit avant (ou pile quand) l'autre commence.
 tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
-tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
-tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_2 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (1, 2, 'C2'), (2, 3, 'C3')]
 tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
               (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
               (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
+# Cas 5 (ajouté) : un cas de plus pour tester la règle « la plus courte d'abord »
+tab_conf_5 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
 
 def frise(tab_inter):
     """Affiche chaque conférence sur une ligne, une colonne par heure."""
@@ -1712,6 +2043,7 @@ def frise(tab_inter):
 
 print("cas 2 :"); frise(tab_conf_2)
 print("cas 3 :"); frise(tab_conf_3)
+print("cas 5 :"); frise(tab_conf_5)
 
 # Règle gloutonne : on prend toujours la conférence compatible qui FINIT le plus tôt
 def planning1(tab_inter):
@@ -1722,21 +2054,21 @@ def planning1(tab_inter):
         pass   # À COMPLÉTER : si debut >= fin_precedente, on garde nom et on met à jour fin_precedente
     return planning
 
-for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4], start=1):
+for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4, tab_conf_5], start=1):
     print("cas", k, ":", planning1(tab))
-# attendus : ['C2', 'C4', 'C3', 'C1']  ['C2', 'C3', 'C4']  ['C1', 'C3', 'C4']  ['C8', 'C4', 'C2', 'C5', 'C3']`,
-        note: "Trois règles gloutonnes sont possibles : la conférence qui commence le plus tôt, la plus courte, ou celle qui finit le plus tôt. Avant de coder, teste-les à la main sur les frises des cas 2 et 3 : une seule est toujours optimale.",
+# attendus : ['C2', 'C4', 'C3', 'C1']  ['C2', 'C3']  ['C2', 'C3']  ['C8', 'C4', 'C2', 'C5', 'C3']  ['C1', 'C3', 'C4']`,
+        note: "Les cas 1 à 4 sont ceux du notebook Capytale (les frises des cas 2 et 3 y sont des images : ici elles sont traduites en tuples). Trois règles gloutonnes sont possibles : la conférence qui commence le plus tôt, la plus courte, ou celle qui finit le plus tôt. Avant de coder, teste-les à la main sur les frises des cas 3 et 5 : une seule est toujours optimale.",
         questions: [
-          "Cas 2 : quel planning donne la règle « celle qui COMMENCE le plus tôt » ? Est-il optimal ?",
-          "Cas 3 : quel planning donne la règle « la plus COURTE d'abord » ? Est-il optimal ?",
-          "La règle « celle qui FINIT le plus tôt » donne-t-elle un planning optimal dans les cas 1 à 3 ? Pourquoi est-elle la bonne intuition ?",
+          "Cas 3 : quel planning donne la règle « celle qui COMMENCE le plus tôt » ? Est-il optimal ?",
+          "Cas 5 : quel planning donne la règle « la plus COURTE d'abord » ? Est-il optimal ?",
+          "La règle « celle qui FINIT le plus tôt » donne-t-elle un planning optimal dans les cas 1, 2, 3 et 5 ? Pourquoi est-elle la bonne intuition ?",
           "Pourquoi teste-t-on debut >= fin_precedente et non debut > fin_precedente ?",
         ],
         correction: [
-          "Cas 2 : C1 (0→4) commence la première ; une fois prise, plus rien n'est compatible : planning ['C1'], 1 seule conférence. Or C2 (1→2), C3 (2→3) et C4 (3→4) sont compatibles entre elles : 3 conférences. La règle « commence le plus tôt » n'est pas optimale : une conférence qui commence tôt et dure longtemps bloque tout (même chose dans le cas 4 avec C1, 0→7).",
-          "Cas 3 : les plus courtes sont C2 (2→4) et C4 (6→8), 2 h chacune ; C1 (0→3) et C3 (3→6) durent 3 h. Le glouton prend C2, puis C4 : 2 conférences. Or C1, C3 et C4 sont compatibles : 3 conférences. « La plus courte d'abord » n'est pas optimale : C2, courte mais mal placée, chevauche à la fois C1 et C3.",
-          "Oui : cas 1 → ['C2', 'C4', 'C3', 'C1'] (4 sur 4), cas 2 → ['C2', 'C3', 'C4'] (3), cas 3 → ['C1', 'C3', 'C4'] (3). Prendre celle qui finit le plus tôt libère la salle au plus vite : ce qui reste de temps pour les suivantes est maximal. On peut prouver que cette règle est TOUJOURS optimale pour ce problème (c'est un des rares cas où le glouton est parfait).",
-          "Une conférence qui commence exactement à l'heure où la précédente finit est compatible (la salle se libère à 2 h, la suivante commence à 2 h). Avec >, on perdrait C4 dans le cas 1 (1→2 après C2 0→1) et le planning serait ['C2', 'C3'] au lieu de 4 conférences.",
+          "Cas 3 : C1 (0→3) commence la première ; une fois prise, plus rien n'est compatible : planning ['C1'], 1 seule conférence. Or C2 (1→2) et C3 (2→3) sont compatibles entre elles : 2 conférences. La règle « commence le plus tôt » n'est pas optimale : une conférence qui commence tôt et dure longtemps bloque tout (même chose dans le cas 4 avec C1, 0→7).",
+          "Cas 5 : les plus courtes sont C2 (2→4) et C4 (6→8), 2 h chacune ; C1 (0→3) et C3 (3→6) durent 3 h. Le glouton prend C2, puis C4 : 2 conférences. Or C1, C3 et C4 sont compatibles : 3 conférences. « La plus courte d'abord » n'est pas optimale : C2, courte mais mal placée, chevauche à la fois C1 et C3.",
+          "Oui : cas 1 → ['C2', 'C4', 'C3', 'C1'] (4 sur 4), cas 2 → ['C2', 'C3'] (2, on ne peut pas faire mieux : C2 et C4 se chevauchent (0→1 et 0→2), C1 et C3 aussi (2→4 et 2→3), on ne garde qu'une conférence de chaque paire ; il y a d'ailleurs quatre plannings à 2 conférences, dont ['C4', 'C1'] qu'on retrouve à l'étape 5), cas 3 → ['C2', 'C3'] (2), cas 5 → ['C1', 'C3', 'C4'] (3). Prendre celle qui finit le plus tôt libère la salle au plus vite : ce qui reste de temps pour les suivantes est maximal. On peut prouver que cette règle est TOUJOURS optimale pour ce problème (c'est un des rares cas où le glouton est parfait).",
+          "Une conférence qui commence exactement à l'heure où la précédente finit est compatible (la salle se libère à 2 h, la suivante commence à 2 h). Avec >, dans le cas 1 on refuserait déjà C2 (0 > 0 est faux, fin_precedente vaut 0 au départ), puis C3 (2 > 2 est faux) : le planning serait ['C4', 'C1'], 2 conférences au lieu de 4.",
           { code: `def planning1(tab_inter):
     """Glouton : la conférence compatible qui finit le plus tôt."""
     tries = sorted(tab_inter, key=lambda c: c[1])
@@ -1749,22 +2081,23 @@ for k, tab in enumerate([tab_conf_1, tab_conf_2, tab_conf_3, tab_conf_4], start=
     return planning
 
 assert planning1(tab_conf_1) == ['C2', 'C4', 'C3', 'C1']
-assert planning1(tab_conf_2) == ['C2', 'C3', 'C4']
-assert planning1(tab_conf_3) == ['C1', 'C3', 'C4']
-assert planning1(tab_conf_4) == ['C8', 'C4', 'C2', 'C5', 'C3']` },
+assert planning1(tab_conf_2) == ['C2', 'C3']
+assert planning1(tab_conf_3) == ['C2', 'C3']
+assert planning1(tab_conf_4) == ['C8', 'C4', 'C2', 'C5', 'C3']
+assert planning1(tab_conf_5) == ['C1', 'C3', 'C4']` },
         ],
-        prof: "<p>45 min, début de la séance B. Projeter la frise du cas 3 et faire jouer les trois règles au tableau par trois élèves (feutres de couleurs) : c'est le débranché de la séance. La conclusion attendue est que « finit le plus tôt » est la seule règle sûre ; on affirme qu'elle est toujours optimale sans démontrer (l'argument « libérer la salle le plus tôt possible laisse le maximum de place » suffit en Première). Erreur classique : oublier de mettre à jour <code>fin_precedente</code>, ce qui garde toutes les conférences ; l'assert du cas 1 la détecte. Pour le cas 4, faire remarquer que le planning contient 5 conférences : on vérifiera à l'étape 5 qu'on ne peut pas faire mieux.</p>",
+        prof: "<p>45 min, début de la séance B. Projeter les frises des cas 3 et 5 (ou les images du notebook) et faire jouer les trois règles au tableau par trois élèves (feutres de couleurs) : c'est le débranché de la séance. La conclusion attendue est que « finit le plus tôt » est la seule règle sûre ; on affirme qu'elle est toujours optimale sans démontrer (l'argument « libérer la salle le plus tôt possible laisse le maximum de place » suffit en Première). Erreur classique : oublier de mettre à jour <code>fin_precedente</code>, ce qui garde toutes les conférences ; l'assert du cas 1 la détecte. Pour le cas 4, faire remarquer que le planning contient 5 conférences : on vérifiera à l'étape 5 qu'on ne peut pas faire mieux.</p>",
       },
       {
         num: "5", titre: "Vérifier l'optimum : la recherche exhaustive", run: true,
         code: `# ÉTAPE 5 — Essayer TOUTES les possibilités pour être sûr de l'optimum
 tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
-tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
-tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_2 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (1, 2, 'C2'), (2, 3, 'C3')]
 tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
               (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
               (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
-tab_conf_5 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]   # deux plannings à égalité
+tab_conf_5 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]   # (ajouté) contre-exemple de la règle « la plus courte »
 
 appels = 0
 
@@ -1805,19 +2138,19 @@ def planning3(tab_inter, debut=0, i=0):
     # À COMPLÉTER : plus long gagne ; à égalité, celui qui a la plus grande duree_occupee
     return avec
 
-print("cas 5, sans trou :", planning3(sorted(tab_conf_5)))   # attendu : ['C4', 'C1'] (4 h occupées, au lieu de C2 puis C3)
+print("cas 2, sans trou :", planning3(sorted(tab_conf_2)))   # attendu : ['C4', 'C1'] (4 h occupées, au lieu de C2 puis C3)
 print("cas 4, sans trou :", planning3(sorted(tab_conf_4)))`,
         note: "planning2 est récursif : pour chaque conférence, il calcule le meilleur planning AVEC elle et le meilleur SANS elle, puis garde le plus long. Il explore donc toutes les combinaisons possibles : c'est une recherche exhaustive (« force brute »).",
         questions: [
-          "Compare les résultats de planning2 à ceux de planning1 (étape 4) sur les cas 1 à 4. Le glouton « finit le plus tôt » était-il optimal à chaque fois ?",
+          "Compare les résultats de planning2 à ceux de planning1 (étape 4) sur les cas 1 à 5. Le glouton « finit le plus tôt » était-il optimal à chaque fois ?",
           "Combien d'appels planning2 fait-il pour le cas 4 (15 conférences) ? Que se passerait-il avec 30 ou 60 conférences ? Et pourquoi planning1 n'a pas ce problème ?",
-          "Cas 5 : le glouton donne ['C2', 'C3'] et planning3 donne ['C4', 'C1']. Les deux ont 2 conférences ; lequel est « meilleur » et selon quel critère ?",
+          "Cas 2 : le glouton donne ['C2', 'C3'] et planning3 donne ['C4', 'C1']. Les deux ont 2 conférences ; lequel est « meilleur » et selon quel critère ?",
           "Peut-on avoir plusieurs plannings optimaux ? Que fait le programme dans ce cas ?",
         ],
         correction: [
-          "Cas 1 à 3 : mêmes plannings (4, 3 et 3 conférences). Cas 4 : planning2 donne ['C8', 'C4', 'C2', 'C5', 'C12'], soit 5 conférences comme le glouton (['C8', 'C4', 'C2', 'C5', 'C3']) : seule la dernière diffère, C3 et C12 occupant le même créneau 6→8. Le glouton « finit le plus tôt » était bien optimal dans les 4 cas, ce qui confirme (sans le prouver) qu'il l'est toujours.",
+          "Cas 1, 2, 3 et 5 : mêmes plannings (4, 2, 2 et 3 conférences). Cas 4 : planning2 donne ['C8', 'C4', 'C2', 'C5', 'C12'], soit 5 conférences comme le glouton (['C8', 'C4', 'C2', 'C5', 'C3']) : seule la dernière diffère, C3 et C12 occupant le même créneau 6→8. Le glouton « finit le plus tôt » était bien optimal dans les 5 cas, ce qui confirme (sans le prouver) qu'il l'est toujours.",
           "Quelques centaines d'appels pour 15 conférences ; mais chaque conférence double au pire le nombre de chemins (avec / sans) : c'est en 2**n. À 30 conférences on approche du milliard, à 60 c'est hors de portée de tout ordinateur. planning1, lui, fait un tri puis un seul parcours : quelques dizaines d'opérations pour 15 conférences, quelques centaines pour 60. C'est tout l'intérêt d'un glouton quand il est optimal : rapide ET juste.",
-          "Cas 5 : C2 = 0→1, C4 = 0→2, C3 = 2→3, C1 = 2→4. Les deux plannings sont optimaux en nombre de conférences (2). ['C4', 'C1'] occupe la salle de 0 à 4 sans trou (4 h) ; ['C2', 'C3'] laisse la salle vide de 1 à 2 et après 3 (2 h occupées). Avec le critère supplémentaire « le moins de trous », planning3 préfère ['C4', 'C1']. Le « meilleur » dépend toujours du critère qu'on choisit !",
+          "Cas 2 : C2 = 0→1, C4 = 0→2, C3 = 2→3, C1 = 2→4. Les deux plannings sont optimaux en nombre de conférences (2). ['C4', 'C1'] occupe la salle de 0 à 4 sans trou (4 h) ; ['C2', 'C3'] laisse la salle vide de 1 à 2 et après 3 (2 h occupées). Avec le critère supplémentaire « le moins de trous », planning3 préfère ['C4', 'C1']. Le « meilleur » dépend toujours du critère qu'on choisit !",
           "Oui, souvent : dans le cas 4, ['C8', 'C4', 'C2', 'C5', 'C3'] et ['C8', 'C4', 'C2', 'C5', 'C12'] sont deux optimums (5 conférences, 8 h occupées). Le programme renvoie le premier qu'il rencontre selon son ordre d'exploration (ici « avec » gagne à égalité, d'où C12 plutôt que C3 dans planning2). Un résultat différent du corrigé peut donc être juste : il faut vérifier le nombre de conférences et la compatibilité, pas les noms.",
           { code: `def duree_occupee(noms, tab_inter):
     total = 0
@@ -1842,7 +2175,7 @@ def planning3(tab_inter, debut=0, i=0):
         return avec
     return sans
 
-assert planning3(sorted(tab_conf_5)) == ['C4', 'C1']                      # 4 h occupées sur 4
+assert planning3(sorted(tab_conf_2)) == ['C4', 'C1']                      # 4 h occupées sur 4
 assert planning3(sorted(tab_conf_4)) == ['C8', 'C4', 'C2', 'C5', 'C12']   # 8 h occupées sur 8` },
         ],
         prof: "<p>30 min, en lecture de code guidée : la récursivité n'est pas au programme de Première, on ne demande pas de l'écrire mais de la comprendre comme « pour chaque conférence, on essaie avec et sans ». Dérouler à la main le cas 2 (4 conférences, 16 combinaisons au plus) au tableau sous forme d'arbre. Les élèves avancés complètent <code>planning3</code> ; les autres se contentent de <code>duree_occupee</code>. Le compteur d'appels sert à faire sentir l'explosion combinatoire (question 2) : le point à retenir est la <em>complexité</em>, glouton linéaire (après tri) contre exhaustif exponentiel. Attention à la question 4 : plusieurs optimums existent, ne pas compter faux un élève qui obtient ['C8', 'C4', 'C2', 'C5', 'C3'] avec sa propre version.</p>",

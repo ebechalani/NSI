@@ -157,13 +157,13 @@ for max_sac in (205, 420):
 
 # Un conférencier = (début, fin, nom)
 tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
-tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
-tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_2 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (1, 2, 'C2'), (2, 3, 'C3')]
 tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
               (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
               (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
-# cas 5 : deux plannings optimaux (2 conférences) mais l'un laisse des trous
-tab_conf_5 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+# cas 5 (ajouté, absent du notebook) : contre-exemple de la règle « la plus courte d'abord »
+tab_conf_5 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
 
 
 def planning1(tab_inter):
@@ -179,10 +179,10 @@ def planning1(tab_inter):
 
 
 assert planning1(tab_conf_1) == ['C2', 'C4', 'C3', 'C1']
-assert planning1(tab_conf_2) == ['C2', 'C3', 'C4']   # « commence le plus tôt » aurait donné ['C1'] seule
-assert planning1(tab_conf_3) == ['C1', 'C3', 'C4']   # « la plus courte » aurait donné ['C2', 'C4']
+assert planning1(tab_conf_2) == ['C2', 'C3']
+assert planning1(tab_conf_3) == ['C2', 'C3']         # « commence le plus tôt » aurait donné ['C1'] seule
 assert planning1(tab_conf_4) == ['C8', 'C4', 'C2', 'C5', 'C3']
-assert planning1(tab_conf_5) == ['C2', 'C3']
+assert planning1(tab_conf_5) == ['C1', 'C3', 'C4']   # « la plus courte » aurait donné ['C2', 'C4']
 
 
 def planning2(tab_inter, debut=0, i=0):
@@ -201,10 +201,10 @@ def planning2(tab_inter, debut=0, i=0):
 
 
 assert planning2(sorted(tab_conf_1)) == ['C2', 'C4', 'C3', 'C1']
-assert planning2(sorted(tab_conf_2)) == ['C2', 'C3', 'C4']
-assert planning2(sorted(tab_conf_3)) == ['C1', 'C3', 'C4']
+assert planning2(sorted(tab_conf_2)) == ['C2', 'C3']
+assert planning2(sorted(tab_conf_3)) == ['C2', 'C3']
 assert planning2(sorted(tab_conf_4)) == ['C8', 'C4', 'C2', 'C5', 'C12']
-assert planning2(sorted(tab_conf_5)) == ['C2', 'C3']
+assert planning2(sorted(tab_conf_5)) == ['C1', 'C3', 'C4']
 
 
 def duree_occupee(noms, tab_inter):
@@ -236,10 +236,10 @@ def planning3(tab_inter, debut=0, i=0):
 
 
 assert planning3(sorted(tab_conf_1)) == ['C2', 'C4', 'C3', 'C1']
-assert planning3(sorted(tab_conf_2)) == ['C2', 'C3', 'C4']
-assert planning3(sorted(tab_conf_3)) == ['C1', 'C3', 'C4']
+assert planning3(sorted(tab_conf_2)) == ['C4', 'C1']            # 4 h occupées, au lieu de C2 puis C3 (2 h)
+assert planning3(sorted(tab_conf_3)) == ['C2', 'C3']
 assert planning3(sorted(tab_conf_4)) == ['C8', 'C4', 'C2', 'C5', 'C12']   # 8 h occupées sur 8 : aucun trou
-assert planning3(sorted(tab_conf_5)) == ['C4', 'C1']                      # 4 h occupées, au lieu de C2 puis C3 (2 h)
+assert planning3(sorted(tab_conf_5)) == ['C1', 'C3', 'C4']
 
 
 # ---------- Partie 5 : Fibonacci, récursif puis dynamique ----------

@@ -132,12 +132,12 @@ valeur_masse = [(35, 120), (30, 30), (26, 50), (21, 20), (18, 40), (17, 60), (15
 
 # Un conférencier = (début, fin, nom). Cas 1 et 4 fournis ; cas 2 et 3 décrits sur le site.
 tab_conf_1 = [(3, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (1, 2, 'C4')]
-tab_conf_2 = [(0, 4, 'C1'), (1, 2, 'C2'), (2, 3, 'C3'), (3, 4, 'C4')]
-tab_conf_3 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]
+tab_conf_2 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+tab_conf_3 = [(0, 3, 'C1'), (1, 2, 'C2'), (2, 3, 'C3')]
 tab_conf_4 = [(0, 7, 'C1'), (2, 5, 'C2'), (6, 8, 'C3'), (1, 2, 'C4'), (5, 6, 'C5'),
               (0, 2, 'C6'), (4, 7, 'C7'), (0, 1, 'C8'), (3, 6, 'C9'), (1, 3, 'C10'),
               (4, 5, 'C11'), (6, 8, 'C12'), (0, 2, 'C13'), (5, 7, 'C14'), (1, 4, 'C15')]
-tab_conf_5 = [(2, 4, 'C1'), (0, 1, 'C2'), (2, 3, 'C3'), (0, 2, 'C4')]
+tab_conf_5 = [(0, 3, 'C1'), (2, 4, 'C2'), (3, 6, 'C3'), (6, 8, 'C4')]   # (ajouté) contre-exemple de la règle « la plus courte »
 
 
 def planning1(tab_inter):
@@ -151,8 +151,9 @@ def planning1(tab_inter):
 
 
 # assert planning1(tab_conf_1) == ['C2', 'C4', 'C3', 'C1']
-# assert planning1(tab_conf_2) == ['C2', 'C3', 'C4']
-# assert planning1(tab_conf_3) == ['C1', 'C3', 'C4']
+# assert planning1(tab_conf_2) == ['C2', 'C3']
+# assert planning1(tab_conf_3) == ['C2', 'C3']
+# assert planning1(tab_conf_5) == ['C1', 'C3', 'C4']
 # assert planning1(tab_conf_4) == ['C8', 'C4', 'C2', 'C5', 'C3']
 
 
@@ -192,7 +193,7 @@ def planning3(tab_inter, debut=0, i=0):
     return []
 
 
-# assert planning3(sorted(tab_conf_5)) == ['C4', 'C1']   # 2 conférences sans trou, au lieu de C2 puis C3
+# assert planning3(sorted(tab_conf_2)) == ['C4', 'C1']   # 2 conférences sans trou, au lieu de C2 puis C3
 
 
 # ---------- Partie 6 (bonus) : Fibonacci, récursif puis dynamique ----------
