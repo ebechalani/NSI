@@ -5264,25 +5264,31 @@ except Exception:
 
   // Compléments externes (facultatifs), liés avec attribution — discret, en pied de thème.
   function makeThemeExtResources(themeId) {
-    const R = (typeof THEME_RESSOURCES_EXT !== "undefined" ? THEME_RESSOURCES_EXT : {})[themeId];
-    if (!R) return null;
+    const R0 = (typeof THEME_RESSOURCES_EXT !== "undefined" ? THEME_RESSOURCES_EXT : {})[themeId];
+    if (!R0) return null;
+    // Un bloc (objet) ou plusieurs blocs (tableau), un par source attribuée.
+    const blocs = (Array.isArray(R0) ? R0 : [R0]).filter((R) => R && R.items && R.items.length);
+    if (!blocs.length) return null;
     const wrap = el("div", "extra-block ext-block");
     wrap.appendChild(el("h2", null, "📎 Pour aller plus loin (facultatif)"));
-    wrap.appendChild(
-      el("p", "extra-hint", "Le cours complet de <strong>" + R.auteur + "</strong>, en complément :")
-    );
-    // Attribution et licence de la ressource (obligatoires pour une reprise CC BY-NC-SA)
-    if (R.note) wrap.appendChild(el("p", "extra-hint ext-note", R.note));
-    const row = el("div", "ext-links");
-    R.items.forEach((it) => {
-      const a = el("a", "ext-link");
-      a.href = /^https?:/i.test(it.url) ? it.url : R.base + it.url;
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.innerHTML = `${it.t} <span class="ext-arrow">↗</span>`;
-      row.appendChild(a);
+    blocs.forEach((R, i) => {
+      if (i) wrap.appendChild(el("h3", "ext-titre", R.titre || ""));
+      wrap.appendChild(
+        el("p", "extra-hint", "Le cours complet de <strong>" + R.auteur + "</strong>, en complément :")
+      );
+      // Attribution et licence de la ressource (obligatoires pour une reprise CC BY-NC-SA)
+      if (R.note) wrap.appendChild(el("p", "extra-hint ext-note", R.note));
+      const row = el("div", "ext-links");
+      R.items.forEach((it) => {
+        const a = el("a", "ext-link");
+        a.href = /^https?:/i.test(it.url) ? it.url : R.base + it.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.innerHTML = `${it.t} <span class="ext-arrow">↗</span>`;
+        row.appendChild(a);
+      });
+      wrap.appendChild(row);
     });
-    wrap.appendChild(row);
     return wrap;
   }
 

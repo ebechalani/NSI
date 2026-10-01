@@ -284,6 +284,8 @@ print(bien_parenthese("(a+[b*c)"))   # False`,
       "Calculabilité : certains problèmes sont indécidables (problème de l'arrêt, Turing 1936).",
       "Fonctionnel en Python : une fonction est une valeur (lambda, passage en paramètre, renvoi) ; map / filter / reduce ou compréhensions ; aucune donnée modifiée (immutabilité). Le paradigme est un style, pas un langage.",
       "Objets manipulés par référence (p3 = p1 n'est pas une copie) ; encapsulation = accès aux attributs par des accesseurs (get_x, set_y) pour garantir l'état ; en Python c'est une convention.",
+      "Preuve de programme : triplet {Pré} Inst {Post}, affectation = substitution ; invariant de boucle (initialisation, conservation, sortie) → correction partielle ; variant → terminaison ; les deux → correction totale.",
+      "Invariant de classe : établi par le constructeur, préservé par chaque méthode (méthode invariant() en assert, appelée en fin de __init__ et de chaque méthode) ; un assert vérifie, il ne prouve pas.",
     ],
     erreurs: [
       "Oublier le cas de base d'une fonction récursive → RecursionError.",
@@ -292,6 +294,8 @@ print(bien_parenthese("(a+[b*c)"))   # False`,
       "Ne tester que le cas « qui marche » : il faut tester le vide, le zéro, le négatif, le très grand.",
       "Croire que p2 = p1 copie un objet : les deux noms désignent LE MÊME objet (copy.copy ou un nouveau constructeur pour copier).",
       "Confondre paradigme et langage : la même boucle Fibonacci en Python, Java ou BASIC est impérative ; Python permet les trois styles.",
+      "Croire qu'un assert PROUVE la propriété : il ne la vérifie que pour l'exécution en cours (le DIU : « aucune valeur de preuve »).",
+      "Écrire une postcondition sur l'état final seulement, sans mémoriser les valeurs avant ; ou appeler invariant() au milieu d'une méthode, où il peut être temporairement faux.",
     ],
     exercices: [
       {
@@ -506,6 +510,150 @@ p2 = p1.translater(2, 3)
 print(p1, p2, p3)   # (3,4) (5,7) (3,4) : p1 (et donc p3) est intact`,
         solution: "Au lieu de faire self.x += dx (effet de bord sur l'objet), translater construit et renvoie un nouveau Point. Le partage de référence entre p1 et p3 n'est plus un problème puisque personne ne modifie l'objet : c'est la réponse fonctionnelle au piège des références. Les chaînes et les tuples de Python fonctionnent ainsi.",
       },
+      /* ---- Exercices 15 à 19 : preuve de programme et invariant de classe (d'après le DIU, B. Mermet) ---- */
+      { niveau: "facile", enonce: "Texte à trous — l'invariant de la classe Heure : complète la méthode invariant() (bornes des heures et des minutes), puis exécute : la dernière ligne doit lever une AssertionError.",
+        gapcode: `class Heure:
+    def __init__(self, heures=0, minutes=0):
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()
+
+    def invariant(self):
+        assert 0 <= self.heures < ___
+        assert 0 <= self.minutes < ___
+
+h = Heure(23, 59)
+print("23:59 : invariant OK")
+h = Heure(24, 0)          # AssertionError attendue`,
+        gaps: ["24", "60"],
+        solution: "Une heure affichée va de 0 à 23 et une minute de 0 à 59 : assert 0 <= self.heures < 24 et assert 0 <= self.minutes < 60. Heure(24, 0) viole la première propriété dès le constructeur, qui appelle invariant()." },
+      { niveau: "moyen", enonce: "La classe Personne du DIU. 1) Lis la méthode invariant() : que garantit-elle ? 2) Exécute le scénario : Personne(\"Mermet\", \"Bruno\", 16) puis deux appels à annee_suivante(). Pourquoi le deuxième échoue-t-il alors que sa postcondition (l'âge a augmenté de 1) est vraie ? 3) Corrige annee_suivante() pour qu'elle préserve l'invariant.",
+        code: `class Personne:
+    def __init__(self, nom, prenom, age):
+        self.nom = nom
+        self.prenom = prenom
+        self.age = age
+        self.determiner_statut()
+        self.invariant()
+
+    def invariant(self):
+        assert self.nom != ""
+        assert self.age >= 0
+        assert self.age >= 18 or self.statut == "mineur"
+        assert self.age < 18 or self.statut == "majeur"
+
+    def determiner_statut(self):
+        assert self.age == int(self.age)              # précondition : âge entier
+        if self.age >= 18:
+            self.statut = "majeur"
+        else:
+            self.statut = "mineur"
+        assert (self.age >= 18 and self.statut == "majeur") or (self.age < 18 and self.statut == "mineur")
+        self.invariant()
+
+    def annee_suivante(self):
+        self.invariant()
+        age_avant = self.age
+        self.age = self.age + 1
+        assert self.age == age_avant + 1               # postcondition
+        self.invariant()
+
+    def __repr__(self):
+        return self.prenom + " " + self.nom + " (" + str(self.age) + ", " + self.statut + ")"
+
+p = Personne("Mermet", "Bruno", 16)
+print(p)
+p.annee_suivante()
+print(p)
+p.annee_suivante()          # que se passe-t-il ?
+print(p)`,
+        solution: "1) Un nom non vide, un âge positif ou nul, et un statut cohérent avec l'âge : « mineur » si l'âge est < 18, « majeur » sinon (les deux assert sont les deux implications). 2) À 18 ans, l'âge a bien augmenté de 1 (la postcondition est vraie) mais le statut est resté « mineur » : la propriété « age < 18 ou statut == majeur » est fausse, invariant() lève une AssertionError. La postcondition ne parle que de l'âge ; c'est l'invariant qui voit que la méthode a oublié une partie de l'état. 3) Après self.age = self.age + 1, appeler self.determiner_statut() (ou recalculer le statut avec un if) : l'invariant est alors préservé." },
+      { niveau: "moyen", enonce: "Preuve de la méthode incrementer() corrigée de la classe Heure (trois cas). Rédige la preuve que {INV} incrementer() {INV} est vrai : pour chacun des trois cas, écris la propriété vraie avant, l'affectation, et vérifie par substitution que 0 ≤ heures < 24 et 0 ≤ minutes < 60 restent vrais après. Exécute ensuite la cellule : une journée de 1440 minutes doit revenir à 0:00.",
+        code: `class Heure:
+    def __init__(self, heures=0, minutes=0):
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()
+
+    def invariant(self):
+        assert 0 <= self.heures < 24
+        assert 0 <= self.minutes < 60
+
+    def incrementer(self):
+        self.invariant()
+        if self.minutes < 59:               # cas 1
+            self.minutes = self.minutes + 1
+        elif self.heures < 23:              # cas 2
+            self.minutes = 0
+            self.heures = self.heures + 1
+        else:                               # cas 3
+            self.minutes = 0
+            self.heures = 0
+        self.invariant()
+
+    def __repr__(self):
+        return str(self.heures) + ":" + str(self.minutes).rjust(2, "0")
+
+h = Heure()
+for _ in range(1440):
+    h.incrementer()
+print(h)                                    # 0:00`,
+        solution: "Cas 1 : INV et minutes < 59, donc 0 ≤ minutes ≤ 58 ; après minutes = minutes + 1, [minutes := minutes + 1](0 ≤ minutes < 60) devient 0 ≤ minutes + 1 < 60, vrai car 1 ≤ minutes + 1 ≤ 59 ; heures ne change pas. Cas 2 : INV, minutes = 59 et heures < 23, donc 0 ≤ heures ≤ 22 ; après minutes = 0 et heures = heures + 1 : 0 ≤ 0 < 60 et 1 ≤ heures + 1 ≤ 23 < 24. Cas 3 : minutes = 59 et heures = 23 ; après minutes = 0 et heures = 0 : les deux bornes sont vérifiées. Dans les trois cas l'invariant est préservé ; le constructeur l'établit (si on l'appelle avec des valeurs valides) : la classe est prouvée. Après 1440 incréments depuis 0:00 (24 × 60), on revient à 0:00." },
+      { niveau: "moyen", enonce: "La postcondition de incrementer(). En t'inspirant de preuve03horlogePostcondition.py (DIU), ajoute à la méthode incrementer() de l'exercice précédent une postcondition en trois assert : (a) si les minutes n'étaient pas à 59, elles ont augmenté de 1 et l'heure n'a pas changé ; (b) si elles étaient à 59 et l'heure < 23, l'heure a augmenté de 1 et les minutes sont à 0 ; (c) à 23:59 on passe à 0:00. Pourquoi faut-il mémoriser minutes_avant et heures_avant ? Comment écrit-on « si A alors B » en une seule expression booléenne ?",
+        code: `class Heure:
+    def __init__(self, heures=0, minutes=0):
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()
+
+    def invariant(self):
+        assert 0 <= self.heures < 24
+        assert 0 <= self.minutes < 60
+
+    def incrementer(self):
+        self.invariant()
+        minutes_avant, heures_avant = self.minutes, self.heures
+        if self.minutes < 59:
+            self.minutes = self.minutes + 1
+        elif self.heures < 23:
+            self.minutes = 0
+            self.heures = self.heures + 1
+        else:
+            self.minutes = 0
+            self.heures = 0
+        # POSTCONDITION : trois assert à écrire (a, b, c)
+        self.invariant()
+
+    def __repr__(self):
+        return str(self.heures) + ":" + str(self.minutes).rjust(2, "0")
+
+for h in (Heure(10, 30), Heure(10, 59), Heure(23, 59)):
+    h.incrementer()
+    print(h)                        # 10:31  11:00  0:00`,
+        solution: "assert minutes_avant == 59 or (self.minutes == minutes_avant + 1 and self.heures == heures_avant) ; assert minutes_avant != 59 or heures_avant == 23 or (self.heures == heures_avant + 1 and self.minutes == 0) ; assert minutes_avant != 59 or heures_avant != 23 or (self.heures == 0 and self.minutes == 0). On mémorise les valeurs avant parce que la postcondition compare l'état après à l'état avant, et qu'après la modification l'ancienne valeur est perdue. « Si A alors B » équivaut à « non A ou B » : en Python, not A or B, d'où les « == 59 or » et « != 59 or ». (Le fichier du DIU contient une coquille dans le troisième cas, heuresAvant == 59 au lieu de 23 : à corriger.)" },
+      { niveau: "défi", enonce: "Correction totale du tri à bulles naïf (travail personnel du DIU). 1) Écris nb_inversions(liste), le nombre de couples (i, j) avec i < j et liste[i] > liste[j]. 2) Montre qu'un échange de voisins mal rangés retire exactement une inversion. 3) Donne un variant de la boucle externe (attention au dernier passage, qui n'échange rien) et vérifie-le avec un assert. 4) Donne la postcondition et l'invariant de la boucle interne (que peut-on dire de liste[0..i] à la fin du tour i ?).",
+        code: `def nb_inversions(liste):
+    total = 0
+    # À COMPLÉTER
+    return total
+
+def tri_bulles(liste):
+    inversion = True
+    while inversion:
+        # variant = ...
+        inversion = False
+        i = 0
+        while i < len(liste) - 1:
+            if liste[i] > liste[i + 1]:
+                liste[i], liste[i + 1] = liste[i + 1], liste[i]
+                inversion = True
+            i = i + 1
+        # assert ... < variant
+    # assert ...                     # postcondition
+    return liste
+
+print(tri_bulles([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))`,
+        solution: "1) Deux boucles : for i in range(len(liste)): for j in range(i + 1, len(liste)): if liste[i] > liste[j]: total += 1. 2) L'échange ne modifie l'ordre relatif d'aucun autre couple (les autres éléments voient les deux mêmes valeurs dans le même ordre) ; seul le couple (i, i + 1) passe de mal rangé à bien rangé. 3) V = nb_inversions(liste) + (1 si inversion vaut True sinon 0). En entrée de passage, inversion vaut True ; si le passage échange, les inversions diminuent d'au moins 1 et V aussi ; sinon les inversions restent à 0 mais inversion passe à False : V passe de 1 à 0. V décroît strictement à chaque passage et reste dans ℕ : la boucle externe termine ; la boucle interne a pour variant len(liste) − 1 − i. Code : variant = nb_inversions(liste) + 1 avant le passage, assert nb_inversions(liste) + (1 if inversion else 0) < variant après. 4) Postcondition : nb_inversions(liste) == 0, c'est-à-dire liste triée (chaque élément est ≤ à tous ceux qui le suivent). Invariant de la boucle interne : à la fin du tour i, liste[i + 1] est le maximum de liste[0..i + 1] (la « bulle » monte) ; à la fin du passage, le maximum de la liste est en dernière position." },
     ],
     defi: {
       titre: "Mission : un test qui débusque le bug",

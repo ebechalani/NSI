@@ -417,6 +417,27 @@ const QUIZZES = {
       explain:
         "Quatre langages, un seul style (variables modifiées dans une boucle). Réciproquement, un même langage comme Python permet plusieurs paradigmes, et un même programme peut les mélanger.",
     },
+    /* ---- Preuve de programme, invariant de classe (d'après le DIU, B. Mermet) ---- */
+    { q: "Un invariant de classe est un prédicat sur les attributs qui doit être…",
+      choices: ["établi par le constructeur et préservé par chaque méthode", "vrai seulement à la création de l'objet", "vérifié par un assert dans le programme principal", "vrai pendant toute l'exécution de chaque méthode, y compris au milieu"],
+      answer: 0,
+      explain: "Comme un invariant de boucle : le constructeur l'établit, chaque méthode peut le supposer à l'entrée et doit le rétablir à la sortie. Au milieu d'une méthode il peut être temporairement faux." },
+    { q: "D'après le DIU, écrire les préconditions, postconditions et invariants avec assert en Python…",
+      choices: ["documente le code et donne une exception claire si une propriété est violée, mais ne prouve rien", "prouve formellement le programme", "rend le programme plus rapide", "remplace les tests"],
+      answer: 0,
+      explain: "« Cela n'a aucune valeur de preuve » : un assert vérifie la propriété pour l'exécution en cours. La preuve est le raisonnement (substitution, récurrence)." },
+    { q: "Le triplet {x = n} x = 2 * x {?} est vrai avec la postcondition…",
+      choices: ["x = 2n", "x = n", "x = n + 2", "x > n"],
+      answer: 0,
+      explain: "Une affectation est une substitution : [x := 2x](x = 2n) donne 2x = 2n, vrai si x = n avant. « x > n » serait faux pour n ≤ 0." },
+    { q: "Pour la classe Heure, la méthode naïve minutes = minutes + 1 ne préserve pas l'invariant parce que…",
+      choices: ["[minutes := minutes + 1](minutes < 60) exige minutes ≤ 58, que l'invariant ne garantit pas", "les heures ne sont jamais modifiées", "l'invariant n'est pas appelé dans le constructeur", "minutes peut être négatif"],
+      answer: 0,
+      explain: "La substitution donne minutes + 1 < 60, donc minutes ≤ 58 ; l'invariant autorise 59. Réparation : une précondition minutes ≤ 58, ou trois cas (minute, heure, minuit)." },
+    { q: "La correction totale d'une boucle exige…",
+      choices: ["un invariant (correction partielle) ET un variant (terminaison)", "un invariant seulement", "un variant seulement", "un jeu de tests qui passe"],
+      answer: 0,
+      explain: "L'invariant prouve que si la boucle s'arrête le résultat est juste ; le variant, entier naturel strictement décroissant, prouve qu'elle s'arrête." },
   ],
 
   "term-algo": [

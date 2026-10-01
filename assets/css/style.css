@@ -1641,3 +1641,6 @@ html[data-theme="dark"] .tp-prof { background: #2a2410; border-color: #b45309; }
 /* Lien « Ouvrir dans Basthon » (notebook du kit ou d'un TP guidé) */
 a.btn-basthon { text-decoration: none; display: inline-block; line-height: normal; }
 .kit-basthon { margin-left: .5rem; font-size: .85rem; white-space: nowrap; }
+
+/* Plusieurs sources dans « Pour aller plus loin » : titre du bloc suivant */
+.ext-titre { margin: 1rem 0 .2rem; font-size: 1.05rem; }

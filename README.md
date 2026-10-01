@@ -38,12 +38,14 @@ Contact : ebechalani@gmail.com
   bande de régie en classe (écran de projection, chrono, phase courante, modes
   préparation / animation), bilan (cahier de textes), impression A4 structurée
   (cartouche, synoptique, déroulé, annexes) et plan de travail élève ; kit de
-  préparation (27 imprimables « mission », 50 fichiers réels `.py`/`.sql`/`.csv`/`.ipynb`
+  préparation (27 imprimables « mission », 56 fichiers réels `.py`/`.sql`/`.csv`/`.ipynb`
   à déposer sur Capytale/Thonny/DB Browser) ;
 - TP guidés avec, côté professeur, une **démarche explicative** (objectifs du BO,
   déroulé minuté, pièges observés, évaluation) et une note « pour le prof » par
   étape, imprimées avec le corrigé (ex. TP « Algorithmes gloutons », d'après un
-  notebook Capytale fourni dans le kit et ouvrable en un clic dans Basthon) ;
+  notebook Capytale fourni dans le kit et ouvrable en un clic dans Basthon ;
+  TP « Prouver un programme » en Première et « Prouver une classe et une
+  boucle » en Terminale, d'après le cours « Correction des algorithmes » du DIU) ;
 - 21 sujets d'évaluation avec corrigés et barèmes.
 
 ## Structure du projet

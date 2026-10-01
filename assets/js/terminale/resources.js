@@ -143,24 +143,44 @@ const THEME_RESSOURCES_EXT = {
     ],
   },
 
-  "term-langages": {
-    titre: "Paradigmes de programmation (cours DIU EIL, Bloc 4 · chapitre 2)",
-    auteur: "Bruno Mermet &amp; Gaële Simon — Université Le Havre Normandie (DIU EIL, Bloc 4 « Programmation avancée et bases de données », chapitre 2 « Paradigmes de programmation »)",
-    base: "https://bases-de-donnees-26b46e.gitlab.io/",
-    note: "© Bruno Mermet, Gaële Simon — Université Le Havre Normandie, 2020-2026, licence <a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr\" target=\"_blank\" rel=\"noopener\">Creative Commons BY-NC-SA</a> (mention affichée en pied de chaque page du cours). Les sections 9 à 12, les exercices 8 à 14, les questions 11 à 15 du QCM, le TP « Un même problème, trois paradigmes » et le fichier paradigmes.py de ce thème en sont adaptés, sous la même licence. Le sommaire du chapitre ne liste que quatre pages : les pages impérative, événementielle et parallèle se découvrent avec la flèche « → » en haut de chaque page. Les exemples en Haskell, Java, Kotlin, BASIC et Prolog s'essaient dans les interpréteurs en ligne indiqués sur les pages.",
-    items: [
-      { t: "📑 Sommaire du chapitre 2 — Paradigmes de programmation", url: "indexParadigmes.html" },
-      { t: "A · Introduction aux paradigmes", url: "introductionParadigmes.html" },
-      { t: "B · Programmation impérative — le même Fibonacci en Python, Java, Kotlin et BASIC", url: "progImperative.html" },
-      { t: "C · Programmation fonctionnelle — λ-calcul, Haskell, map / filter / pliage, listes infinies", url: "progFonctionnelle.html" },
-      { t: "D · Programmation événementielle — Scratch et tkinter", url: "progEvenementielle.html" },
-      { t: "E · Programmation parallèle — threads, données partagées, verrous (lien : thème Architectures & systèmes)", url: "progParallele.html" },
-      { t: "F · Programmation logique — Prolog, faits, règles et arbre généalogique (hors programme, pour la curiosité)", url: "progLogique.html" },
-      { t: "G · Programmation orientée objet — classes, encapsulation, UML, composition, héritage", url: "progObjet.html" },
-      { t: "🐍 references.py — objets et références, à visualiser dans Python Tutor", url: "PythonObjet/2627/references.py" },
-      { t: "🌳 Arbre de résolution Prolog du but pere(gabriel, X)", url: "Arbres/pere.html" },
-    ],
-  },
+  "term-langages": [
+      {
+      titre: "Paradigmes de programmation (cours DIU EIL, Bloc 4 · chapitre 2)",
+      auteur: "Bruno Mermet &amp; Gaële Simon — Université Le Havre Normandie (DIU EIL, Bloc 4 « Programmation avancée et bases de données », chapitre 2 « Paradigmes de programmation »)",
+      base: "https://bases-de-donnees-26b46e.gitlab.io/",
+      note: "© Bruno Mermet, Gaële Simon — Université Le Havre Normandie, 2020-2026, licence <a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr\" target=\"_blank\" rel=\"noopener\">Creative Commons BY-NC-SA</a> (mention affichée en pied de chaque page du cours). Les sections 9 à 12, les exercices 8 à 14, les questions 11 à 15 du QCM, le TP « Un même problème, trois paradigmes » et le fichier paradigmes.py de ce thème en sont adaptés, sous la même licence. Le sommaire du chapitre ne liste que quatre pages : les pages impérative, événementielle et parallèle se découvrent avec la flèche « → » en haut de chaque page. Les exemples en Haskell, Java, Kotlin, BASIC et Prolog s'essaient dans les interpréteurs en ligne indiqués sur les pages.",
+      items: [
+        { t: "📑 Sommaire du chapitre 2 — Paradigmes de programmation", url: "indexParadigmes.html" },
+        { t: "A · Introduction aux paradigmes", url: "introductionParadigmes.html" },
+        { t: "B · Programmation impérative — le même Fibonacci en Python, Java, Kotlin et BASIC", url: "progImperative.html" },
+        { t: "C · Programmation fonctionnelle — λ-calcul, Haskell, map / filter / pliage, listes infinies", url: "progFonctionnelle.html" },
+        { t: "D · Programmation événementielle — Scratch et tkinter", url: "progEvenementielle.html" },
+        { t: "E · Programmation parallèle — threads, données partagées, verrous (lien : thème Architectures & systèmes)", url: "progParallele.html" },
+        { t: "F · Programmation logique — Prolog, faits, règles et arbre généalogique (hors programme, pour la curiosité)", url: "progLogique.html" },
+        { t: "G · Programmation orientée objet — classes, encapsulation, UML, composition, héritage", url: "progObjet.html" },
+        { t: "🐍 references.py — objets et références, à visualiser dans Python Tutor", url: "PythonObjet/2627/references.py" },
+        { t: "🌳 Arbre de résolution Prolog du but pere(gabriel, X)", url: "Arbres/pere.html" },
+      ],
+    },
+    {
+      titre: "Preuve de programme et invariant de classe (cours DIU EIL, Bloc 2 · Correction des algorithmes)",
+      auteur: "Bruno Mermet — Université Le Havre Normandie (DIU EIL, Bloc 2 « Algorithmique », partie II « Correction des algorithmes »)",
+      base: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Algorithmique/",
+      note: "📎 Pages du cours du DIU, liées avec attribution (sans mention de licence : elles restent la propriété de leur auteur et ne sont pas recopiées). Les sections 13 et 14, les exercices 15 à 19, les questions de QCM sur la preuve, le TP « Prouver une classe et une boucle » et les fichiers preuve_classe.py / preuve_classe_corrige.py du kit s'en inspirent (plan, exemples : Personne, Heure, maximum, tri à bulles) avec un texte original.",
+      items: [
+        { t: "📑 Sommaire du Bloc 2 — Algorithmique", url: "index.html" },
+        { t: "A · Introduction à la validation — tester, prouver, prototyper, model checking", url: "validation.html" },
+        { t: "B · Preuve de programme — logique du premier ordre, triplets de Hoare, substitution, invariants, variants, assertions", url: "preuve.html" },
+        { t: "🐍 preuve01personne.py — invariant de classe, préconditions et postconditions", url: "preuve01personne.html" },
+        { t: "🐍 preuve02horloge.py — la classe Heure à prouver", url: "preuve02horloge.html" },
+        { t: "🐍 preuve02horlogeCorrection.py — la preuve et les deux corrections", url: "preuve02horlogeCorrection.html" },
+        { t: "🐍 preuve03horlogePostcondition.py — la postcondition de incrementer()", url: "preuve03horlogePostcondition.html" },
+        { t: "🐍 preuve04boucleCorrectionPartielle.py — l'invariant du maximum, prouvé", url: "preuve04boucleCorrectionPartielle.html" },
+        { t: "🐍 preuve05boucleTerminaisonCorrection.py — le variant du maximum (correction totale)", url: "preuve05boucleTerminaisonCorrection.html" },
+        { t: "🐍 preuve06TriABulleNaif.py — le tri à bulles naïf à prouver (travail personnel)", url: "preuve06TriABulleNaif.html" },
+      ],
+    },
+  ],
   "term-archi-reseaux": {
     titre: "Systèmes & réseaux (supports DIU)",
     auteur: "Mes supports du DIU NSI — Le Havre",
@@ -871,21 +891,25 @@ const THEME_PLANS = {
    {
     "titre": "Séance 7 — Mise au point : assert, jeux de tests, doctest et bugs classiques",
     "duree": "2 h",
-    "objectif": "Construire un jeu de tests couvrant les cas limites et reconnaître les bugs récurrents (flottants, effet de bord, off-by-one).",
+    "objectif": "Construire un jeu de tests couvrant les cas limites, reconnaître les bugs récurrents (flottants, effet de bord, off-by-one), puis passer du test à la preuve : triplet {Pré} Inst {Post}, invariant de classe et de boucle, variant.",
     "surLeSite": [
      "Sections 6–7 (moyenne + doctest ; bestiaire des bugs)",
-     "Défi « Mission : un test qui débusque le bug » (maximum + asserts)"
+     "Défi « Mission : un test qui débusque le bug » (maximum + asserts)",
+     "Sections 13 et 14 (d'après le cours « Preuve de programme » du DIU, B. Mermet) : triplet de Hoare, substitution, invariant et variant, correction totale ; invariant de classe avec une méthode invariant() en assert (Personne, Heure)",
+     "TP guidé « Prouver une classe et une boucle » (5 étapes avec corrections et notes prof, démarche en tête) ; squelette preuve_classe.py et corrigé dans le kit"
     ],
     "enClasse": [
      "0–15 min : réactivation — à l'épreuve pratique, les <em>assert</em> sont la spécification : les lire d'abord !",
-     "15–45 min : Section 6 — assert, jeu de tests, doctest sur la fonction moyenne ; règle d'or : tester le vide, le zéro, le négatif",
-     "45–70 min : Section 7 en îlots — chaque îlot exécute et explique un bug du bestiaire (flottants, b = a, off-by-one, elif) au reste de la classe",
-     "70–100 min : défi « Mission » sur machine : écrire maximum(t) et son jeu de tests ; échanger les fonctions entre binômes pour les casser",
-     "100–120 min : corrigés poussés + trace écrite : check-list « mon jeu de tests est-il complet ? »"
+     "15–40 min : Section 6 — assert, jeu de tests, doctest sur la fonction moyenne ; règle d'or : tester le vide, le zéro, le négatif",
+     "40–60 min : Section 7 en îlots — chaque îlot exécute et explique un bug du bestiaire (flottants, b = a, off-by-one, elif) au reste de la classe",
+     "60–75 min : Section 13 — tester ne prouve pas ; triplet {Pré} Inst {Post}, substitution sur f(x) au tableau ; invariant et variant de maximum (continuité avec la Première)",
+     "75–105 min : TP « Prouver une classe et une boucle » étapes 1 et 2 en binôme (Personne, Heure : trouver le bug par la preuve avant d'exécuter, corriger) ; les rapides font l'étape 3 (postcondition)",
+     "105–120 min : corrigés poussés + trace écrite : check-list « mon jeu de tests est-il complet ? » et le tableau « assert vérifie / preuve garantit » ; étapes 4 et 5 du TP en travail personnel"
     ],
     "aPreparer": [
      "Préparer 4 fonctions volontairement buguées (une par îlot)",
-     "Photocopier la check-list de tests"
+     "Photocopier la check-list de tests",
+     "Lire la démarche « pour le prof » en tête du TP « Prouver une classe et une boucle » ; déposer preuve_classe.py sur Capytale (ou prévoir les cellules du site)"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Un programme qui « tourne » n'est pas forcément <strong>correct</strong> : la mise au point consiste à <strong>chercher activement</strong> les cas où il échoue. Trois outils : <code>assert condition</code> vérifie une propriété et arrête net le programme si elle est fausse (préconditions et tests) ; un <strong>jeu de tests</strong> est une liste d'« entrée → résultat attendu » ; avec <strong>doctest</strong>, les exemples écrits dans la docstring sont exécutés et vérifiés par Python. Construisons à la main le jeu de tests de la fonction <code>moyenne</code> : un cas simple, moyenne([10, 20]) doit valoir 15.0 ; un cas limite, moyenne([12]) doit valoir 12.0 (un seul élément) ; un cas interdit, moyenne([]) doit être refusé, car diviser par zéro n'a pas de sens. Règle d'or : tester d'abord ce qui <em>pourrait casser</em> (le vide, le zéro, le négatif), pas seulement le cas « qui marche ».</p><p><strong>🐢 Première méthode — simple à comprendre :</strong></p><pre><code>def moyenne(notes):\n    \"\"\"Moyenne d'une liste non vide de notes.\"\"\"\n    assert len(notes) &gt; 0, \"la liste de notes ne doit pas être vide\"\n    return sum(notes) / len(notes)\n\nassert moyenne([10, 20]) == 15.0   # cas simple\nassert moyenne([12]) == 12.0       # cas limite : un seul élément\nprint(\"Tous les tests passent\")    # affiche Tous les tests passent</code></pre><p><strong>🔍 Comment ça marche :</strong></p><ul><li>L'<code>assert</code> à l'intérieur de la fonction est une <strong>précondition</strong> : il interdit <code>moyenne([])</code> avec un message clair, au lieu d'une division par zéro incompréhensible.</li><li>Les <code>assert</code> à l'extérieur forment le <strong>jeu de tests</strong> : si l'un échoue, le programme s'arrête avec <code>AssertionError</code> ; si tout passe, on atteint le <code>print</code> final.</li><li>À l'épreuve pratique, les <code>assert</code> fournis sont la <strong>spécification</strong> : les lire d'abord.</li></ul><p><strong>🐛 Le bestiaire des bugs classiques :</strong> certains bugs reviennent si souvent qu'ils ont un nom.</p><table><tr><th>Bug</th><th>Symptôme</th><th>Parade</th></tr><tr><td>Flottants inexacts</td><td><code>0.1 + 0.2 == 0.3</code> vaut False !</td><td>comparer l'écart à un seuil : <code>abs(x - y) &lt; 1e-9</code></td></tr><tr><td>Effet de bord</td><td><code>b = a</code> ne copie pas la liste : même objet</td><td>vraie copie avec <code>list(a)</code></td></tr><tr><td>Off-by-one</td><td><code>IndexError</code>, un élément de trop ou de moins</td><td>le dernier indice est <code>len(t) - 1</code></td></tr><tr><td>elif manquant</td><td>des <code>if</code> successifs s'exécutent tous</td><td>enchaîner les cas exclusifs avec <code>elif</code></td></tr></table><p><strong>📋 Trace d'exécution :</strong> le bug du <code>elif</code> manquant, déroulé avec note = 18 :</p><table><tr><th>Instruction</th><th>Condition</th><th>mention</th></tr><tr><td>if note &gt;= 16</td><td>vraie</td><td>\"très bien\"</td></tr><tr><td>if note &gt;= 12</td><td>vraie aussi !</td><td>\"assez bien\" (écrase la précédente)</td></tr><tr><td>print(mention)</td><td>—</td><td>affiche assez bien au lieu de très bien</td></tr></table><p>Avec <code>elif</code>, la seconde condition n'aurait même pas été testée : la mention serait restée « très bien ».</p><p><strong>🎯 Défi élève :</strong> écrire <code>maximum(t)</code> et le jeu de tests qui débusque le bug classique « partir de 0 ».</p><pre><code>def maximum(t):\n    \"\"\"Renvoie le plus grand élément de la liste non vide t.\"\"\"\n    assert len(t) &gt; 0, \"liste vide\"\n    m = t[______]\n    for x in t:\n        if ______:\n            m = x\n    return m\n\nassert maximum([3, 8, 5]) == 8\nassert maximum([-4, -9]) == ______   # cas limite : que des négatifs\nprint(\"Tous les tests passent\")      # affiche Tous les tests passent</code></pre><p><strong>✅ Réponse :</strong></p><pre><code>def maximum(t):\n    \"\"\"Renvoie le plus grand élément de la liste non vide t.\"\"\"\n    assert len(t) &gt; 0, \"liste vide\"\n    m = t[0]\n    for x in t:\n        if x &gt; m:\n            m = x\n    return m\n\nassert maximum([3, 8, 5]) == 8\nassert maximum([-4, -9]) == -4       # cas limite : que des négatifs\nprint(\"Tous les tests passent\")      # affiche Tous les tests passent</code></pre><ul><li>On ne teste <strong>jamais</strong> l'égalité de deux flottants : on compare leur écart à un petit seuil.</li><li>Initialiser <code>m = 0</code> au lieu de <code>m = t[0]</code> est exactement le bug que révèle <code>maximum([-4, -9])</code> : d'où l'importance des cas limites.</li><li>Check-list d'un bon jeu de tests : le vide, le zéro, le négatif, le très grand.</li></ul>"
    },
@@ -1526,6 +1550,16 @@ const THEME_KITS = {
         "nom": "recursivite_corrige.py",
         "chemin": "assets/fichiers/terminale/term-langages/recursivite_corrige.py",
         "desc": "Corrigé prof : cas de base commentés, mémoïsation avec le motif propre memo=None (cf. le piège memo={} de la Section 4). Tous les asserts passent (vérifié en exécution)."
+      },
+      {
+        "nom": "preuve_classe.py",
+        "chemin": "assets/fichiers/terminale/term-langages/preuve_classe.py",
+        "desc": "squelette élève du TP « Prouver une classe et une boucle » : invariant de la classe Personne, méthode incrementer() de Heure (trois cas) et sa postcondition, invariant et variant de maximum, tri à bulles ; tests à décommenter"
+      },
+      {
+        "nom": "preuve_classe_corrige.py",
+        "chemin": "assets/fichiers/terminale/term-langages/preuve_classe_corrige.py",
+        "desc": "corrigé prof (vérifié) : versions naïves du DIU qui échouent comme prévu, versions corrigées, journée de 1440 minutes, correction totale de maximum et du tri à bulles"
       },
       {
         "nom": "poo_compte.py",

@@ -881,6 +881,403 @@ print(journal, "->", temperature, "°C")
       },
     ],
   },
+  {
+    id: "term-tp-preuve",
+    theme: "term-langages",
+    lang: "python",
+    titre: "TP — Prouver une classe et une boucle : invariants, variant, assertions (d'après le DIU)",
+    intro:
+      "Objectif : prouver, et pas seulement tester. Tu vas écrire l'invariant d'une classe, les préconditions et postconditions de ses méthodes avec assert, trouver un bug par le raisonnement avant même d'exécuter, puis prouver une boucle (invariant, variant, correction totale). D'après les exemples du cours « Preuve de programme » du DIU du Havre (B. Mermet) : Personne, Heure, maximum, tri à bulles. Le squelette preuve_classe.py et son corrigé sont dans le kit du thème.",
+    prof:
+      "<p><strong>Place dans la progression.</strong> Séance 7 du thème (mise au point : assert, jeux de tests), en prolongement des sections 6 (assertions, doctest), 12 (encapsulation) et des nouvelles sections 13 et 14. D'après les exemples du cours « Preuve de programme » du DIU du Havre (B. Mermet) : Personne, Heure (et ses deux corrections), maximum (correction partielle puis terminaison), tri à bulles naïf (travail personnel).</p><ul><li><strong>Objectifs (BO « Langages et programmation », mise au point ; « Structures de données », interface et encapsulation).</strong> Écrire préconditions, postconditions et invariant de classe avec assert ; prouver qu'une méthode préserve un invariant (substitution, cas) ; prouver un invariant de boucle par récurrence et une terminaison par variant ; distinguer ce qu'un assert vérifie de ce qu'une preuve garantit.</li><li><strong>Déroulé (1 h 30 à 2 h).</strong> Étape 1 (20 min) : Personne, trois scénarios à prévoir avant d'exécuter. Étape 2 (25 min) : Heure, trouver le bug par la preuve, corriger. Étape 3 (20 min) : la postcondition à trois cas. Étape 4 (25 min) : maximum, invariant et variant, rédaction type bac. Étape 5 en bonus ou en travail personnel (squelette preuve_classe.py sur Capytale ou Thonny, corrigé dans le kit).</li><li><strong>Le fil conducteur.</strong> « Qui garantit la propriété : l'exécution ou le raisonnement ? » Les assert détectent, la substitution prouve. Faire rédiger la preuve de l'étape 2 (trois cas) et celle de l'étape 4 (trois phrases) dans le cahier.</li><li><strong>Différenciation.</strong> Étapes 1, 2 et 4 pour tous ; 3 pour la majorité ; 5 pour les rapides. Les élèves fragiles font l'étape 2 en lecture : exécuter la journée de 1440 minutes avec incrementer_naif, lire l'erreur, reformuler.</li><li><strong>Erreurs fréquentes.</strong> Appeler invariant() au milieu d'une méthode (il peut y être faux) ; oublier de mémoriser les valeurs avant pour une postcondition ; écrire « si A alors B » avec un if au lieu de not A or B ; corriger Heure en oubliant minuit ; croire que la postcondition de annee_suivante (âge + 1) suffit alors que l'invariant est violé ; prendre pour variant du tri à bulles une quantité qui ne décroît pas au dernier passage.</li><li><strong>Évaluation.</strong> Réponse en direct (📡) : « Heure(10, 59).incrementer_naif() : que se passe-t-il ? ». Écrit : la preuve du cas 2 de incrementer ; l'invariant et le variant de maximum. Le tri à bulles n'est pas exigible.</li></ul>",
+    steps: [
+      {
+        num: "1", titre: "Personne : invariant de classe, précondition, postcondition", run: true,
+        code: `# ÉTAPE 1 — La classe Personne du cours : où l'invariant est-il vérifié ?
+class Personne:
+    def __init__(self, nom, prenom, age):
+        self.nom = nom
+        self.prenom = prenom
+        self.age = age
+        self.determiner_statut()
+        self.invariant()                      # le constructeur établit l'invariant
+
+    def invariant(self):
+        assert self.nom != "", "le nom ne peut pas être vide"
+        assert self.age >= 0, "l'âge est positif ou nul"
+        assert self.age >= 18 or self.statut == "mineur"
+        assert self.age < 18 or self.statut == "majeur"
+
+    def determiner_statut(self):
+        assert self.age == int(self.age), "précondition : l'âge est un entier"
+        if self.age >= 18:
+            self.statut = "majeur"
+        else:
+            self.statut = "mineur"
+        assert (self.age >= 18 and self.statut == "majeur") or (self.age < 18 and self.statut == "mineur")
+        self.invariant()
+
+    def annee_suivante(self):
+        self.invariant()
+        age_avant = self.age                  # mémorisé pour la postcondition
+        self.age = self.age + 1
+        assert self.age == age_avant + 1      # postcondition
+        self.invariant()
+
+    def __repr__(self):
+        return self.prenom + " " + self.nom + " (" + str(self.age) + ", " + self.statut + ")"
+
+# Scénario 1 : prévois ce qui s'affiche AVANT d'exécuter
+p = Personne("Mermet", "Bruno", 16)
+print(p)
+p.annee_suivante()
+print(p)
+# p.annee_suivante()      # À toi : décommente. Quelle assertion échoue, et pourquoi ?
+
+# Scénarios 2 et 3 : à prévoir puis à tester un par un
+# Personne("Mermet", "Bruno", 20.4)
+# Personne("", "Bruno", 20)`,
+        note: "Un invariant de classe est établi par le constructeur et préservé par chaque méthode : d'où la méthode invariant() appelée à la fin de __init__ et à la fin de chaque méthode. Les assert détectent une violation ; ils ne prouvent rien.",
+        questions: [
+          "Scénario 1 : que s'affiche-t-il, et que se passe-t-il au deuxième appel à annee_suivante() ? Quelle assertion échoue ?",
+          "La postcondition de annee_suivante() est vraie (l'âge a augmenté de 1). Pourquoi l'invariant échoue-t-il quand même ? Que faut-il corriger ?",
+          "Scénarios 2 et 3 : quelle assertion échoue dans chaque cas ? Est-ce une précondition ou l'invariant ?",
+          "Pourquoi appelle-t-on invariant() à la FIN des méthodes et pas au milieu ?",
+        ],
+        correction: [
+          "« Bruno Mermet (16, mineur) » puis « Bruno Mermet (17, mineur) ». Au deuxième appel, l'âge passe à 18 mais le statut reste « mineur » : l'assert « self.age < 18 or self.statut == majeur » échoue (AssertionError) dans invariant().",
+          "La postcondition ne parle que de l'âge ; l'état de l'objet comprend aussi le statut, et la méthode l'a oublié. L'invariant, lui, parle de tout l'état : c'est lui qui voit le bug. Correction : après self.age = self.age + 1, appeler self.determiner_statut() (ou recalculer le statut).",
+          "Scénario 2 : 20.4 n'est pas un entier, la précondition de determiner_statut() échoue (« précondition : l'âge est un entier »). Scénario 3 : le nom est vide, c'est l'invariant qui échoue (« le nom ne peut pas être vide »), dans determiner_statut() qui appelle invariant().",
+          "Parce qu'au milieu d'une méthode l'invariant peut être temporairement faux (entre la modification de l'âge et celle du statut, par exemple) : l'engagement d'une méthode est de le rétablir AVANT de rendre la main.",
+          { code: `class Personne:
+    def __init__(self, nom, prenom, age):
+        self.nom = nom
+        self.prenom = prenom
+        self.age = age
+        self.determiner_statut()
+        self.invariant()
+
+    def invariant(self):
+        assert self.nom != "", "le nom ne peut pas être vide"
+        assert self.age >= 0, "l'âge est positif ou nul"
+        assert self.age >= 18 or self.statut == "mineur"
+        assert self.age < 18 or self.statut == "majeur"
+
+    def determiner_statut(self):
+        assert self.age == int(self.age), "précondition : l'âge est un entier"
+        if self.age >= 18:
+            self.statut = "majeur"
+        else:
+            self.statut = "mineur"
+        assert (self.age >= 18 and self.statut == "majeur") or (self.age < 18 and self.statut == "mineur")
+        self.invariant()
+
+    def annee_suivante(self):
+        self.invariant()
+        age_avant = self.age
+        self.age = self.age + 1
+        self.determiner_statut()              # le statut suit l'âge : l'invariant est préservé
+        assert self.age == age_avant + 1
+        self.invariant()
+
+    def __repr__(self):
+        return self.prenom + " " + self.nom + " (" + str(self.age) + ", " + self.statut + ")"
+
+p = Personne("Mermet", "Bruno", 17)
+p.annee_suivante()
+print(p)                                      # Bruno Mermet (18, majeur)
+for nom, prenom, age in (("Mermet", "Bruno", 20.4), ("", "Bruno", 20)):
+    try:
+        Personne(nom, prenom, age)
+    except AssertionError as e:
+        print("refusé :", nom, prenom, age, "->", e)` },
+        ],
+        prof: "<p>20 min. C'est preuve01personne.py du DIU (lancé avec un argument 1, 2 ou 3 pour les trois scénarios). Faire prévoir AVANT d'exécuter : la plupart des élèves ne voient pas que le statut ne suit pas l'âge. Le point à institutionnaliser : postcondition (ce que la méthode promet sur ce qu'elle a changé) contre invariant (ce qui doit rester vrai de tout l'objet).</p>",
+      },
+      {
+        num: "2", titre: "Heure : prouver qu'une méthode préserve l'invariant", run: true,
+        code: `# ÉTAPE 2 — La classe Heure à prouver (preuve02horloge.py du DIU)
+class Heure:
+    def __init__(self, heures=0, minutes=0):
+        assert heures >= 0 and minutes >= 0   # précondition du cours : suffit-elle ?
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()
+
+    def invariant(self):
+        assert 0 <= self.heures < 24
+        assert 0 <= self.minutes < 60
+
+    def incrementer_naif(self):
+        self.invariant()
+        self.minutes = self.minutes + 1
+        self.invariant()
+
+    def incrementer(self):
+        """À COMPLÉTER : trois cas (minute suivante, heure suivante, minuit)."""
+        self.invariant()
+        if self.minutes < 59:
+            self.minutes = self.minutes + 1
+        # elif ... :
+        # else:
+        self.invariant()
+
+    def __repr__(self):
+        return str(self.heures) + ":" + str(self.minutes).rjust(2, "0")
+
+h = Heure(10, 58)
+h.incrementer_naif()
+print(h)                     # 10:59
+# h.incrementer_naif()       # À toi : prévois, puis décommente
+
+# Une journée entière avec la version corrigée (décommente quand c'est prêt)
+# h = Heure()
+# for _ in range(1440):
+#     h.incrementer()
+# print(h)                   # 0:00`,
+        note: "Preuve de {INV} minutes = minutes + 1 {INV} : il faut [minutes := minutes + 1](minutes < 60), c'est-à-dire minutes + 1 < 60, soit minutes ≤ 58. L'invariant ne le garantit pas : la méthode naïve est fausse, et on le sait sans exécuter.",
+        questions: [
+          "Par substitution, montre que incrementer_naif() ne préserve pas l'invariant et donne l'état qui le casse.",
+          "Le DIU propose deux corrections : une précondition minutes ≤ 58, ou trois cas. Quel est l'inconvénient de la première ?",
+          "Complète incrementer() (trois cas) et vérifie la journée de 1440 minutes.",
+          "La précondition du constructeur, heures >= 0 and minutes >= 0, suffit-elle ? Que se passe-t-il avec Heure(25, 0) ?",
+        ],
+        correction: [
+          "Après minutes = minutes + 1, pour avoir minutes < 60 il faut minutes + 1 < 60 avant, soit minutes ≤ 58. Or l'invariant autorise minutes = 59. État qui casse : n'importe quelle heure à 59 minutes, par exemple 10:59 → 10:60, et invariant() lève une AssertionError.",
+          "Avec la précondition minutes ≤ 58, la méthode est prouvée… mais elle refuse d'incrémenter une heure à 59 minutes : elle n'est plus utilisable pour faire tourner une horloge. La correction à trois cas garde la méthode utilisable dans tous les états valides.",
+          "elif self.heures < 23: self.minutes = 0 ; self.heures = self.heures + 1 ; else: self.minutes = 0 ; self.heures = 0. Après 1440 incréments depuis 0:00, on revient à 0:00.",
+          "Non : Heure(25, 0) passe la précondition mais viole l'invariant (25 ≥ 24), c'est invariant() qui refuse. Une précondition suffisante serait 0 <= heures < 24 and 0 <= minutes < 60, c'est-à-dire l'invariant lui-même sur les paramètres.",
+          { code: `class Heure:
+    def __init__(self, heures=0, minutes=0):
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()
+
+    def invariant(self):
+        assert 0 <= self.heures < 24
+        assert 0 <= self.minutes < 60
+
+    def incrementer(self):
+        self.invariant()
+        if self.minutes < 59:
+            self.minutes = self.minutes + 1
+        elif self.heures < 23:
+            self.minutes = 0
+            self.heures = self.heures + 1
+        else:
+            self.minutes = 0
+            self.heures = 0
+        self.invariant()
+
+    def __repr__(self):
+        return str(self.heures) + ":" + str(self.minutes).rjust(2, "0")
+
+h = Heure()
+for _ in range(1440):
+    h.incrementer()
+print(h)                     # 0:00
+h = Heure(23, 59)
+h.incrementer()
+print(h)                     # 0:00
+try:
+    Heure(25, 0)
+except AssertionError:
+    print("Heure(25, 0) : refusée par l'invariant")` },
+        ],
+        prof: "<p>25 min. C'est l'exercice 1 du DIU (« tenter de prouver la classe preuve02horloge.py, proposer des corrections »). La preuve par substitution DOIT précéder l'exécution : c'est tout l'intérêt. La question 2 (précondition contre réparation) est une vraie discussion de conception : une précondition plus forte rend la preuve facile mais la méthode inutilisable.</p>",
+      },
+      {
+        num: "3", titre: "La postcondition de incrementer() : trois cas, trois implications", run: true,
+        code: `# ÉTAPE 3 — Écrire et vérifier la postcondition (preuve03horlogePostcondition.py du DIU)
+class Heure:
+    def __init__(self, heures=0, minutes=0):
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()
+
+    def invariant(self):
+        assert 0 <= self.heures < 24
+        assert 0 <= self.minutes < 60
+
+    def incrementer(self):
+        self.invariant()
+        minutes_avant, heures_avant = self.minutes, self.heures     # pour la postcondition
+        if self.minutes < 59:
+            self.minutes = self.minutes + 1
+        elif self.heures < 23:
+            self.minutes = 0
+            self.heures = self.heures + 1
+        else:
+            self.minutes = 0
+            self.heures = 0
+        # POSTCONDITION, un assert par cas (« si A alors B » s'écrit not A or B)
+        assert minutes_avant == 59 or (self.minutes == minutes_avant + 1 and self.heures == heures_avant)
+        # À COMPLÉTER : cas 2 (minutes_avant == 59 et heures_avant < 23)
+        # À COMPLÉTER : cas 3 (23:59 -> 0:00)
+        self.invariant()
+
+    def __repr__(self):
+        return str(self.heures) + ":" + str(self.minutes).rjust(2, "0")
+
+for h in (Heure(10, 30), Heure(10, 59), Heure(23, 59)):
+    h.incrementer()
+    print(h)                     # 10:31  11:00  0:00`,
+        note: "Une postcondition qui compare après et avant exige de mémoriser les valeurs avant. Une implication « si A alors B » s'écrit not A or B en une seule expression booléenne.",
+        questions: [
+          "Lis le premier assert à voix haute sous la forme « si … alors … ».",
+          "Écris les deux autres assert (cas 2 et cas 3) et exécute.",
+          "Pourquoi mémoriser minutes_avant et heures_avant ? Que se passerait-il sans ?",
+          "Le fichier du DIU écrit le cas 3 avec heuresAvant == 59. Est-ce une coquille ? Pourquoi les tests du cours ne la détectent-ils pas ?",
+        ],
+        correction: [
+          "« Si les minutes n'étaient pas à 59, alors les minutes ont augmenté de 1 et les heures n'ont pas changé. »",
+          "assert minutes_avant != 59 or heures_avant == 23 or (self.heures == heures_avant + 1 and self.minutes == 0) ; assert minutes_avant != 59 or heures_avant != 23 or (self.heures == 0 and self.minutes == 0).",
+          "Après self.minutes = …, l'ancienne valeur est perdue : impossible de vérifier « a augmenté de 1 ». Sans mémorisation, la postcondition ne pourrait parler que de l'état final, pas du changement.",
+          "Oui : les heures vont de 0 à 23, heuresAvant ne vaut jamais 59, donc l'assert « heuresAvant != 59 or … » est toujours vrai et ne vérifie rien. Les tests passent parce qu'une assertion toujours vraie ne peut pas échouer : un assert mal écrit ne protège de rien. Il faut heuresAvant == 23.",
+          { code: `class Heure:
+    def __init__(self, heures=0, minutes=0):
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()
+
+    def invariant(self):
+        assert 0 <= self.heures < 24
+        assert 0 <= self.minutes < 60
+
+    def incrementer(self):
+        self.invariant()
+        minutes_avant, heures_avant = self.minutes, self.heures
+        if self.minutes < 59:
+            self.minutes = self.minutes + 1
+        elif self.heures < 23:
+            self.minutes = 0
+            self.heures = self.heures + 1
+        else:
+            self.minutes = 0
+            self.heures = 0
+        # Postcondition : « si A alors B » s'écrit not A or B
+        assert minutes_avant == 59 or (self.minutes == minutes_avant + 1 and self.heures == heures_avant)
+        assert minutes_avant != 59 or heures_avant == 23 or (self.heures == heures_avant + 1 and self.minutes == 0)
+        assert minutes_avant != 59 or heures_avant != 23 or (self.heures == 0 and self.minutes == 0)
+        self.invariant()
+
+    def __repr__(self):
+        return str(self.heures) + ":" + str(self.minutes).rjust(2, "0")
+
+for h in (Heure(10, 30), Heure(10, 59), Heure(23, 59)):
+    h.incrementer()
+    print(h)                 # 10:31  11:00  0:00` },
+        ],
+        prof: "<p>20 min. La question 4 est un vrai cas d'école : la coquille du fichier du DIU (59 au lieu de 23 pour les heures) rend le troisième assert tautologique, et aucun test ne le voit. Excellent pour faire comprendre qu'une assertion doit pouvoir échouer pour servir à quelque chose.</p>",
+      },
+      {
+        num: "4", titre: "maximum : invariant, variant, correction totale", run: true,
+        code: `# ÉTAPE 4 — Correction partielle (preuve04) puis terminaison (preuve05) de maximum
+def maximum(liste):
+    """Précondition : liste non vide.  Postcondition : renvoie son plus grand élément."""
+    assert len(liste) > 0
+    maxi = liste[0]
+    i = 0
+    while i < len(liste):
+        variant = len(liste) - i                # V : entier naturel strictement décroissant
+        if liste[i] > maxi:
+            maxi = liste[i]
+        assert maxi == max(liste[:i + 1])       # INV : maxi = maximum(liste[0..i]) (max() = oracle)
+        i = i + 1
+        assert 0 <= len(liste) - i < variant    # V reste dans N et a strictement diminué
+    assert maxi == max(liste)                   # POST
+    return maxi
+
+liste = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]
+print(maximum(liste), maximum(liste[:4]))      # 9 4
+
+# À toi : même travail pour la somme (invariant avec sum(liste[:i + 1]) comme oracle)
+def somme(liste):
+    total = 0
+    i = 0
+    while i < len(liste):
+        # variant = ...
+        total = total + liste[i]
+        # assert total == ...
+        i = i + 1
+        # assert ... < variant
+    return total
+
+print(somme(liste))                             # 52`,
+        note: "Correction partielle : [INIT](INV), INV ⟹ [CORPS](INV), PRÉ ∧ FIN ∧ INV ⟹ POST. Terminaison : PRÉ ⟹ V ∈ ℕ et V = v ∧ INV ⟹ [CORPS](V < v). Les deux : correction totale.",
+        questions: [
+          "Rédige la preuve de l'invariant de maximum en trois phrases (initialisation, conservation avec ses deux cas, sortie).",
+          "Rédige la preuve de terminaison : pourquoi len(liste) − i est-il dans ℕ, et pourquoi décroît-il strictement ?",
+          "Écris invariant et variant de somme, vérifie avec les assert.",
+          "Que vérifie l'assert de l'invariant : la preuve, ou cette exécution ? Comment le DIU le formule-t-il ?",
+        ],
+        correction: [
+          "Initialisation : maxi = liste[0] est le maximum de liste[0..0] (avant le tour i = 0, après lui aussi). Conservation : si maxi est le maximum de liste[0..i], alors au tour suivant, soit liste[i+1] > maxi et maxi devient liste[i+1], maximum de liste[0..i+1] ; soit liste[i+1] ≤ maxi et maxi reste le maximum. Sortie : la boucle s'arrête quand i = len(liste) ; l'invariant au dernier tour dit que maxi est le maximum de liste[0..len(liste)−1], toute la liste : c'est la postcondition.",
+          "Tant que la boucle tourne, i < len(liste), donc V = len(liste) − i ≥ 1 : un entier naturel. Le corps fait i = i + 1, donc V diminue exactement de 1 : strictement décroissant. Une suite strictement décroissante d'entiers naturels est finie : la boucle fait au plus len(liste) tours.",
+          "Invariant : après le tour i, total est la somme de liste[0..i] : assert total == sum(liste[:i + 1]). Variant : len(liste) − i. Postcondition : total == sum(liste).",
+          "Seulement cette exécution : « cela n'a aucune valeur de preuve, mais permet de documenter le code et d'avoir une exception claire à l'exécution si une propriété est violée ». La preuve, c'est la récurrence de la question 1.",
+          { code: `def somme(liste):
+    total = 0
+    i = 0
+    while i < len(liste):
+        variant = len(liste) - i
+        total = total + liste[i]
+        assert total == sum(liste[:i + 1])      # invariant
+        i = i + 1
+        assert len(liste) - i < variant          # terminaison
+    assert total == sum(liste)                   # postcondition
+    return total
+
+print(somme([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))   # 52` },
+        ],
+        prof: "<p>25 min. Exercice 2 du DIU (preuve04 puis preuve05). Exiger la rédaction en trois phrases : c'est le format des questions « justifier que l'algorithme est correct » du bac. La question 4 doit rester en mémoire : les élèves confondent facilement « j'ai mis un assert » et « j'ai prouvé ».</p>",
+      },
+      {
+        num: "5", titre: "Bonus — Le tri à bulles naïf : correction totale (travail personnel du DIU)", run: true, bonus: true,
+        code: `# ÉTAPE 5 (bonus) — preuve06TriABulleNaif.py : prouver la terminaison
+def nb_inversions(liste):
+    """Couples (i, j) avec i < j et liste[i] > liste[j] : la mesure du désordre."""
+    total = 0
+    for i in range(len(liste)):
+        for j in range(i + 1, len(liste)):
+            if liste[i] > liste[j]:
+                total = total + 1
+    return total
+
+def tri_bulles(liste):
+    inversion = True
+    while inversion:
+        variant = nb_inversions(liste) + 1      # + 1 : inversion vaut True en entrée de passage
+        inversion = False
+        i = 0
+        while i < len(liste) - 1:
+            if liste[i] > liste[i + 1]:
+                liste[i], liste[i + 1] = liste[i + 1], liste[i]
+                inversion = True
+            i = i + 1
+        print("après ce passage :", liste, "désordre =", nb_inversions(liste))
+        assert nb_inversions(liste) + (1 if inversion else 0) < variant
+    assert nb_inversions(liste) == 0            # postcondition : trié
+    return liste
+
+print(tri_bulles([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))`,
+        note: "Le variant de la boucle externe n'est pas une variable du programme : c'est le désordre, mesuré par le nombre d'inversions. Un échange de voisins mal rangés en retire exactement une.",
+        questions: [
+          "Pourquoi un échange de voisins mal rangés retire-t-il exactement une inversion ?",
+          "Pourquoi le + 1 dans le variant ?",
+          "Quel est l'invariant de la boucle interne (où est le maximum de liste[0..i+1] à la fin du tour i) ? Que peut-on dire de la liste à la fin de chaque passage ?",
+          "Pourquoi « nb_inversions(liste) == 0 » équivaut-il à « liste triée » ?",
+        ],
+        correction: [
+          "Les autres couples ne changent pas d'ordre relatif : un élément situé avant i, ou après i + 1, voit toujours les deux mêmes valeurs dans le même ordre. Seul le couple (i, i + 1) passe de mal rangé à bien rangé.",
+          "Au dernier passage, aucun échange : le nombre d'inversions reste 0 et ne décroît pas ; mais inversion passe de True à False, ce qui fait baisser V de 1. Avec le + 1, V décroît strictement à CHAQUE passage, comme l'exige la preuve de terminaison.",
+          "À la fin du tour i, liste[i + 1] est le maximum de liste[0..i + 1] : la plus grande valeur rencontrée « monte » comme une bulle. À la fin d'un passage, le maximum de la liste est en dernière position (et après k passages, les k plus grands sont à leur place).",
+          "Aucun couple mal rangé signifie que chaque élément est inférieur ou égal à tous ceux qui le suivent : c'est exactement la définition d'une liste triée dans l'ordre croissant.",
+        ],
+        prof: "<p>Bonus (le « travail personnel » du DIU). Le variant « nombre d'inversions » est le point difficile ; la cellule affiche le désordre à chaque passage pour le faire observer avant de l'expliquer. On peut aussi faire remarquer que le nombre de passages est au plus len(liste), ce qui donne le coût quadratique du tri à bulles.</p>",
+      },
+    ],
+  },
 ];
 
 const FICHES_PLUS = [];

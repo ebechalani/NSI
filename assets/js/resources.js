@@ -515,17 +515,36 @@ const THEME_RESSOURCES_EXT = {
       { t: "🖥️ Diaporama — Caractères (PDF)", url: "prez-representation-caracteres.prez.pdf" },
     ],
   },
-  "algorithmique": {
-    titre: "k plus proches voisins — introduction au machine learning (DIU)",
-    auteur: "Laurent Amanton — DIU EIL, Université Le Havre Normandie (diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning », 2021-2026)",
-    base: "",
-    note: "📎 Support de formation du DIU hébergé sur le site, comme mes autres supports du Havre. Le diaporama ne porte pas de mention de licence : il est hébergé ici <strong>avec l'accord de son auteur</strong> et reste sa propriété ; les sections 11 à 14 du thème s'en inspirent (plan, exemples types) sans en reprendre le texte. Le jeu de données des iris (UCI) et la bibliothèque scikit-learn sont en accès libre.",
-    items: [
-      { t: "📕 Diaporama — K plus proches voisins (KNN), L. Amanton (PDF, 30 pages)", url: "assets/ressources/ia/DIU_KNN_Amanton.pdf" },
-      { t: "🌸 Le jeu de données des iris (UCI Machine Learning Repository)", url: "https://archive.ics.uci.edu/dataset/53/iris" },
-      { t: "🧰 Documentation scikit-learn — KNeighborsClassifier", url: "https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html" },
-    ],
-  },
+  "algorithmique": [
+    {
+      titre: "k plus proches voisins — introduction au machine learning (DIU)",
+      auteur: "Laurent Amanton — DIU EIL, Université Le Havre Normandie (diaporama « K plus proches voisins (KNN) — Introduction au Machine Learning », 2021-2026)",
+      base: "",
+      note: "📎 Support de formation du DIU hébergé sur le site, comme mes autres supports du Havre. Le diaporama ne porte pas de mention de licence : il est hébergé ici <strong>avec l'accord de son auteur</strong> et reste sa propriété ; les sections 11 à 14 du thème s'en inspirent (plan, exemples types) sans en reprendre le texte. Le jeu de données des iris (UCI) et la bibliothèque scikit-learn sont en accès libre.",
+      items: [
+        { t: "📕 Diaporama — K plus proches voisins (KNN), L. Amanton (PDF, 30 pages)", url: "assets/ressources/ia/DIU_KNN_Amanton.pdf" },
+        { t: "🌸 Le jeu de données des iris (UCI Machine Learning Repository)", url: "https://archive.ics.uci.edu/dataset/53/iris" },
+        { t: "🧰 Documentation scikit-learn — KNeighborsClassifier", url: "https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html" },
+      ],
+    },
+    {
+      titre: "Correction des algorithmes : validation et preuve de programme (DIU, Bloc 2)",
+      auteur: "Bruno Mermet — DIU EIL, Université Le Havre Normandie (Bloc 2 « Algorithmique », partie II « Correction des algorithmes »)",
+      base: "https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Algorithmique/",
+      note: "📎 Pages du cours du DIU, liées avec attribution (sans mention de licence : elles restent la propriété de leur auteur et ne sont pas recopiées). Les sections 15 à 17, les exercices 19 à 24, les questions de QCM sur la validation et la preuve, le TP « Prouver un programme » et les fichiers preuve.py / preuve_corrige.py du kit s'en inspirent (plan, exemples : fonction f, maximum, horloge, tri à bulles) avec un texte original. La logique du premier ordre, la skolémisation et l'invariant de classe du cours ne sont pas au programme de Première (l'invariant de classe est traité en Terminale).",
+      items: [
+        { t: "📑 Sommaire du Bloc 2 — Algorithmique (gloutons, diviser pour régner, kNN, correction, complexité)", url: "index.html" },
+        { t: "A · Introduction à la validation — tester, prouver, prototyper, model checking", url: "validation.html" },
+        { t: "B · Preuve de programme — logique, triplets de Hoare, invariants, variants, assertions", url: "preuve.html" },
+        { t: "🐍 preuve01personne.py — invariant de classe, préconditions et postconditions", url: "preuve01personne.html" },
+        { t: "🐍 preuve02horloge.py — la classe Heure à prouver (et sa correction, preuve02horlogeCorrection.py)", url: "preuve02horloge.html" },
+        { t: "🐍 preuve03horlogePostcondition.py — la postcondition de incrementer()", url: "preuve03horlogePostcondition.html" },
+        { t: "🐍 preuve04boucleCorrectionPartielle.py — l'invariant du maximum, prouvé", url: "preuve04boucleCorrectionPartielle.html" },
+        { t: "🐍 preuve05boucleTerminaisonCorrection.py — le variant du maximum (correction totale)", url: "preuve05boucleTerminaisonCorrection.html" },
+        { t: "🐍 preuve06TriABulleNaif.py — le tri à bulles naïf à prouver (travail personnel)", url: "preuve06TriABulleNaif.html" },
+      ],
+    },
+  ],
 };
 
 /* ---------------- Progression annuelle indicative ---------------- */
@@ -5348,20 +5367,23 @@ const THEME_PLANS = {
      "Section 8 « Coût d'un algorithme (complexité) » : tableau des 4 coûts avec la colonne n = 1 000 000, cellule ▶ (cout_sequentiel vs cout_dichotomie) à faire manipuler",
      "Section 9 « Terminaison : le variant de boucle » ; retour sur les paragraphes « invariant » des Sections 4 et 5 (sélection : tranche triée ET éléments à leur place définitive ; insertion : tranche seulement triée)",
      "Exercice 7 (moyen) — donner le variant de while n > 1: n = n // 2",
-     "QCM questions « coût du tri par sélection » et « pour prouver qu'une boucle se termine… »"
+     "QCM questions « coût du tri par sélection » et « pour prouver qu'une boucle se termine… »",
+     "Sections 15 à 17 « Valider », « Prouver », « Correction totale » (d'après le cours du DIU, B. Mermet) : tester / prototyper / prouver, triplet {Pré} instruction {Post}, invariant du maximum écrit avec assert, variant, horloge, tri à bulles",
+     "TP guidé « Prouver un programme » (6 étapes avec corrections et notes prof, démarche en tête) : étapes 1 à 3 pour les rapides en fin de séance, le reste en prolongement ; squelette preuve.py et corrigé dans le kit"
     ],
     "enClasse": [
      "0–10 min : rituel : classer 4 situations (accès tab[i], parcours, dichotomie, tri) de la plus rapide à la plus lente, en réponse en direct (📡, texte court).",
      "10–35 min : institutionnalisation Section 8 : le tableau des coûts recopié ; commenter la ligne n² = 10¹² « énorme » ; sur postes, cellule ▶ des coûts exécutée pour n = 10, 1000, 1 000 000.",
      "35–60 min : Section 9 : définition du variant (entier, positif, strictement décroissant) ; Exercice 7 rédigé individuellement puis confronté en binôme ; chercher le variant de la dichotomie (droite − gauche).",
      "60–90 min : débranché argumentation : chaque îlot reçoit l'invariant d'UN des deux tris (texte des Sections 4/5 imprimé) et doit l'expliquer à un îlot voisin avec 5 cartes en main ; faire toucher la différence « place définitive ou pas ».",
-     "90–110 min : écrit type bac : rédiger en 5 lignes « pourquoi le tri par sélection est correct » (invariant) et « pourquoi la dichotomie se termine » (variant) ; correction guidée.",
+     "90–110 min : écrit type bac : rédiger en 5 lignes « pourquoi le tri par sélection est correct » (invariant) et « pourquoi la dichotomie se termine » (variant) ; correction guidée ; les rapides enchaînent sur le TP « Prouver un programme » (étapes 1 à 3 : substitution, test exhaustif, invariant du maximum avec assert).",
      "110–120 min : bilan : distinguer variant (terminaison) / invariant (correction) — la note du cours ; 2 questions du QCM projetées ; corrigés poussés."
     ],
     "aPreparer": [
      "Imprimer les paragraphes « invariant » des Sections 4 et 5 (un par îlot) — le bouton 🖨️ du cours permet de sortir la page",
      "Prévoir un modèle de rédaction type bac (le site n'en fournit pas) : structure « propriété / vraie au départ / conservée / conclusion »",
-     "Cartes à jouer pour l'argumentation par îlot"
+     "Cartes à jouer pour l'argumentation par îlot",
+     "Lire la démarche « pour le prof » en tête du TP « Prouver un programme » et choisir les étapes à donner aux rapides (1 à 3) ; le reste du TP peut se faire à la maison sur Capytale ou Thonny (preuve.py)"
     ],
     "cours": "<p><strong>📖 La notion :</strong></p><p>Écrire un algorithme ne suffit pas : il faut savoir répondre à trois questions. Combien d'opérations fait-il (son <strong>coût</strong>, ou complexité) ? S'arrête-t-il toujours (sa <strong>terminaison</strong>) ? Donne-t-il le bon résultat (sa <strong>correction</strong>) ?</p><p>Le coût, à la main : pour chercher dans un tableau de 1 000 000 d'éléments, la recherche séquentielle peut faire 1 000 000 de comparaisons ; la dichotomie divise par deux à chaque tour : 1 000 000 → 500 000 → 250 000 → … → 1, soit une vingtaine de divisions seulement. On classe les coûts par ordre de grandeur, noté avec un grand O :</p><table><tr><th>Coût</th><th>Notation</th><th>Exemple</th><th>Pour n = 1 000 000</th></tr><tr><td>constant</td><td>O(1)</td><td>accès <code>tab[i]</code></td><td>1 opération</td></tr><tr><td>logarithmique</td><td>O(log n)</td><td>recherche dichotomique</td><td>≈ 20</td></tr><tr><td>linéaire</td><td>O(n)</td><td>parcours, recherche séquentielle</td><td>1 000 000</td></tr><tr><td>quadratique</td><td>O(n²)</td><td>tris par sélection / insertion</td><td>10¹² (énorme !)</td></tr></table><p><strong>🐢 Première méthode — compter les opérations :</strong></p><pre><code>def cout_sequentiel(n):\n    return n                  # pire cas : on parcourt tout\n\ndef cout_dichotomie(n):\n    comparaisons = 0\n    while n &gt; 1:\n        n = n // 2            # on divise par 2 à chaque étape\n        comparaisons = comparaisons + 1\n    return comparaisons\n\nprint(cout_sequentiel(1000000))   # affiche 1000000\nprint(cout_dichotomie(1000000))   # affiche 19</code></pre><p><strong>🔍 Comment ça marche :</strong> plutôt que de chronométrer (cela dépend de la machine), on <em>compte les comparaisons</em>. La ligne <code>n = n // 2</code> divise la taille par deux ; le compteur mesure combien de divisions ramènent n à 1 : c'est log₂ n, environ 20 pour un million.</p><p><strong>⏳ Terminaison — le variant de boucle :</strong> comment <em>prouver</em> qu'une boucle <code>while</code> s'arrête toujours ? On exhibe un <strong>variant</strong> : une quantité <strong>entière</strong>, <strong>positive</strong>, qui <strong>décroît strictement</strong> à chaque tour. Un entier positif qui diminue à chaque passage ne peut pas descendre indéfiniment : la boucle s'arrête forcément. Dans <code>while n &gt; 1: n = n // 2</code>, le variant est <code>n</code> ; dans la dichotomie, c'est <code>droite - gauche</code>.</p><p><strong>🛡️ Correction — l'invariant de boucle :</strong> pour prouver qu'un tri est correct, on exhibe un <strong>invariant</strong> : une propriété <em>vraie au début de chaque tour</em>. Tri par <strong>sélection</strong> : « la tranche <code>tab[0..i-1]</code> est triée ET contient les i plus petits éléments, à leur <strong>place définitive</strong> ». Tri par <strong>insertion</strong> : « la tranche <code>tab[0..i-1]</code> est triée » — seulement triée : une carte plus petite peut encore arriver et tout décaler. Vraie au départ (tranche vide), conservée à chaque tour, la propriété donne à la fin : le tableau entier est trié.</p><p><strong>📋 Trace d'exécution :</strong> le variant <code>n</code> pour n = 20 :</p><table><tr><th>n au début du tour</th><th>n &gt; 1 ?</th><th>n après n = n // 2</th></tr><tr><td>20</td><td>oui</td><td>10</td></tr><tr><td>10</td><td>oui</td><td>5</td></tr><tr><td>5</td><td>oui</td><td>2</td></tr><tr><td>2</td><td>oui</td><td>1</td></tr><tr><td>1</td><td>non — la boucle s'arrête</td><td>—</td></tr></table><p><strong>🎯 Défi élève :</strong> compléter le code, puis donner le variant de la boucle.</p><pre><code>def cout_dichotomie(n):\n    comparaisons = 0\n    while n ______ 1:\n        n = n ______ 2\n        comparaisons = comparaisons + ______\n    return comparaisons\n\nprint(cout_dichotomie(1000000))   # affiche 19\n# Le variant de cette boucle est ______</code></pre><p>✅ Réponse :</p><pre><code>def cout_dichotomie(n):\n    comparaisons = 0\n    while n &gt; 1:\n        n = n // 2\n        comparaisons = comparaisons + 1\n    return comparaisons\n\nprint(cout_dichotomie(1000000))   # affiche 19\n# Le variant de cette boucle est n : entier, positif,\n# strictement décroissant, donc la boucle se termine.</code></pre><ul><li>Ne pas confondre : le <strong>variant</strong> prouve la <em>terminaison</em>, l'<strong>invariant</strong> prouve la <em>correction</em>.</li><li>Pour n = 1 000 000, un tri en n² représente 10¹² opérations : le choix de l'algorithme est décisif.</li><li>Sélection : éléments à leur place définitive ; insertion : tranche seulement triée — deux invariants différents.</li></ul>",
     "etapes": [
@@ -5427,7 +5449,7 @@ const THEME_PLANS = {
       "titre": "Écrit type bac puis correction guidée",
       "prof": "Fais rédiger en 5 lignes « pourquoi le tri par sélection est correct » (invariant) et « pourquoi la dichotomie se termine » (variant), puis corrige au tableau de façon guidée en exigeant le vocabulaire exact du cours.",
       "contenu": "<p>Rédaction individuelle en 5 lignes : « pourquoi le tri par sélection est correct » (invariant) et « pourquoi la dichotomie se termine » (variant) ; correction guidée au tableau.</p>",
-      "eleves": "rédigent en 5 lignes les deux preuves demandées puis corrigent avec le vocabulaire exact du cours."
+      "eleves": "rédigent en 5 lignes les deux preuves demandées puis corrigent avec le vocabulaire exact du cours ; les rapides enchaînent sur le TP « Prouver un programme » (étapes 1 à 3)."
      },
      {
       "t": "110–120 min",
@@ -6376,6 +6398,16 @@ const THEME_KITS = {
         "nom": "knn_rugby_prof.py",
         "chemin": "assets/fichiers/premiere/algorithmique/knn_rugby_prof.py",
         "desc": "ma version complète du TP (à projeter depuis Thonny, matplotlib requis) : mélange aléatoire avec random.shuffle, vote par dictionnaire, evaluer_modele, courbe du taux d'erreur pour k impair de 1 à 15 avec annotations sur-apprentissage / sous-apprentissage"
+      },
+      {
+        "nom": "preuve.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/preuve.py",
+        "desc": "squelette élève du TP « Prouver un programme » pour Thonny/Capytale : asserts de précondition, postcondition, invariant et variant à compléter (fonction f, maximum, horloge, tri à bulles), tests à décommenter"
+      },
+      {
+        "nom": "preuve_corrige.py",
+        "chemin": "assets/fichiers/premiere/algorithmique/preuve_corrige.py",
+        "desc": "corrigé prof (vérifié) du TP « Prouver un programme » : toutes les propriétés écrites et vérifiées, la journée de 1440 minutes de l'horloge, le variant du tri à bulles"
       },
       {
         "nom": "gloutons.py",
