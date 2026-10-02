@@ -540,26 +540,26 @@ print("meilleur k parmi [3, 5, 7, 15, 21] :", meilleur_k([3, 5, 7, 15, 21]))   #
 print(f(0), f(5))            # 1 11`,
         gaps: ["1", "2"],
         solution: "Après x = x + 1 : x ≥ 1 (car x ≥ 0 avant). Après x = 2 * x : x ≥ 2 (car x ≥ 1 avant). Après x = x - 1 : x ≥ 1, la postcondition. À chaque ligne on substitue la nouvelle valeur de x dans la propriété voulue et on vérifie que la propriété précédente l'implique." },
-      { niveau: "facile", enonce: "Tester, prototyper ou prouver ? Les trois extraits ci-dessous valident la même fonction est_pair. Dis pour chacun s'il s'agit d'un TEST, d'un PROTOTYPE utilisé comme oracle ou d'une PREUVE, puis dis lequel garantit la fonction pour TOUS les entiers.",
+      { niveau: "facile", enonce: "Tester, prototyper ou prouver ? Les trois extraits ci-dessous valident la même fonction <code>est_pair</code>. Dis pour chacun s'il s'agit d'un TEST, d'un PROTOTYPE ou d'une PREUVE, puis dis lequel garantit la fonction pour TOUS les entiers. Recopie les extraits dans la cellule pour les exécuter.<pre><code>def est_pair(n):\n    return n % 2 == 0\n\n# Extrait A\nassert est_pair(4) == True\nassert est_pair(7) == False\nassert est_pair(0) == True\n\n# Extrait B\ndef est_pair_proto(n):\n    # écrite en premier, très naïve : on compte de 2 en 2 jusqu'à n\n    return n in range(0, n + 1, 2)\nfor n in range(0, 1000):\n    assert est_pair(n) == est_pair_proto(n)\n\n# Extrait C\n# Pour tout entier n, n % 2 vaut 0 si et seulement si n est un multiple de 2,\n# c'est-à-dire si n est pair : la fonction renvoie True exactement pour les pairs.</code></pre>",
         code: `def est_pair(n):
     return n % 2 == 0
 
-# Extrait A
+# A : TEST — trois cas choisis à la main ; ne garantit que ces trois valeurs
 assert est_pair(4) == True
 assert est_pair(7) == False
 assert est_pair(0) == True
 
-# Extrait B
-def est_pair_oracle(n):
-    return n in range(0, 10**6, 2)          # lent, mais sûr pour 0 <= n < 10**6
+# B : PROTOTYPE — une simulation naïve écrite d'abord pour être sûr de comprendre « pair »
+#     (compter de 2 en 2), puis utilisée comme oracle : encore un test, exhaustif sur 0..999
+def est_pair_proto(n):
+    return n in range(0, n + 1, 2)
 for n in range(0, 1000):
-    assert est_pair(n) == est_pair_oracle(n)
+    assert est_pair(n) == est_pair_proto(n)
 
-# Extrait C
-# Pour tout entier n, n % 2 vaut 0 si et seulement si n est un multiple de 2,
-# c'est-à-dire si n est pair : la fonction renvoie True exactement pour les pairs.
-print("A, B et C : quelle méthode de validation ?")`,
-        solution: "A est un jeu de TESTS (trois cas choisis à la main) ; B compare la fonction à un PROTOTYPE, une version lente mais sûre qui sert d'oracle, sur 1000 valeurs : c'est encore un test, exhaustif sur un petit domaine ; C est une PREUVE : un raisonnement valable pour tous les entiers. Seule la preuve (C) garantit la fonction dans tous les cas ; A et B ne garantissent que les valeurs essayées." },
+# C : PREUVE — un raisonnement valable pour TOUS les entiers :
+#     n % 2 == 0 si et seulement si n est multiple de 2, c'est-à-dire pair.
+print("A : test ; B : prototype (oracle) ; C : preuve, la seule qui garantit tous les cas")`,
+        solution: "A est un jeu de TESTS (trois cas choisis à la main). B est un PROTOTYPE : une simulation naïve, écrite en premier pour vérifier qu'on a compris ce que « pair » veut dire, puis utilisée comme oracle sur 1000 valeurs ; c'est encore un test (exhaustif sur un petit domaine), sans garantie au-delà. C est une PREUVE : un raisonnement valable pour tous les entiers. Seule la preuve (C) garantit la fonction dans tous les cas." },
       { niveau: "moyen", enonce: "Texte à trous — l'invariant du maximum : complète l'assert de l'invariant (la tranche de liste dont maxi doit être le plus grand élément après le tour i) et celui de la postcondition.",
         gapcode: `def maximum(liste):
     assert len(liste) > 0
@@ -574,7 +574,7 @@ print("A, B et C : quelle méthode de validation ?")`,
 print(maximum([3, 1, 4, 1, 5, 9, 2, 6]))   # 9`,
         gaps: ["i + 1", "liste"],
         solution: "Après le tour i, maxi est le plus grand élément de liste[0], …, liste[i], c'est-à-dire de la tranche liste[:i + 1] (la borne de droite est exclue). À la sortie, i vaut len(liste) - 1 : la tranche est toute la liste, et l'invariant devient la postcondition maxi == max(liste)." },
-      { niveau: "moyen", enonce: "L'horloge. La fonction incrementer_naif ajoute une minute à une heure (heures, minutes) qui vérifie l'invariant 0 ≤ heures < 24 et 0 ≤ minutes < 60. 1) Trouve, SANS exécuter, une entrée qui casse l'invariant, puis vérifie. 2) Écris incrementer(heures, minutes) qui conserve l'invariant (trois cas) et renvoie le nouveau couple. 3) Vérifie qu'après 1440 appels à partir de (0, 0) on revient à (0, 0).",
+      { niveau: "moyen", enonce: "L'horloge. La fonction <code>incrementer_naif</code> ci-dessous ajoute une minute à une heure <code>(heures, minutes)</code> qui vérifie l'invariant 0 ≤ heures < 24 et 0 ≤ minutes < 60. 1) Trouve, SANS exécuter, une entrée qui casse l'invariant, puis vérifie dans la cellule. 2) Écris <code>incrementer(heures, minutes)</code> qui conserve l'invariant (trois cas) et renvoie le nouveau couple. 3) Vérifie qu'après 1440 appels à partir de (0, 0) on revient à (0, 0).<pre><code>def invariant_heure(heures, minutes):\n    assert 0 &lt;= heures &lt; 24, \"heures hors de [0, 23]\"\n    assert 0 &lt;= minutes &lt; 60, \"minutes hors de [0, 59]\"\n\ndef incrementer_naif(heures, minutes):\n    invariant_heure(heures, minutes)\n    minutes = minutes + 1\n    invariant_heure(heures, minutes)\n    return heures, minutes\n\nprint(incrementer_naif(10, 30))      # (10, 31)</code></pre>",
         code: `def invariant_heure(heures, minutes):
     assert 0 <= heures < 24, "heures hors de [0, 23]"
     assert 0 <= minutes < 60, "minutes hors de [0, 59]"
@@ -585,57 +585,75 @@ def incrementer_naif(heures, minutes):
     invariant_heure(heures, minutes)
     return heures, minutes
 
-print(incrementer_naif(10, 30))      # (10, 31)
-# print(incrementer_naif(10, ___))   # quelle valeur casse l'invariant ?
+# 1) La preuve : {0 <= minutes < 60} minutes = minutes + 1 {0 <= minutes < 60} exige minutes <= 58
+try:
+    incrementer_naif(10, 59)
+except AssertionError:
+    print("(10, 59) : l'invariant est cassé, 10 h 60 n'existe pas")
 
+# 2) Trois cas
 def incrementer(heures, minutes):
     invariant_heure(heures, minutes)
-    # À COMPLÉTER : trois cas
+    if minutes < 59:
+        minutes = minutes + 1
+    elif heures < 23:
+        heures, minutes = heures + 1, 0
+    else:
+        heures, minutes = 0, 0
     invariant_heure(heures, minutes)
     return heures, minutes
 
-# h, m = 0, 0
-# for _ in range(1440):
-#     h, m = incrementer(h, m)
-# print(h, m)                        # 0 0`,
-        solution: "1) La preuve : {0 ≤ minutes < 60} minutes = minutes + 1 {0 ≤ minutes < 60} demande minutes + 1 < 60, donc minutes ≤ 58 : la précondition ne le garantit pas. incrementer_naif(10, 59) donne (10, 60) et l'assert échoue. 2) Trois cas : si minutes < 59, minutes = minutes + 1 ; sinon si heures < 23, heures = heures + 1 et minutes = 0 ; sinon heures = 0 et minutes = 0 (minuit). 3) Après 1440 incréments (24 × 60) à partir de (0, 0), on retrouve (0, 0) : la journée a fait un tour complet. Code : def incrementer(heures, minutes): invariant_heure(heures, minutes) ; if minutes < 59: minutes = minutes + 1 ; elif heures < 23: heures, minutes = heures + 1, 0 ; else: heures, minutes = 0, 0 ; invariant_heure(heures, minutes) ; return heures, minutes." },
-      { niveau: "moyen", enonce: "Terminaison du PGCD par soustractions. La boucle ci-dessous calcule le plus grand diviseur commun de deux entiers strictement positifs. 1) Pourquoi a et b restent-ils strictement positifs ? 2) Propose un variant (un entier naturel qui décroît strictement à chaque tour), ajoute un assert qui vérifie sa décroissance, puis exécute. 3) Que se passerait-il avec a = 0 ?",
+print(incrementer(10, 59), incrementer(23, 59))   # (11, 0) (0, 0)
+
+# 3) Une journée entière
+h, m = 0, 0
+for _ in range(1440):
+    h, m = incrementer(h, m)
+print(h, m)                                       # 0 0`,
+        solution: "1) La preuve : pour que 0 ≤ minutes < 60 reste vrai après minutes = minutes + 1, il faut minutes + 1 < 60, donc minutes ≤ 58 ; la précondition ne le garantit pas. incrementer_naif(10, 59) donne (10, 60) et l'assert échoue. 2) Trois cas : si minutes < 59, minutes = minutes + 1 ; sinon si heures < 23, heures = heures + 1 et minutes = 0 ; sinon heures = 0 et minutes = 0 (minuit). 3) Après 1440 incréments (24 × 60) à partir de (0, 0), on retrouve (0, 0) : la journée a fait un tour complet." },
+      { niveau: "moyen", enonce: "Terminaison du PGCD par soustractions. La boucle ci-dessous calcule le plus grand diviseur commun de deux entiers strictement positifs. 1) Pourquoi <code>a</code> et <code>b</code> restent-ils strictement positifs ? 2) Propose un variant (un entier naturel qui décroît strictement à chaque tour), recopie la fonction dans la cellule, ajoute un <code>assert</code> qui vérifie sa décroissance et exécute. 3) Que se passerait-il avec a = 0 ?<pre><code>def pgcd(a, b):\n    assert a &gt; 0 and b &gt; 0              # précondition\n    while a != b:\n        if a &gt; b:\n            a = a - b\n        else:\n            b = b - a\n    return a\n\nprint(pgcd(48, 18))                     # 6\nprint(pgcd(7, 7))                       # 7</code></pre>",
         code: `def pgcd(a, b):
     assert a > 0 and b > 0              # précondition
     while a != b:
-        # variant = ...                 # À COMPLÉTER
+        variant = a + b                 # entier >= 2 tant que la boucle tourne
         if a > b:
             a = a - b
         else:
             b = b - a
-        # assert ... < variant          # À COMPLÉTER
+        assert 0 < a + b < variant      # strictement décroissant, et toujours un naturel
     return a
 
 print(pgcd(48, 18))                     # 6
-print(pgcd(7, 7))                       # 7`,
-        solution: "1) Si a > b > 0, alors a − b > 0 ; sinon b > a > 0 et b − a > 0 : les deux restent strictement positifs. 2) Variant : a + b. À chaque tour, l'un des deux diminue d'une quantité strictement positive, l'autre ne change pas : a + b décroît strictement et reste un entier ≥ 2. Code : variant = a + b avant le if, puis assert a + b < variant après. 3) Avec a = 0 et b = 5 la précondition échoue ; sans l'assert, la boucle ferait b = b − 0 pour toujours : a + b ne décroîtrait plus, ce n'est plus un variant, et la boucle ne termine pas." },
-      { niveau: "défi", enonce: "Correction totale du tri à bulles naïf (travail personnel du DIU). 1) Écris nb_inversions(liste), le nombre de couples (i, j) avec i < j et liste[i] > liste[j]. 2) Explique pourquoi échanger deux voisins mal rangés retire exactement une inversion. 3) Ajoute dans tri_bulles un assert qui vérifie que la quantité nb_inversions(liste) + (1 si inversion vaut True sinon 0) décroît strictement à chaque passage, et un assert de postcondition. 4) Pourquoi le + 1 est-il nécessaire ?",
+print(pgcd(7, 7))                       # 7
+print(pgcd(1071, 462))                  # 21
+# Avec a = 0 : la précondition échoue ; sans elle, b = b - 0 pour toujours (a + b ne décroît plus).`,
+        solution: "1) Si a > b > 0, alors a − b > 0 ; sinon b > a > 0 et b − a > 0 : les deux restent strictement positifs. 2) Variant : a + b. À chaque tour, l'un des deux diminue d'une quantité strictement positive, l'autre ne change pas : a + b décroît strictement et reste un entier ≥ 2 (deux naturels non nuls). Code : variant = a + b avant le if, puis assert 0 < a + b < variant après. 3) Avec a = 0 et b = 5 la précondition échoue ; sans l'assert, la boucle ferait b = b − 0 pour toujours : a + b ne décroîtrait plus, ce n'est plus un variant, et la boucle ne termine pas." },
+      { niveau: "défi", enonce: "Correction totale du tri à bulles naïf (travail personnel du DIU). Recopie le squelette ci-dessous dans la cellule. 1) Écris <code>nb_inversions(liste)</code>, le nombre de couples (i, j) avec i < j et liste[i] > liste[j]. 2) Explique pourquoi échanger deux voisins mal rangés retire exactement une inversion. 3) Ajoute dans <code>tri_bulles</code> un <code>assert</code> qui vérifie que la quantité nb_inversions(liste) + (1 si inversion vaut True sinon 0) décroît strictement à chaque passage, et un <code>assert</code> de postcondition. 4) Pourquoi le + 1 est-il nécessaire ?<pre><code>def nb_inversions(liste):\n    total = 0\n    # À COMPLÉTER : deux boucles imbriquées\n    return total\n\ndef tri_bulles(liste):\n    inversion = True\n    while inversion:\n        # variant = ...\n        inversion = False\n        i = 0\n        while i &lt; len(liste) - 1:\n            if liste[i] &gt; liste[i + 1]:\n                liste[i], liste[i + 1] = liste[i + 1], liste[i]\n                inversion = True\n            i = i + 1\n        # assert ... &lt; variant\n    # assert ...                     # postcondition : plus aucune inversion\n    return liste\n\nprint(tri_bulles([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))</code></pre>",
         code: `def nb_inversions(liste):
     total = 0
-    # À COMPLÉTER : deux boucles imbriquées
+    for i in range(len(liste)):
+        for j in range(i + 1, len(liste)):
+            if liste[i] > liste[j]:
+                total = total + 1
     return total
 
 def tri_bulles(liste):
     inversion = True
     while inversion:
-        # variant = ...               # À COMPLÉTER
+        variant = nb_inversions(liste) + 1          # + 1 : inversion vaut True ici
         inversion = False
         i = 0
         while i < len(liste) - 1:
             if liste[i] > liste[i + 1]:
-                liste[i], liste[i + 1] = liste[i + 1], liste[i]
+                liste[i], liste[i + 1] = liste[i + 1], liste[i]   # exactement une inversion de moins
                 inversion = True
             i = i + 1
-        # assert ... < variant        # À COMPLÉTER
-    # assert ...                      # postcondition : plus aucune inversion
+        assert nb_inversions(liste) + (1 if inversion else 0) < variant   # le variant décroît
+    assert nb_inversions(liste) == 0                # postcondition : trié
     return liste
 
-print(tri_bulles([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))`,
+print(tri_bulles([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))   # [1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 8, 9]
+print(nb_inversions([3, 1, 2]))                           # 2`,
         solution: "1) for i in range(len(liste)): for j in range(i + 1, len(liste)): if liste[i] > liste[j]: total = total + 1. 2) Échanger liste[i] et liste[i + 1] (avec liste[i] > liste[i + 1]) ne change l'ordre relatif d'aucun autre couple : les éléments avant i ou après i + 1 voient les mêmes deux valeurs, dans le même ordre ; seul le couple (i, i + 1) passe de mal rangé à bien rangé. Donc exactement une inversion de moins. 3) variant = nb_inversions(liste) + 1 avant le passage ; après : assert nb_inversions(liste) + (1 if inversion else 0) < variant ; à la fin : assert nb_inversions(liste) == 0 (une liste sans inversion est triée). 4) Au dernier passage, aucun échange : le nombre d'inversions reste 0, il ne décroît pas. Le drapeau inversion passe de True à False et fait baisser la quantité de 1 : avec le + 1, le variant décroît strictement à CHAQUE passage, comme l'exige la preuve de terminaison." },
     ],
     defi: { titre: "Mission : duel d'algorithmes",

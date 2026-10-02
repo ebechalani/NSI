@@ -899,12 +899,12 @@ const THEME_PLANS = {
      "TP guidé « Prouver une classe et une boucle » (5 étapes avec corrections et notes prof, démarche en tête) ; squelette preuve_classe.py et corrigé dans le kit"
     ],
     "enClasse": [
-     "0–15 min : réactivation — à l'épreuve pratique, les <em>assert</em> sont la spécification : les lire d'abord !",
-     "15–40 min : Section 6 — assert, jeu de tests, doctest sur la fonction moyenne ; règle d'or : tester le vide, le zéro, le négatif",
-     "40–60 min : Section 7 en îlots — chaque îlot exécute et explique un bug du bestiaire (flottants, b = a, off-by-one, elif) au reste de la classe",
-     "60–75 min : Section 13 — tester ne prouve pas ; triplet {Pré} Inst {Post}, substitution sur f(x) au tableau ; invariant et variant de maximum (continuité avec la Première)",
-     "75–105 min : TP « Prouver une classe et une boucle » étapes 1 et 2 en binôme (Personne, Heure : trouver le bug par la preuve avant d'exécuter, corriger) ; les rapides font l'étape 3 (postcondition)",
-     "105–120 min : corrigés poussés + trace écrite : check-list « mon jeu de tests est-il complet ? » et le tableau « assert vérifie / preuve garantit » ; étapes 4 et 5 du TP en travail personnel"
+     "0–10 min : réactivation — à l'épreuve pratique, les <em>assert</em> sont la spécification : les lire d'abord !",
+     "10–35 min : Section 6 — assert, jeu de tests, doctest sur la fonction moyenne ; règle d'or : tester le vide, le zéro, le négatif",
+     "35–55 min : Section 7 en îlots — chaque îlot exécute et explique un bug du bestiaire (flottants, b = a, off-by-one, elif) au reste de la classe",
+     "55–75 min : Sections 13 et 14 — tester ne prouve pas ; triplet {Pré} Inst {Post} et substitution sur f(x) au tableau ; invariant de classe : la méthode invariant() de Personne (continuité avec la Première : invariant et variant)",
+     "75–110 min : TP « Prouver une classe et une boucle » étapes 1 et 2 en binôme (Personne : le statut ne suit pas l'âge ; Heure : trouver le bug par la preuve avant d'exécuter, corriger) ; les rapides font l'étape 3 (postcondition)",
+     "110–120 min : corrigés poussés + trace écrite : check-list « mon jeu de tests est-il complet ? » et le tableau « assert vérifie / preuve garantit » ; étapes 3 et 4 du TP en séance 10 (remédiation) ou en travail personnel, étape 5 en bonus"
     ],
     "aPreparer": [
      "Préparer 4 fonctions volontairement buguées (une par îlot)",

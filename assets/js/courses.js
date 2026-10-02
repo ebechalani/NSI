@@ -4267,19 +4267,25 @@ print(nb_distances(1000000, 1000))         # 1000000000 : un milliard de distanc
           <tr><th>Ailleurs…</th><th>En informatique</th><th>Ce qu'on fait</th></tr>
           <tr><td>Un <strong>modèle physique</strong> : les faits en accord le confirment, un seul fait en contradiction le réfute.</td><td><strong>Le test</strong></td><td>On exécute l'algorithme sur des valeurs choisies et on compare à ce qu'on attend. Un test qui échoue est une certitude ; mille tests qui passent ne sont pas une preuve (section 9 du thème Langages).</td></tr>
           <tr><td>Un <strong>théorème</strong> : on le prouve ; si la preuve aboutit (et qu'elle est juste), il est vrai.</td><td><strong>La preuve</strong></td><td>On raisonne sur le programme pour montrer qu'il est correct <em>dans tous les cas</em>, sans l'exécuter.</td></tr>
-          <tr><td>Une <strong>preuve de concept</strong> : on réalise un bout de la solution pour vérifier qu'on a compris la même chose et qu'on est sur la bonne voie.</td><td><strong>Le prototypage</strong></td><td>On écrit une version simple (même lente) qui calcule ce que l'algorithme devrait calculer : elle sert d'<em>oracle</em> pour comprendre le problème et tester la vraie version.</td></tr>
+          <tr><td>Une <strong>preuve de concept</strong> : on réalise un bout de la solution pour vérifier qu'on a compris la même chose et qu'on est sur la bonne voie.</td><td><strong>Le prototypage</strong></td><td>On écrit <em>d'abord</em> une fonction qui simule ce que l'algorithme devrait calculer, de la façon la plus simple possible, même très lente : elle sert à vérifier qu'on a compris le problème, puis d'<em>oracle</em> pour tester la vraie version. Elle ne garantit rien sur le programme final.</td></tr>
         </table>
         <p>Les trois ne vérifient pas la même chose, et chacune a son prix :</p>
         <table>
-          <tr><th></th><th>Ce qui est vérifié</th><th>Avantage</th><th>Inconvénient</th></tr>
-          <tr><td><strong>Prototypage</strong></td><td>la bonne compréhension du problème</td><td>intervient très tôt</td><td>aucune garantie sur le programme final</td></tr>
-          <tr><td><strong>Test</strong></td><td>un fonctionnement correct dans des cas précis</td><td>facile à mettre en œuvre, nombreux outils (<code>assert</code>, doctest…)</td><td>intervient à la fin, loin d'être exhaustif</td></tr>
-          <tr><td><strong>Preuve</strong></td><td>la correction par rapport à une spécification</td><td>une vraie garantie</td><td>lourd à mettre en place</td></tr>
+          <tr><th></th><th>Ce qui est vérifié</th><th>Sur quoi ça porte</th><th>Avantage</th><th>Inconvénient</th></tr>
+          <tr><td><strong>Prototypage</strong></td><td>la bonne compréhension du problème</td><td>les développeurs</td><td>intervient très tôt</td><td>aucune garantie sur le programme final</td></tr>
+          <tr><td><strong>Test</strong></td><td>un fonctionnement correct dans des cas précis</td><td>le programme exécuté</td><td>facile à mettre en œuvre, nombreux outils (<code>assert</code>, doctest…)</td><td>intervient à la fin, loin d'être exhaustif</td></tr>
+          <tr><td><strong>Preuve</strong></td><td>la correction par rapport à une spécification</td><td>le code et/ou la conception</td><td>une vraie garantie</td><td>lourd à mettre en place</td></tr>
         </table>
         <p><strong>Et si on testait tout ?</strong> Quand les entrées possibles sont en nombre <em>fini et raisonnable</em>, on peut toutes les essayer : c'est le <strong>test exhaustif</strong>, que les informaticiens appellent <em>model checking</em>. Il donne une garantie, avec des outils faciles à utiliser… mais il coûte du temps de calcul, il est impossible dès que les entrées sont infinies (tous les entiers, toutes les listes), et quand il échoue, les milliers de traces en échec sont difficiles à lire.</p>
-        <p class="note">Dans la cellule : une fonction <code>maximum_v1</code> qui a l'air juste, un <em>prototype</em> (le <code>max</code> de Python, qui sert d'oracle) et un test exhaustif sur un tout petit domaine, les listes de 1 à 3 valeurs prises dans {−1, 0, 1}. Trente-neuf cas suffisent à trouver le bug… à condition d'avoir mis des valeurs négatives dans le domaine.</p>
+        <p class="note">Dans la cellule : un <em>prototype</em> naïf écrit en premier (trier une copie de la liste et prendre le dernier élément : lent, mais impossible de se tromper sur ce que « plus grand élément » veut dire), une fonction <code>maximum_v1</code> qui a l'air juste, et un test exhaustif sur un tout petit domaine, les listes de 1 à 3 valeurs prises dans {−1, 0, 1}, le prototype servant d'oracle. Trente-neuf cas suffisent à trouver le bug… à condition d'avoir mis des valeurs négatives dans le domaine.</p>
 `,
-        code: `# Valider un programme : tester, prototyper, prouver
+        code: `# Valider un programme : prototyper, tester, prouver
+# 1) PROTOTYPE : écrit en premier, le plus simple possible, pour être sûr de comprendre le problème
+def maximum_proto(liste):
+    """Le plus grand élément : on trie une copie et on prend le dernier (lent, mais évident)."""
+    return sorted(liste)[-1]
+
+# 2) La « vraie » version, celle qu'on veut valider
 def maximum_v1(liste):
     """Renvoie le plus grand élément de liste (non vide)."""
     maxi = 0                       # <- a l'air inoffensif...
@@ -4288,16 +4294,13 @@ def maximum_v1(liste):
             maxi = x
     return maxi
 
-# 1) TEST : quelques exemples choisis à la main
-assert maximum_v1([3, 1, 4, 1, 5]) == 5
-assert maximum_v1([7]) == 7
+# 3) TEST : quelques exemples choisis à la main, comparés au prototype
+for exemple in ([3, 1, 4, 1, 5], [7], [2, 9, 9]):
+    assert maximum_v1(exemple) == maximum_proto(exemple)
 print("Tests à la main : OK (et pourtant...)")
 
-# 2) PROTOTYPE : une version dont on est sûr sert d'oracle (ici max() de Python)
-prototype = max
-
-# 3) TEST EXHAUSTIF (model checking) sur un petit domaine fini :
-#    toutes les listes de 1 à 3 éléments pris dans {-1, 0, 1}
+# 4) TEST EXHAUSTIF (model checking) sur un petit domaine fini :
+#    toutes les listes de 1 à 3 éléments pris dans {-1, 0, 1}, le prototype servant d'oracle
 valeurs = [-1, 0, 1]
 cas = []
 for a in valeurs:
@@ -4308,13 +4311,14 @@ for a in valeurs:
             cas.append([a, b, c])
 print(len(cas), "listes à tester")
 
-echecs = [l for l in cas if maximum_v1(l) != prototype(l)]
+echecs = [l for l in cas if maximum_v1(l) != maximum_proto(l)]
 print("cas en échec :", len(echecs), "- par exemple", echecs[:3])
 # [-1] : maximum_v1 renvoie 0 alors que le plus grand élément est -1.
 # Le bug : maxi part de 0 au lieu de partir du premier élément de la liste.
+# Le prototype ne garantit rien sur maximum_v1 : seuls les 39 cas essayés sont vérifiés.
 `,
         prof:
-          "Section tirée de « Introduction à la validation » (DIU, 1 h). Démarche : projeter la cellule, faire parier sur le bug AVANT l'exécution (peu d'élèves voient le 0 initial), puis demander ce qu'il faut changer dans le domaine du test exhaustif pour l'attraper (des valeurs négatives). Faire dire les trois mots : tester / prototyper / prouver, et la phrase « un test qui échoue est une certitude ». Le model checking est hors programme : une phrase suffit.",
+          "Section tirée de « Introduction à la validation » (DIU, 1 h). Démarche : projeter la cellule, faire parier sur le bug AVANT l'exécution (peu d'élèves voient le 0 initial), puis demander ce qu'il faut changer dans le domaine du test exhaustif pour l'attraper (des valeurs négatives). Faire dire les trois mots : prototyper / tester / prouver (le prototype est une simulation naïve écrite d'abord, qui ne garantit rien sur la version finale), et la phrase « un test qui échoue est une certitude ». Le model checking est hors programme : une phrase suffit.",
       },
       {
         title: "Prouver un programme : du triplet {Pré} instruction {Post} à l'invariant de boucle",
