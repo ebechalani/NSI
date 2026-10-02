@@ -2235,6 +2235,374 @@ print(len(dicFibo), "valeurs mémorisées")   # 61` },
       },
     ],
   },
+  {
+    id: "tp-preuve",
+    theme: "algorithmique",
+    lang: "python",
+    titre: "TP — Prouver un programme : assertions, invariant, variant",
+    intro:
+      "Objectif : passer du « ça marche sur mes exemples » au « c'est juste dans tous les cas ». Tu vas écrire des préconditions, des postconditions, un invariant et un variant avec assert, puis raisonner pour les prouver : triplet {Pré} instruction {Post}, substitution, récurrence sur les tours de boucle, correction totale. D'après le cours « Correction des algorithmes » du DIU du Havre (B. Mermet) et ses exemples : la fonction f, le maximum, l'horloge, le tri à bulles. Le squelette preuve.py et son corrigé sont dans le kit du thème.",
+    prof:
+      "<p><strong>Place dans la progression.</strong> Séance 5 du thème (coût, terminaison, correction), après les tris et la dichotomie, en prolongement des sections 9 et 15 à 17. D'après le cours « Correction des algorithmes » du DIU du Havre (B. Mermet) : introduction à la validation (1 h) et preuve de programme (3 h 30), dont on garde ce qui est au programme de Première : tester / prouver, triplet {Pré} instruction {Post}, invariant de boucle, variant, correction totale. Les exemples du DIU (fonction f, maximum, horloge, tri à bulles) sont repris ; l'horloge, qui est une classe dans le cours, devient une fonction qui renvoie un couple.</p><ul><li><strong>Objectifs (BO « Algorithmique »).</strong> Justifier la terminaison d'une boucle (variant) ; décrire un invariant de boucle qui prouve la correction ; distinguer test et preuve ; écrire précondition, postcondition et invariant avec <code>assert</code> (thème Langages : spécifier, tester).</li><li><strong>Déroulé conseillé.</strong> Séance 5 : étapes 1 et 2 (20 min) en fin de séance pour les élèves rapides, pendant la correction de l'écrit type bac. Séance 8 (consolidation) ou à la maison : étapes 3 à 5 (environ 60 min : invariant du maximum, variant, horloge). Étape 6 en bonus (squelette preuve.py sur Thonny ou Capytale, corrigé preuve_corrige.py dans le kit).</li><li><strong>Le fil conducteur.</strong> À chaque étape, la même question : « qu'est-ce qui garantit la propriété, l'exécution ou le raisonnement ? ». Les <code>assert</code> vérifient, le raisonnement prouve. Faire écrire les preuves de l'étape 3 (initialisation, conservation, sortie) en trois phrases dans le cahier : c'est le modèle de rédaction type bac.</li><li><strong>Différenciation.</strong> Étapes 1 et 2 pour tous (en séance 5 pour les rapides, en séance 8 pour les autres) ; 3 à 5 pour la majorité ; 6 pour les rapides. Pour les élèves fragiles, l'étape 3 se fait en lecture : exécuter, lire l'invariant, le reformuler avec ses mots.</li><li><strong>Erreurs fréquentes.</strong> Croire qu'un assert prouve ; confondre variant et invariant ; oublier l'étape de sortie de la preuve ; proposer un « invariant » vrai mais inutile (« maxi est dans la liste ») ; proposer comme variant une quantité qui ne décroît pas à TOUS les tours (tri à bulles sans le + 1) ; pour l'horloge, corriger les minutes en oubliant minuit.</li><li><strong>Évaluation.</strong> Réponse en direct (📡) : « quel variant pour while n > 1: n = n // 2 ? » et « {x = n} x = 2 * x {?} ». Écrit : rédiger en trois phrases la preuve de l'invariant du maximum, donner le variant d'une boucle while simple. Le tri à bulles n'est pas exigible.</li></ul>",
+    steps: [
+      {
+        num: "1", titre: "Le triplet {Pré} instruction {Post} : une affectation est une substitution", run: true,
+        code: `# ÉTAPE 1 — Prouver f(x) instruction par instruction
+def f(x):
+    """Précondition : x >= 0.  Postcondition : le résultat est >= 1."""
+    assert x >= 0, "précondition : x doit être positif ou nul"
+    x = x + 1
+    assert x >= 1          # PROP 1 : x >= 0 avant, donc x + 1 >= 1
+    x = 2 * x
+    assert x >= 2          # PROP 2 : x >= 1 avant, donc 2 * x >= 2
+    x = x - 1
+    assert x >= 1          # POST   : x >= 2 avant, donc x - 1 >= 1
+    return x
+
+for valeur in (0, 1, 5, 100):
+    print("f(", valeur, ") =", f(valeur))
+
+# À toi : que se passe-t-il avec f(-1) ? Décommente, lis l'erreur, puis remets le commentaire.
+# print(f(-1))
+
+# À toi : la fonction g ci-dessous a pour précondition x >= 3. Complète ses assert
+# pour prouver que le résultat est >= 0.
+def g(x):
+    assert x >= 3
+    x = x - 3
+    # assert x >= ...
+    x = x * x
+    # assert x >= ...
+    return x
+
+print(g(3), g(10))     # 0 49`,
+        note: "Pour prouver {P} x = e {Q}, on remplace x par e dans Q et on vérifie que P l'implique. Un assert ne prouve rien : il vérifie la propriété pour l'exécution en cours, et arrête le programme si elle est fausse.",
+        questions: [
+          "Recopie le tableau « propriété vraie après chaque instruction » de f et justifie chaque ligne par une implication.",
+          "Que se passe-t-il avec f(-1) ? La postcondition est-elle fausse pour autant ?",
+          "Complète les deux assert de g et prouve que g renvoie un résultat >= 0 quand x >= 3.",
+          "Pourquoi dit-on qu'une affectation est une substitution ?",
+        ],
+        correction: [
+          "x ≥ 0 (précondition) ; après x = x + 1 : x ≥ 1 car x ≥ 0 ⟹ x + 1 ≥ 1 ; après x = 2 * x : x ≥ 2 car x ≥ 1 ⟹ 2x ≥ 2 ; après x = x - 1 : x ≥ 1 car x ≥ 2 ⟹ x − 1 ≥ 1, c'est la postcondition.",
+          "L'assert de la précondition échoue (AssertionError : « précondition : x doit être positif ou nul »). La postcondition n'est pas fausse : elle n'est garantie QUE si la précondition est respectée. C'est l'appelant qui a violé le contrat, pas la fonction.",
+          "Après x = x - 3 : x ≥ 0 (car x ≥ 3). Après x = x * x : x ≥ 0 (le carré d'un nombre ≥ 0 est ≥ 0 ; d'ailleurs un carré est toujours ≥ 0). Donc g renvoie bien un résultat ≥ 0.",
+          "Parce que pour savoir ce qui est vrai après x = e, il suffit de remplacer x par e dans la propriété voulue : la propriété « x ≥ 1 après x = x + 1 » est exactement « x + 1 ≥ 1 avant ».",
+          { code: `def g(x):
+    assert x >= 3
+    x = x - 3
+    assert x >= 0          # x >= 3 avant, donc x - 3 >= 0
+    x = x * x
+    assert x >= 0          # un carré est toujours >= 0
+    return x
+
+print(g(3), g(10))         # 0 49` },
+        ],
+        prof: "<p>10 min. Faire écrire les implications au tableau avant d'exécuter ; la cellule confirme seulement. Question 2 : c'est l'occasion de redire le contrat (thème Langages, section 7) : la postcondition n'engage la fonction que si l'appelant respecte la précondition. Pour g, certains élèves proposent x ≥ 9 après le carré : c'est faux (g(3) vaut 0) ; ils ont oublié l'étape x = x − 3, qui ne laisse que x ≥ 0. Leur faire refaire la substitution ligne à ligne.</p>",
+      },
+      {
+        num: "2", titre: "Valider : prototyper, tester… et tester tout", run: true,
+        code: `# ÉTAPE 2 — Trois façons de valider maximum_v1
+# 1) PROTOTYPE : écrit EN PREMIER, le plus simple possible, pour être sûr de comprendre le problème
+def maximum_proto(liste):
+    """Le plus grand élément : on trie une copie et on prend le dernier (lent, mais évident)."""
+    return sorted(liste)[-1]
+
+# 2) La vraie version, celle qu'on veut valider
+def maximum_v1(liste):
+    """Renvoie le plus grand élément de liste (non vide)."""
+    maxi = 0
+    for x in liste:
+        if x > maxi:
+            maxi = x
+    return maxi
+
+# 3) TEST à la main : trois exemples, le prototype sert d'oracle
+for exemple in ([3, 1, 4, 1, 5], [7], [2, 9, 9]):
+    assert maximum_v1(exemple) == maximum_proto(exemple)
+print("tests à la main : OK")
+
+# 4) TEST EXHAUSTIF sur un petit domaine : toutes les listes de 1 à 3 valeurs
+valeurs = [0, 1, 2]           # À toi : que faut-il mettre dans ce domaine pour trouver le bug ?
+cas = []
+for a in valeurs:
+    cas.append([a])
+    for b in valeurs:
+        cas.append([a, b])
+        for c in valeurs:
+            cas.append([a, b, c])
+echecs = [l for l in cas if maximum_v1(l) != maximum_proto(l)]
+print(len(cas), "listes testées,", len(echecs), "en échec :", echecs[:4])`,
+        note: "Un prototype est une simulation naïve écrite d'abord (preuve de concept) : il sert à comprendre le problème, puis d'oracle pour les tests ; il ne garantit rien sur la version finale. Un test qui échoue est une certitude ; des tests qui passent ne garantissent que les valeurs essayées. Pour garantir TOUS les cas : les essayer tous (possible seulement sur un domaine fini et petit : le test exhaustif, ou model checking), ou prouver.",
+        questions: [
+          "Les trois tests à la main passent. maximum_v1 est-elle juste ? Trouve une liste pour laquelle elle se trompe, sans exécuter.",
+          "Modifie le domaine valeurs pour que le test exhaustif détecte le bug. Combien de listes sont testées ? Combien échouent ?",
+          "Pourquoi maximum_proto est-il un prototype et pas la solution ? Que garantit-il sur maximum_v1 ?",
+          "Peut-on tester exhaustivement maximum_v1 sur TOUTES les listes d'entiers ? Que reste-t-il comme méthode ?",
+        ],
+        correction: [
+          "Non. maxi part de 0 : pour une liste dont tous les éléments sont négatifs, par exemple [-3, -8, -1], elle renvoie 0, qui n'est même pas dans la liste. Le plus grand élément est -1.",
+          "Avec valeurs = [-1, 0, 1] : 3 + 9 + 27 = 39 listes testées ; échouent toutes celles dont les éléments sont tous négatifs : [-1], [-1, -1], [-1, -1, -1], soit 3 listes. Avec [0, 1, 2], aucune liste ne contient de négatif : 0 en échec, le bug est invisible.",
+          "C'est une simulation naïve : trier toute la liste pour en prendre le dernier élément coûte bien plus qu'un simple parcours, mais elle est si simple qu'on est sûr qu'elle calcule la bonne chose. Elle sert à comprendre le problème (ici : « plus grand » inclut les négatifs), puis d'oracle. Elle ne garantit rien sur maximum_v1 : seuls les cas essayés sont vérifiés, et un bug présent dans les deux resterait invisible.",
+          "Non : il y a une infinité de listes d'entiers. Le test exhaustif ne marche que sur un domaine fini et petit. Pour tous les cas, il reste la preuve : c'est l'étape 3.",
+          { code: `def maximum_proto(liste):
+    return sorted(liste)[-1]
+
+def maximum_v1(liste):
+    maxi = 0
+    for x in liste:
+        if x > maxi:
+            maxi = x
+    return maxi
+
+def maximum_v2(liste):
+    maxi = liste[0]           # on part du premier élément, pas de 0
+    for x in liste:
+        if x > maxi:
+            maxi = x
+    return maxi
+
+valeurs = [-1, 0, 1]
+cas = []
+for a in valeurs:
+    cas.append([a])
+    for b in valeurs:
+        cas.append([a, b])
+        for c in valeurs:
+            cas.append([a, b, c])
+print("v1 :", len([l for l in cas if maximum_v1(l) != maximum_proto(l)]), "échecs sur", len(cas))   # 3
+print("v2 :", len([l for l in cas if maximum_v2(l) != maximum_proto(l)]), "échecs sur", len(cas))   # 0` },
+        ],
+        prof: "<p>10 min, section 15 en actes. Faire parier sur le bug avant d'exécuter : « maxi = 0 » paraît innocent à la plupart. Le point important est la question 2 : le test exhaustif ne vaut que ce que vaut le domaine choisi. Vocabulaire du DIU à placer, dans l'ordre du cours : prototypage (preuve de concept, intervient très tôt, aucune garantie sur le résultat final), test (le programme exécuté, des cas précis), preuve (le code, tous les cas) ; model checking = test exhaustif, hors programme.</p>",
+      },
+      {
+        num: "3", titre: "L'invariant de boucle : prouver le maximum par récurrence", run: true,
+        code: `# ÉTAPE 3 — L'invariant du maximum, écrit avec assert puis prouvé
+def maximum(liste):
+    """Précondition : liste non vide.  Postcondition : renvoie son plus grand élément."""
+    assert len(liste) > 0, "précondition : liste non vide"
+    maxi = liste[0]
+    for i in range(len(liste)):
+        if liste[i] > maxi:
+            maxi = liste[i]
+        # Invariant : après le tour i, maxi est le plus grand élément de liste[0..i]
+        assert maxi == max(liste[:i + 1])      # max() de Python sert d'oracle, pas de preuve
+        print("tour", i, ": maxi =", maxi, "  plus grand de", liste[:i + 1])
+    assert maxi == max(liste)                  # postcondition
+    return maxi
+
+print(maximum([3, 1, 4, 1, 5, 9, 2, 6]))
+
+# À toi : la fonction somme a pour postcondition « renvoie la somme des éléments ».
+# Écris son invariant avec un assert (sum(liste[:i + 1]) peut servir d'oracle).
+def somme(liste):
+    total = 0
+    for i in range(len(liste)):
+        total = total + liste[i]
+        # assert total == ...
+    return total
+
+print(somme([3, 1, 4, 1, 5]))     # 14`,
+        note: "Prouver un invariant, c'est une récurrence sur les tours de boucle : initialisation (vrai avant le premier tour), conservation (vrai au tour i ⟹ vrai au tour i + 1), sortie (Pré ∧ condition d'arrêt ∧ invariant ⟹ Post).",
+        questions: [
+          "Rédige en trois phrases la preuve de l'invariant « maxi est le plus grand élément de liste[0..i] » : initialisation, conservation (deux cas), sortie.",
+          "L'invariant « maxi est un élément de la liste » est vrai à chaque tour. Pourquoi ne suffit-il pas ?",
+          "Écris l'invariant de somme et vérifie-le avec un assert.",
+          "Que vérifie l'assert de l'invariant : la preuve, ou seulement cette exécution ?",
+        ],
+        correction: [
+          "Initialisation : avant le premier tour, maxi = liste[0] est bien le plus grand de liste[0..0]. Conservation : supposons qu'après le tour i, maxi est le plus grand de liste[0..i]. Au tour i + 1, si liste[i+1] > maxi, maxi devient liste[i+1], plus grand que tout liste[0..i] et égal à liste[i+1] : c'est le plus grand de liste[0..i+1] ; sinon liste[i+1] ≤ maxi et maxi reste le plus grand. Sortie : après le dernier tour, i = len(liste) − 1, donc maxi est le plus grand de liste[0..len(liste)−1], toute la liste : c'est la postcondition.",
+          "Parce qu'à la sortie il donne seulement « maxi est dans la liste », ce qui ne prouve pas que c'est le plus grand. Un invariant doit être assez fort pour que, combiné à la condition d'arrêt, il implique la postcondition.",
+          "Invariant : après le tour i, total est la somme de liste[0..i] : assert total == sum(liste[:i + 1]). À la sortie, total est la somme de toute la liste.",
+          "Seulement cette exécution : si l'assert échoue, l'invariant est faux (certitude) ; s'il passe sur dix listes, il n'est pas prouvé pour autant. La preuve est le raisonnement de la question 1.",
+          { code: `def somme(liste):
+    total = 0
+    for i in range(len(liste)):
+        total = total + liste[i]
+        assert total == sum(liste[:i + 1])    # invariant : somme de liste[0..i]
+    assert total == sum(liste)                # postcondition
+    return total
+
+print(somme([3, 1, 4, 1, 5]))     # 14` },
+        ],
+        prof: "<p>20 min, le cœur du TP. La question 1 est le modèle de rédaction type bac : exiger les trois mots initialisation / conservation / sortie et les DEUX cas de la conservation. La question 2 est celle qui fait comprendre ce qu'est un bon invariant. Pour somme, variante possible : faire écrire l'invariant AVANT la boucle (« total est la somme de liste[0..i−1] au début du tour i »), et comparer les deux formulations.</p>",
+      },
+      {
+        num: "4", titre: "Terminaison : le variant, et la correction totale", run: true,
+        code: `# ÉTAPE 4 — Le même maximum avec un while : prouver qu'il s'arrête
+def maximum_while(liste):
+    assert len(liste) > 0
+    maxi = liste[0]
+    i = 0
+    while i < len(liste):
+        variant = len(liste) - i               # À toi : pourquoi est-ce un entier naturel ?
+        assert variant >= 1
+        if liste[i] > maxi:
+            maxi = liste[i]
+        assert maxi == max(liste[:i + 1])      # invariant (correction partielle)
+        i = i + 1
+        assert len(liste) - i < variant        # le variant a strictement diminué (terminaison)
+    assert maxi == max(liste)
+    return maxi
+
+print(maximum_while([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))   # 9
+
+# À toi : cette boucle se termine-t-elle toujours ? Propose un variant et vérifie-le.
+def compte_a_rebours(n):
+    tours = 0
+    while n > 0:
+        # variant = ...
+        n = n - 3
+        tours = tours + 1
+        # assert ... < variant
+    return tours
+
+print(compte_a_rebours(10))      # 4`,
+        note: "Correction partielle (invariant) : SI la boucle s'arrête, le résultat est juste. Terminaison (variant) : un entier naturel qui décroît strictement à chaque tour ne peut pas décroître indéfiniment. Les deux : correction totale.",
+        questions: [
+          "Pourquoi len(liste) − i est-il un entier naturel tant que la boucle tourne, et pourquoi décroît-il strictement à chaque tour ?",
+          "Que prouve l'invariant de maximum_while ? Que prouve le variant ? Comment s'appelle l'ensemble des deux ?",
+          "Donne un variant de compte_a_rebours et ajoute les assert. Attention : n peut devenir négatif après le dernier tour. Ton variant reste-t-il un entier naturel ?",
+          "Trouve une boucle while qui a un invariant juste mais pas de variant (qui ne se termine pas).",
+        ],
+        correction: [
+          "Tant que la boucle tourne, i < len(liste), donc len(liste) − i ≥ 1 : un entier naturel non nul. À chaque tour, i augmente de 1, donc len(liste) − i diminue de 1 : décroissance stricte.",
+          "L'invariant prouve la correction partielle : si la fonction s'arrête, maxi est le plus grand élément. Le variant prouve la terminaison : la boucle fait au plus len(liste) tours. Ensemble : la correction totale.",
+          "Variant : max(n, 0). Tant que la boucle tourne, n > 0 donc max(n, 0) = n, un entier naturel ; après n = n − 3 il a strictement diminué, et si n devient négatif (10 → 7 → 4 → 1 → −2) le variant vaut 0 et la boucle s'arrête. Beaucoup écrivent simplement « n » : acceptable en Première à condition de préciser « tant que la boucle tourne », car un variant doit être un entier naturel à chaque entrée de tour.",
+          "Par exemple while True: x = x, ou while n > 0: n = n + 1 (invariant « n > 0 » vrai à chaque tour, mais n croît : aucun entier naturel ne décroît, la boucle ne s'arrête jamais).",
+          { code: `def compte_a_rebours(n):
+    tours = 0
+    while n > 0:
+        variant = max(n, 0)          # = n tant que la boucle tourne : entier naturel
+        n = n - 3
+        tours = tours + 1
+        assert 0 <= max(n, 0) < variant   # reste dans N et a strictement diminué
+    return tours
+
+print(compte_a_rebours(10))          # 4 (10, 7, 4, 1, puis -2 : on sort)` },
+        ],
+        prof: "<p>15 min. La question 3 soulève la subtilité « naturel tant que la boucle tourne » : le variant est évalué en ENTRÉE de tour, où la condition garantit n > 0 ; après le dernier tour il peut être négatif, ce n'est pas un problème. La question 4 (pas de variant) est une bonne question de réponse en direct.</p>",
+      },
+      {
+        num: "5", titre: "L'horloge : un invariant qu'une fonction peut casser", run: true,
+        code: `# ÉTAPE 5 — Une heure vérifie toujours 0 <= heures < 24 et 0 <= minutes < 60
+def invariant_heure(heures, minutes):
+    assert 0 <= heures < 24, "heures hors de [0, 23]"
+    assert 0 <= minutes < 60, "minutes hors de [0, 59]"
+
+def incrementer_naif(heures, minutes):
+    """Version naïve : ajoute une minute."""
+    invariant_heure(heures, minutes)
+    minutes = minutes + 1
+    invariant_heure(heures, minutes)
+    return heures, minutes
+
+print(incrementer_naif(10, 30))       # (10, 31)
+# À toi : trouve SANS exécuter l'entrée qui casse l'invariant, puis vérifie :
+# print(incrementer_naif(10, ...))
+
+def incrementer(heures, minutes):
+    """Ajoute une minute en conservant l'invariant (trois cas)."""
+    invariant_heure(heures, minutes)
+    heures_avant, minutes_avant = heures, minutes
+    # À COMPLÉTER : si minutes < 59 ... ; sinon si heures < 23 ... ; sinon minuit
+    # Postcondition (déjà écrite) : un assert par cas
+    assert minutes_avant == 59 or (minutes == minutes_avant + 1 and heures == heures_avant)
+    assert minutes_avant != 59 or heures_avant == 23 or (heures == heures_avant + 1 and minutes == 0)
+    assert minutes_avant != 59 or heures_avant != 23 or (heures == 0 and minutes == 0)
+    invariant_heure(heures, minutes)
+    return heures, minutes
+
+# Décommente quand c'est prêt : une journée entière, minute par minute
+# h, m = 0, 0
+# for _ in range(1440):
+#     h, m = incrementer(h, m)
+# print(h, m)                         # 0 0`,
+        note: "La preuve se fait sans exécuter : {0 ≤ minutes < 60} minutes = minutes + 1 {0 ≤ minutes < 60} exige minutes + 1 < 60, donc minutes ≤ 58. La précondition ne le garantit pas : il manque des cas.",
+        questions: [
+          "Montre par substitution que incrementer_naif ne conserve pas l'invariant, puis donne l'entrée qui le casse.",
+          "Complète incrementer avec trois cas et vérifie la journée de 1440 minutes.",
+          "Lis la postcondition : que dit chacun des trois assert ? Pourquoi écrit-on « minutes_avant == 59 or … » plutôt que « si minutes_avant < 59 alors … » ?",
+          "Pourquoi mémorise-t-on heures_avant et minutes_avant ?",
+        ],
+        correction: [
+          "Pour que 0 ≤ minutes < 60 soit vrai après minutes = minutes + 1, il faut 0 ≤ minutes + 1 < 60 avant, soit minutes ≤ 58. L'invariant garantit seulement minutes ≤ 59 : pour minutes = 59 la propriété est fausse. incrementer_naif(10, 59) renvoie (10, 60) et l'assert échoue.",
+          "if minutes < 59: minutes = minutes + 1 ; elif heures < 23: heures, minutes = heures + 1, 0 ; else: heures, minutes = 0, 0. Après 1440 appels depuis (0, 0), on retrouve (0, 0).",
+          "Premier assert : si les minutes n'étaient pas à 59, elles ont augmenté de 1 et l'heure n'a pas bougé. Deuxième : si elles étaient à 59 et l'heure < 23, l'heure a augmenté de 1 et les minutes sont à 0. Troisième : à 23 h 59, on passe à 0 h 00. « A or B » est la façon d'écrire « si non A alors B » (une implication) avec une seule expression booléenne, sans if.",
+          "Parce que la postcondition compare l'état APRÈS à l'état AVANT (« les minutes ont augmenté de 1 ») : une fois minutes modifiée, l'ancienne valeur est perdue si on ne l'a pas copiée.",
+          { code: `def invariant_heure(heures, minutes):
+    assert 0 <= heures < 24, "heures hors de [0, 23]"
+    assert 0 <= minutes < 60, "minutes hors de [0, 59]"
+
+def incrementer(heures, minutes):
+    invariant_heure(heures, minutes)
+    heures_avant, minutes_avant = heures, minutes
+    if minutes < 59:
+        minutes = minutes + 1
+    elif heures < 23:
+        heures, minutes = heures + 1, 0
+    else:
+        heures, minutes = 0, 0
+    assert minutes_avant == 59 or (minutes == minutes_avant + 1 and heures == heures_avant)
+    assert minutes_avant != 59 or heures_avant == 23 or (heures == heures_avant + 1 and minutes == 0)
+    assert minutes_avant != 59 or heures_avant != 23 or (heures == 0 and minutes == 0)
+    invariant_heure(heures, minutes)
+    return heures, minutes
+
+h, m = 0, 0
+for _ in range(1440):
+    h, m = incrementer(h, m)
+print(h, m)                           # 0 0
+print(incrementer(23, 59))            # (0, 0)` },
+        ],
+        prof: "<p>20 min. C'est l'exercice « Horloge » du DIU (classe Heure, méthode incrementer qui viole l'invariant à 59 minutes, correction à trois cas, puis écriture de la postcondition). En Première, l'heure est un couple et incrementer une fonction ; la version objet (invariant de classe) est en Terminale. La question 3 introduit la lecture d'une implication écrite avec or : à faire reformuler à l'oral.</p>",
+      },
+      {
+        num: "6", titre: "Bonus — Le tri à bulles naïf : correction totale", run: true, bonus: true,
+        code: `# ÉTAPE 6 (bonus) — Le tri à bulles naïf du DIU : invariant, variant, postcondition
+def nb_inversions(liste):
+    """Nombre de couples (i, j) avec i < j et liste[i] > liste[j] : la mesure du désordre."""
+    total = 0
+    for i in range(len(liste)):
+        for j in range(i + 1, len(liste)):
+            if liste[i] > liste[j]:
+                total = total + 1
+    return total
+
+def tri_bulles(liste):
+    inversion = True
+    while inversion:
+        variant = nb_inversions(liste) + 1     # + 1 : inversion vaut True en entrée de boucle
+        inversion = False
+        i = 0
+        while i < len(liste) - 1:
+            if liste[i] > liste[i + 1]:
+                liste[i], liste[i + 1] = liste[i + 1], liste[i]
+                inversion = True
+            i = i + 1
+        print("après ce passage :", liste, "désordre =", nb_inversions(liste))
+        assert nb_inversions(liste) + (1 if inversion else 0) < variant
+    assert nb_inversions(liste) == 0           # postcondition : trié
+    return liste
+
+print(tri_bulles([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))`,
+        note: "Le variant de la boucle externe n'est ni i ni la longueur : c'est le désordre, mesuré par le nombre d'inversions. Échanger deux voisins mal rangés en retire exactement une.",
+        questions: [
+          "Pourquoi échanger liste[i] et liste[i + 1] quand liste[i] > liste[i + 1] retire-t-il exactement une inversion ?",
+          "Pourquoi le variant est-il nb_inversions(liste) + 1 et non nb_inversions(liste) seul ?",
+          "Pourquoi « nb_inversions(liste) == 0 » signifie-t-il que la liste est triée ?",
+          "Quel est le variant de la boucle interne (while i < len(liste) - 1) ?",
+        ],
+        correction: [
+          "Les autres couples ne changent pas : un élément situé avant i (ou après i + 1) voit toujours les deux mêmes valeurs, dans le même ordre relatif. Seul le couple (i, i + 1) passe de mal rangé à bien rangé : une inversion de moins, exactement.",
+          "Au dernier passage, aucun échange n'a lieu : le nombre d'inversions reste à 0, il ne décroît pas. Mais inversion passe de True à False, ce qui fait baisser la quantité de 1. Avec le + 1, le variant décroît strictement à CHAQUE passage, comme l'exige la preuve de terminaison.",
+          "S'il n'y a aucun couple (i, j) avec i < j et liste[i] > liste[j], alors chaque élément est inférieur ou égal à tous ceux qui le suivent : c'est la définition d'une liste triée dans l'ordre croissant.",
+          "len(liste) − 1 − i : entier naturel tant que la boucle tourne, il perd 1 à chaque tour.",
+        ],
+        prof: "<p>Bonus, 20 min pour les rapides ou en travail personnel (c'est le « travail personnel » du DIU). Le variant « nombre d'inversions » dépasse l'exigible en Première ; l'intérêt est de montrer qu'un variant peut être une quantité calculée, pas forcément une variable du programme. La cellule affiche le désordre à chaque passage : faire observer la décroissance avant d'expliquer.</p>",
+      },
+    ],
+  },
 ];
 
 /* ---------------- Fiches « pour aller plus loin » ---------------- */

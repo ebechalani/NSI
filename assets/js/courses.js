@@ -4001,7 +4001,35 @@ for taille in [10, 1000, 1000000]:
           <li>dans la <strong>dichotomie</strong>, la quantité <code>droite − gauche</code> diminue à chaque tour : c'est un variant ;</li>
           <li>dans <code>while n &gt; 1: n = n // 2</code>, la valeur de <code>n</code> décroît : variant.</li>
         </ul>
-        <p class="note">À distinguer : le <strong>variant</strong> prouve qu'une boucle <em>se termine</em> ; un <strong>invariant</strong> (vu dans les sections sur les tris) sert à prouver qu'elle est <em>correcte</em>.</p>`,
+        <p class="note">À distinguer : le <strong>variant</strong> prouve qu'une boucle <em>se termine</em> ; un <strong>invariant</strong> (vu dans les sections sur les tris) sert à prouver qu'elle est <em>correcte</em>.</p>
+        <p>Les sections 15 à 17, d'après le cours du DIU du Havre, reprennent ces idées avec des cellules à exécuter : valider par le test, le prototype ou la preuve ; le triplet {Pré} instruction {Post} ; l'invariant du maximum écrit avec <code>assert</code> ; le variant et la <strong>correction totale</strong>, jusqu'au tri à bulles.</p>
+        `,
+        code: `# Deux variants vérifiés pendant l'exécution (ils documentent la preuve, ils ne la remplacent pas)
+def recherche_dichotomique(tab, x):
+    gauche, droite = 0, len(tab) - 1
+    while gauche <= droite:
+        variant = droite - gauche              # entier >= 0 tant que la boucle tourne
+        milieu = (gauche + droite) // 2
+        if tab[milieu] == x:
+            return milieu
+        if tab[milieu] < x:
+            gauche = milieu + 1
+        else:
+            droite = milieu - 1
+        assert droite - gauche < variant       # strictement décroissant
+    return -1
+
+print(recherche_dichotomique([1, 3, 5, 7, 9, 11], 9))   # 4
+
+n = 1000
+tours = 0
+while n > 1:
+    variant = n                                # n est le variant : entier > 1, divisé par 2
+    n = n // 2
+    tours = tours + 1
+    assert n < variant
+print("n = 1000 : la boucle s'arrête après", tours, "tours")   # 9
+`,
       },
       {
         title: "Synthèse : choisir et comparer",
@@ -4226,6 +4254,192 @@ print(nb_distances(1000000, 1000))         # 1000000000 : un milliard de distanc
 # Sans compter le tri des n distances pour CHAQUE nouveau point : kNN est lent à prédire.`,
         prof:
           "Le diaporama consacre 7 pages (23 à 29) à l'implémentation en Python sur les iris (lecture avec pandas, StandardScaler, KNeighborsClassifier, matrice de confusion, courbe d'erreur pour k de 1 à 40). À montrer en démonstration sur Thonny si scikit-learn est installé, pas à faire coder en Première. Le lien vers le jeu de données iris (UCI) est dans « Pour aller plus loin ».",
+      },
+
+      /* ---- Sections 15 à 17 : adaptées du cours « Correction des algorithmes » (validation,
+         preuve de programme) du DIU EIL, B. Mermet, Université Le Havre Normandie
+         https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Algorithmique/validation.html et preuve.html ---- */
+      {
+        title: "Valider un programme : tester, prototyper, prouver",
+        html: `
+        <p>Un programme est un objet <strong>complexe</strong> : dire s'il est juste est aussi difficile que dire si un théorème est vrai ou si un modèle physique décrit bien la réalité. Le cours du DIU du Havre (B. Mermet) part de ces trois comparaisons pour distinguer <strong>trois façons de valider</strong> un algorithme.</p>
+        <table>
+          <tr><th>Ailleurs…</th><th>En informatique</th><th>Ce qu'on fait</th></tr>
+          <tr><td>Un <strong>modèle physique</strong> : les faits en accord le confirment, un seul fait en contradiction le réfute.</td><td><strong>Le test</strong></td><td>On exécute l'algorithme sur des valeurs choisies et on compare à ce qu'on attend. Un test qui échoue est une certitude ; mille tests qui passent ne sont pas une preuve (section 9 du thème Langages).</td></tr>
+          <tr><td>Un <strong>théorème</strong> : on le prouve ; si la preuve aboutit (et qu'elle est juste), il est vrai.</td><td><strong>La preuve</strong></td><td>On raisonne sur le programme pour montrer qu'il est correct <em>dans tous les cas</em>, sans l'exécuter.</td></tr>
+          <tr><td>Une <strong>preuve de concept</strong> : on réalise un bout de la solution pour vérifier qu'on a compris la même chose et qu'on est sur la bonne voie.</td><td><strong>Le prototypage</strong></td><td>On écrit <em>d'abord</em> une fonction qui simule ce que l'algorithme devrait calculer, de la façon la plus simple possible, même très lente : elle sert à vérifier qu'on a compris le problème, puis d'<em>oracle</em> pour tester la vraie version. Elle ne garantit rien sur le programme final.</td></tr>
+        </table>
+        <p>Les trois ne vérifient pas la même chose, et chacune a son prix :</p>
+        <table>
+          <tr><th></th><th>Ce qui est vérifié</th><th>Sur quoi ça porte</th><th>Avantage</th><th>Inconvénient</th></tr>
+          <tr><td><strong>Prototypage</strong></td><td>la bonne compréhension du problème</td><td>les développeurs</td><td>intervient très tôt</td><td>aucune garantie sur le programme final</td></tr>
+          <tr><td><strong>Test</strong></td><td>un fonctionnement correct dans des cas précis</td><td>le programme exécuté</td><td>facile à mettre en œuvre, nombreux outils (<code>assert</code>, doctest…)</td><td>intervient à la fin, loin d'être exhaustif</td></tr>
+          <tr><td><strong>Preuve</strong></td><td>la correction par rapport à une spécification</td><td>le code et/ou la conception</td><td>une vraie garantie</td><td>lourd à mettre en place</td></tr>
+        </table>
+        <p><strong>Et si on testait tout ?</strong> Quand les entrées possibles sont en nombre <em>fini et raisonnable</em>, on peut toutes les essayer : c'est le <strong>test exhaustif</strong>, que les informaticiens appellent <em>model checking</em>. Il donne une garantie, avec des outils faciles à utiliser… mais il coûte du temps de calcul, il est impossible dès que les entrées sont infinies (tous les entiers, toutes les listes), et quand il échoue, les milliers de traces en échec sont difficiles à lire.</p>
+        <p class="note">Dans la cellule : un <em>prototype</em> naïf écrit en premier (trier une copie de la liste et prendre le dernier élément : lent, mais impossible de se tromper sur ce que « plus grand élément » veut dire), une fonction <code>maximum_v1</code> qui a l'air juste, et un test exhaustif sur un tout petit domaine, les listes de 1 à 3 valeurs prises dans {−1, 0, 1}, le prototype servant d'oracle. Trente-neuf cas suffisent à trouver le bug… à condition d'avoir mis des valeurs négatives dans le domaine.</p>
+`,
+        code: `# Valider un programme : prototyper, tester, prouver
+# 1) PROTOTYPE : écrit en premier, le plus simple possible, pour être sûr de comprendre le problème
+def maximum_proto(liste):
+    """Le plus grand élément : on trie une copie et on prend le dernier (lent, mais évident)."""
+    return sorted(liste)[-1]
+
+# 2) La « vraie » version, celle qu'on veut valider
+def maximum_v1(liste):
+    """Renvoie le plus grand élément de liste (non vide)."""
+    maxi = 0                       # <- a l'air inoffensif...
+    for x in liste:
+        if x > maxi:
+            maxi = x
+    return maxi
+
+# 3) TEST : quelques exemples choisis à la main, comparés au prototype
+for exemple in ([3, 1, 4, 1, 5], [7], [2, 9, 9]):
+    assert maximum_v1(exemple) == maximum_proto(exemple)
+print("Tests à la main : OK (et pourtant...)")
+
+# 4) TEST EXHAUSTIF (model checking) sur un petit domaine fini :
+#    toutes les listes de 1 à 3 éléments pris dans {-1, 0, 1}, le prototype servant d'oracle
+valeurs = [-1, 0, 1]
+cas = []
+for a in valeurs:
+    cas.append([a])
+    for b in valeurs:
+        cas.append([a, b])
+        for c in valeurs:
+            cas.append([a, b, c])
+print(len(cas), "listes à tester")
+
+echecs = [l for l in cas if maximum_v1(l) != maximum_proto(l)]
+print("cas en échec :", len(echecs), "- par exemple", echecs[:3])
+# [-1] : maximum_v1 renvoie 0 alors que le plus grand élément est -1.
+# Le bug : maxi part de 0 au lieu de partir du premier élément de la liste.
+# Le prototype ne garantit rien sur maximum_v1 : seuls les 39 cas essayés sont vérifiés.
+`,
+        prof:
+          "Section tirée de « Introduction à la validation » (DIU, 1 h). Démarche : projeter la cellule, faire parier sur le bug AVANT l'exécution (peu d'élèves voient le 0 initial), puis demander ce qu'il faut changer dans le domaine du test exhaustif pour l'attraper (des valeurs négatives). Faire dire les trois mots : prototyper / tester / prouver (le prototype est une simulation naïve écrite d'abord, qui ne garantit rien sur la version finale), et la phrase « un test qui échoue est une certitude ». Le model checking est hors programme : une phrase suffit.",
+      },
+      {
+        title: "Prouver un programme : du triplet {Pré} instruction {Post} à l'invariant de boucle",
+        html: `
+        <p>Pour <strong>prouver</strong> un programme, on ne l'exécute pas : on raisonne sur ce qu'une instruction fait aux propriétés des variables. L'outil de base, inventé par l'informaticien britannique Tony Hoare en 1969, est le <strong>triplet</strong> :</p>
+        <p class="note"><strong>{Pré} instruction {Post}</strong> se lit : « si la propriété Pré est vraie avant l'instruction, alors la propriété Post est vraie après ». Exemple : <code>{x = n} x = x + 1 {x = n + 1}</code>.</p>
+        <p>Tu connais déjà les deux moitiés du contrat d'une fonction (thème Langages, section 7) : la <strong>précondition</strong>, à respecter quand on l'appelle, et la <strong>postcondition</strong>, qu'elle garantit à la fin. La preuve consiste à montrer que si Pré est vraie à l'entrée, chaque instruction conserve une propriété utile, jusqu'à obtenir Post à la sortie.</p>
+        <p><strong>Une affectation est une substitution.</strong> Pour vérifier que <code>{P} x = e {Q}</code> est vrai, on remplace <code>x</code> par <code>e</code> dans <code>Q</code> et on regarde si <code>P</code> l'implique. Exemple complet, celui du cours du DIU :</p>
+        <table>
+          <tr><th>Programme</th><th>Propriété vraie après</th><th>Pourquoi</th></tr>
+          <tr><td><code>précondition : x ≥ 0</code></td><td>x ≥ 0</td><td>c'est l'hypothèse</td></tr>
+          <tr><td><code>x = x + 1</code></td><td>x ≥ 1</td><td>x ≥ 0 ⟹ x + 1 ≥ 1</td></tr>
+          <tr><td><code>x = 2 * x</code></td><td>x ≥ 2</td><td>x ≥ 1 ⟹ 2x ≥ 2</td></tr>
+          <tr><td><code>x = x - 1</code></td><td>x ≥ 1</td><td>x ≥ 2 ⟹ x − 1 ≥ 1 : c'est la postcondition</td></tr>
+        </table>
+        <p><strong>Et en Python ?</strong> On peut écrire ces propriétés avec <code>assert</code> : <code>assert x &gt;= 1</code> ne fait rien si c'est vrai et arrête le programme sinon. Cela <strong>documente</strong> le code et donne une erreur claire si une propriété est violée. Mais attention : un <code>assert</code> n'a <strong>aucune valeur de preuve</strong>. Il vérifie la propriété pour <em>cette</em> exécution, pas pour toutes.</p>
+        <p><strong>Et avec une boucle ?</strong> On ne peut pas dérouler les instructions tour par tour : il y en a trop (et on ne sait pas combien). On introduit un <strong>invariant de boucle</strong> : une propriété vraie à chaque tour, choisie pour qu'à la sortie, combinée à la condition d'arrêt, elle donne la postcondition. Pour la fonction <code>maximum</code> : « <em>après le tour i, <code>maxi</code> est le plus grand élément de <code>liste[0..i]</code></em> ». Prouver l'invariant, c'est un raisonnement par <strong>récurrence</strong> :</p>
+        <ol>
+          <li><strong>Initialisation</strong> : l'invariant est vrai avant le premier tour (<code>maxi = liste[0]</code> est bien le maximum de <code>liste[0..0]</code>).</li>
+          <li><strong>Conservation</strong> : s'il est vrai au tour i, il l'est au tour i + 1. Deux cas : <code>liste[i+1] &gt; maxi</code>, on prend <code>liste[i+1]</code>, qui dépasse tout ce qui précède ; sinon <code>maxi</code> reste le plus grand.</li>
+          <li><strong>Sortie</strong> : quand la boucle s'arrête, i vaut n − 1 : l'invariant dit que <code>maxi</code> est le maximum de toute la liste. C'est la postcondition.</li>
+        </ol>
+        <p class="warnbox">⚠️ L'invariant doit être <em>utile</em> : « <code>maxi</code> est un élément de la liste » est vrai à chaque tour, mais ne permet pas de conclure que c'est le plus grand. La règle du DIU : <strong>Pré ∧ fin de boucle ∧ invariant ⟹ Post</strong>.</p>
+`,
+        code: `# 1) Le triplet {Pré} instruction {Post}, instruction par instruction
+def f(x):
+    """Précondition : x >= 0.  Postcondition : le résultat est >= 1."""
+    assert x >= 0, "précondition : x doit être positif ou nul"
+    x = x + 1
+    assert x >= 1          # PROP 1 : x >= 0 avant, donc x + 1 >= 1
+    x = 2 * x
+    assert x >= 2          # PROP 2 : x >= 1 avant, donc 2 * x >= 2
+    x = x - 1
+    assert x >= 1          # POST   : x >= 2 avant, donc x - 1 >= 1
+    return x
+
+print(f(0), f(5))          # 1 11
+
+# 2) L'invariant de boucle du maximum, écrit avec assert
+def maximum(liste):
+    """Précondition : liste non vide.  Postcondition : renvoie son plus grand élément."""
+    assert len(liste) > 0, "précondition : liste non vide"
+    maxi = liste[0]
+    for i in range(len(liste)):
+        if liste[i] > maxi:
+            maxi = liste[i]
+        # Invariant : maxi est le plus grand élément de liste[0], ..., liste[i]
+        assert maxi == max(liste[:i + 1])      # max() de Python sert d'oracle, pas de preuve
+    assert maxi == max(liste)                  # postcondition
+    return maxi
+
+print(maximum([3, 1, 4, 1, 5, 9, 2, 6]))      # 9
+print(maximum([-3, -8, -1]))                   # -1 (la version maxi = 0 aurait dit 0)
+`,
+        prof:
+          "Section tirée de « Preuve de programme » (DIU, 3 h 30 : logique du premier ordre, skolémisation, triplets de Hoare, substitution, invariants). En Première on garde le triplet, la substitution et l'invariant ; la logique formelle et la skolémisation restent hors programme. Au tableau : dérouler le tableau de f(x) ligne à ligne en faisant écrire la substitution par les élèves. Pour l'invariant du maximum, insister sur la condition de sortie : c'est l'étape que les élèves oublient dans les rédactions type bac.",
+      },
+      {
+        title: "Correction totale : invariant + variant, du maximum au tri à bulles",
+        html: `
+        <p>Le raisonnement de la section 16 prouve que <em>si</em> le programme s'arrête, il donne le bon résultat : c'est la <strong>correction partielle</strong>. Il ne dit rien sur l'arrêt ! Un programme <strong>totalement correct</strong> est partiellement correct <em>et</em> se termine. Pour la terminaison, tu connais l'outil : le <strong>variant</strong> (section 9), un entier naturel qui décroît strictement à chaque tour. Les mathématiciens disent que (ℕ, ≤) est une structure <em>bien fondée</em> : une suite d'entiers naturels strictement décroissante est forcément finie.</p>
+        <p>La preuve de terminaison tient en deux vérifications, dans le style des triplets :</p>
+        <ul>
+          <li>avant le premier tour, le variant est bien un entier naturel : <strong>Pré ⟹ V ∈ ℕ</strong> ;</li>
+          <li>un tour de boucle le fait strictement décroître (et le laisse dans ℕ) : si V = v avant le corps de la boucle, alors <strong>V &lt; v</strong> après.</li>
+        </ul>
+        <p>Pour <code>maximum</code> écrit avec un <code>while i &lt; len(liste)</code>, le variant est <code>len(liste) − i</code> : il part de n, perd 1 à chaque tour (<code>i = i + 1</code>) et ne peut descendre sous 1 tant que la boucle tourne. Invariant + variant : la fonction est <strong>totalement correcte</strong>.</p>
+        <p><strong>Une horloge qui casse son invariant.</strong> Une heure affichée vérifie toujours 0 ≤ heures &lt; 24 et 0 ≤ minutes &lt; 60. La fonction « ajouter une minute » la plus naïve, <code>minutes = minutes + 1</code>, respecte-t-elle cette propriété ? Non : à 10 h 59 elle produit 10 h 60. La preuve le montre sans exécuter : {0 ≤ minutes &lt; 60} minutes = minutes + 1 {0 ≤ minutes &lt; 60} exige minutes + 1 &lt; 60, c'est-à-dire minutes ≤ 58, ce que la précondition ne garantit pas. Il faut trois cas (minute suivante, heure suivante, minuit). C'est l'exercice 22 et l'étape 5 du TP.</p>
+        <p><strong>Le tri à bulles naïf</strong> (cellule ci-dessous) échange deux voisins mal rangés et recommence un passage tant que le précédent a produit au moins un échange. Se termine-t-il ? Le variant n'est pas évident : ni <code>i</code>, ni la longueur de la liste ne décroissent d'un passage à l'autre. La bonne idée est de mesurer le <strong>désordre</strong> : le nombre d'<em>inversions</em>, c'est-à-dire de couples (i, j) avec i &lt; j et <code>liste[i] &gt; liste[j]</code>. Échanger deux voisins mal rangés retire <em>exactement</em> une inversion ; un passage avec au moins un échange fait donc strictement décroître ce nombre, et quand il vaut 0, la liste est triée : c'est aussi la postcondition.</p>
+        <p class="note">À retenir : <strong>invariant</strong> → correction partielle ; <strong>variant</strong> → terminaison ; les deux → correction totale. Les <code>assert</code> des cellules vérifient ces propriétés pendant l'exécution : ils documentent la preuve, ils ne la remplacent pas.</p>
+`,
+        code: `# Correction totale = invariant (correction partielle) + variant (terminaison)
+def maximum_while(liste):
+    assert len(liste) > 0
+    maxi = liste[0]
+    i = 0
+    while i < len(liste):
+        variant = len(liste) - i               # entier naturel (i < len(liste))
+        assert variant >= 1
+        if liste[i] > maxi:
+            maxi = liste[i]
+        assert maxi == max(liste[:i + 1])      # invariant
+        i = i + 1
+        assert len(liste) - i < variant        # le variant a strictement diminué
+    assert maxi == max(liste)                  # postcondition
+    return maxi
+
+print(maximum_while([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))   # 9
+
+# Le tri à bulles naïf (d'après le DIU) : quel variant pour la boucle externe ?
+def nb_inversions(liste):
+    """Nombre de couples mal rangés (i < j et liste[i] > liste[j]) : la mesure du désordre."""
+    total = 0
+    for i in range(len(liste)):
+        for j in range(i + 1, len(liste)):
+            if liste[i] > liste[j]:
+                total = total + 1
+    return total
+
+def tri_bulles(liste):
+    inversion = True
+    passage = 0
+    while inversion:
+        passage = passage + 1
+        print("passage", passage, ": désordre =", nb_inversions(liste), "inversions", liste)
+        inversion = False
+        i = 0
+        while i < len(liste) - 1:
+            if liste[i] > liste[i + 1]:
+                liste[i], liste[i + 1] = liste[i + 1], liste[i]   # exactement une inversion de moins
+                inversion = True
+            i = i + 1
+    assert nb_inversions(liste) == 0           # postcondition : trié
+    return liste
+
+print(tri_bulles([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))
+# Le nombre d'inversions décroît strictement à chaque passage qui échange :
+# c'est le variant (avec + 1 tant que inversion vaut True, pour le dernier passage).
+`,
+        prof:
+          "Section tirée des parties III à V de « Preuve de programme » (DIU) : correction partielle, correction totale, variant et structure bien fondée, assertions en Python. L'horloge et le tri à bulles sont les exercices du DIU (l'horloge y est une classe : en Première on en fait une fonction qui renvoie un couple ; la version objet est en Terminale). Le variant du tri à bulles (nombre d'inversions) est difficile : le faire découvrir en projetant la cellule, qui affiche le désordre à chaque passage ; ne pas l'exiger en évaluation. L'invariant de classe du DIU est réservé à la Terminale (section 14 du thème Langages).",
       },
     ],
   },

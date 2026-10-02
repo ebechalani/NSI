@@ -1688,6 +1688,123 @@ print(p1.__dict__)          # {'_Point__x': 5, '_Point__y': 7}`,
         prof:
           "Le BO (Structures de données) exclut explicitement héritage et polymorphisme : rester sur encapsulation + accesseurs + références, qui tombent dans les sujets (« que vaut p3 après … ? »). Faire exécuter references.py du DIU dans Python Tutor sur le TBI : la flèche unique vers l'objet vaut toutes les explications. L'exercice 14 propose la réponse fonctionnelle au problème des références (translater renvoie un nouveau Point).",
       },
+
+      /* ---- Sections 13 et 14 : adaptées du cours « Preuve de programme » (Bloc 2, Algorithmique,
+         partie II « Correction des algorithmes ») du DIU EIL, B. Mermet, Université Le Havre Normandie
+         https://mermet.users.greyc.fr/Enseignement/EnseignementInformatiqueLycee/Havre/Algorithmique/preuve.html ---- */
+      {
+        title: "Prouver un programme : triplet de Hoare, invariant, variant (DIU)",
+        html: `
+        <p>La section 6 t'a appris à <em>tester</em> ; le cours « Preuve de programme » du DIU du Havre (B. Mermet) explique comment <strong>prouver</strong>. Il commence par la logique : une <strong>formule du premier ordre</strong> mêle des variables, des connecteurs (et, ou, non, implique), des <strong>prédicats</strong> (des fonctions à valeur booléenne) et des <strong>quantificateurs</strong>, « pour tout » (∀) et « il existe » (∃). Exemple du cours : <code>∀x ∀y ∃z (x ∈ ℤ ∧ y ∈ ℤ ∧ z ∈ ℤ ⟹ (z ≥ 0 ∧ (x = y + z ∨ y = x + z)))</code>, qui dit que deux entiers sont toujours à une distance entière positive l'un de l'autre. Pour la culture (hors programme), deux résultats célèbres qui font écho à la section 8 : le calcul des prédicats est <strong>semi-décidable</strong> (on peut énumérer tous les théorèmes, donc toute formule valide finit par être prouvée, mais aucun algorithme ne peut décider, pour un énoncé quelconque, s'il est un théorème ou non : si ce n'en est pas un, l'énumération ne s'arrête jamais) et, avec l'arithmétique, il est <strong>incomplet</strong> : il existe des énoncés vrais non démontrables (Gödel, 1931).</p>
+        <p><strong>Le triplet de Hoare.</strong> L'outil central est <code>{Pré} Inst {Post}</code> : si le prédicat Pré est vrai avant l'instruction Inst, le prédicat Post est vrai après. Exemples du cours : <code>{x = n} x = x + 1 {x = n + 1}</code> et <code>{x = n} if b: x = n + 1 else: x = n - 1 {(b ⟹ x = n + 1) ∧ (¬b ⟹ x = n − 1)}</code>. Étendu aux fonctions : la <strong>précondition</strong> doit être vraie à l'appel, la <strong>postcondition</strong> à la fin.</p>
+        <p><strong>Une affectation est une substitution.</strong> On note <code>[x := e](P)</code> le prédicat P où x est remplacé par e. Pour prouver <code>{P} x = e {Q}</code>, il suffit de vérifier <code>P ⟹ [x := e](Q)</code>. L'exemple du cours, instruction par instruction : précondition x ≥ 0 ; après <code>x = x + 1</code>, x ≥ 1 car x ≥ 0 ⟹ x + 1 ≥ 1 ; après <code>x = 2 * x</code>, x ≥ 2 ; après <code>x = x - 1</code>, x ≥ 1 : la postcondition.</p>
+        <p><strong>Invariant de boucle.</strong> Avec une boucle, on ne peut pas dérouler : on introduit un <strong>invariant</strong>, prédicat vrai à chaque itération, choisi pour qu'avec la condition de sortie il établisse la postcondition. La preuve est une récurrence : <code>[INIT](INV)</code> (vrai au départ), <code>INV ⟹ [CORPS](INV)</code> (conservé par un tour), et <code>PRÉ ∧ FIN ∧ INV ⟹ POST</code> (sortie). Pour <code>maximum</code> : « <code>maxi</code> est le maximum de <code>liste[0..i]</code> ».</p>
+        <p><strong>Correction partielle, correction totale.</strong> Tout cela prouve que <em>si</em> le programme termine, il établit sa postcondition : c'est la <strong>correction partielle</strong>. Pour la <strong>correction totale</strong>, il faut en plus la terminaison, prouvée par un <strong>variant</strong> : une suite strictement décroissante dans une <em>structure bien fondée</em>, typiquement (ℕ, ≤), où toute suite strictement décroissante est finie. Deux vérifications : <code>PRÉ ⟹ V ∈ ℕ</code> et <code>V = v ∧ INV ⟹ [CORPS](V &lt; v)</code>. Pour <code>maximum</code> en <code>while</code>, V = <code>len(liste) − i</code>.</p>
+        <p class="note">En Python, ces prédicats s'écrivent avec <code>assert</code> : précondition au début d'une fonction, postcondition à la fin, invariant dans la boucle. Le DIU est net : cela <strong>n'a aucune valeur de preuve</strong>, mais cela documente le code et donne une exception claire si une propriété est violée. La preuve, c'est le raisonnement.</p>
+`,
+        code: `# Les prédicats de la preuve écrits avec assert : ils vérifient, ils ne prouvent pas
+def f(x):
+    """{x >= 0} f {résultat >= 1} — l'exemple du cours, prouvé par substitution."""
+    assert x >= 0                 # précondition
+    x = x + 1
+    assert x >= 1                 # x >= 0  =>  [x := x + 1](x >= 1)  soit  x + 1 >= 1
+    x = 2 * x
+    assert x >= 2                 # x >= 1  =>  2x >= 2
+    x = x - 1
+    assert x >= 1                 # x >= 2  =>  x - 1 >= 1  : la postcondition
+    return x
+
+print(f(0), f(5))                 # 1 11
+
+def maximum(liste):
+    """Correction totale : invariant (correction partielle) + variant (terminaison)."""
+    assert len(liste) > 0         # précondition
+    maxi = liste[0]
+    i = 0
+    while i < len(liste):
+        variant = len(liste) - i                 # V : entier naturel strictement décroissant
+        if liste[i] > maxi:
+            maxi = liste[i]
+        assert maxi == max(liste[:i + 1])        # INV : maxi = maximum(liste[0..i])
+        i = i + 1
+        assert 0 <= len(liste) - i < variant     # V reste dans N et a strictement diminué
+    assert maxi == max(liste)                    # POST : PRÉ et FIN (i = n) et INV l'impliquent
+    return maxi
+
+print(maximum([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]))   # 9
+print(maximum([-3, -8, -1]))                           # -1
+`,
+        prof:
+          "Section tirée de « Preuve de programme » (DIU, 3 h 30), parties I à IV. Au programme de Terminale (Langages : mise au point) et en continuité de la Première (variant, invariant). La logique du premier ordre et la skolémisation du cours restent de la culture : une phrase sur « pour tout / il existe », et le lien avec la décidabilité de la section 8 (semi-décidabilité, Gödel) suffit. Dérouler au tableau le tableau de f(x) et faire écrire la substitution. L'invariant du maximum est la rédaction type bac : trois phrases (initialisation, conservation, sortie).",
+      },
+      {
+        title: "Invariant de classe : une méthode invariant() vérifiée par assert",
+        html: `
+        <p>La section 12 a montré pourquoi encapsuler : <em>garantir l'état des objets</em>. Le DIU donne un nom à cette garantie : l'<strong>invariant de classe</strong>, un prédicat sur les attributs qui doit être vrai pour tout objet, en permanence (en dehors de l'exécution d'une méthode). Son raisonnement est le même que pour un invariant de boucle, car utiliser un objet, c'est enchaîner des appels de méthodes, comme une boucle dont chaque tour choisit une méthode. La preuve d'un invariant de classe se fait donc en deux temps :</p>
+        <ol>
+          <li>le <strong>constructeur</strong> établit l'invariant (<code>[INIT](INV)</code>) ;</li>
+          <li>chaque <strong>méthode</strong> peut supposer l'invariant vrai à son entrée et doit le <strong>préserver</strong> : il est vrai à la fin de son exécution (<code>INV ∧ PRÉ ⟹ [CORPS](INV)</code>).</li>
+        </ol>
+        <p><strong>En Python, avec assert.</strong> Le DIU propose une méthode <code>invariant()</code> qui regroupe les propriétés sous forme d'<code>assert</code>, appelée à la fin du constructeur et à la fin de chaque méthode ; les préconditions sont des <code>assert</code> en début de méthode, les postconditions des <code>assert</code> en fin, après avoir mémorisé les valeurs « avant » si la postcondition compare avant et après. Rappel du cours : cela n'a aucune valeur de preuve, mais la violation d'une propriété devient une exception immédiate, là où elle se produit, au lieu d'un bug silencieux découvert bien plus tard.</p>
+        <p><strong>L'exemple de la classe Personne</strong> (nom, prénom, âge, statut mineur / majeur) : l'invariant impose un nom non vide, un âge positif ou nul et un statut cohérent avec l'âge. La méthode <code>annee_suivante()</code> du cours incrémente l'âge, vérifie sa postcondition (l'âge a augmenté de 1)… et viole l'invariant à 18 ans, car le statut n'a pas suivi. L'invariant a fait son travail : il révèle une méthode qui oublie une partie de l'état.</p>
+        <p><strong>L'exercice de la classe Heure</strong> : invariant 0 ≤ heures &lt; 24 et 0 ≤ minutes &lt; 60. La méthode <code>incrementer()</code> naïve fait <code>minutes = minutes + 1</code>. Preuve : <code>{INV} minutes = minutes + 1 {INV}</code> demande <code>[minutes := minutes + 1](minutes &lt; 60)</code>, soit minutes + 1 &lt; 60, soit minutes ≤ 58, que l'invariant ne garantit pas. Deux réparations possibles : ajouter la précondition <code>minutes ≤ 58</code> (la méthode refuse 59), ou traiter trois cas (minute suivante, heure suivante, minuit) : c'est la version du cours, dont la postcondition s'écrit avec trois implications, une par cas.</p>
+        <p class="warnbox">⚠️ Une postcondition qui compare l'état après à l'état avant (« les minutes ont augmenté de 1 ») exige de <strong>mémoriser les valeurs avant</strong> la modification. Et une implication « si A alors B » s'écrit en Python <code>not A or B</code> : <code>assert minutes_avant == 59 or self.minutes == minutes_avant + 1</code>.</p>
+`,
+        code: `# Invariant de classe, précondition, postcondition : la classe Heure du cours, corrigée
+class Heure:
+    """Invariant : 0 <= heures < 24 et 0 <= minutes < 60."""
+
+    def __init__(self, heures=0, minutes=0):
+        self.heures = heures
+        self.minutes = minutes
+        self.invariant()                       # le constructeur établit l'invariant
+
+    def invariant(self):
+        assert 0 <= self.heures < 24
+        assert 0 <= self.minutes < 60
+
+    def incrementer_naif(self):
+        """{INV} minutes = minutes + 1 {INV} : faux quand minutes vaut 59."""
+        self.invariant()
+        self.minutes = self.minutes + 1
+        self.invariant()
+
+    def incrementer(self):
+        """Trois cas, et une postcondition par cas (A implique B s'écrit not A or B)."""
+        self.invariant()
+        minutes_avant, heures_avant = self.minutes, self.heures
+        if self.minutes < 59:
+            self.minutes = self.minutes + 1
+        elif self.heures < 23:
+            self.minutes = 0
+            self.heures = self.heures + 1
+        else:
+            self.minutes = 0
+            self.heures = 0
+        assert minutes_avant == 59 or (self.minutes == minutes_avant + 1 and self.heures == heures_avant)
+        assert minutes_avant != 59 or heures_avant == 23 or (self.heures == heures_avant + 1 and self.minutes == 0)
+        assert minutes_avant != 59 or heures_avant != 23 or (self.heures == 0 and self.minutes == 0)
+        self.invariant()                       # la méthode préserve l'invariant
+
+    def __repr__(self):
+        return str(self.heures) + ":" + str(self.minutes).rjust(2, "0")
+
+h = Heure(10, 58)
+h.incrementer_naif()
+print(h)                                       # 10:59
+try:
+    h.incrementer_naif()                       # 10:60 : l'invariant arrête tout
+except AssertionError:
+    print("incrementer_naif a violé l'invariant à", h.heures, "h", h.minutes)
+
+h = Heure(23, 58)
+for _ in range(3):
+    h.incrementer()
+    print(h)                                   # 23:59  0:00  0:01
+`,
+        prof:
+          "Section tirée de la partie II.C (invariant de classe) et des applications V du cours « Preuve de programme » (DIU). Les exemples sont ceux du cours : preuve01personne.py, preuve02horloge.py et sa correction, preuve03horlogePostcondition.py (liens dans « Pour aller plus loin »). Faire chercher le bug de Personne (annee_suivante oublie le statut) et celui de Heure AVANT d'exécuter : la preuve par substitution le trouve sans machine. Le BO ne parle pas d'invariant de classe mais de mise au point et d'encapsulation : c'est le point de contact. Hors programme : la skolémisation, les formules closes.",
+      },
     ],
   },
 
